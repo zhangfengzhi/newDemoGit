@@ -1,0 +1,87 @@
+ <widget id="A6139904319145"  version="0.0.1">
+
+    <name>岳池人人通</name>
+
+    <description>
+
+        Example For APICloud.
+
+    </description>
+
+    <author email="developer@apicloud.com" href="http://www.apicloud.com">
+
+        Developer
+
+    </author>
+
+	<preference name="avm" value="true"/>
+
+    <content src="reload.html"/>  
+  <preference name="pageBounce" value="false"/>  
+  <preference name="appBackground" value="#f7f9f8"/>  
+  <preference name="windowBackground" value="#f7f9f8"/>  
+  <preference name="frameBackgroundColor" value="#ffffff"/>  
+  <preference name="querySchemes" value="dsidealbofangqi"/>  
+  <preference name="hScrollBarEnabled" value="true"/>  
+  <preference name="vScrollBarEnabled" value="true"/>  
+  <preference name="autoLaunch" value="true"/>  
+  <preference name="fullScreen" value="false"/>  
+  <preference name="autoUpdate" value="true"/>  
+  <preference name="smartUpdate" value="true"/>  
+  <preference name="debug" value="false"/>  
+  <preference name="statusBarAppearance" value="true"/>  
+  <preference name="softInputMode" value="resize"/>  
+  <preference name="allowKeyboardExtension" value="true"/>  
+  <preference name="urlScheme" value="jszsapp"/>  
+  <meta-data name="com.huawei.hms.client.appid" value="101299413"/>  
+  <permission name="readPhoneState"/>  
+  <permission name="camera"/>  
+  <permission name="record"/>  
+  <permission name="location"/>  
+  <permission name="fileSystem"/>  
+  <permission name="internet"/>  
+  <permission name="bootCompleted"/>  
+  <permission name="hardware"/>  
+  <permission name="contact"/>  
+  <permission name="sms"/>  
+  <permission name="readPhoneState"/>  
+  <permission name="call"/>  
+  <access origin="*"/>  
+  <feature name="UILineChart"/>  
+  <feature name="photoBrowser"/>  
+  <feature name="inputField"/>  
+  <feature name="pieChart"/>  
+  <feature name="FNImageClip"/>  
+  <feature name="mico"/>  
+  <feature name="UISlider"/>  
+  <feature name="privacy"/>  
+  <feature name="clipBoard"/>  
+  <feature name="bookReader"/>  
+  <feature name="audio"/>  
+  <feature name="netAudio"/>  
+  <feature name="UICalendar"/>  
+  <feature name="speechRecognizer"/>  
+  <feature name="FNScanner"/>  
+  <feature name="videoPlayer"/>  
+  <feature name="UICustomPicker"/>  
+  <feature name="UIInput"/>  
+  <feature name="docReader"/>  
+  <feature name="navigationBar"/>  
+  <feature name="UIScrollPicture"/>  
+  <feature name="UIAlbumBrowser"/>  
+  <feature name="fs"/>  
+  <feature name="UIChatBox"/>  
+  <feature name="imageBrowser"/>  
+  <feature name="db"/>  
+  <feature name="listContact"/>  
+  <feature name="drawingBoard"/>  
+  <feature name="rongCloudIM"> 
+    <param name="appKey" value="8brlm7ufr4va3"/> 
+  </feature>  
+  <feature name="TalkingData"> 
+    <param name="logEnable" value="false"/>  
+    <param name="exceptionReportEnabled" value="true"/>  
+    <param name="channel" value="AppStore"/> 
+  </feature> 
+</widget>
+
