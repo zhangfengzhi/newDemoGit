@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<title>title</title>
+		<link rel="stylesheet" type="text/css" href="../../../../../css/aui/aui.css" />
+		<link id="j_mode" rel="stylesheet" type="text/css" href="" />
+		<style type="text/css">
+			body {
+				background: #f7f9f8;
+			}
+			/*重新定义*/
+			.aui-list-view {
+				border: 1px solid #eeeeee;
+				border-radius: 3px;
+			}
+			.aui-list-view:after {
+				height: 0;
+			}
+			.aui-list-view:before {
+				height: 0;
+			}
+			.aui-grid-sixteen li .aui-iconfont {
+				background: #ff9900;
+				color: #ffffff;
+				width: 38px;
+				height: 38px;
+				line-height: 38px;
+				border-radius: 50%;
+				font-size: 20px;
+			}
+			/*自定义*/
+			.image img {
+				width: 100%
+			}
+			p {
+				font-size: 12px;
+				margin-bottom: 5px;
+			}
+			.content {
+				font-size: 12px;
+			}
+			.presshover {
+				background-color: #FAFAFA;
+			}
+			.v-align-span {
+				vertical-align: middle;
+				display: inline-block;
+				height: 100%;
+				width: 0px;
+			}
+			.v-align-div {
+				vertical-align: middle;
+				display: inline-block;
+			}
+			.aui-col-img {
+				height: 32px;
+				width: 32px;
+			}
+		</style>
+	</head>
+	<body>
+		<div id="bg_menulist_div" class="aui-content" style="margin:0px;vertical-align: middle;"></div>
+		<script type="text/html" id="bg_menulist_script">
+			<ul class="aui-grid-nine">
+				<%for(var i=0; i<list.length; i++) {%>
+					<li class="aui-col-xs-4 aui-text-center" tapmode="presshover" onclick="goBgFrame('<%=list[i].win_name %>','<%=list[i].path %>');" style="height:20%;">
+						<span class="v-align-span"></span>
+						<div class="v-align-div">
+							<img class="aui-col-img" src="<%=list[i].img_url%>"/>
+							<p>
+								<%=list[i].win_name%>
+							</p>
+						</div>
+					</li>
+				<% } %>
+				
+			</ul>
+		</script>
+			
+		<!--<div class="aui-content" style="margin:0px;vertical-align: middle;">
+			
+			
+			<ul class="aui-grid-nine">
+				<li class="aui-col-xs-4 aui-text-center" tapmode="presshover" onclick="goBgFrame();" style="height:20%;">
+					<span class="v-align-span"></span>
+					<div class="v-align-div">
+						<img class="aui-col-img" src="../../image/yingyong/kechengbiao.png"/>
+						<p>
+							课程表
+						</p>
+					</div>
+				</li>
+				<li class="aui-col-xs-4 aui-text-center" tapmode="presshover" onclick="goBgFrame();" style="height:20%;">
+					<span class="v-align-span"></span>
+					<div class="v-align-div">
+						<img class="aui-col-img" src="../../image/yingyong/renwu.png"/>
+						<p>
+							通知
+						</p>
+					</div>
+				</li>
+				<li class="aui-col-xs-4 aui-text-center" tapmode="presshover" onclick="goBgFrame();" style="height:20%;">
+					<span class="v-align-span"></span>
+					<div class="v-align-div">
+						<img class="aui-col-img" src="../../image/yingyong/ziyuan.png"/>
+						<p>
+							资源
+						</p>
+					</div>
+				</li>
+				<li class="aui-col-xs-4 aui-text-center" tapmode="presshover" onclick="doCreating();" style="height:20%;">
+					<span class="v-align-span"></span>
+					<div class="v-align-div">
+						<img class="aui-col-img" src="../../image/yingyong/shiti.png"/>
+						<p>
+							试题
+						</p>
+					</div>
+				</li>
+				<li class="aui-col-xs-4 aui-text-center" tapmode="presshover" onclick="doCreating();" style="height:20%;">
+					<span class="v-align-span"></span>
+					<div class="v-align-div">
+						<img class="aui-col-img" src="../../image/yingyong/shijuan.png"/>
+						<p>
+							试卷
+						</p>
+					</div>
+				</li>
+				<li class="aui-col-xs-4 aui-text-center" tapmode="presshover" onclick="goBgFrame();" style="height:20%;">
+					<span class="v-align-span"></span>
+					<div class="v-align-div">
+						<img class="aui-col-img" src="../../image/yingyong/weike.png"/>
+						<p>
+							微课
+						</p>
+					</div>
+				</li>
+				<li class="aui-col-xs-4 aui-text-center" tapmode="presshover" onclick="doCreating();" style="height:20%;">
+					<span class="v-align-span"></span>
+					<div class="v-align-div">
+						<img class="aui-col-img" src="../../image/yingyong/beike.png"/>
+						<p>
+							备课
+						</p>
+					</div>
+				</li>
+				<li class="aui-col-xs-4 aui-text-center" tapmode="presshover" onclick="doCreating();" style="height:20%;">
+					<span class="v-align-span"></span>
+					<div class="v-align-div">
+						<img class="aui-col-img" src="../../image/yingyong/yunpan.png"/>
+						<p>
+							云盘
+						</p>
+					</div>
+				</li>
+				<li class="aui-col-xs-4 aui-text-center" tapmode="presshover" onclick="doCreating();" style="height:20%;">
+					<span class="v-align-span"></span>
+					<div class="v-align-div">
+						<img class="aui-col-img" src="../../image/yingyong/boke.png"/>
+						<p>
+							博客
+						</p>
+					</div>
+				</li>
+				<li class="aui-col-xs-4 aui-text-center" tapmode="presshover" onclick="doCreating();" style="height:20%;">
+					<span class="v-align-span"></span>
+					<div class="v-align-div">
+						<img class="aui-col-img" src="../../image/yingyong/xiangce.png"/>
+						<p>
+							相册
+						</p>
+					</div>
+				</li>
+				<li class="aui-col-xs-4 aui-text-center" tapmode="presshover" onclick="doCreating();" style="height:20%;">
+					<span class="v-align-span"></span>
+					<div class="v-align-div">
+						<img class="aui-col-img" src="../../image/yingyong/richeng.png"/>
+						<p>
+							日程
+						</p>
+					</div>
+				</li>
+				<li class="aui-col-xs-4 aui-text-center" tapmode="presshover" onclick="doCreating();" style="height:20%;">
+					<span class="v-align-span"></span>
+					<div class="v-align-div">
+						<img class="aui-col-img" src="../../image/yingyong/tianqi.png"/>
+						<p>
+							天气
+						</p>
+					</div>
+				</li>
+				<li class="aui-col-xs-4 aui-text-center" tapmode="presshover" onclick="doCreating();" style="height:20%;">
+					<span class="v-align-span"></span>
+					<div class="v-align-div">
+						<img class="aui-col-img" src="../../image/yingyong/xiangce.png"/>
+						<p>
+							相册
+						</p>
+					</div>
+				</li>
+				<li class="aui-col-xs-4 aui-text-center" tapmode="presshover" onclick="doCreating();" style="height:20%;">
+					<span class="v-align-span"></span>
+					<div class="v-align-div">
+						<img class="aui-col-img" src="../../image/yingyong/richeng.png"/>
+						<p>
+							日程
+						</p>
+					</div>
+				</li>
+				<li class="aui-col-xs-4 aui-text-center" tapmode="presshover" onclick="doCreating();" style="height:20%;">
+					<span class="v-align-span"></span>
+					<div class="v-align-div">
+						<img class="aui-col-img" src="../../image/yingyong/tianqi.png"/>
+						<p>
+							天气
+						</p>
+					</div>
+				</li>
+			</ul>
+		</div>-->
+		<script type="text/javascript" src="../../../../../script/api.js"></script>
+		<script type="text/javascript" src="../../../../../script/base_config.js"></script>
+		<script type="text/javascript" src="../../../../../script/plug-in/template.js" ></script>
+	</body>
+	<script type="text/javascript">
+		var bg_token;
+		var header_h;
+		var win_name;
+		apiready = function() {
+		    commonSetTheme({"level":5,"type":0});
+			loadBgMenuData();
+			setTimeout(function() {
+				header_h = api.pageParam.header_h;
+				var h = api.pageParam.h;
+				bg_token = api.pageParam.bg_token;
+				$api.css($api.dom('.aui-grid-nine'), 'height:' + h + 'px;');
+			}, 300);
+		};
+		
+		function loadBgMenuData(){
+			var menu_info = '{"list":[{"win_name":"发布通知","win_url":"toReleaseNotice_frame","img_url":"..\/..\/image\/yingyong\/bg\/mail_send.png","path":"\/oa\/notice\/toReleaseNotice"},{"win_name":"已发通知","win_url":"listSendNotice_frame","img_url":"..\/..\/image\/yingyong\/bg\/mail_send_ok.png","path":"\/oa\/notice\/listSendNotice"},{"win_name":"接收通知","win_url":"listReceiveNotice_frame","img_url":"..\/..\/image\/yingyong\/bg\/mail_receive.png","path":"\/oa\/notice\/listReceiveNotice"},{"win_name":"发布公告","win_url":"toReleaseAnnouncement_frame","img_url":"..\/..\/image\/yingyong\/bg\/gg_send.png","path":"\/oa\/announcement\/toReleaseAnnouncement"},{"win_name":"已发公告","win_url":"listSendAnnouncement_frame","img_url":"..\/..\/image\/yingyong\/bg\/gg_send_ok.png","path":"\/oa\/announcement\/listSendAnnouncement"},{"win_name":"接收公告","win_url":"listReceiveAnnouncement_frame","img_url":"..\/..\/image\/yingyong\/bg\/gg_receive.png","path":"\/oa\/announcement\/listReceiveAnnouncement"},{"win_name":"发送邮件","win_url":"toReleaseMail_frame","img_url":"..\/..\/image\/yingyong\/bg\/mail_send.png","path":"\/oa\/mail\/toReleaseMail"},{"win_name":"发件箱","win_url":"listSendMail_frame","img_url":"..\/..\/image\/yingyong\/bg\/mail_send_ok.png","path":"\/oa\/mail\/listSendMail"},{"win_name":"收件箱","win_url":"listReceiveMail_frame","img_url":"..\/..\/image\/yingyong\/bg\/mail_receive.png","path":"\/oa\/mail\/listReceiveMail"},{"win_name":"发布新闻","win_url":"news_frame","img_url":"..\/..\/image\/yingyong\/bg\/fbxw.png","path":"\/oa\/newsInfo\/toReleaseNewsInfo?releaseType=news"},{"win_name":"发布动态","win_url":"toReleaseNewsInfo_frame","img_url":"..\/..\/image\/yingyong\/bg\/fbdt.png","path":"\/oa\/newsInfo\/toReleaseNewsInfo"},{"win_name":"教育新闻","win_url":"listEducationNews_frame","img_url":"..\/..\/image\/yingyong\/bg\/jyxw.png","path":"\/oa\/newsInfo\/listEducationNews"},{"win_name":"学校新闻","win_url":"listSchoolNews_frame","img_url":"..\/..\/image\/yingyong\/bg\/xxxw.png","path":"\/oa\/newsInfo\/listSchoolNews"},{"win_name":"科室动态","win_url":"listDepartmentNews_frame","img_url":"..\/..\/image\/yingyong\/bg\/kydt.png","path":"\/oa\/newsInfo\/listDepartmentNews"}]}';
+			menu_info = $api.strToJson(menu_info);
+			var html_type = template.render('bg_menulist_script', menu_info);
+			document.getElementById('bg_menulist_div').innerHTML = html_type;
+		}
+		
+		function goBgFrame(win_name, win_path) {
+			api.openWin({
+				name : 'bg_content_window',
+				url : 'bg_content_window.html',
+				pageParam : {
+					header_h : header_h,
+					bg_token : bg_token,
+					win_name : win_name,
+					win_path : win_path
+				},
+				bounces : false,
+				opaque : false,
+				showProgress : false,
+				vScrollBarEnabled : false,
+				hScrollBarEnabled : false,
+				slidBackEnabled : false,
+				delay : 0,
+				animation : {
+					type : "reveal", //动画类型（详见动画类型常量）
+					subType : "from_right", //动画子类型（详见动画子类型常量）
+					duration : 300
+				},
+			});
+		}
+
+		function doCreating() {
+			api.alert({
+				msg : '当前模块正在建设中，敬请期待'
+			}, function(ret, err) {
+				//coding...
+			});
+		}
+	</script>
+</html>

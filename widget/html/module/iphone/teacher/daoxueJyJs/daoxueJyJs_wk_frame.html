@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <!-- html5：在创建html时为了防止页面缩放等不兼容效果，要创建个viewport  -->
+        <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+        <!-- 在IOS设备上，有时会将数字转为手机号，这里也要禁止下 -->
+        <meta name="format-detection" content="telephone=no"/>
+        <title>导学微课详情页面</title>
+        <link rel="stylesheet" type="text/css" href="../../../../../css/aui/aui.css" />
+       	<link id="j_theme_base" rel="stylesheet" type="text/css" href="" /><style>
+       		body{background:#e0e0e0;}
+       		.content{margin-bottom:10px;background:#ffffff;}
+       		.content .triangle{float:left;display:inline-block;width: 0; height: 0;margin-top:3px;border-top:6px solid transparent;border-right: 7px solid transparent;border-bottom: 6px solid transparent;}
+       		.content .title{padding:13px 10px 10px 10px;font-weight:600;}
+       		.content .title .person-name{font-weight:normal;float:right;display:inline-block;max-width:50%;}
+       		.content .detail{line-height:28px;padding:0 10px 10px 10px;color:#333;}
+       		.content .res{padding: 0 10px 10px 10px;color:#00f;}
+       		.content .pb0{padding-bottom:0;}
+       		.content .res .res-detail{position:relative;left:0;line-height:30px;padding-left:20px;}
+       		.content .res .res-detail .aui-iconfont{position:absolute;left:0;top:-1px;font-size:14px;font-weight:bold;}
+       		.content .more{line-height:40px;border-top:1px solid #e0e0e0;text-align:center;font-size:14px;color:#666;}
+       		.footer-btn{display: block;bottom: 0px;width: 100%;height:45px;text-align: center;color: #333;padding-top: 14px;border-top: 1px solid #e0e0e0;position: fixed;background:#fff;z-index:999;}
+       		.footer-btn .zan-content{display:inline-block;}
+       		.footer-btn .zan{float:left;display:inline-block;height:20px;padding-left:30px;background:url(../../../../../image/yingyong/weike/zan.png) left top no-repeat;background-size:22px auto;}
+       		.footer-btn .yizan{background:url(../../../../../image/yingyong/weike/zan.png) left -48px no-repeat;background-size:22px auto;}
+       		.blank-footer{height:45px;}
+       	</style>
+    </head>
+    <body class="common-iphone-daojueJyJs">
+    	<div id="j_blank">&nbsp;</div>
+    	<div class="content clearfix">
+    		<div class="title">
+    			<span>上传教师</span>
+    			<span id="j_person_name" class="person-name"></span>
+    		</div>
+    	</div>
+    	<div class="content clearfix">
+    		<div class="title">
+    			<span class="triangle">&nbsp;</span>设计说明
+    		</div>
+    		<div id="j_design_instr" class="detail"></div>
+    		<div id="j_res_1" class="res display-none clearfix"></div>
+    		<script type="text/html" id="design_script">
+    			<%for(var i = 0; i < design_list.length; i++){%>
+    				<div onclick="openAttachment('<%=design_list[i].extension%>','<%=design_list[i].title%>','<%=design_list[i].file_id %>');" class="res-detail clearfix ellipsis">
+    					<span class="aui-iconfont aui-icon-link"></span><%=design_list[i].title%>
+    				</div>
+    			<%}%>
+    		</script>
+    		<div id="j_btn_1" class="more" onclick="resDisplay(this,1)">展开</div>
+    	</div>
+    	<div class="content clearfix">
+    		<div class="title">
+    			<span class="triangle">&nbsp;</span>学习指导
+    		</div>
+    		<div id="j_study_instr" class="detail"></div>
+    		<div id="j_res_2" class="res display-none clearfix"></div>
+    		<script type="text/html" id="study_script">
+    			<%for(var i = 0; i < study_list.length; i++){%>
+    				<div onclick="openAttachment('<%=study_list[i].extension%>','<%=study_list[i].title%>','<%=study_list[i].file_id %>');" class="res-detail clearfix ellipsis">
+    					<span class="aui-iconfont aui-icon-link"></span><%=study_list[i].title%>
+    				</div>
+    			<%}%>
+    		</script>
+    		<div id="j_btn_2" class="more" onclick="resDisplay(this,2)">展开</div>
+    	</div>
+    	<div class="content clearfix">
+    		<div class="title">
+    			<span class="triangle">&nbsp;</span>练习
+    		</div>
+    		<div id="j_practice_instr" class="detail"></div>
+    		<div id="j_res_3" class="res display-none clearfix">
+    		</div>
+    		<script type="text/html" id="practice_script">
+    			<%for(var i = 0; i < practice_list.length; i++){%>
+    				<div onclick="openAttachment('<%=practice_list[i].extension%>','<%=practice_list[i].title%>','<%=practice_list[i].file_id %>');" class="res-detail clearfix ellipsis">
+    					<span class="aui-iconfont aui-icon-link"></span><%=practice_list[i].title%>
+    				</div>
+    			<%}%>
+    		</script>
+    		<div id="j_btn_3" class="more" onclick="resDisplay(this,3)">展开</div>
+    	</div>
+    	<div class="content clearfix">
+    		<div class="title">
+    			<span class="triangle">&nbsp;</span>素材
+    		</div>
+    		<div id="j_res" class="res clearfix">
+    		</div>
+    		<script type="text/html" id="sc_script_1">
+    			<%for(var i = 0; i < sc_list.length && i < 5; i++){%>
+    				<div onclick="openAttachment('<%=sc_list[i].extension%>','<%=sc_list[i].title%>','<%=sc_list[i].file_id %>');" class="res-detail clearfix ellipsis">
+    					<span class="aui-iconfont aui-icon-link"></span><%=sc_list[i].title%>
+    				</div>
+    			<%}%>
+    		</script>
+    		<div id="j_res_4" class="res display-none clearfix"></div>
+    		<script type="text/html" id="sc_script_2">
+    			<%for(var i = 5; i < sc_list.length ; i++){%>
+    				<div onclick="openAttachment('<%=sc_list[i].extension%>','<%=sc_list[i].title%>','<%=sc_list[i].file_id %>');" class="res-detail clearfix ellipsis">
+    					<span class="aui-iconfont aui-icon-link"></span><%=sc_list[i].title%>
+    				</div>
+    			<%}%>
+    		</script>
+    		<div id="j_btn_4" class="more" onclick="resDisplay(this,4)">展开</div>
+    	</div>
+    	<div id="j_blank_footer" class="blank-footer">&nbsp;</div>
+    	<div class="footer-btn">
+    		<span class="zan-content">
+    			<span id="j_zan" class="zan" onclick="saveLike(this)"></span>
+    			<span id="zan_num"></span>
+    		</span>
+		</div>
+        <script type="text/javascript" src="../../../../../script/api.js" ></script>
+        <script type="text/javascript" src="../../../../../script/base_config.js" ></script>
+        <script type="text/javascript" src="../../../../../script/plug-in/template.js" ></script>
+        <script type="text/javascript" src="../../../../../script/plug-in/base64.js" ></script>
+        <script type="text/javascript" src="../../../../../script/common/common.js" ></script>
+		<script type="text/javascript" src="../../../../../script/assembly/executeApp.js" ></script>
+		<script type="text/javascript" src="../../../../../script/assembly/scrollPicture.js"></script>
+        <script type="text/javascript" src="../../../../../script/assembly/openResource.js" ></script>
+        <script type="text/javascript" src="../../../../../script/assembly/photoBrowser.js"></script>
+    </body>
+    <script type="text/javascript">
+    	var wk_vedio_json={"image":[],"file_id":[],"title":[],"m3u8_status":[],"extension":[]};//所有微课的缩略图、播放路径、视频的预览状态、视频名称以及视频格式
+    	var BASE_URL_ACTION;
+        apiready = function() {commonSetTheme({"level":5,"type":0});
+        	BASE_URL_ACTION = $api.getStorage('BASE_URL_ACTION');
+        	$api.css($api.byId('j_blank'),"height:"+Math.floor(api.frameWidth/4*3)+'px;');
+        	getwkdsInfo();
+        	recordWkPlayRecord();
+        	isLiked();
+        };
+        /*
+		*作者:zhaoj
+		*功能:展开或者隐藏
+		*日期：20170703
+		*/
+        function resDisplay(self,type){
+        	if($api.hasCls($api.byId('j_res_'+type),'display-none')){
+        		//隐藏状态，让其显示
+        		$api.text(self, '收起');
+        		$api.removeCls($api.byId('j_res_'+type),'display-none');
+        		if(type == 4){
+        			$api.addCls($api.byId('j_res'),'pb0');
+        		}
+        	}else{
+        		//显示状态，让其隐藏
+        		$api.text(self, '展开');
+        		$api.addCls($api.byId('j_res_'+type),'display-none');
+        		if(type == 4){
+        			$api.removeCls($api.byId('j_res'),'pb0');
+        		}
+        	}
+        }
+        /*
+		*作者:zhaoj
+		*功能:获取微课详细信息
+		*日期：20170705
+		*/
+        function getwkdsInfo(){
+        	api.ajax({
+				url : $api.getStorage('BASE_URL_ACTION')+'/wkds/getwkdsInfo?random_num='+creatRandomNum()+'&id='+api.pageParam.id,
+				method : 'get',
+				timeout : 30,
+				dataType : 'json',
+				returnAll : false,		
+			}, function(ret, err) {
+				if(err) {
+					popToast('获取微课信息失败，请稍候重试');
+				} else {
+					if(ret) {
+						if(ret.success){
+							$api.text($api.byId('j_person_name'),ret.teacher_name);
+							$api.text($api.byId('zan_num'),ret.like_count+'人已赞');
+							//转义学习指导内容
+		                    ret.study_instr = Base64.decode(ret.study_instr);
+		                    //转义设计说明内容
+		                    ret.design_instr = Base64.decode(ret.design_instr);
+		                    //转义练习内容
+		                    ret.practice_instr = Base64.decode(ret.practice_instr);
+		                    showDetailData(ret);
+							getAllWkImgPlayPath(ret.sp_list);
+						}else{
+							popToast(ret.info);
+						}
+					} else {
+						popToast('获取微课信息失败，请稍候重试');
+					}
+				}
+			});
+        }
+        /*
+		*作者:zhaoj
+		*功能:获取所有微课的缩略图、播放路径、视频的预览状态、视频名称以及视频格式
+		*日期：20170705
+		*/
+		function getAllWkImgPlayPath(data){
+			var params_json={"paths":[],"captions":[]};
+            var BASE_APP_TYPE = $api.getStorage('BASE_APP_TYPE');
+            if(data.length > 0){
+                for(var i = 0; i < data.length; i++){
+                    wk_vedio_json.title.push(data[i].title);
+                    wk_vedio_json.m3u8_status.push(data[i].m3u8_status);
+                    wk_vedio_json.file_id.push(data[i].file_id);
+                    wk_vedio_json.extension.push(data[i].extension);
+                    var wk_thumb_url;//视频缩略图地址
+                    if (BASE_APP_TYPE == 1) {
+                        wk_thumb_url = url_path + BASE_THUMB_BEGIN + data[i].thumb_id.substring(0, 2) + '\/' + data[i].thumb_id + BASE_THUMB_END;
+                    } else {
+                        wk_thumb_url = $api.getStorage('BASE_URL_ACTION') + BASE_THUMB_BEGIN + data[i].thumb_id.substring(0, 2) + '/' + data[i].thumb_id + BASE_THUMB_END;
+                    }
+                    wk_vedio_json.image.push(wk_thumb_url);
+                }
+                //获取轮播图的图片路径
+                params_json.paths = wk_vedio_json.image;
+                params_json.captions = wk_vedio_json.title;
+            }else{
+                params_json.paths.push('widget://res/yy/weike/wk_default.png');
+                params_json.captions.push('当前微课没有视频文件');
+            }
+            //打开录播图
+            UIScrollPicture.open(params_json,function(flag,data){
+                openVideo(flag,data);
+            });
+		}
+		/*
+		*author:zhaoj
+		*function:播放视频文件
+		*date：20170706
+		*/
+		function openVideo(flag,data){
+			if(data.status){
+				if(data.eventType == 'click'){
+					if(wk_vedio_json.file_id.length > 0){
+                        common_openResource.open(wk_vedio_json.extension[data.index],wk_vedio_json.file_id[data.index],wk_vedio_json.title[data.index],wk_vedio_json.m3u8_status[data.index],api.winName,'reBackType("voice")','back();','');
+                    }else{
+                        popToast('当前微课没有视频文件');
+                    }
+				}
+			}
+		}
+		/*
+		*作者:zhaoj
+		*功能:展示设计说明、学习指导、联系以及素材
+		*日期：20170706
+		*/
+		function showDetailData(data){
+			//设计说明
+			showTeacherExplain('j_design_instr',data.design_instr);
+			commonAddOnceHtml('j_res_1','design_script',data);
+			if(data.design_list.length == 0){
+				$api.addCls($api.byId('j_btn_1'), 'display-none');
+			}
+			//学习指导
+			showTeacherExplain('j_study_instr',data.study_instr);
+			commonAddOnceHtml('j_res_2','study_script',data);
+			if(data.study_list.length == 0){
+				$api.addCls($api.byId('j_btn_2'), 'display-none');
+			}
+			//练习
+			showTeacherExplain('j_practice_instr',data.practice_instr);
+			commonAddOnceHtml('j_res_3','practice_script',data);
+			if(data.practice_list.length == 0){
+				$api.addCls($api.byId('j_btn_3'), 'display-none');
+			}
+			//素材
+			commonAddOnceHtml('j_res','sc_script_1',data);
+			commonAddOnceHtml('j_res_4','sc_script_2',data);
+			if(data.sc_list.length < 6 && data.sc_list.length > 0){
+				$api.addCls($api.byId('j_btn_4'), 'display-none');
+			}else if(data.sc_list.length == 0){
+				$api.html($api.byId('j_res'), '<div style="color:#333;">老师还没有留素材哦~</div>');
+				$api.addCls($api.byId('j_btn_4'), 'display-none');
+			}
+		}
+		/*
+		*作者:zhaoj
+		*功能:将信息展示到对应id元素中
+		*日期：20170706
+		*/
+		function showTeacherExplain(id,text){
+			if(isEmptyString(text)){
+				$api.html($api.byId(id), '老师还没有添加说明信息哦~');
+			}else{
+				$api.html($api.byId(id), text);
+			}
+		}
+		/*
+		*作者:zhaoj
+		*功能:将信息展示到对应id元素中
+		*日期：20170706
+		*/
+		function openAttachment(format, file_name, file_id){
+			common_openResource.open(format,file_id,file_name,"",api.winName,'reBackType("voice")','back();','');
+		}
+		/*
+		*作者:zhaoj
+		*功能:记录微课播放信息
+		*日期：20170706
+		*/
+		function recordWkPlayRecord(){
+			var class_id;//班级id
+			$api.getStorage("identity") == 5 ? class_id = "":class_id = $api.getStorage("class_id");
+			api.ajax({
+				url : $api.getStorage('BASE_URL_ACTION')+'/ypt/wkds/recordWkPlayRecord',
+				method : 'post',
+				timeout : 30,
+				dataType : 'json',
+				returnAll : false,
+				data : {
+					values : {
+						"random_num" : creatRandomNum(),
+					    "class_id" : class_id,
+					    "identity_id":$api.getStorage("identity"),
+					    "person_id":$api.getStorage("person_id"),
+					    "wkds_id":api.pageParam.id
+					}
+				},
+				headers : {
+					'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+				}		
+			}, function(ret, err) {
+			});
+		}
+		/*
+		*作者:zhaoj
+		*功能:是否点赞
+		*日期：20170706
+		*/
+		function isLiked(){
+			api.ajax({
+				url : $api.getStorage('BASE_URL_ACTION')+'/ypt/common/like/isLiked',
+				method : 'post',
+				timeout : 30,
+				dataType : 'json',
+				returnAll : false,
+				data : {
+					values : {
+						"random_num" : creatRandomNum(),
+					    "target_id" : api.pageParam.wkds_id_int,
+					    "target_id_char":  "",
+					    "target_type" : 4
+					}
+				},
+				headers : {
+					'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+				}		
+			}, function(ret, err) {
+				if(err){
+				}else{
+					if(ret.success){
+						if(ret.isLiked){
+							$api.addCls($api.byId('j_zan'), 'yizan');
+						}
+					}else{
+					}
+				}
+			});
+		}
+		/*
+		*作者:zhaoj
+		*功能:点赞
+		*日期：20170706
+		*/
+		function saveLike(self){
+			if(!$api.hasCls(self,'yizan')){
+				showSelfProgress('点赞中...');
+				api.ajax({
+					url : $api.getStorage('BASE_URL_ACTION')+'/ypt/common/like/saveLike',
+					method : 'post',
+					timeout : 30,
+					dataType : 'json',
+					returnAll : false,
+					data : {
+						values : {
+							"random_num" : creatRandomNum(),
+						    "target_id" : api.pageParam.wkds_id_int,
+						    "target_id_char":  "",
+						    "target_type" : 4
+						}
+					},
+					headers : {
+						'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+					}		
+				}, function(ret, err) {
+					api.hideProgress();
+					if(err){
+						popToast('点赞失败');
+					}else{
+						if(ret.success){
+							popToast('点赞成功');
+							$api.addCls(self,'yizan');
+							var num = $api.text($api.byId('zan_num'));
+							num = num.substring(0,num.length-3);
+							num = num*1 + 1;
+							$api.text($api.byId('zan_num'),num+'人已赞');
+						}else{
+							popToast('点赞失败');
+						}
+					}
+				});
+			}
+		}
+    </script>
+</html>

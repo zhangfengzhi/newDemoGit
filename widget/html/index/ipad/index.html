@@ -1,0 +1,148 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<!-- html5：在创建html时为了防止页面缩放等不兼容效果，要创建个viewport  -->
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<!-- 在IOS设备上，有时会将数字转为手机号，这里也要禁止下 -->
+		<meta name="format-detection" content="telephone=no"/>
+		<title>平板-主界面</title>
+		<link rel="stylesheet" type="text/css" href="../../../css/aui/aui.css" />
+		<link rel="stylesheet" type="text/css" href="../../../css/aui_css_new/aui.css"/>
+		<link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+		
+		<link id="j_theme" rel="stylesheet" type="text/css" href="" />
+		<style>
+			.aui-bar,.topbar{min-height:95px;}
+			.title{position:absolute;right:22%;bottom:18px;width:40%;height:45px;}
+			.btn-change{height:100%;}
+			.btn-change div{height:100%;}
+			.btn-l,.btn-r,.btn-l.btn-top-active,.btn-r.btn-top-active{background-size:auto 65% !important;}
+			.left-content{display:inline-block;float:left;padding:25px 0 0 30px;}
+			.left-content .person-header{height:60px;float:left;min-width:110px;}
+			.left-content .person-header img{width:60px;height:60px;border-radius:50%;}
+			.left-content .person-header .person-name{display:inline-block;max-width:80px;height:60px;line-height:70px;padding-left:8px;}
+			.left-content .information{position:relative;float:left;width:90px;height:60px;background:url(../../../image/fun-module/ipad/information.png) center 18px no-repeat !important;background-size:43px auto !important;}
+			.left-content .information .information-count{position:absolute;right:9px;top:13px;background:#E50112;color:#fff;font-weight:400;width:22px;height:22px;line-height:23px;border-radius:50%;}
+			.win-menu{height:100%;right:45px;}
+			.sys-content{padding-top:25px;}
+			.sys-content .img{height:38px;background:url(../../../image/fun-module/ipad/sys.png) center center no-repeat !important;background-size:38px auto !important;}
+			.sys-content .text{margin-top:5px;line-height:20px;font-size:14px;}
+			.btn-top{width:50%;border:1px solid #fff;}
+			.btn-top:first-child{border-radius:5px 0 0 5px;border-right:none;}
+			.btn-top:last-child{border-radius:0 5px 5px 0;}
+			.btn-top.btn-active-top{background:#fff;}
+			.fl{float:left;}
+			.fr{float:right;}
+			.back {top:0 !important;}
+			.infor-add{position: absolute !important;top:0 !important;right:10px !important;}
+			.aui-icon-person-self{background:url(../../../image/common/add-person.png) center center no-repeat;background-size:20px auto;display:inline-block;width:25px;height:100%;}
+		</style>
+	</head>
+	<body class="index-ipad">
+		<div id="wrap">
+			<header class="aui-bar aui-bar-nav aui-bar-primary" id="aui-header">
+				<div id="cloud" class="topbar activebar clearfix">
+					<div id="back" class="back aui-hide" onclick="backIndex();">
+						<i class="aui-iconfont aui-icon-left"></i>返回
+					</div>
+					<div id="j_left" class="left-content">
+						<div class="person-header" onclick="openMyConfig();">
+							<img id="avatar_url" class="fl" onerror="this.src='../../../image/common/header.png'"  src="" />
+							<span id="j_person_name" class="person-name ellipsis"></span>
+						</div>
+						<div class="information" onclick="initInformationPadFrameGroup();">
+							<div id="hh_a" class="information-count aui-hide"></div>
+						</div>
+					</div>
+					<div id="mTitle" class="title">
+						<div id="btn_title" class="btn-change clearfix">
+							<div class="btn-l btn-top-active" tapmode onclick="changeBtnTitle('hxx_btn',0,1);" id="hxx_btn">
+							</div>
+							<div class="btn-r" tapmode onclick="changeBtnTitle('hsh_btn',1,1);" id="hsh_btn">
+							</div>
+						</div>
+					</div>
+					<div class="mTitle aui-hide" id="j_infor">
+						<div id="infor_btn_title" class="btn-title">
+							<div class="btn-top btn-active-top fl" tapmode onclick="changeInforBtnTitle('hh_btn',0,1);" id="hh_btn">
+								会话
+							</div>
+							<div class="btn-top fr" tapmode onclick="changeInforBtnTitle('txl_btn',1,1);" id="txl_btn">
+								通讯录
+							</div>
+						</div>
+					</div>
+					<div id="w_title" class="mTitle aui-hide">
+						我
+					</div>
+					<div id="tzxx_title" class="mTitle aui-hide">
+						拓展学习
+					</div>
+					<div id="j_right" class="win-menu">
+						<div class="sys-content" onclick='openSysIpad()'>
+							<div class="img">&nbsp;</div>
+							<div class="text">扫一扫</div>
+						</div>
+					</div>
+					
+					<a class="aui-btn aui-btn-primary aui-pull-right aui-hide infor-add" tapmode="" id="j_infor_add" href="javascript:openAddWindow('txl_addfriends_window');"> <span class="aui-iconfont aui-icon-person-self"></span> </a>
+				</div>
+			</header>
+			<div  class="aui-content aui-content-padded" id="message-content">
+				<p class="aui-text-center history-date"></p>
+			</div>
+		</div>
+	</body>
+	<script type="text/javascript" src="../../../script/api.js"></script>
+	<script type="text/javascript" src="../../../script/base_config.js"></script>
+	<script type="text/javascript" src="../../../script/init/init_config.js"></script>
+	<script type="text/javascript" src="../../../script/common/common.js"></script>
+	<script type="text/javascript" src="../../../script/assembly/tongjiData.js"></script>
+	<script type="text/javascript" src="../../../script/tongxunlu/txl_addfriendsgo_frame.js"></script>
+	<script type="text/javascript" src="../../../script/common/ipad/dcwjIpad_common.js" ></script>
+	<script type="text/javascript" src="../../../script/plug-in/base64.js" ></script>
+	<script type="text/javascript" src="../../../script/init/ipad/index.js"></script>
+	<script type="text/javascript" src="../../../script/common/appintentForScanner.js"></script>
+	<script type="text/javascript">
+		var param_json={"header_h":"","footer_h":"","rect_h":""};//初始化全局参数
+		var mkeyTime;//用来判断退出时间
+		var is_pad = true;//判断是ipad进入
+		var back_type = '';//返回参数
+		var is_fir_txl = 0;//判断通讯录是否第一次打开
+		var is_fir_open = true;//判断是否第一次进入页面
+		var id_fir_cshym = true;//判断是否第一次进入初始化页面
+		var from_html = '';//从哪个页面打开index
+		apiready = function() {
+			addAppintentEvent();
+			commonSetTheme({"level":3,"type":2});
+			from_html = api.pageParam.from_html;//通讯录添加好友需要的参数
+			changeTitle('index');
+			initHeight();
+			setHeaderImg();
+			var jsonPath = "widget://res/json/index_ipad.json";
+			var idy_type = $api.getStorage('idy_type');
+			commonBaseConfig(jsonPath,function(data) {
+				param_json.module = data[idy_type].module;
+				initInformationPadFrameGroup();
+			});
+			//安卓关闭
+			setBack('index');
+		}
+		/*
+		*author:zhaoj
+		*function:扫一扫判断身份
+		*date：20170413
+		*/
+		function openSysIpad(){
+			if($api.getStorage('idy_id')*1 == 0){
+				//教师
+				openModule({"win_url":"","type":"7","code":"hbg_rcbg_sys"});
+			}else if($api.getStorage('idy_id')*1 == 1){
+				//学生
+				openModule({"win_url":"","type":"7","code":"hsh_sys"});
+			}
+			
+		}
+	</script>
+</html>

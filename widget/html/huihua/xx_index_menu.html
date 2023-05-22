@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+		<!-- html5：在创建html时为了防止页面缩放等不兼容效果，要创建个viewport  -->
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<!-- 在IOS设备上，有时会将数字转为手机号，这里也要禁止下 -->
+		<meta name="format-detection" content="telephone=no"/>
+		<title>消息列表菜单</title>
+		<link rel="stylesheet" type="text/css" href="../../css/aui/aui.css" />
+		<link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+    <style>
+        html, body {
+            background-color: transparent;
+        }
+
+        nav {
+            background: #DDDDDD;
+        }
+
+        .tab-content {
+            display: -webkit-box;
+
+        }
+
+        .tab-content li {
+            width: 33%;
+            border-right: 1px solid #C2C2C2;
+            text-align: center;
+            padding: 20px 0 10px;
+            background-size: 30px;
+            background-repeat: no-repeat;
+            background-position-x: center;
+            background-position-y: 5px;
+        }
+
+        .tab-content li span {
+            margin: 15px 10px 0 10px;
+            color: #9A9A9A;
+        }
+
+        /*.search {
+            background-image: url("../image/dock_icon_search@2x.png");
+        }
+
+        .user {
+            background-image: url("../image/dock_icon_my_tuniu@2x.png");
+        }
+
+        .groupchat {
+            background-image: url("../image/dock_icon_groupchat@2x.png");
+        }*/
+
+    </style>
+</head>
+<body onclick="closeFrame()" class="huihua-commont">
+<nav>
+    <ul class="tab-content">
+        <li class="search" tapmode="" onclick=""><span>系统消息</span></li>
+        <li class="user" tapmode="" onclick=""><span>通知公告</span></li>
+        <li class="groupchat" tapmode="" onclick=""><span>任务列表</span></li>
+    </ul>
+</nav>
+<script>
+    function closeFrame() {
+       api.closeFrame();
+    }
+</script>
+</body>
+<script type="text/javascript" src="../../script/api.js"></script>
+		<script type="text/javascript" src="../../script/plug-in/template.js"></script>
+<script type="text/javascript">
+	apiready = function(){
+		commonSetTheme({"level":2,"type":0});
+	};
+</script>
+</html>

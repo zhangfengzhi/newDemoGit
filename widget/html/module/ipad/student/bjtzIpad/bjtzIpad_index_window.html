@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+		<title>班级通知</title>
+		<link rel="stylesheet" type="text/css" href="../../../../../css/aui/aui.css"/>
+	    <link rel="stylesheet" type="text/css" href="../../../../../css/module/ipad/left-right-layout.css"/>
+    	<link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+		<style>
+			.win-right{width:55%;}
+		</style>
+	</head>
+	<body id="j_body" class="left-layout-body common-ipad-bjtzIpadstu">
+		<div id="wrap">
+			<header class="aui-bar aui-bar-nav aui-bar-primary" id="aui-header">
+				<div id="cloud" class="topbar activebar">
+					<div id="back" class="back" onclick="back();" tapmode="">
+						<i class="aui-iconfont aui-icon-left"></i>返回
+					</div>
+					<div  class="mTitle" id="mTitle">
+						班级通知
+					</div>
+					<div class="win-menu">
+					</div>
+				</div>
+			</header>
+		</div>
+		<div id="j-right" class="win-right bjtz-right fr"></div>
+	</body>
+	<script type="text/javascript" src="../../../../../script/api.js"></script>
+	<script type="text/javascript" src="../../../../../script/base_config.js" ></script>
+	<script type="text/javascript" src="../../../../../script/common/common.js"></script>
+	<script type="text/javascript" src="../../../../../script/plug-in/template.js" ></script>
+	<script type="text/javascript" src="../../../../../script/assembly/tongjiData.js"></script>
+	<script type="text/javascript" src="../../../../../script/plug-in/base64.js" ></script>
+	<script type="text/javascript">
+		var back_type ="index";//返回参数
+		apiready = function(){
+			commonSetTheme({"level":5,"type":0});
+			commonIosAuiHeader();//定位header位置，留出上面电池等空隙，苹果需要
+			commonBackForAndroid();//安卓关闭
+			$api.css($api.byId('j_left_tag'),'top:'+api.pageParam.header_h+'px;max-height:'+(api.winHeight*1-api.pageParam.header_h*1)+'px;height:'+(api.winHeight*1-api.pageParam.header_h*1)+'px;');//设置左侧导航的样式
+			openIndexFrame();
+			commonOpenTjData($api.getStorage("identity")+'_'+api.winName);
+		};
+		/*
+		*author:zhaoj
+		*function:返回页面
+		*date：20161220
+		*/
+		function back() {
+			switch(back_type) {
+				case 'index':
+				  	commonCloseTjData($api.getStorage("identity")+'_'+api.winName);
+					api.closeWin();
+					break;
+				case 'detail':
+					commonExecScript('bjtzIpad_index_window','bjtzIpad_index_frame','isShowBoxShow(0);',1);//隐藏虚线
+				  	commonCloseFrame('bjtzIpad_detail_frame');
+				  	reBackType('index');
+					break;
+				case 'picture_detail':
+				  	reBackType('detail');
+					break;
+			}
+		}
+		/**
+		 * 重置从哪个页面退出
+		 * 周枫
+		 * 2015.12.17
+		 */
+		function reBackType(type) {
+			switch(type) {
+				//如果列表页面退出
+				case 'index':
+					back_type = 'index';
+					break;
+				//如果详情页面退出
+				case 'detail':
+					back_type = 'detail';
+					break;
+				//如果打开图片退出
+				case 'picture_detail':
+					back_type = 'picture_detail';
+					break;
+			}
+		}
+		/*
+		*author:zhaoj
+		*function:打开详情页面
+		*date：20170911
+		*/
+		function openDetailFrame(oparam){
+			reBackType('detail');
+			var header_h = api.pageParam.header_h;//顶部高度
+			var frame_w = Math.floor(api.winWidth*0.55);
+			var frame_x = Math.floor(api.winWidth*0.45);
+			pageParamJson={"header_h":header_h,'x':frame_x,'w':frame_w,"oparam":oparam};//打开frame页面json数据
+			//打开frame页面
+			commonOpenFrame("bjtzIpad_detail_frame","bjtzIpad_detail_frame.html",header_h,false,false,"rgba(0,0,0,0)",pageParamJson);
+			commonExecScript('bjtzIpad_index_window','bjtzIpad_index_frame','isShowBoxShow(1);',1);//显示虚线
+		}
+		/*
+		*author:zhaoj
+		*function:打开列表页面
+		*date：20170912
+		*/
+		function openIndexFrame(){
+			var header_h = api.pageParam.header_h;//顶部高度
+			var frame_w = Math.floor(api.winWidth*0.45);
+			var frame_x = 0;
+			pageParamJson={"header_h":header_h,'w':frame_w,"x":frame_x};//打开frame页面json数据
+			//打开frame页面
+			commonOpenFrame("bjtzIpad_index_frame","bjtzIpad_index_frame.html",header_h,false,false,"rgba(0,0,0,0)",pageParamJson);
+		}
+	</script>
+</html>

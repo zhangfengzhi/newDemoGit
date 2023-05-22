@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>圈子</title>
+    <link rel="stylesheet" type="text/css" href="../../../../../css/aui_css_new/aui.css" />
+    <link rel="stylesheet" type="text/css" href="../../../../../css/module/common/img-auto.css" />
+    <link rel="stylesheet" type="text/css" href="../../../../../css/module/iphone/init-iphone.css" />
+    <link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+    <style>
+    	/*.quanzi-title-middle{
+    		color: #7090C5;
+    		font-size: 20px;
+    	}*/
+    	.fj-div{
+			display: flex;
+			
+			align-items: center;
+			
+			-webkit-flex-wrap: wrap;
+			flex-wrap: wrap;
+			
+		}
+		.fj-div .aui-img{
+			padding: 10px;
+		}
+		.aui-img-object{
+			max-width: 100% !important;
+		}
+    </style>
+</head>
+<body id="j_body" class="common-init init-iphone-body">
+	<div id="j_top" style="height:0px; overflow:hidden"></div>
+	<div id="no_quanzi" class="no-quanzi" style="display:none">暂无圈子</div>
+	<div id="quanzi_div" style="display:block">
+		<script id="quanzi_script" type="text/html">
+			<div class="aui-content-padded" style="margin:0">
+				<%for(var i=0;i<list.length;i++){%>
+					<%if(list[i].is_del){%>
+					<%}else{%>
+						<ul id="<%=list[i].id%>" class="quzi_ul">
+						    <li class="aui-list-view"
+						    	onclick="openXQ(<%=list[i].id%>,<%=list[i].expand_id%>,'<%=list[i].title%>','<%=list[i].avatar_fileid%>',0,'<%=category_id%>','<%=list[i].person_name%>','<%=list[i].create_time.substring(0,16)%>',<%=list[i].person_id%>,<%=list[i].identity_id%>,'<%=list[i].loging_name%>','<%=list[i].curPage%>');"
+						    	style="margin-bottom:0;border-bottom:1px solid #e0e0e0">
+						        <div class="aui-user-view-cell aui-img quanzi_header" >						
+						            <img class="aui-img-object aui-pull-left"
+						            onclick="getPersonData(event,'<%=list[i].person_name%>','<%=list[i].loging_name%>','<%=list[i].avatar_fileid%>','<%=list[i].person_id%>','<%=list[i].identity_id%>')"
+						             style="border-radius:8px" onerror="this.src='../../../../../image/common/header.png'" src='<%=list[i].avatar_fileid%>'>
+						            <div class="aui-img-body">
+						                <span class="person-name"
+						                onclick="getPersonData(event,'<%=list[i].person_name%>','<%=list[i].loging_name%>','<%=list[i].avatar_fileid%>','<%=list[i].person_id%>','<%=list[i].identity_id%>')"
+						                ><%=list[i].person_name%></span>
+						                <!--<p class='aui-ellipsis-1'><em><%=list[i].create_time.substring(0,16)%></em></p>-->
+						            </div>
+						        </div>
+						        <div class="quanzi-content-div">
+							        <%if(list[i].title){%>
+							        	<div class="content">
+								       		
+								       		<div class="ellipsis quanzi-title-middle"><%=list[i].title%></div>
+								       		
+								        </div>
+							        <%}%>
+							        <%if(list[i].overview){%>
+							        	<div class="quanzi-content">
+								        <%=list[i].overview%>
+								        </div>
+							        <%}%>
+						        </div>
+						        <%if(list[i].thumb_id != ""){%>							        
+									<div class="fj-div">
+							            <%for(var j=0;j<list[i].thumb_ids.length;j++){%>
+							            	<%if(list[i].thumb_ids.length > 9 && j>8){%>
+							            	<%}else{%>
+							            		<%if(list[i].open_thumbs_id[j] != -1){%>
+							            		<div class="aui-img" onclick="openImage(event,'<%=list[i].open_thumbs_id[j] %>');">
+									                <img class="aui-img-object" onerror="this.src='../../../../../image/common/tpsx.png'" src="<%=list[i].thumb_ids[j]%>" style="height:80px">
+									            </div>
+									            <%}%>
+							            	<%}%>								      
+							            <%}%>
+							         </div>
+						        <%}%>
+						        	<div class="content-border"></div>
+						        <div onclick="">
+						       		<div class='aui-ellipsis-1'><em><%=list[i].create_time.substring(0,16)%></em></div>
+						       		<div class="pinglun-liulan-dianzan-back ellipsis">
+						       			评论<span id="comment_num_<%=list[i].id%>"><%=list[i].comment_num%></span>次 浏览<span id="browse_num_<%=list[i].id%>"><%=list[i].browse_num%></span>次 点赞<span id="praise_count_<%=list[i].id%>"><%=list[i].praise_count%></span>次
+						       		</div> 
+								</div>
+								 <div style="height:30px"></div>  	
+						    </li>
+						</ul>
+					<%}%>
+				<%}%>	
+			</div>	
+		</script>
+	</div>
+</body>
+<script type="text/javascript" src="../../../../../script/api.js"></script>
+<script type="text/javascript" src="../../../../../script/base_config.js" ></script>
+<script type="text/javascript" src="../../../../../script/plug-in/template.js" ></script>
+<script type="text/javascript" src="../../../../../script/plug-in/base64.js" ></script>
+<script type="text/javascript" src="../../../../../script/common/common.js"></script>
+<script type="text/javascript" src="../../../../../script/common/init_common.js" ></script>
+<script type="text/javascript" src="../../../../../script/plug-in/echo.min.js" ></script>
+<script type="text/javascript" src="../../../../../script/assembly/photoBrowser.js"></script>
+<script type="text/javascript" src="../../../../../script/init/init_config.js"></script>
+<script type="text/javascript" src="../../../../../script/plug-in/base64.js" ></script>
+<script type="text/javascript" src="../../../../../script/module/iphone/work/quanzi_index.js" ></script>
+<script type="text/javascript" src="../../../../../script/init/iphone/init_quanzi.js" ></script>
+<script type="text/javascript">
+	apiready = function(){
+		header_h = api.pageParam.header_h;
+		initData(1,null,0);
+		commonScrollBottomReload();
+		commonRefreshHeaderInfo();
+	};
+	
+	
+</script>
+</html>

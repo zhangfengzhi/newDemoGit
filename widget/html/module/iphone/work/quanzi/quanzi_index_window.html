@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>圈子</title>
+    <link rel="stylesheet" type="text/css" href="../../../../../css/aui_css_new/aui.css"/>
+		<link rel="stylesheet" type="text/css" href="../../../../../css/aui/aui.css" />
+    <link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+    <link id="j_theme" rel="stylesheet" type="text/css" href="" />
+    <style>
+    	.mTitle{
+    		width: calc(100% - 160px);
+    		padding-left: 80px;
+    	}
+    </style>
+</head>
+<body>
+	<div id="wrap">
+		<header class="aui-bar aui-bar-nav aui-bar-primary" id="aui-header">
+			<div id="cloud" class="topbar activebar">
+				<div id="back" class="back" onclick="back();" tapmode="">
+					<i class="aui-iconfont aui-icon-left"></i>返回
+				</div>
+				<div class="mTitle" id="mTitle">
+					
+				</div>
+				<a id='j_quanzi_menu' class="aui-iconfont aui-icon-menu aui-pull-right back" onclick="openScreenWindow();"></a>
+				<a id='j_quanzi_add' class="aui-pull-right aui-iconfont aui-icon-add back" onclick="clickAddQuanzi()"></a>
+			</div>
+		</header>
+	</div>
+</body>
+<script type="text/javascript" src="../../../../../script/api.js" ></script>
+<script type="text/javascript" src="../../../../../script/base_config.js" ></script>
+<script type="text/javascript" src="../../../../../script/common/common.js"></script>
+<script type="text/javascript" src="../../../../../script/init/common/quanzi/init_getClassify.js"></script>
+<script type="text/javascript">
+	var header_h;
+	var back_type = 'index';
+	apiready = function() {
+		commonSetTheme({"level":5,"type":0});
+		commonSetWindowName('圈子');
+		//安卓关闭
+		commonBackForAndroid();
+		//定位header位置，留出上面电池等空隙，苹果需要
+		commonIosAuiHeader();
+		
+		header_h = api.pageParam.header_h;
+		var param = {
+			"header_h": header_h,
+		} 
+		commonOpenFrame("quanzi_index_frame","quanzi_index_frame.html",api.pageParam.header_h, true, false,"#ffffff",param);
+	};
+	/**
+	 * 返回应用页面
+	 * 周枫
+	 * 2015.10.11
+	 */
+	function back() {
+		switch(back_type){
+			case 'index':
+				api.closeWin();
+				break
+			case 'picture' ://图片预览
+				
+				back_type = "index";
+				break
+		}
+		
+	}
+	
+	function reBackType(type){
+		back_type = type;
+	}
+	
+	function openScreenWindow(){
+		var param = {
+			"header_h": header_h,
+		};
+		commonExecScript(api.winName,'quanzi_index_frame','openScreenWindow('+JSON.stringify(param)+')',1)
+	}
+	
+	function openAddQuanziWindow(){
+		var pageParamJson={"header_h":header_h,};
+		commonExecScript(api.winName,'quanzi_index_frame','openAddQuanziWindow('+JSON.stringify(pageParamJson)+');',1);
+	}
+</script>
+</html>

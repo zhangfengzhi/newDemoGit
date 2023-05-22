@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html>
+<head>
+	 <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,initial-scale=1.0,width=device-width"/>
+    <title>APP</title>
+    <link rel="stylesheet" type="text/css" href="../../../css/training/jsyx/api.css" />
+    <link rel="stylesheet" type="text/css" href="../../../css/training/jsyx/common.css" />
+    <style>
+    	/* 条目总体样式 */
+		.item {display: table; width:100%; background-color:#fff;border-bottom: 1px solid #d9d9d9;} 
+		.item .itemlogo , .item .itemshelf {display: table-cell; vertical-align: middle;}
+		.item .userlogo{width:100%; height:115px; background-color:#fff; border: 1px #5e554d solid; border-radius:5px;margin-left:40px;}
+		.item .itemlogo {width: 60px;  margin-left: 30px;}
+		.item .itemlogo img  {width: 40px; margin-left:10px; margin-right: 10px; }
+        .item .itemshelf .shelfinfo01 {font-size: 16px;color: #000;}
+		/* 条目特例 */
+		.login-web{height:70px;width:100%; margin: 30px 0; display: block;} 
+		.login-web .login { padding-left: 10px;}
+		.login {background-color:#FFFFFF;}
+		.login .itemlogo {width:80px;}
+		.login .userlogo{width:65px; height:65px; float: left;}
+		.login .userlogo img {width:65px; height:65px; border-radius:10px; /*border: 1px solid #d9d9d9;*/}
+		.login .itemshelf .shelfinfo01 {font-size: 14px; color: #000;}
+		.login .itemshelf .shelfinfo02 {font-size: 14px;color: #000; margin-top: 5px;}
+        .login .shelfinfo03{float: left;  height:65px; color: #000; font-size: 18px; margin-left:15px;margin-top:15px; text-align: left;}
+        .login .shelfinfo03 p{ color: #000;font-size: 14px;  margin-top:5px; text-align: left;}
+        .itemlogo-left{ float: right; }
+        .itemlogo-left img{width: 16px; height: 16px; margin-right: 15px; margin-top: 18px;}
+		/* 底部美食相机 */
+		.foodphone {position: absolute; bottom: 0;border-top: 1px solid #d9d9d9;height:80px;}
+		.foodphone .itemlogo {width: 80px;}
+		.foodphone .itemlogo img  {margin-left:5px;width: 60px;}
+		/*退出*/
+		.exit{ background-color: #685e55;}
+		/* 悬停样式 */
+		.itemhover {background-color: #797068;}
+		.background{background-color:#efeff4; height: 15px;}
+    </style>
+</head>
+<body>
+	<div class="login-web">
+		<div class="login"  onclick="" id="topbar">
+			<div class="userlogo"><img id="touxiang" class="userlogoimg" src="../../../image/training/jsyx/m_drawer_icon.png" alt="" onclick="toLogin();"></div>
+			<div style="float:left;width:280px;">
+				<div class="shelfinfo03" id="person"><div style="word-break:normal;display:block;white-space:pre-wrap;overflow:hidden;" id="name"></div><div style="word-break:normal;display:block;white-space:pre-wrap;overflow:hidden;"><p id="jigou"></p></div></div>
+			</div>
+		</div>
+	</div>
+	<div class="background"></div>
+	<div class="item"  onclick="openNewWin('mycourse_window');">
+		<div class="itemlogo"><img src="../../../image/training/jsyx/menu_icon_home.png" alt=""></div>
+		<div class="itemshelf">
+			<div class="shelfinfo01">我的线上课程</div>
+		</div>
+		<div  class="itemlogo-left"><img src="../../../image/training/jsyx/list-ico.png" alt=""></div>
+	</div>
+	<div class="item"  onclick="openNewWin('learnedcourse_window');">
+		<div class="itemlogo"><img src="../../../image/training/jsyx/menu_icon_order_list.png" alt=""></div>
+		<div class="itemshelf">
+			<div class="shelfinfo01">已学线上课程</div>
+		</div>
+		<div  class="itemlogo-left"><img src="../../../image/training/jsyx/list-ico.png" alt=""></div>
+	</div>
+	<div class="item"  onclick="openNewWin('myScore');">
+		<div class="itemlogo"><img src="../../../image/training/jsyx/menu_icon_invitation.png" alt=""></div>
+		<div class="itemshelf">
+			<div class="shelfinfo01">我的成绩</div>
+		</div>
+		<div  class="itemlogo-left"><img src="../../../image/training/jsyx/list-ico.png" alt=""></div>
+	</div>
+	<div class="item"  onclick="openNewWin('zzxx_window');">
+		<div class="itemlogo"><img src="../../../image/training/jsyx/menu_icon_gift.png" alt=""></div>
+		<div class="itemshelf">
+			<div class="shelfinfo01">自主学习</div>
+		</div>
+		<div  class="itemlogo-left"><img src="../../../image/training/jsyx/list-ico.png" alt=""></div>
+	</div>
+	<div class="item"  onclick="openNewWin('zzxxtj_window');">
+		<div class="itemlogo"><img src="../../../image/training/jsyx/menu_icon_about.png" alt=""></div>
+		<div class="itemshelf">
+			<div class="shelfinfo01">自主学习情况</div>
+		</div>
+		<div  class="itemlogo-left"><img src="../../../image/training/jsyx/list-ico.png" alt=""></div>
+	</div>
+	<div id="item6" class="item" style="display:none;" onclick="openNewWin('notice_window');">
+		<div class="itemlogo"><img src="../../../image/training/jsyx/yx_tzgg.png" alt=""></div>
+		<div class="itemshelf">
+			<div class="shelfinfo01">通知公告</div>
+		</div>
+		<div  class="itemlogo-left"><img src="../../../image/training/jsyx/list-ico.png" alt=""></div>
+	</div>
+	<div id="item7" class="item"  onclick="openNewWin('xxcourse_window');">
+		<div class="itemlogo"><img src="../../../image/training/jsyx/yx_xxkc.png" alt=""></div>
+		<div class="itemshelf">
+			<div class="shelfinfo01">我的线下课程</div>
+		</div>
+		<div  class="itemlogo-left"><img src="../../../image/training/jsyx/list-ico.png" alt=""></div>
+	</div>
+	<div id="item8" class="item" style="display: none;" onclick="openScanner();">
+		<div class="itemlogo"><img src="../../../image/training/jsyx/yx_smqd.png" alt=""></div>
+		<div class="itemshelf">
+			<div class="shelfinfo01">扫码签到</div>
+		</div>
+		<div  class="itemlogo-left"><img src="../../../image/training/jsyx/list-ico.png" alt=""></div>
+	</div>
+	<div class="item"  onclick="openNewWin('xxhomework_window');">
+		<div class="itemlogo"><img src="../../../image/training/jsyx/yx_wdzy.png" alt=""></div>
+		<div class="itemshelf">
+			<div class="shelfinfo01">我的检测</div>
+		</div>
+		<div  class="itemlogo-left"><img src="../../../image/training/jsyx/list-ico.png" alt=""></div>
+	</div>
+	<div class="item" style="display: none;"  onclick="openNewWin('wjdc_window');">
+		<div class="itemlogo"><img src="../../../image/training/jsyx/ico-wjdc.png" alt=""></div>
+		<div class="itemshelf">
+			<div class="shelfinfo01">问卷调查</div>
+		</div>
+		<div  class="itemlogo-left"><img src="../../../image/training/jsyx/list-ico.png" alt=""></div>
+	</div>
+	<div id="item2" class="item"  style="display: none;"  onclick="openNewWin('zscx_window');">
+		<div class="itemlogo"><img src="../../../image/training/jsyx/ico-zsck.png" alt=""></div>
+		<div class="itemshelf">
+			<div class="shelfinfo01">证书查询</div>
+		</div>
+		<div  class="itemlogo-left"><img src="../../../image/training/jsyx/list-ico.png" alt=""></div>
+	</div>
+	<div id="item8" class="item"  style="display: none;"  onclick="openNewWin('zypj_window');">
+		<div class="itemlogo"><img src="../../../image/training/jsyx/ico-zypj.png" alt=""></div>
+		<div class="itemshelf">
+			<div class="shelfinfo01">检测评分</div>
+		</div>
+		<div  class="itemlogo-left"><img src="../../../image/training/jsyx/list-ico.png" alt=""></div>
+	</div>
+	<div id="item9" class="item"   onclick="openNewWin('xfrd_window');">
+		<div class="itemlogo"><img src="../../../image/training/jsyx/ico-xfrd.png" alt=""></div>
+		<div class="itemshelf">
+			<div class="shelfinfo01">学分认定</div>
+		</div>
+		<div  class="itemlogo-left"><img src="../../../image/training/jsyx/list-ico.png" alt=""></div>
+	</div>
+	<div id="item10" class="item"  style="display: none;" onclick="openNewWin('xxcourse_qdqk_window');">
+		<div class="itemlogo"><img src="../../../image/training/jsyx/yx_qd.png"  alt=""></div>
+		<div class="itemshelf">
+			<div class="shelfinfo01">签到情况</div>
+		</div>
+		<div  class="itemlogo-left"><img src="../../../image/training/jsyx/list-ico.png" alt=""></div>
+	</div>
+	<div id="item11" class="item"  style="display:none;" onclick="openNewWin('zhibo_index_window');">
+		<div class="itemlogo"><img src="../../../image/training/jsyx/yx_zhibo.png"  alt=""></div>
+		<div class="itemshelf">
+			<div class="shelfinfo01">研修直播</div>
+		</div>
+		<div  class="itemlogo-left"><img src="../../../image/training/jsyx/list-ico.png" alt=""></div>
+	</div>
+</body>
+<script type="text/javascript" src="../../../script/api.js"></script>
+<script type="text/javascript" src="../../../script/base_config.js"></script>
+<script type="text/javascript" src="../../../script/training/jsyx/constant.js"></script>
+<script type="text/javascript" src="../../../script/training/jsyx/menu_frame1.js"></script>
+</html>

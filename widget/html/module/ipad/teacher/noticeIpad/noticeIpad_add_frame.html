@@ -1,0 +1,1057 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+        <title>发布通知</title>
+        <link rel="stylesheet" type="text/css" href="../../../../../css/aui/aui.css"/>
+        <link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+        <style>
+            body {background: #F8F7F3;color: #666666;}
+            .bgf {background: #ffffff;}
+            .mb10 {margin-bottom: 10px !important;}
+            .common-name .name {min-width: 70px;display: inline-block;float: left;line-height: 45px;font-size: 16px;color:#141414;padding-top:4px;}
+            .common-name .name font {font-size: 13px;color: #ABABAB;}
+            .plr15 {padding: 0 15px;}
+            .plrtb {padding: 15px;}
+            .add-img {padding: 15px 20px 10px 20px;}
+            .aui-btn-block {padding: 8px 0;margin-bottom: 0;}
+            .manage {display: inline-block;float: right;color: #0062CC;font-size: 14px;line-height: 45px;padding-left:3px;}
+            .manage a{margin-right:-5px;}
+            .clearfix:after {content: ' ';display: block;clear: both;visibility: hidden;line-height: 0;height: 0;}
+            .shanchu {position: absolute;top: 25px;right: 30px;}
+            .mr4 {margin-right: 4%;}
+            input[type="text"], textarea {margin-bottom: 0 !important;width: 100%;line-height: 20px;padding: 12px 15px 6px 15px;border: 0;border-radius: 0px;}
+            .aui-iconfont {color: #666666;}
+            .shadow {position: absolute;left: 0;top: 0;width: 100%; height: 100%;z-index: -1;   background: #000000;opacity: 0;}
+            .question-file {padding: 10px 15px;}
+            .question-file dl {position: relative;width: 18%;display: inline-block;text-align: center;float: left;margin-right: 2.5%;   }
+            .question-file dl dd {position: absolute;z-index: 1px;top: -10px;right: -10px;width: 25px;height: 25px;text-align: center;line-height: 30px;}
+            .question-file dl dd img {width: 13px;height: 13px;}
+            .question-file dl.mr0 {margin-right: 0;}
+            .question-file dl img {width: 100%;}
+            .question-file dl dt.add-img-btn {border-radius: 8px;border: 2px solid #C4C4C4;}
+            .question-file dl .img {border-radius: 8px;border: 2px solid #C4C4C4;}
+            .question-file dl .img img {border-radius: 6px;}
+            .add-img .aui-iconfont {float: none;}
+            i.aui-iconfont {color: #C4C4C4;font-size: 23px;font-weight: bolder;}
+            /* 设置条目 */
+            .bb{border-bottom:1px solid #efefef;}
+            .bt{border-top:1px solid #efefef;}
+            .hr{height:10px;}
+            .bgf{background:#ffffff;}
+            input[type="text"]{padding-left:0;height:45px;}
+            .common-content{display:inline-block;width:65%;line-height:47px;float:right;text-align:right;}
+            .ellipsis{white-space: nowrap;overflow: hidden;text-overflow: ellipsis;}
+            .aui-switch{margin-top:10px;}
+            select{margin-bottom:0;border:none;height:45px;padding:0;}
+            .common-btn {width:100%;}
+            .fujian-ul{width:100%;margin-bottom:10px;padding:0 15px;}
+            .fujian-ul li{width:100%;margin-top:10px;max-width:100%;color:#00f;background:#eaf6fd;padding:5px;}
+            .fujian-div{background:#fff;}
+            .notice-title{padding:5px 15px;border-bottom:1px solid #efefef}
+            .notice-title span{color:#f00}
+            .common-content-name{width:65%;max-width:65%;line-height:47px;float:right;text-align:right;}
+        </style>
+    </head>
+    <body>
+    <body id="body" class="common-iphone-notice">
+        <div id="j_shadow" class="shadow"></div>
+        <!--通知标题-->
+        <div class="common-name bgf bb plr15 clearfix ">
+            <a class="aui-iconfont name">标题</a>
+            <div style="float:left;"><input oninput="commonRemoveExpression(this)" id="article_title" class="name-input" type="text" placeholder="最多支持60字符（必填）" maxlength ='60' /></div>
+        </div>
+        <!--//通知标题结束-->
+        <!--类型-->
+        <div class="common-name bb bgf plr15 clearfix" onclick="selectJB();">
+            <a class="aui-iconfont name">级别</a>
+            <div class="manage">
+                <a class="aui-iconfont aui-icon-right"></a>
+            </div>
+            <span id="j_select_jb" class="common-content" jbID=1>日常</span>
+        </div>
+        <!--//类型-->
+        <!--权限开始-->
+        <div class="common-name bb bgf plr15 clearfix " onclick="openPersonWindow();">
+            <a class="aui-iconfont name">接收人</a>
+            <div class="manage">
+                <a class="aui-iconfont aui-icon-right"></a>
+            </div>
+            <span id="j_select_person" class="common-content-name"></span>
+        </div>
+        <div class="hr bb"></div>
+        <!--要求签收回执-->
+        <div class="common-name bb bgf plr15 clearfix ">
+            <a class="aui-iconfont name">要求签收回执</a>
+            <input oninput="commonRemoveExpression(this)" id="j_receipt" type="checkbox" class="aui-switch aui-pull-right">
+        </div>
+        <!--//要求签收回执-->
+        <!--同步到学校空间-->
+        <div class="common-name bb bgf plr15 clearfix ">
+            <a class="aui-iconfont name">同步到本单位空间</a>
+            <input oninput="commonRemoveExpression(this)" id="j_public" type="checkbox" class="aui-switch aui-pull-right">
+        </div>
+        <!--//阅读人-->
+        <!--请假事由内容-->
+        <div class="hr bb"></div>
+        <div class="content bgf clearfix" id="j_content_div">
+            <textarea id="j_content" class="wz-textarea bgf" rows="5" onscroll="this.rows++;" placeholder="请输入内容（必填）"></textarea>
+            <div id="j_files" class="question-file clearfix">
+                <dl id="j_add_btn" class="mr0" onclick="openAddFilesOpn()">
+                    <dt class="add-img-btn">
+                        <i class="aui-iconfont aui-icon-camera"></i>
+                    </dt>
+                    <dd></dd>
+                </dl>
+            </div>
+        </div>
+        
+        <!-- 附件 -->
+        <div class="hr bb"></div>
+        <div id="fujian" class="aui-hide fujian-div">
+           <div class="notice-title aui-iconfont name">附件：<span>(不支持修改)</span></div>
+           <ul id="fujian_ul" class="fujian-ul">
+              
+           </ul>
+        </div>
+        <div class="hr bb"></div>
+    </body> 
+    <script type="text/javascript" src="../../../../../script/api.js"></script>
+    <script type="text/javascript" src="../../../../../script/base_config.js" ></script>
+    <script type="text/javascript" src="../../../../../script/common/common.js"></script>
+    <script type="text/javascript" src="../../../../../script/common/kaoqin_common.js"></script>
+    <script type="text/javascript" src="../../../../../script/huihua/sqlite_db.js"></script>
+    <script type="text/javascript" src="../../../../../script/huihua/hh_db.js"></script>
+    <script type="text/javascript" src="../../../../../script/assembly/UIAlbumBrowser.js"></script>
+    <script type="text/javascript" src="../../../../../script/assembly/getPicture.js"></script>
+    <script type="text/javascript" src="../../../../../script/plug-in/base64.js" ></script>
+    <script type="text/javascript" src="../../../../../script/assembly/photoBrowser.js"></script>
+    <script type="text/javascript">
+        var header_h;
+        var img_size;
+        var personArray=[];
+        var nameArray=[];
+        //登录名数组，用于发送系统消息
+        var loginNameArray=[];
+        var img_suffix;
+        var bmArray='';
+        var data_flag = false;//接收人数据是否处理完毕
+        var bureau_list = [];//接收机构id
+        var org_list = [];//接收部门id
+        var person_list = [];//接收人员id
+        var group_list = [];//接收群组id
+        var type = 2;//2:发布，1：编辑
+        var content_edit = '';//编辑获取内容
+        var attachments_edit = [];//附件文件
+        var image_array = [];//所有的图片
+        var index_bureau_list = 0;//机构个数
+        var imgAry = [];
+        apiready = function() {
+            commonSetTheme({"level":5,"type":0});
+            header_h = api.pageParam.header_h;
+            type = api.pageParam.type;
+            if($api.getStorage('BASE_SERVER_NAME') == 'jntq'){
+                $api.text($api.byId('mTitle'), '发站内信');
+            }else{
+                $api.text($api.byId('mTitle'), '发布通知公告');
+            }
+            setImgBtnHeight();
+        };
+        /*
+         *author:zhaoj
+         *function:设置添加图片按钮的高度
+         *date：20160623
+         */
+        function setImgBtnHeight(){
+            var addBtnWidth = $api.cssVal($api.byId('j_add_btn'), 'width');
+            $api.css($api.dom($api.byId('j_add_btn'),'dt'), 'height:'+addBtnWidth+';line-height:'+(addBtnWidth.replaceAll('px','')*1-4)+'px;');
+            if(type == 1){
+              getNowSaveNotice();
+            }
+        }
+        
+        /*
+         *author:zhaoj
+         *function:添加点击事件
+         *date：20160316
+         */
+        function addClickedEvent(div_name, method_name) {
+            var name = document.getElementById(div_name);
+            name.addEventListener("click", method_name);
+        }
+        /**
+         * 打开相册选择附件
+         * 周枫
+         * 2016.6.22 
+         */
+        function openAddFilesOpn(mk_type) {
+            api.actionSheet({
+                
+                cancelTitle : '取消',
+                buttons : ['图片', '拍照'],
+                style : {
+                    titleFontColor : '#ff0000'
+                }
+            }, function(ret, err) {
+                if (ret) {
+                    if (ret.buttonIndex == 1) {
+                        //相册
+                        //getPicture("album");
+                        album();
+                    } else if (ret.buttonIndex == 2) {
+                        //拍照
+                        openPicture();
+                    }
+                } 
+            });
+        }
+        /*
+         *author:zhaoj
+         *function:选择图片
+         *date：20160225
+         */
+        function album() {
+            var dlArray = $api.domAll($api.byId('j_files'), '.j_file');
+            var num = 5 - dlArray.length;
+            if(num != 0){
+                UIAlbumBrowser.open(num,function(data){
+                    //递归上传图片
+                    commonUiUploadFiles({"data":data,"is_trans":1}, function(ret_data) {
+                        for(var i = 0; i < ret_data.length; i++){
+                            var json_data = JSON.parse(ret_data[i]);
+                            var file_id = json_data.file_id;
+                            var ext = json_data.ext;
+                            getImgSize();
+                            img_suffix = commonReturnPhotoCutSize(0);
+                            if (BASE_APP_TYPE == 1) {
+                                var img_url = BASE_IMAGE_PRE+"down/Material/" + file_id.substring(0, 2) + "/" + file_id + '.' + ext + commonReturnPhotoCutSize(0);
+                            } else {
+                                var img_url = BASE_URL_ACTION + "/html/thumb/Material/" + file_id.substring(0, 2) + "/" + file_id + '.' + ext + commonReturnPhotoCutSize(0);
+                                
+                            }
+                            if (getfilesNum() == 4) {
+                                $api.css($api.byId('j_add_btn'), 'display:none');
+                                addFiles(img_url, 'mr0');
+                            } else {
+                                addFiles(img_url, '');
+                            }
+                        }
+                    });
+                });
+            }else{
+                popToast('最多上传5张图片');
+            }
+        }
+        /*
+        *author:zhaoj
+        *function:打开拍照
+        *date：20170914
+        */
+        function openPicture(){
+            getPicture.open({"type":1},function(data){
+                //递归上传图片
+                commonUiUploadFiles({"data":data,"is_trans":0}, function(ret_data) {
+                    for(var i = 0; i < ret_data.length; i++){
+                        var json_data = JSON.parse(ret_data[i]);
+                        var file_id = json_data.file_id;
+                        var ext = json_data.ext;
+                        getImgSize();
+                        img_suffix = commonReturnPhotoCutSize(0);
+                        if (BASE_APP_TYPE == 1) {
+                            var img_url = BASE_IMAGE_PRE+"down/Material/" + file_id.substring(0, 2) + "/" + file_id + '.' + ext + commonReturnPhotoCutSize(0);
+                        } else {
+                            var img_url = BASE_URL_ACTION + "/html/thumb/Material/" + file_id.substring(0, 2) + "/" + file_id + '.' + ext + commonReturnPhotoCutSize(0);
+                            
+                        }
+                        if (getfilesNum() == 4) {
+                            $api.css($api.byId('j_add_btn'), 'display:none');
+                            addFiles(img_url, 'mr0');
+                        } else {
+                            addFiles(img_url, '');
+                        }
+                    }
+                });
+            });
+        }
+        /*
+         * 给模块添加文件
+         * 周枫
+         * 2016.06.22
+         */
+        function addFiles(img_url, css) {
+            var dl_height = $api.cssVal($api.byId('j_add_btn'), 'height')
+            var dl_html = '<dl class="j_file' + ' ' + css + '" style="height:' + dl_height + ';">' + '<dt class="img" style="width:' + img_size + 'px;height:' + img_size + 'px;" onclick="openImage(this.parentNode,this.parentNode.parentNode)">' + '<img class="j_img" src=' + img_url + ' width="' + (img_size - 1) + '" height="' + (img_size - 4) + '" />' + '</dt>' + '<dd onclick="deleteFile(event,this.parentNode)"><img src="../../../../../image/fun-module/common/shanchu.png" /></dd>' + '</dl>';
+            $api.before($api.byId('j_add_btn'), dl_html);
+        }
+        
+        /*
+         *author:zhaoj
+         *function:打开图片
+         *date：20160225
+         */
+        function openImage(parent, grandpa) {
+            var index;
+            if (parent) {
+                index = 0;
+                while ( parent = parent.previousSibling) {
+                    if (parent.nodeType == 1)
+                        index++;
+                }
+            }
+            var openImgArray = [];
+            var dlArray = $api.domAll($api.byId('j_files'), '.j_file');
+            for (var i = 0; i < dlArray.length; i++) {
+                openImgArray.push($api.attr($api.dom(dlArray[i], '.j_img'), 'src'));
+            }
+            var imageBrowser = api.require('imageBrowser');
+            imageBrowser.openImages({
+                imageUrls : openImgArray,
+                //是否以九宫格方式显示图片
+                showList : false,
+                //showList : true,
+                activeIndex : index
+            });
+        }
+        
+        /*
+         *author:zhaoj
+         *function:删除当前文件
+         *date：20160225
+         */
+        function deleteFile(e, parent) {
+            parent.parentNode.removeChild(parent);
+            var dlArray = $api.domAll($api.byId('j_files'), '.j_file');
+            var length = getfilesNum() - 1;
+            if (length == 3) {
+                $api.removeCls(dlArray[length], 'mr0');
+                $api.css($api.byId('j_add_btn'), 'display:inline-block');
+            }
+            e.stopPropagation();
+        }
+        
+        /*
+         *author:zhaoj
+         *function:根据模块获取子文件的个数
+         *date：20160224
+         */
+        function getfilesNum() {
+            var dlArray = $api.domAll($api.byId('j_files'), '.j_file');
+            return dlArray.length;
+        }
+        
+        /*
+         *author:zhaoj
+         *function:图片格式
+         *date：20160222
+         */
+        function getImgSize() {
+            img_size = (api.winWidth - 30) * 0.18;
+            img_size = Math.floor(img_size);
+            var img_format = '@' + img_size + 'w_' + img_size + 'h_100Q_1x.';
+            return img_format;
+        }
+            
+       /*
+        *author:zhaoj
+        *function:打开选择权限的window页面
+        *date：20160625
+        */
+        function openPersonWindow(){
+            var person = personArray.toString();
+            var name = nameArray.toString();
+            var loginname = loginNameArray.toString();
+            var pageParamJson={header_h : header_h,personArray : person,nameArray:name,bmArray : bmArray,loginNameArray : loginname};
+//          commonOpenFrame('noticeIpad_person_frame', 'noticeIpad_person_frame.html',0, true, true,"rgba(0,0,0,0)", pageParamJson);
+			commonOpenWin('noticeIpad_person_window', 'noticeIpad_person_window.html', false, false, pageParamJson);
+            return;
+        }
+        
+        
+        /*
+        *author:zhaoj
+        *function:获取阅读人的信息
+        *date：20160628
+        */
+        function getPersonData(person,name,loginName,bm){
+            if(!name){
+                $api.text($api.byId('j_persons'), '请选择接收人');
+            }else{
+                $api.text($api.byId('j_persons'), name);
+                personArray = person.split(',');
+                nameArray = name.split(',');
+                loginNameArray = loginName.split(',');
+                bmArray = bm;
+            }
+            commonExecScript('noticeIpad_person_window','','back();',0)
+        }
+        /*
+        *author:zhaoj
+        *function:增加通知
+        *date：20160628
+        */
+        function addNotice(fbtype){
+            var tishi_content = '保存';
+            if(fbtype){
+               tishi_content = '发布';
+            }
+            var title = $api.trim($api.val($api.byId('article_title')));
+            if(title.length == 0){
+                popAlert("请输入标题");
+                return false;
+            }
+            var content = $api.trim($api.val($api.byId('j_content')));
+            if(type == 1){
+                content = content_edit;
+            }
+            if(content.length == 0){
+                popAlert("请输入内容");
+                return false;
+            }
+            if(!data_flag){
+                popAlert("还没有选择接收人");
+                return false;
+            }
+            if(type == 2){
+                //验证是否有附件
+                var dlArray = $api.domAll($api.byId('j_files'), '.j_file');
+                var thumb_id='';
+                if (dlArray.length != 0) {
+                    if (BASE_APP_TYPE == 2) {
+                        for (var i = 0; i < dlArray.length; i++) {
+                            var img_url = $api.attr($api.dom(dlArray[i], '.j_img'), 'src');
+                            var index = img_url.indexOf('/dsideal_yy/');
+                            img_url = img_url.substring(index,img_url.length);
+                            img_url = img_url.replaceAll(img_suffix, '');
+                            var img_html = '<img src="' + img_url + '" alt="" />'
+                            content = content + img_html;
+                            var startIndex = img_url.indexOf('/Material/');
+                            img_url = img_url.substring(startIndex+13,img_url.length);
+                            if (i == 0) {
+                                thumb_id = img_url;
+                            }
+                        }
+                    } else {
+                        for (var i = 0; i < dlArray.length; i++) {
+                            var img_url = $api.attr($api.dom(dlArray[i], '.j_img'), 'src');
+                            img_url = img_url.replaceAll(img_suffix, '');
+                            var img_html = '<img src="' + img_url + '" alt="" />'
+                            content = content + img_html;
+                            var startIndex = img_url.indexOf('/Material/');
+                            img_url = img_url.substring(startIndex+13,img_url.length);
+                            if (i == 0) {
+                                thumb_id = img_url;
+                            }
+                        }
+                    }
+                }
+            }
+            commonShowProgress(tishi_content+'中...',true);
+            $api.css($api.byId('j_shadow'),'z-index:3;');
+            var is_public = document.getElementById("j_public").checked*1+"";
+            var receipt = document.getElementById("j_receipt").checked*1+"";
+            var noticeJson={
+                "notice_title":Base64.encode(title),            //通知标题
+                "notice_content":Base64.encode(content),        //通知内容
+                "notice_level":$api.attr($api.byId('j_select_jb'),'jbID'),//通知级别   1：日常  2：紧急  3：重要
+                "thumb_id":"",                                  //缩略图
+                "notice_receipt":receipt,                       //是否需要签收回执  0：不需要  1：需要      
+                "notice_public":is_public,                      //是否同步到机构空间   0：不需要  1：需要
+                "sender_bureau_id":$api.getStorage('bureau_id'),//发送人单位ID
+                "sender_person_id":$api.getStorage('person_id'),//发送人ID
+                "send_status":fbtype,                           //发送状态  0：未发布  1：已发布
+                "bureau_list":bureau_list,                      //发送给哪些单位
+                "org_list":org_list,                            //发送给哪些部门
+                "person_list":person_list,                      //发送给哪些人
+                "group_list":group_list,                        //发送给哪些群组
+                "attachments":attachments_edit                  //附件列表
+            }
+            var values = {
+                'noticeJson':noticeJson,
+                'noticeSourceJson':{}
+            }
+            if(type == 1){
+              values.notice_id = api.pageParam.notice_id;
+            }
+            api.ajax({
+                url : BASE_URL_ACTION + '/new_notice/kjAddNotice',
+                method : 'post',
+                dataType : 'json',
+                timeout : 30,
+                data : {
+                    'values':values
+                },
+                headers : {
+                    'Cookie' : 'person_id=' + $api.getStorage("person_id") + ';identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+                }
+            }, function(ret, err) {
+                if (err) {
+                    api.hideProgress();
+                    popToast(tishi_content+'失败');
+                    $api.css($api.byId('j_shadow'),'z-index:-1;');
+                } else {
+                    if (ret.success) {
+                        setTimeout(function() {
+                            $api.setStorage('now_all_selected',[]);
+                            $api.setStorage('group_person_list',[]);
+                            $api.setStorage('now_select_all',[]);
+                            commonExecScript('noticeIpad_index_window','noticeIpad_index_frame','initData();',1);
+                            setTimeout(function(){
+                              api.hideProgress();
+                              commonExecScript('noticeIpad_add_window','','back();',0);
+                            },1000);
+                        }, 1000);
+//                      if(type == 1){
+//                          sendSysMsg(1);
+//                      }else{
+//                          sendSysMsg(2);
+//                      }
+                    } else {
+                        api.hideProgress();
+                        popToast(tishi_content+'失败');
+                        $api.css($api.byId('j_shadow'),'z-index:-1;');
+                    }
+                }
+            });
+        }
+        /*
+        *author:zhaoj
+        *function:选择级别
+        *date：20160706
+        */
+        function selectJB() {
+            api.actionSheet({
+                
+                cancelTitle : '取消',
+                buttons : ['日常', '紧急','重要'],
+                style : {
+                    titleFontColor : '#FF0000'
+                }
+            }, function(ret, err) {
+                if (ret) {
+                    if (ret.buttonIndex == 1) {
+                        //日常
+                        $api.text($api.byId('j_select_jb'), '日常');
+                        $api.attr($api.byId('j_select_jb'), 'jbID',1);
+                    } else if (ret.buttonIndex == 2) {
+                        //紧急
+                        $api.text($api.byId('j_select_jb'), '紧急');
+                        $api.attr($api.byId('j_select_jb'), 'jbID',2);
+                    }else if (ret.buttonIndex == 3){
+                        //重要
+                        $api.text($api.byId('j_select_jb'), '重要');
+                        $api.attr($api.byId('j_select_jb'), 'jbID',3);
+                    }
+                } 
+            });
+        }
+        
+        /**
+         * 发布通知消息
+         * 周枫
+         * 2016.07.02 
+         */
+        function sendSysMsg(sys_type){
+            var target_login_names = [];    
+            var bureau_id = $api.getStorage('bureau_id');
+            ( typeof (bureau_id) == 'undefined') ? bureau_id = -1 : bureau_id = bureau_id;
+            if(sys_type == 1) {
+                //公开
+                var g_id = 'school_'+commonOldParamToNewParam(bureau_id);
+                selectPListByGIdFromDb(g_id, function(group_json){
+                    var sender_id = $api.getStorage('person_id');
+                    var sender_person_name = $api.getStorage("person_name");
+                    var sender_login_name = commonNewParamToOldParam($api.getStorage("login_name")); 
+                    var sender_identity = $api.getStorage("identity");
+                    var group_json_list = group_json.list;
+                    var group_json_length = getJsonObjLength(group_json_list);
+                    for(var i = 0; i < group_json_length; i++){
+                        var t_login_name = commonNewParamToOldParam(group_json_list[i]["login_name"]);
+                        if(sender_login_name != t_login_name) {
+                            target_login_names[i] = t_login_name;
+                        }
+                         
+                    }
+                    var is_url = 1;
+                    var url_name = 'noticeIpad_index_window';
+                    var param_num = 2;
+                    var sysmsg_code = 'NOTICE_ADD_INDEX';
+                    var district_id = $api.getStorage('district_id');
+                    ( typeof (district_id) == 'undefined') ? district_id = -1 : district_id = district_id;
+                    
+                    var city_id = $api.getStorage('city_id');
+                    ( typeof (city_id) == 'undefined') ? city_id = -1 : city_id = city_id;
+                    
+                    var province_id = $api.getStorage('province_id');
+                    ( typeof (province_id) == 'undefined') ? province_id = -1 : province_id = province_id;
+                    var p_2 = '公开通知(发布人:' + sender_person_name + ')';
+                    var params = ['通知公告消息',p_2,'通知公告'];
+                    commonSendSysMsg(sender_id, sender_person_name, sender_login_name, sender_identity, target_login_names, is_url, url_name, param_num, sysmsg_code, bureau_id, district_id, city_id, province_id, params, function(is_true){
+                        if(is_true) {
+                           
+                        } else {
+                            
+                        }
+                    });
+                });
+                
+            } else {
+                
+                //内部
+                var sender_login_name = commonNewParamToOldParam($api.getStorage("login_name")); 
+                target_login_names = loginNameArray;
+                var login_name_l = loginNameArray.length;
+                for(var i=0; i<login_name_l; i++) {
+                    var t_login_name = commonNewParamToOldParam(loginNameArray[i]);
+                    if(sender_login_name != t_login_name){
+                        target_login_names[i] = loginNameArray[i];
+                    }
+                }
+                var sender_id = $api.getStorage('person_id');
+                var sender_person_name = $api.getStorage("person_name");    
+                var sender_identity = $api.getStorage("identity");
+                var is_url = 1;
+                var url_name = 'noticeIpad_index_window';
+                var param_num = 2;
+                var sysmsg_code = 'NOTICE_ADD_INDEX';
+                var district_id = $api.getStorage('district_id');
+                ( typeof (district_id) == 'undefined') ? district_id = -1 : district_id = district_id;
+                
+                var city_id = $api.getStorage('city_id');
+                ( typeof (city_id) == 'undefined') ? city_id = -1 : city_id = city_id;
+                
+                var province_id = $api.getStorage('province_id');
+                ( typeof (province_id) == 'undefined') ? province_id = -1 : province_id = province_id;
+                var p_2 = '内部通知(发布人:' + sender_person_name + ')';
+                var params = ['通知公告消息',p_2,'通知公告'];
+                commonSendSysMsg(sender_id, sender_person_name, sender_login_name, sender_identity, target_login_names, is_url, url_name, param_num, sysmsg_code, bureau_id, district_id, city_id, province_id, params, function(is_true){
+                    if(is_true) {
+                       
+                    } else {
+                        
+                    }
+                });
+            }
+            
+        }
+        
+        /*
+         * 功能：处理已选人员数据
+         * 作者：张自强
+         * 时间：20180727
+         */
+        function　checkAndDealData(){
+          var list = $api.getStorage('now_all_selected');
+          var selected_list = $api.getStorage('now_select_all');
+          var selected_name = '';
+          for(var i=0;i<selected_list.length;i++){
+              selected_name += selected_list[i].name + ','
+          }
+          $api.html($api.byId('j_select_person'), selected_name.substring(0,selected_name.length-1));
+          var org_now_list = [];
+          var person_now_list = [];
+          var bureau_now_list = [];
+          var group_now_list = [];
+          for(var i=0;i<list.length;i++){
+              switch(list[i].type*1){
+                  case 0://当前机构
+                  case 1://教育局
+                  case 2://学校
+                  case 7://教辅单位
+                      bureau_now_list.push(list[i].id);
+                      break;
+                  case -2://群组
+                      group_now_list.push(list[i].id);
+                      break;
+                  case -3://人员
+                      person_now_list.push(list[i]);
+                      break;
+                  case 3://部门
+                      org_now_list.push(list[i]);
+                      break;
+                      
+                  
+              }
+          }
+          deleteDoubleOrMoreData(bureau_now_list,group_now_list,person_now_list,org_now_list,function(flag){
+              data_flag = flag;
+          });
+        }
+        
+        /*
+         * 功能：去重
+         * 作者：张自强
+         * 时间：20180727
+         */
+        function deleteDoubleOrMoreData(bureau_now_list,group_now_list,person_now_list,org_now_list,callback){
+           var person_group_list = $api.getStorage('group_person_list');
+           if(person_group_list && person_group_list.length > 0){
+              for(var i=0;i<person_group_list.length;i++){//将群组人员添加到人员列表
+                  var param  = new Object();
+                  param.name = person_group_list[i].name;
+                  param.id = person_group_list[i].id;
+                  param.rode = person_group_list[i].rode;
+                  param.type = -3;
+                  person_now_list.push(param);
+               }
+           }
+           for(var i=0;i<person_now_list.length;i++){//人员与机构
+              for(var j=0;j<bureau_now_list.length;j++){
+                if(person_now_list.length > 0){
+                    if(person_now_list[i].rode.indexOf(bureau_now_list[j]) != -1){
+                        person_now_list.splice(i,1);
+                        if(i>0){
+                            i--;   
+                        }
+                    }   
+                }
+              }
+           }
+           for(var i=0;i<person_now_list.length;i++){//人员与部门
+              for(var j=0;j<org_now_list.length;j++){
+                if(person_now_list.length > 0){
+                    if(person_now_list[i].rode.indexOf(org_now_list[j].rode) != -1){
+                        person_now_list.splice(i,1);
+                        if(i>0){
+                            i--;   
+                        }
+                    }
+                }
+              }
+           }
+           
+           console.log('659---person_now_list:'+JSON.stringify(person_now_list));
+           var b_len = bureau_now_list.length;
+           for(var i=0;i<b_len;i++){//机构与机构
+              for(var j=i+1;j<b_len;j++){
+                  if(bureau_now_list[i] == bureau_now_list[j]){
+                      bureau_now_list.splice(i,1);
+                      b_len--;
+                      j--;
+                  }
+              }
+           }
+           
+           console.log('671---bureau_now_list:'+JSON.stringify(bureau_now_list));
+           console.log(JSON.stringify(org_now_list));
+           var o_len = org_now_list.length;
+           for(var i=0;i<o_len;i++){//部门与部门
+              for(var j=i+1;j<o_len;j++){
+                  if(org_now_list[i].id == org_now_list[j].id || org_now_list[i].rode.indexOf(org_now_list[j].rode) != -1 ){
+                      org_now_list.splice(i,1);
+                      o_len--;
+                      j--;
+                  }
+              }
+           }
+           
+           var o_second_len = org_now_list.length-1;
+           for(var i=o_second_len;i>=0;i--){//部门与部门
+              console.log(JSON.stringify(org_now_list));
+              for(var j=i-1;j>=0;j--){
+                  console.log(i+':11111111:'+j);
+                  console.log(JSON.stringify(org_now_list));
+                  if(org_now_list[i].rode.indexOf(org_now_list[j].rode) != -1 ){
+                      org_now_list.splice(i,1);
+                      i--;
+                  }
+              }
+           }
+           console.log(JSON.stringify(org_now_list));
+           for(var i=0;i<bureau_now_list.length;i++){//机构与部门
+              for(var j=0;j<org_now_list.length;j++){
+                 if(org_now_list[j].rode.indexOf(''+bureau_now_list[i]) != -1){
+                    org_now_list.splice(j,1);
+                    j--;   
+                 }
+              }
+           }
+           
+           console.log('696---org_now_list:'+JSON.stringify(org_now_list));
+           console.log(JSON.stringify(person_now_list));
+           var p_len = person_now_list.length;
+           for(var i=0;i<p_len;i++){//人员与人员
+              for(var j=i+1;j<p_len;j++){
+                  if(person_now_list[i].id == person_now_list[j].id){
+                      person_now_list.splice(i,1);
+                      p_len--;
+                      j--;
+                  }
+              }
+           }
+           
+           for(var i=0;i<org_now_list.length;i++){
+             org_list.push(org_now_list[i].id);
+           }
+           
+           for(var i=0;i<person_now_list.length;i++){
+             person_list.push(person_now_list[i].id);
+           }
+           bureau_list = bureau_now_list;
+           group_list = [];
+           if(org_list.length == 0 && person_list.length == 0 && bureau_list.length == 0 && group_list.length == 0){
+             callback(false);
+           }else{
+             callback(true);
+           }
+        }
+        
+        /*
+         * 功能：获取当前保存的通知
+         * 作者：张自强
+         * 时间：20180730
+         */
+        function getNowSaveNotice(){
+          showSelfProgress('加载中...');
+          api.ajax({
+              url : BASE_URL_ACTION + '/new_notice/kjGetNoticeInfoById?notice_id='+api.pageParam.notice_id+'&person_id='+$api.getStorage('person_id')+'&mark_type=1',
+              method : 'get',
+              dataType : 'json',
+              timeout : 30,
+              headers : {
+                    'Cookie' : 'person_id=' + $api.getStorage("person_id") + ';identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+                }
+          },function(ret,err){
+             if(err){
+                 popToast('获取通知失败');
+             }else{
+                 if(ret.success){
+                     var rett = ret;
+                     if(rett.notice_title){//标题
+                         $api.val($api.byId('article_title'), Base64.decode(rett.notice_title));
+                     }
+                     if(rett.notice_content){//内容
+                         $api.css($api.byId('j_content_div'),'height:auto;');
+                         var content = rett.notice_content;
+                         content = Base64.decode(content);
+                         content_edit = content;
+                         var onerror_html = "this.src='../../../image/common/tpsx.png'";
+                        if (BASE_APP_TYPE == 1) {
+                            var notice_str1 = '<img';
+                            var notice_str2 = '<img onclick="openPictureContent(this);" onerror='+onerror_html+' class="ima_notice"';
+                            content = content.replaceAll(notice_str1, notice_str2);
+                        } else {
+                                var notice_str3 = '<img';
+                                var notice_str4 = '<img onclick="openPictureContent(this);"  onerror='+onerror_html+' class="ima_notice"';
+                                content = content.replaceAll(notice_str3, notice_str4);
+                        }
+                        var key = '/dsideal_yy';
+                        if (content.indexOf(key) != -1) {
+                            var key_re = BASE_URL_ACTION;
+                            content = content.replaceAll(key, key_re);
+                        }
+                        content.replace(/<img [^>]*src=['"]([^'"]+)[^>]*>/gi, function (match, capture) {
+                          image_array.push(capture);
+                        });
+                         $api.html($api.byId('j_content_div'),'<div class="notice-title aui-iconfont name">内容：<span>(不支持修改)</span></div><div style="padding:15px;">'+content+'</div>');
+                     }
+                     
+                     if(rett.attachments && rett.attachments.length>0){//附件
+                         commonAddOrRemoveHideCss('fujian',1);
+                         var li_div = '';
+                         attachments_edit = rett.attachments
+                         
+                         imgAry = [];
+                        var img_index = 0;
+                        for (var i = 0; i < rett.attachments.length; i++){
+                            var resource_format = rett.attachments[i].file_id.substring(rett.attachments[i].file_id.lastIndexOf('.'),rett.attachments[i].file_id.length);
+                            if (resource_format=='.png' || rett.attachments[i].resource_format=='jpg' || resource_format == '.bmp' || resource_format =='.gif'){
+                                var img_url;
+                                if (BASE_APP_TYPE == 1) {
+                                    img_url = BASE_IMAGE_PRE+"down/Material/" + rett.attachments[i].file_id.substring(0, 2) + "/" + rett.attachments[i].file_id;
+                                } else {
+                                    img_url = BASE_URL_ACTION + "/html/thumb/Material/" + rett.attachments[i].file_id.substring(0, 2) + "/" + rett.attachments[i].file_id;
+                                }
+                                imgAry.push(img_url);
+                                li_div += '<li class="ellipsis" onclick="openAttachment('+rett.attachments[i].resource_id_int+','+img_index+')">'+rett.attachments[i].file_name+'</li>';
+                                img_index++;
+                            }else{
+                                li_div += '<li class="ellipsis" onclick="openAttachment('+rett.attachments[i].resource_id_int+',-1)">'+rett.attachments[i].file_name+'</li>';
+                            }
+                        }
+                        $api.html($api.byId('fujian_ul'), li_div);
+                     }
+                     
+                     switch(rett.notice_level){//级别
+                         case 1:
+                             //日常
+                             $api.text($api.byId('j_select_jb'), '日常');
+                             $api.attr($api.byId('j_select_jb'), 'jbID',1);
+                             break;
+                         case 2:
+                             //紧急
+                             $api.text($api.byId('j_select_jb'), '紧急');
+                             $api.attr($api.byId('j_select_jb'), 'jbID',2);
+                             break;
+                         case 3:
+                             //重要
+                             $api.text($api.byId('j_select_jb'), '重要');
+                             $api.attr($api.byId('j_select_jb'), 'jbID',3);
+                             break;
+                     }
+                     $api.attr($api.byId('j_receipt'), 'checked', rett.notice_receipt);
+                     $api.attr($api.byId('j_public'), 'checked', api.pageParam.notice_public*1);
+                     person_list = [];
+                     bureau_list = [];
+                     org_list = [];
+                     group_list = [];
+                     var now_all_selected = [];
+                     var now_select_all = [];
+                     if(rett.org_list){
+                         for(var j=0;j<rett.org_list.length;j++){
+                            now_all_selected.push({'name':rett.org_list[j].org_name,'id':rett.org_list[j].org_id,'type':3,'rode':rett.org_list[j].org_code});
+                            now_select_all.push({"type":3,"id":rett.org_list[j].org_id,"name":rett.org_list[j].org_name,"rode":rett.org_list[j].org_code});
+                            org_list.push(rett.org_list[j].org_id);
+                         }
+                     }
+                     if(rett.person_list){
+                         for(var k=0;k<rett.person_list.length;k++){
+                            now_all_selected.push({'name':rett.person_list[k].person_name,'id':rett.person_list[k].person_id,'type':-3,'rode':rett.person_list[k].org_code});
+                            now_select_all.push({"type":-3,"id":rett.person_list[k].person_id,"name":rett.person_list[k].person_name,"rode":rett.person_list[k].org_code});
+                            person_list.push(rett.person_list[k].person_id);
+                         }
+                     }
+//                   if(rett.group_list){
+//                       for(var f=0;f<rett.group_list.length;f++){
+//                          now_all_selected.push({'name':rett.group_list[f].group_name,'id':rett.group_list[f].group_id,'type':-3,'rode':rett.group_list[f].org_code});
+//                          now_select_all.push({"type":-3,"id":rett.group_list[f].person_id,"name":rett.group_list[f].group_id,"rode":rett.group_list[f].org_code});
+//                          person_list.push({'name':rett.group_list[f].group_name,'id':rett.group_list[f].group_id,'type':-3,'rode':rett.group_list[f].org_code});
+//                       }
+//                   }
+                     if(rett.bureau_list && rett.bureau_list.length>0){
+                         for(var i=0;i<rett.bureau_list.length;i++){
+                             getLevelOfJf(rett.bureau_list[i].bureau_id,function(flag,data,index){
+                                 if(rett.bureau_list[index].bureau_id == $api.getStorage('bureau_id')){
+                                     if(flag){
+                                         if(data*1 == 1 || data*1 == 7){
+                                                 now_select_all.push({"type":0,"id":rett.bureau_list[index].bureau_id,"name":"本机构内部科室","rode":""});
+                                          bureau_list.push(rett.bureau_list[index].bureau_id); 
+                                         now_all_selected.push({'name':rett.bureau_list[index].bureau_name,'id':rett.bureau_list[index].bureau_id,'type':data*1,'rode':''});
+                                         }else{
+                                             now_select_all.push({"type":data*1,"id":rett.bureau_list[index].bureau_id,"name":rett.bureau_list[index].bureau_name,"rode":""});
+                                         }
+                                          now_all_selected.push({'name':rett.bureau_list[index].bureau_name,'id':rett.bureau_list[index].bureau_id,'type':data*1,'rode':''});
+                                     }else{
+                                         now_select_all.push({"type":0,"id":rett.bureau_list[index].bureau_id,"name":"本机构内部科室","rode":""});
+                                         bureau_list.push(rett.bureau_list[index].bureau_id); 
+                                         now_all_selected.push({'name':rett.bureau_list[index].bureau_name,'id':rett.bureau_list[index].bureau_id,'type':data*1,'rode':''});
+                                     }
+                                 }else{
+                                     if(flag){ 
+                                     now_select_all.push({"type":data*1,"id":rett.bureau_list[index].bureau_id,"name":rett.bureau_list[index].bureau_name,"rode":""});               now_all_selected.push({'name':rett.bureau_list[index].bureau_name,'id':rett.bureau_list[index].bureau_id,'type':data*1,'rode':''});
+bureau_list.push(rett.bureau_list[index].bureau_id);                                    
+                                     }
+                                 }
+                                 if(rett.bureau_list.length-1 == index){
+                                    if(now_all_selected != []){
+                                        $api.setStorage('now_all_selected',now_all_selected);
+                                        $api.setStorage('now_select_all',now_select_all);
+                                        index_bureau_list = 0;
+                                        data_flag = true;
+                                        var selected_name = '';
+                                        for(var o=0;o<now_select_all.length;o++){
+                                            selected_name += now_select_all[o].name + ',';
+                                        }
+                                        $api.html($api.byId('j_select_person'), selected_name.substring(0,selected_name.length-1));
+                                        api.hideProgress();
+                                        return;
+                                     }
+                                 }
+                             });
+                         }
+                     }else{
+                         if(now_all_selected != []){
+                            $api.setStorage('now_all_selected',now_all_selected);
+                            $api.setStorage('now_select_all',now_select_all);
+                            index_bureau_list = 0;
+                            data_flag = true;
+                            var selected_name = '';
+                            for(var o=0;o<now_select_all.length;o++){
+                                selected_name += now_select_all[o].name + ',';
+                            }
+                            $api.html($api.byId('j_select_person'), selected_name.substring(0,selected_name.length-1));
+                            api.hideProgress();
+                         }
+                     }
+                 }else{
+                     popToast('获取通知失败');
+                 }
+             }
+             api.hideProgress();
+          });
+        }
+        
+        /*
+        *author:zhaoj
+        *function:打开图片预览
+        *date：20171026
+        */
+        function openPictureContent(e){
+            //图片
+            var res_url=$api.attr(e, 'src');
+            //打开图片
+            var index = 0;
+            for(var i = 0; i <image_array.length;i++){
+                if(image_array[i] == res_url){
+                    index = i;
+                }
+            }
+            photoBrowser.open(image_array, index);
+        }
+        
+        /*
+         * 功能：获取当前机构信息
+         * 作者：张自强
+         * 时间：20180725
+         * 接口：冯丽杰
+         */
+        function getLevelOfJf(orgId,callback){
+           api.ajax({
+               url:BASE_URL_ACTION+'/ypt/sys/org/getEduUnitByOrgId?random_num='+creatRandomNum()+'&org_id='+orgId,
+               method:'get',
+               dataType:'json',
+               timeout:30,
+               headers : {
+            'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';' 
+                }
+           },function(ret,err){
+                if(err){
+                    popToast('获取个人机构信息失败');
+                    callback(false,'',index_bureau_list);
+                }else{
+                    if(ret.success){
+                        callback(true,ret.ORG_TYPE,index_bureau_list);
+                    }else{
+                        popToast('获取个人机构信息失败');
+                        callback(false,'',index_bureau_list);
+                    }
+                }
+                index_bureau_list++;
+           });
+        }
+        
+        /*
+        *author:zhaoj
+        *function:打开附件
+        *date：20171023
+        */
+        function openAttachment(resource_id_int,img_index){
+            var param_json = {"is_show_tip":1,"resource_id_int":resource_id_int};
+                commonGetResInfo(param_json,function(flag,ret){
+                    api.hideProgress();
+                    if(flag){
+                        if (ret.resource_format=='png' || ret.resource_format=='jpg' || ret.resource_format == 'bmp' || ret.resource_format =='gif'){
+                            openPictureShowWin(imgAry,img_index);
+                            return;
+                        }
+                    
+                        var oparam ={"res_type":ret.resource_format, "res_path":ret.file_id, "res_title":ret.resource_title,"m3u8_status":ret.m3u8_status,"winName":api.winName,"setBackFun":'reBackType("voice");',"backFun":'back();',"res_id":'open_picture',"pic_back":'hdjs_picture'};
+                    
+     common_openResource.open_new(JSON.stringify(oparam));
+                    }else{
+                        popToast('打开失败，请稍候重试');
+                    }
+                });
+        }
+    </script>
+</html>

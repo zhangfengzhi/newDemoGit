@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no" />
+    <title>非财政审批页面</title>
+    <link rel="stylesheet" type="text/css" href="../../../../../css/aui/aui.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../../../css/module/common/aui-list-swipe.css" />
+    <link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+    <style>
+    	.notice-name{display:inline-block;max-width:100%;}
+    	.ellipsis{white-space: nowrap;overflow: hidden;text-overflow: ellipsis;}
+    	.author-name{max-width:100%;}
+    	.aui-swipe-div{position:relative;}
+    	.aui-list-view:before{height:0;}
+    	.aui-user-view-cell:last-child:after {position: absolute;left: 15px;right: 0;bottom: 0;height: 1px;content: '';background-color: #c8c7cc;-webkit-transform: scaleY(.5);transform: scaleY(.5);}
+    	.aui-list-view::after{height:0;}
+    	.no-data{color:#666666;text-align:center;line-height:45px;}
+    	.aui-list-view .aui-img-object{width:60px;}
+    	.red{color:#ff0000 !important;}
+    	.aui-user-view-cell .aui-img-object { max-width: 100px !important;height: 80px !important; width: 100px !important;  line-height: 48px !important;border-radius: 2px; padding: 2px;border: 1px solid #e7e7e7;}
+    	.aui-user-view-cell p{margin-top:8px;}
+    	.aui-img-body .notice-name{padding-top:3px;}
+    	.tip-image{position:absolute;top:-12px;right:-15px;width:35px;height:35px;}
+    	.tip-image-dsp{background:url(../../../../../image/fun-module/iphone/czsp/czsp.png) 0 -70px no-repeat;background-size:35px auto;}
+    	.tip-image-spz{background:url(../../../../../image/fun-module/iphone/czsp/czsp.png) 0 -105px no-repeat;background-size:35px auto;}
+    	.tip-image-wtg{background:url(../../../../../image/fun-module/iphone/czsp/czsp.png) 0 -35px no-repeat;background-size:35px auto;}
+    	.tip-image-ytg{background:url(../../../../../image/fun-module/iphone/czsp/czsp.png) 0 top no-repeat;background-size:35px auto;}
+    </style>
+</head>
+<body>
+	<section class="aui-content" id="banner">
+		<ul id="tz_body" class="aui-list-view">
+			
+		</ul>
+		<script type="text/html" id="tz_script">
+			<% if(list.length == 0){ %>
+				<div class="no-data"><span>暂无审批数据</span></div>
+			<% }else{ %>
+				<%for(var i=0; i<list.length; i++) {%>
+					<li class="aui-user-view-cell aui-img" tapmode="" onclick="openContentWindow('<%=list[i].id%>','<%=list[i].project_name%>');">
+		            	<div class="aui-swipe-div">
+		            		<img class="aui-img-object aui-pull-left" onerror="this.src='../../../../../image/fun-module/iphone/czsp/czsp.png'"  src="../../../../../image/fun-module/iphone/czsp/czsp.png" />
+			                <div class="aui-img-body">
+			                    <div class="notice-name ellipsis" id="title_<%=list[i].id%>">
+		                   			<%=list[i].project_name%>
+			                    </div>
+			                    <%if(levelValue == 1){%>
+			                    	<p class="author-name ellipsis"><%=list[i].person_name%>/<%=list[i].org_name%></p>
+			                    <%}else{%>
+			                    	<p class="author-name ellipsis"><%=list[i].person_name%>/<%=list[i].school_name%></p>
+			                    <%}%>
+			                    <p>申请日期：<%=list[i].create_time.substring(0,10)%></p>
+			                </div>
+		                </div>
+		            </li>
+				<% } %>
+			<% } %>
+		</script>
+	</section>
+</body>
+<script type="text/javascript" src="../../../../../script/api.js"></script>
+<script type="text/javascript" src="../../../../../script/plug-in/aui-list-swipe.js"></script>
+<script type="text/javascript" src="../../../../../script/base_config.js" ></script>
+<script type="text/javascript" src="../../../../../script/plug-in/template.js" ></script>
+<script type="text/javascript" src="../../../../../script/common/common.js"></script>
+<script type="text/javascript">
+	var BASE_URL_ACTION;
+	var header_h;//顶部header高度
+	var sp_level ;//审批级别，1 校级审批，2部门审批人员，3局级审批人员，4财务审批人员
+	var currentPage = 1;//第几页
+	var totalPage = 1;//总页数
+	var levelValue = 1;//类型 1待审批 2审批中 3已通过 4未通过
+	var office_id;  //科室id
+	var org_type;
+	var org_id;
+	apiready = function(){
+		commonSetTheme({"level":5,"type":0});
+		header_h = api.pageParam.header_h;
+		BASE_URL_ACTION = $api.getStorage('BASE_URL_ACTION');
+		org_id = $api.getStorage('bureau_id');
+		//机构类型： 100：全国， 101：省， 102：市， 103：区县， 104：校，
+		if(Number(org_id) > 100000 && Number(org_id) < 200000){
+			org_type = 101;
+		}else if(Number(org_id) > 200000 && Number(org_id) < 300000){
+			org_type = 102;
+		}else if(Number(org_id) > 300000 && Number(org_id) < 400000){
+			org_type = 103;
+		}else if(Number(org_id) > 400000){
+			org_type = 104;
+		}
+		getSpPersonInfo();
+		refreshDataInfo();//下拉刷新
+		scrollBottomReload();//上拉刷新
+	};
+	
+	/*
+	 * function:获取登录的审批人员审批级别
+	 * data:20171122
+	 * author:zfz
+	 * */
+	function getSpPersonInfo(){
+		var url = BASE_URL_ACTION + "/ypt/space/examine/getPersonInfo?person_id="+$api.getStorage("person_id")+"&identity_id="+$api.getStorage("identity")+"&org_id="+org_id+"&org_type="+org_type+"&random_num="+creatRandomNum();
+		api.ajax({
+			url : url,
+			method : 'get',
+			timeout : 30,
+			dataType : 'json',
+			headers : {
+	'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+}
+		}, function(ret, err) {
+			if (ret.success) {
+				if(ret.list.length>0){
+					sp_level = ret.list[0].level;
+					if(sp_level==2){  //审批级别为2（科室级别）时获取office_id
+						office_id = ret.list[0].office_id;
+					}else{
+						office_id = -1;
+					}
+					
+					openNavigationBar();
+				}else{
+					api.alert({
+						msg : '对不起，获取申请单列表信息失败'
+					});
+				}
+			} else {
+				api.alert({
+					msg : '对不起，获取申请单列表信息失败'
+				});
+			}
+		});
+	}
+
+	/*
+	*author:zhaoj
+	*function:打开选择权限的window页面
+	*date：20160625
+	*/
+	function openContentWindow(id,title){
+		commonOpenWin('czsp_content_window', 'czsp_content_window.html', false, false, {header_h : header_h,id : id,levelValue:levelValue,sp_level:sp_level,title:title,office_id:office_id});
+		
+	}
+	/*
+	*author:zhaoj
+	*function:打开通知类型滑动
+	*date：20160625
+	*/
+	function openNavigationBar() {
+	commonCloseNavigationBar();
+		closeNav();
+		var bar_items = [
+			{
+				title : '待审批',
+				id : 1,
+				titleSelected : '待审批',
+				bg : "#ffffff",
+				alpha : 0.8,
+				bgSelected : "#ffffff"
+			},
+			{
+				title : '审批中',
+				id : 2,
+				titleSelected : '审批中',
+				bg : "#ffffff",
+				alpha : 0.8,
+				bgSelected : "#ffffff"
+			},
+			{
+				title : '已通过',
+				id : 3,
+				titleSelected : '已通过',
+				bg : "#ffffff",
+				alpha : 0.8,
+				bgSelected : "#ffffff"
+			}
+			,
+			{
+				title : '未通过',
+				id : 4,
+				titleSelected : '未通过',
+				bg : "#ffffff",
+				alpha : 0.8,
+				bgSelected : "#ffffff"
+			},
+			
+		];
+		if(sp_level==3){   //如果是局长，则审批页面只显示待审批、已通过、未通过三种状态
+			bar_items.splice(1,1);
+			var itemWidth = Math.floor(api.frameWidth/3);
+		}else{
+			var itemWidth = Math.floor(api.frameWidth/4);
+		}
+		
+		
+		
+		var params = {
+				y : header_h +1,
+				items : bar_items,
+				winName : 'czsp_index_window',
+				frameName : 'czsp_index_frame',
+				file_level : 2,
+				itemSize : {
+			          w : itemWidth
+			          }
+				};
+				commonMyNavigationBar(params);
+	}
+
+	function callBackNew(id, index) {
+		var bar_index = 0;
+		bar_index = index;
+		levelValue = id;
+		currentPage = 1;
+		initData(1,true);
+	}
+	
+	/*
+	*author:zhaoj
+	*function:获取申请列表数据
+	*date：20160627
+	*param:	status 0未提交，1审批中，2已经通过，3未通过，4已结束 目前建议只使用 1，2，3
+	*/
+	function initData(currentPage, isReload){
+		showSelfProgress('加载中...');
+		var src_url;
+		currentPage = isReload ? 1 : currentPage;
+		if(levelValue == 1){   //待审批状态 获取申请单数据
+			src_url = BASE_URL_ACTION + '/ypt/space/examine/findHavenotExamina?org_id='+org_id+'&org_type='+org_type+'&level='+sp_level+'&office_id='+office_id+'&page_num='+currentPage+'&page_size='+BASE_PAGE_SIZE+'&random_num='+creatRandomNum();
+		}else{
+			var status = 1;  //0未提交，1审批中，2已经通过，3未通过，4已结束 目前建议只使用 0,1，2，3
+			if(levelValue==2){  //1待审批 2审批中 3已通过 4未通过
+				status = 1;
+			}
+			if(levelValue==3){ 
+				status = 2;
+			}
+			if(levelValue==4){ 
+				status = 3;
+			}
+			if(sp_level == 3 || sp_level == 1){  //局级、校级人员—非科室
+				src_url = BASE_URL_ACTION + '/ypt/space/examine/findExaminaingExOffice?org_id='+org_id+'&org_type='+org_type+'&level='+sp_level+'&status='+status+'&page_size='+BASE_PAGE_SIZE+'&page_num='+currentPage+'&random_num='+creatRandomNum();
+			}else{   //科室人员
+				src_url = BASE_URL_ACTION + '/ypt/space/examine/findExaminaingOffice?office_id='+office_id+'&status='+status+'&page_size='+BASE_PAGE_SIZE+'&page_num='+currentPage+'&random_num='+creatRandomNum();
+			}
+		}
+		api.ajax({
+			url : src_url,
+			method : 'get',
+			timeout : 0,
+			dataType : 'json',
+			headers : {
+	'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+}
+			}, function(ret, err) {
+				api.hideProgress();
+				var data={"list": []};
+				if (err) {
+					data.levelValue = levelValue;
+					addTemplateHtml('tz_body', 'tz_script', data);
+				} else {
+					if(ret.success){
+						ret.levelValue = levelValue;
+						addTemplateHtml('tz_body', 'tz_script', ret);
+						totalPage = ret.total_page;
+					}else{
+						data.levelValue = levelValue;
+						addTemplateHtml('tz_body', 'tz_script', data);
+					}
+				}
+				//通知顶部下拉刷新数据加载完毕，组件会恢复到默认状态
+				api.refreshHeaderLoadDone();
+		});
+	}
+	
+	/*
+	 *author:zhaoj
+	 *function:渲染html
+	 *date：20160627
+	 */
+	function addTemplateHtml(div_id, script_id, data){
+		var html_type = template.render(script_id, data);
+		if (currentPage == 1) {
+			document.getElementById(div_id).innerHTML = html_type;
+		} else {
+			$api.append($api.byId(div_id), html_type);
+		}
+	}
+	/*
+	*author:zhaoj
+	*function:打开加载数据的提示框
+	*date：20160627
+	*/
+	function showSelfProgress(msg){
+		api.showProgress({
+			title : msg,
+			text : '请稍候...',
+			modal : false
+		});
+	}
+	/**
+	 * 下拉刷新
+	 * 周枫
+	 * 2016.2.29
+	 */
+	function refreshDataInfo() {
+		//绑定下拉刷新历史会话事件
+		api.setRefreshHeaderInfo({
+			visible : true,
+			loadingImg : 'widget://image/local_icon_refresh.png',
+			bgColor : '#F0F0F0',
+			textColor : '#8E8E8E',
+			textDown : '下拉加载更多...',
+			textUp : '松开加载...',
+			showTime : true
+		}, function(ret, err) {
+			//从服务器加载数据，完成后调用api.refreshHeaderLoadDone()方法恢复组件到默认状态
+			//调用获取历史会话监听
+			//打开滑动条
+				initData(1, true)
+			});
+	}
+	/**
+	 * 上拉刷新页面数据
+	 * 周枫
+	 * 2015.11.24
+	 */
+	function scrollBottomReload() {
+		//下移到底部：
+		api.addEventListener({
+			name : 'scrolltobottom',
+			extra : {
+				threshold : 100 //设置距离底部多少距离时触发，默认值为0，数字类型
+			}
+		}, function(ret, err) {
+			if ((currentPage + 1) <= totalPage) {
+				initData(currentPage + 1, false)
+				currentPage = currentPage + 1;
+			} else {
+				api.toast({
+					msg : '已加载全部数据',
+					location : 'bottom'
+				});
+			}
+		});
+	}
+	
+	/*
+	*作者:zhaoj
+	*功能:关闭滑动条
+	*日期：20160913
+	*/
+	function closeNav(){
+        commonCloseNavigationBar();
+    }
+
+</script>
+</html>

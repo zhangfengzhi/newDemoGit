@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<title>题本下拉菜单</title>
+		<link rel="stylesheet" type="text/css" href="../../../../../css/aui/aui.css" />
+		<link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+		<style>
+			html, body {
+				background-color: transparent;
+				background: rgba(0,0,0,0);
+			}
+			body {
+				padding: 0;
+				margin: 0;
+			}
+			.shadow {
+				position: absolute;
+				left: 0;
+				top: 0;
+				width: 100%;
+				height: 100%;
+				z-index: 1;
+			}
+			.header {
+				width: 100%;
+				height: 45px;
+			}
+			.main {
+				width: 100%;
+			}
+			.menu-list {
+				list-style: none;
+				background-color: #ffffff;
+				box-shadow: 0px 0px 5px #cccccc;
+				position: relative;
+				width: 150px;
+				float: right;
+				z-index: 2;
+				padding: 0;
+				margin: 0;
+			}
+			.menu-list li {
+				height: 48px;
+				line-height: 48px;
+				display: block;
+				border-bottom: 1px solid #eeeeee;
+				color: #333;
+				font-family: sans-serif;
+				text-align:center;
+			}
+			.menu-list li .icon-box {
+				width: 60px;
+				height: 48px;
+				display: inline-block;
+				float: left;
+			}
+			.menu-list li span {
+				display: inline-block;
+				height: 48px;
+				line-height: 48px;
+			}
+			.menu-list li .tiwen {
+				background: url(../../../../../image/fun-module/iphone/zuoye/talk.png) 15px center no-repeat;
+				background-size: 31px 28px;
+			}
+			.menu-list li .chouqu {
+				background: url(../../../../../image/fun-module/iphone/zuoye/weike.png) 15px center no-repeat;
+				background-size: 31px 27px;
+			}
+			.menu-list li .zuowei{background: url(../../../../../image/fun-module/iphone/zuoye/look.png) 15px center no-repeat; background-size: 31px 31px;}
+			.menu-list li .shuoming {
+				background: url(../../../../../image/fun-module/iphone/daoxue/explain.png) 15px center no-repeat;
+				background-size: 31px 27px;
+			}
+		</style>
+	</head>
+	<body class="common-iphone-tibenJy">
+		<div class="shadow" tapmode onclick="api.closeFrame({name:'tibenJy_menu_frame'});"></div>
+		<div id="header" class="header"></div>
+		<div id="main" class="main">
+			<ul class="menu-list">
+				<li onclick="addToRightQuestionMenu();" class="aui-hide wrong_q_menu">
+					<span>收藏</span>
+				</li>
+				<li id="is_master_div" class="aui-hide wrong_q_menu">
+					<span>未掌握</span>
+				</li>
+				<li onclick="setWrongTagMenu();" class="aui-hide wrong_q_menu">
+					<span>设置错题标签</span>
+				</li>
+				<li onclick="removeQuestionFromTbMenu();" class="aui-hide collect_q_menu">
+					<span>取消收藏</span>
+				</li>
+				<!--<li onclick="openHhChat(2);">
+					<span>问题求助</span>
+				</li>
+				<li onclick="openHhChat(3);">
+					<span>发起讨论</span>
+				</li>-->
+				<!--<li id="wk_li" onclick="openWkList();" style="display: none;">
+					<span>查看微课</span>
+				</li>-->
+				<li id="j_each_other" class="aui-hide" onclick="openHxckWin();">
+					<span>互相查看</span>
+				</li>
+				<li id="daoxue_details" onclick="openDaoxueDetailsFrame();" style="display:none;">
+					<span>导学说明</span>
+				</li>
+			</ul>
+		</div>
+	</body>
+	<script type="text/javascript" src="../../../../../script/api.js"></script>
+	<script type="text/javascript" src="../../../../../script/base_config.js" ></script>
+    <script type="text/javascript" src="../../../../../script/common/common.js" ></script>
+	<script type="text/javascript">
+		var header_h;
+		//获取最后一条id
+		var old_msg_id = -1;
+		//试题id
+		var que_id;
+		//试题idchar
+		var que_id_char;
+		//检测id
+		var zy_id;
+		//打开类型，1：资源，3：试题，5：微课
+		var select_type;
+		//资源微课问题id
+		var t_id;
+		//1检测2导学
+		var z_type;
+		//是否掌握当前试题
+		var is_master;
+		var jr_type;	//1：错题本，2：收藏 
+		apiready = function() {
+		    commonSetTheme({"level":5,"type":0});
+			header_h = api.pageParam.header_h;
+			var is_have_wk = api.pageParam.is_have_wk;
+			que_id = api.pageParam.que_id;
+			que_id_char = api.pageParam.que_id_char;
+			zy_id = api.pageParam.zy_id;
+			t_id = api.pageParam.t_id;
+			z_type = api.pageParam.z_type;
+			jr_type = api.pageParam.jr_type;
+			is_master = api.pageParam.is_master;
+			select_type = parseInt(api.pageParam.select_type);
+			$api.css($api.byId('header'), 'height:' + header_h + 'px;');
+			$api.css($api.byId('main'), 'height:' + (api.winHeight - header_h) + 'px;');
+			//是否有微课
+			isShowWk(is_have_wk);
+			//设置掌握按钮状态
+			deleteFromWrontQuestionsMenu(is_master);
+			if(api.pageParam.is_public){
+				commonAddOrRemoveHideCss('j_each_other',1);
+			}
+			if(api.pageParam.is_daoxue_details){
+				commonAddOrRemoveHideCss('daoxue_details',1);
+			}
+			//区分做错的题及收藏的题分别展示的标签按钮
+			if($api.getStorage('identity')==6){
+				if(jr_type==1){   //错题本
+					var main_dom = $api.byId('main');
+					var wrong_ques = $api.domAll(main_dom, '.wrong_q_menu');
+					for(var i=0;i<wrong_ques.length;i++){
+						$api.removeCls(wrong_ques[i], 'aui-hide');
+					}
+				}else if(jr_type==2){  //收藏
+					var main_dom = $api.byId('main');
+					var collect_ques = $api.domAll(main_dom, '.collect_q_menu');
+					for(var i=0;i<collect_ques.length;i++){
+						$api.removeCls(collect_ques[i], 'aui-hide');
+					}
+					
+				}
+			}
+			
+			//获取最后一条id的监听
+			api.addEventListener({
+				name : 'setOldMessageId'
+			}, function(ret) {
+				if (ret && ret.value) {
+					var value = ret.value;
+					old_msg_id = value.old_msg_id;
+				}
+			});
+		};
+		/**
+		 * 打开班级群组会话
+		 * 周枫
+		 * 2016.04.13
+		 */
+		function openHhChat(send_type) {
+			setTimeout(function() {
+				var identity_id = parseInt($api.getStorage('identity'));
+				var target_id = '';
+				switch(identity_id) {
+					case 5:
+						target_id = 'class_' + $api.getStorage('class_id') + '_' + $api.getStorage('BASE_SERVER_NAME');
+						break;
+					case 6:
+						target_id = 'class_' + $api.getStorage('class_id') + '_' + $api.getStorage('BASE_SERVER_NAME');
+						break;
+					case 7:
+						target_id = 'plass_' + $api.getStorage('class_id') + '_' + $api.getStorage('BASE_SERVER_NAME');
+						break;
+				}
+				var title = $api.getStorage('class_name');
+				if ('undefined' == typeof (title) || null == title) {
+					title = '班级讨论';
+				}
+				api.ajax({
+                    url: BASE_URL_ACTION+'/rongcloud/syncUserRongYunGroup?group_id='+target_id,
+                    method:'get',
+                    timeout:30,
+                    dataType:'json'
+                },function(ret,err){
+                    execHhList(target_id, title, "GROUP" , send_type);
+                });
+			}, 100);					
+		}
+
+		/**
+		 * 打开班级群组会话
+		 * 周枫
+		 * 2016.04.13
+		 */
+		function execHhList(target_id, title, conver_type, send_type) {
+			var avatar_url = 'widget:\/\/image\/person\/class.png';
+			var send_txt = '';
+			var person_id = $api.getStorage("person_id");
+			var identity_id = $api.getStorage("identity");
+			setTimeout(function() {
+				switch(select_type){
+					//资源
+					case 1:
+						//'进入看看', '求助同学', '发起讨论'
+						switch(send_type){	
+							case 1:
+								api.closeFrame({name:'tibenJy_menu_frame'});
+							break;
+							case 2:
+								send_txt = "问题求助：大家好，我有一个问题不会，请大家帮助我解答一下，谢谢。";
+								sendText(send_txt + "<a href=\"javascript:openQuestionFrame('"+que_id_char+"','','"+zy_id+"','"+select_type+"','"+t_id+"','"+z_type+"','"+person_id+"','"+identity_id+"');\">点击查看</a>", send_txt+"<a href=\"javascript:openQuestionFrame('"+que_id_char+"','"+que_id+"','"+zy_id+"','"+select_type+"','"+t_id+"','"+z_type+"','"+person_id+"','"+identity_id+"');\">点击查看</a>", 'GROUP', target_id);	
+							break;
+							case 3:
+								send_txt = "发起讨论：大家好，关于这个资源，咱们一起讨论一下吧！";
+								sendText(send_txt + "<a href=\"javascript:openQuestionFrame('"+que_id_char+"','"+que_id+"','"+zy_id+"','"+select_type+"','"+t_id+"','"+z_type+"','"+person_id+"','"+identity_id+"');\">点击查看</a>", send_txt+"<a href=\"javascript:openQuestionFrame('"+que_id_char+"','"+que_id+"','"+zy_id+"','"+select_type+"','"+t_id+"','"+z_type+"','"+person_id+"','"+identity_id+"');\">点击查看</a>", 'GROUP', target_id);
+							break;
+						}
+						
+					break;
+					//试题
+					case 3:
+						//'进入看看', '求助同学', '发起讨论'
+						switch(send_type){	
+							case 1:
+								api.closeFrame({name:'tibenJy_menu_frame'});
+							break;
+							case 2:
+								send_txt = "问题求助：大家好，我有一个问题不会，请大家帮助我解答一下，谢谢！";
+								sendText(send_txt + "<a href=\"javascript:openQuestionFrame('"+que_id_char+"','"+que_id+"','"+zy_id+"','"+select_type+"','"+t_id+"','"+z_type+"','"+person_id+"','"+identity_id+"');\">点击查看</a>", send_txt+"<a href=\"javascript:openQuestionFrame('"+que_id_char+"','"+que_id+"','"+zy_id+"','"+select_type+"','"+t_id+"','"+z_type+"','"+person_id+"','"+identity_id+"');\">点击查看</a>", 'GROUP', target_id);	
+							break;
+							case 3:
+								send_txt = "发起讨论：大家好，关于这道试题，咱们一起讨论一下吧！";
+								sendText(send_txt + "<a href=\"javascript:openQuestionFrame('"+que_id_char+"','"+que_id+"','"+zy_id+"','"+select_type+"','"+t_id+"','"+z_type+"','"+person_id+"','"+identity_id+"');\">点击查看</a>", send_txt+"<a href=\"javascript:openQuestionFrame('"+que_id_char+"','"+que_id+"','"+zy_id+"','"+select_type+"','"+t_id+"','"+z_type+"','"+person_id+"','"+identity_id+"');\">点击查看</a>", 'GROUP', target_id);
+							break;
+						}
+					break;
+					//微课
+					case 5:
+						//'进入看看', '求助同学', '发起讨论'
+						switch(send_type){	
+							case 1:
+								api.closeFrame({name:'tibenJy_menu_frame'});
+							break;
+							case 2:
+								send_txt = "问题求助：大家好，我有一个问题不会，请大家帮助我解答一下，谢谢！";
+								sendText(send_txt + "<a href=\"javascript:openQuestionFrame('"+que_id_char+"','"+que_id+"','"+zy_id+"','"+select_type+"','"+t_id+"','"+z_type+"');\">点击查看</a>", send_txt+"<a href=\"javascript:openQuestionFrame('"+que_id_char+"','"+que_id+"','"+zy_id+"','"+select_type+"','"+t_id+"','"+z_type+"');\">点击查看</a>", 'GROUP', target_id);	
+							break;
+							case 3:
+								send_txt = "发起讨论：大家好，关于这节微课，咱们一起讨论一下吧！";
+								sendText(send_txt + "<a href=\"javascript:openQuestionFrame('"+que_id_char+"','"+que_id+"','"+zy_id+"','"+select_type+"','"+t_id+"','"+z_type+"');\">点击查看</a>", send_txt+"<a href=\"javascript:openQuestionFrame('"+que_id_char+"','"+que_id+"','"+zy_id+"','"+select_type+"','"+t_id+"','"+z_type+"');\">点击查看</a>", 'GROUP', target_id);
+							break;
+						}
+					break;
+				}
+				
+			}, 300);
+		    commonExecScript('root','hh_index','openHhList("' + target_id + '",' + old_msg_id + ',"' + title + '","' + conver_type + '","zjgb",\"' + avatar_url + '\");',1);
+		}
+		
+		/**
+		 * 发送文本消息
+		 * 周枫
+		 * 2015.08.08
+		 * @param {Object} sendMsg
+		 */
+		function sendText(send_msg_old, sendMsg, conver_type, target_id) {
+			
+			//向会话列表页发送消息事件
+			api.sendEvent({
+				name : 'sendMessage',
+				extra : {
+					type : 'text',
+					targetId : '' + target_id + '',
+					content : sendMsg,
+					contentOld : send_msg_old,
+					conversationType : conver_type,
+					extra : ''
+				}
+			});
+			commonCloseFrame('tibenJy_menu_frame');
+		}
+
+		/**
+		 * 是否显示微课
+		 * 周枫
+		 * 2016.4.15
+		 */
+		function isShowWk(flag) {
+			if (flag == 1) {
+				$api.css($api.byId('wk_li'), 'display:inline;');
+			} else {
+				$api.css($api.byId('wk_li'), 'display:none;');
+			}
+		}
+		
+		/**
+		 * 打开微课列表
+		 * 周枫
+		 * 2016.4.15 
+		 */
+		function openWkList(){
+			//api.closeFrame({name:'tibenJy_menu_frame'});
+			var pageParamJson = {
+			    'header_h' : header_h,
+                'que_id' : que_id,
+                'question_id_char':que_id_char
+			};
+			commonOpenWin('weike_menu_list_window', 'weike_menu_list_window.html', false, false, pageParamJson);
+			commonCloseFrame('tibenJy_menu_frame');
+		}
+		
+		/**
+		 * 进入班级讨论前选择类型
+		 * 周枫
+		 * 2016.4.20 
+		 */
+		function openBjtlMenu() {
+			var bsqy_list = ['进入看看', '问题求助', '发起讨论'];
+			api.actionSheet({
+				cancelTitle : '取消',
+				buttons : bsqy_list
+			}, function(ret, err) {
+				if (ret) {
+					var b_index = ret.buttonIndex;
+					switch(b_index) {
+						case 1:
+							openHhChat(b_index);
+							break;
+						case 2:
+							openHhChat(b_index);
+							break;
+						case 3:
+							openHhChat(b_index);
+							break;
+						default:
+							
+						break;
+					}
+				} else {
+					popToast('请重新选择');
+				}
+			});
+		}
+		
+		/*
+		*author:zhaoj
+		*function:打开导学详情页面
+		*date：20160419
+		*/
+		function openDaoxueDetailsFrame(){
+			commonExecScript('daoxue_xs_write_window','','openDetailsFrame();',0);
+			setTimeout(function(){
+				commonCloseFrame('tibenJy_menu_frame');
+			},100);
+		}
+		/*
+	*author:zhaoj
+	*function:打开互相查看页面
+	*date：20160411
+	*/
+	function openHxckWin(){
+	    var pageParamJson = {
+	        'header_h' : header_h,
+            'zy_id' :api.pageParam.zy_id,
+            'zy_name' : api.pageParam.zy_name
+	    };
+	    commonOpenWin('zuoyeXsJy_hxck_window', 'zuoyeXsJy_hxck_window.html', false, false, pageParamJson);
+	    commonCloseFrame('tibenJy_menu_frame');
+	}
+	
+	/**
+	 * author:zfz
+	 * function:实现“做错的题详细页面”收藏功能，当前window下调用tibenJy_detail_frame下的函数
+	 * data:20170909
+	 */
+	function addToRightQuestionMenu(){
+        commonExecScript('tibenJy_detail_window','tibenJy_detail_frame','addToRightQuestion();',1);
+        commonCloseFrame('tibenJy_menu_frame');
+	}
+	
+	/**
+	 * author:zfz
+	 * function:实现“做错的题详细页面”设置错题标签功能，当前window下调用tibenJy_detail_frame下的函数
+	 * data:20170909
+	 */
+	function setWrongTagMenu(){
+        commonExecScript('tibenJy_detail_window','tibenJy_detail_frame','setWrongTag();',1);
+	}
+	
+	/**
+	 * author:zfz
+	 * function:实现“做错的题详细页面”设置掌握功能，当前window下调用tibenJy_detail_frame下的函数
+	 * data:20170911
+	 */
+	function deleteFromWrontQuestionsMenu(is_master){
+		var is_master_div = $api.byId('is_master_div');
+		if(is_master==1){
+			$api.text($api.dom(is_master_div, 'span'), '未掌握');
+		}else{
+			$api.text($api.dom(is_master_div, 'span'), '掌握');
+		}
+		$api.addEvt(is_master_div, 'click', function(){
+			if(is_master==1){
+				$api.text($api.dom(is_master_div, 'span'), '未掌握');
+				is_master = 0;
+			}else{
+				$api.text($api.dom(is_master_div, 'span'), '掌握');
+				is_master = 1;
+			}
+			commonExecScript('tibenJy_detail_window','tibenJy_detail_frame','deleteFromWrontQuestions('+is_master+');',1);
+		    commonExecScript('tibenJy_detail_window','','setIsMaster('+is_master+');',0);
+	        commonCloseFrame('tibenJy_menu_frame');
+		});
+		
+		
+	}
+	/**
+	 * author:zfz
+	 * function:实现“做错的题详细页面”设置取消收藏功能，当前window下调用tibenJy_detail_frame下的函数
+	 * data:20170909
+	 */
+	function removeQuestionFromTbMenu(){
+        commonExecScript(api.winName,'tibenJy_detail_frame','removeQuestionFromTb();',1);
+	}
+	</script>
+</html>

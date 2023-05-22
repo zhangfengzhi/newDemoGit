@@ -1,0 +1,57 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="utf-8">
+		<!-- html5：在创建html时为了防止页面缩放等不兼容效果，要创建个viewport  -->
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<!-- 在IOS设备上，有时会将数字转为手机号，这里也要禁止下 -->
+		<meta name="format-detection" content="telephone=no"/>
+    <title>APP</title>
+    <link rel="stylesheet" type="text/css" href="../../css/aui/aui.css" />
+    <link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+    <!--<link rel="stylesheet" type="text/css" href="../../css/api.css"/>-->
+</head>
+<style>
+.history-date { font-size: 12px;}
+#message-content { overflow-y: auto;}
+
+
+        #wrap {
+            height: 100%;
+            display: -webkit-box;
+            display: -webkit-flex;
+            display: flex;
+            -webkit-box-orient: vertical;
+            -webkit-flex-flow: column;
+            flex-flow: column;
+        }
+.topbar {
+            background: #f2f2f2;
+            height: 45px;
+            border-bottom: 1px solid #DDDFE3;
+            line-height: 45px;
+            text-align: center;
+            display: none;
+            color: #323237;
+        }
+.activebar {
+            display: block;
+        }
+</style>
+<body class="huihua-commont">
+<div id="wrap">
+	<header>
+        <div id="cloud" class="topbar activebar">
+        	
+        </div>
+    </header>
+    <div class="aui-content aui-content-padded" id="message-content">
+        <p class="aui-text-center history-date"></p>
+    </div>
+    </div>
+    
+    <script type="text/javascript" src="../../script/api.js" ></script>
+	<script type="text/javascript" src="../../script/huihua/hh_content_window.js"></script>
+</body>
+
+</html>

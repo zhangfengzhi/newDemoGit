@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<!-- html5：在创建html时为了防止页面缩放等不兼容效果，要创建个viewport  -->
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<!-- 在IOS设备上，有时会将数字转为手机号，这里也要禁止下 -->
+		<meta name="format-detection" content="telephone=no"/>
+		<title>门卫列表页面</title>
+		<link rel="stylesheet" type="text/css" href="../../../../../css/aui/aui.css" />
+		<link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+		<style>
+			body {
+				background: #efeff4;
+				padding: 10px 0px;
+			}
+			.month {
+				width: 100%;
+				height: 65px;
+				background: url(../../../../../image/fun-module/iphone/zuoyebg.png) top repeat-x;
+			}
+			.month .bg {
+				display: inline-block;
+				height: 30px;
+				line-height: 30px;
+				padding: 0 15px 0 0;
+				margin-top: 17px;
+				background: #F8F7F3;
+			}
+			.month .bg div {
+				display: inline-block;
+				height: 28px;
+				line-height: 28px;
+				padding: 0 10px;
+				border-radius: 3px;
+				color: #ffffff;
+			}
+			.zuoye-content {
+			}
+			.zuoye-content li {
+				position: relative;
+				display: block;
+				width: 100%;
+				padding: 10px 10px 7px 10px;
+				background: #ffffff;
+				border-radius: 3px;
+				margin-bottom: 10px;
+			}
+			.zuoye-content li .time {
+				height: 20px;
+				font-size: 14px;
+				color: #9F9F9F;
+			}
+			.zuoye-content li .time font {
+				font-size: 14px;
+				margin-right: 5px;
+			}
+			.zuoye-content li .name {
+				color: #686868;
+				line-height: 40px;
+			}
+			.zuoye-content li .jujue {
+				position: absolute;
+				right: 0;
+				top: 0;
+				width: 28px;
+				height: 46px;
+				background: url(../../../../../image/fun-module/iphone/fangke/jujue.png) top no-repeat;
+				background-size: 28px 46px;
+			}
+			.zuoye-content li .yunxu {
+				position: absolute;
+				right: 0;
+				top: 0;
+				width: 28px;
+				height: 46px;
+				background: url(../../../../../image/fun-module/iphone/fangke/yunxu.png) top no-repeat;
+				background-size: 28px 46px;
+			}
+			.wid100 {
+				width: 100%;
+			}
+			.wid45{
+				min-width:45%; 
+			}
+			.ellipsis {
+				white-space: nowrap;
+				overflow: hidden;
+				text-overflow: ellipsis;
+			}
+			.tijiao, .piyue, .more {
+				display: inline-block;
+				font-size: 12px;
+				color: #9F9F9F;
+			}
+			.mgr5 {
+				margin-right: 5%;
+			}
+			.mgr2 {
+				margin-right: 2%;
+			}
+			.fr {
+				float: right;
+			}
+			.fl {
+				float: left;
+			}
+			.more {
+				background: url(../../../../../image/fun-module/iphone/more.png) left center no-repeat;
+				background-size: 23px 5px;
+				width: 25px;
+				height: 23px;
+			}
+		</style>
+	</head>
+	<body class="common-ipad-fangkeIpad-tea">
+		<!--访客记录列表-->
+		<div id="fklist_div"></div>
+		<script type="text/html" id="fklist_script">
+			<div class="aui-content-padded">
+			<ul class="zuoye-content">
+			<% if(fk_list.length == 0){ %>
+				<div style="text-align:center;color:#666;"><span>您还没有访客记录</span></div>
+			<% }else{ %>
+				<%for(var i=0; i<fk_list.length; i++) {%>
+					<li onclick="openZyContentWin();">
+						<div class="time wid100">
+							<font><%=fk_list[i].fk_name %></font>
+						</div>
+						<% if(fk_list[i].fk_status == "拒绝"){ %>
+							<div class="jujue"></div>
+						<% } %>
+						<% if(fk_list[i].fk_status == "允许"){ %>
+							<div class="yunxu"></div>
+						<% } %>
+						<div class="detail wid100">
+							<div class="wid45 mgr2 fl">
+								<span class="tijiao" style="display: block;">电话：<font><%=fk_list[i].fk_tel %></font></span>
+								<span class="tijiao">人数：<font><%=fk_list[i].fk_person_count %></font></span>
+							</div>
+							<div class="wid45 fl">
+								<span class="tijiao" style="display: block;">预约时间：<font><%=fk_list[i].reserve_date %></font></span>
+								
+								<% if(fk_list[i].fk_status == "允许"){ %>
+									<span class="tijiao">访问：<font><%=fk_list[i].real_date %></font></span>
+								<% } %>
+							</div>
+							
+						</div>
+						
+					</li>
+				<% } %>
+			<% } %>
+			</ul>
+			</div>
+		</script>
+	
+		
+	</body>
+	<script type="text/javascript" src="../../../../../script/api.js" ></script>
+	<script type="text/javascript" src="../../../../../script/base_config.js" ></script>
+	<script type="text/javascript" src="../../../../../script/common/common.js" ></script>
+	<script type="text/javascript" src="../../../../../script/plug-in/template.js" ></script>
+	<script type="text/javascript">
+		//定义头高度
+		var header_h;
+		//总记录数
+		var totalCount = 0;
+		//总页数
+		var totalPages = 0;
+		//定义一个变量存储第一次加载返回来的总记录数
+		var totalData = 0;
+		//通知关键字
+		var keyword = '';
+		//当前页面为第一页
+		var currentPage;
+		apiready = function() {
+			commonSetTheme({"level":5,"type":0});
+			header_h = api.pageParam.header_h;
+			currentPage = 1;
+			//获取数据
+			getFkList(currentPage, true);
+			//下拉刷新
+			refreshDataInfo();
+			//加载上拉加载数据方法
+			scrollBottomReload();
+		};
+		
+		/**
+		 * 获取访客记录列表
+		 * 周枫
+		 * 2016.3.19
+		 */
+		function getFkList(currentPage, isReload) {
+			api.showProgress({
+				title : '加载中...',
+				text : '请稍候...',
+				modal : false
+			});
+			currentPage = isReload ? 1 : currentPage;
+			api.ajax({
+				url : $api.getStorage('BASE_URL_ACTION') + '/fangke/getFangKeInfoListByMwId',
+				method : 'get',
+				dataType : 'json',
+				timeout : 30,
+				data : {
+					values : {
+						"pageNumber" : currentPage,
+						"pageSize" : BASE_PAGE_SIZE,
+						"mw_id" : $api.getStorage('person_id')
+					}
+				}
+			}, function(ret, err) {
+				api.hideProgress();
+				//通知顶部下拉刷新数据加载完毕，组件会恢复到默认状态
+				commonControlRefresh();
+				if (err) {
+					api.toast({
+						msg : '对不起，获取访客记录列表信息失败'
+					});
+				} else {
+					if (ret.success) {
+						totalData = ret.totalRow;
+						totalPages = ret.totalPage;
+						if (isReload) {
+							// 重新设置为1
+							currentPage = 1;
+						}
+						var fk_list = ret.fk_list;
+						
+						for (var i = 0; i < getJsonObjLength(fk_list); i++) {
+							var fk_num = parseInt(fk_list[i].fk_person_count);
+							switch(fk_num){
+								case 0:
+									fk_list[i]["fk_person_count"] = '不限人数';
+								break;
+								case 1:
+									fk_list[i]["fk_person_count"] = '1人';
+								break;
+								case 2:
+									fk_list[i]["fk_person_count"] = '2人';
+								break;
+								case 3:
+									fk_list[i]["fk_person_count"] = '3人';
+								break;
+								case 4:
+									fk_list[i]["fk_person_count"] = '4人';
+								break;
+								case 5:
+									fk_list[i]["fk_person_count"] = '5人';
+								break;
+							}
+						}
+						var html_type = template.render('fklist_script', ret);
+						if (currentPage == 1) {
+							document.getElementById('fklist_div').innerHTML = html_type;
+						} else {
+							$api.append($api.byId('fklist_div'), html_type);
+						}
+
+					} else {
+						api.toast({
+							msg : '对不起，获取访客记录列表信息失败'
+						});
+					}
+				}
+			});
+		}
+
+		/**
+		 * 下拉刷新
+		 * 周枫
+		 * 2016.3.19
+		 */
+		function refreshDataInfo() {
+			//绑定下拉刷新历史会话事件
+			api.setRefreshHeaderInfo({
+				visible : true,
+				loadingImg : 'widget://image/local_icon_refresh.png',
+				bgColor : '#F5F5F5',
+				textColor : '#8E8E8E',
+				textDown : '下拉加载更多...',
+				textUp : '松开加载...',
+				showTime : true
+			}, function(ret, err) {
+				//从服务器加载数据，完成后调用commonControlRefresh()方法恢复组件到默认状态
+				getFkList(currentPage, true);
+			});
+		}
+		
+		/**
+		 * 上拉刷新页面数据
+		 * 周枫
+		 * 2015.11.24
+		 */
+		function scrollBottomReload() {
+			//下移到底部：
+			api.addEventListener({
+				name : 'scrolltobottom',
+				extra : {
+					threshold : 100 //设置距离底部多少距离时触发，默认值为0，数字类型
+				}
+			}, function(ret, err) {
+				if ((currentPage + 1) <= totalPages) {
+					getFkList(currentPage, true);
+					currentPage = currentPage + 1;
+					// 页码+1
+				} else {
+					api.toast({
+						msg : '已加载全部数据',
+						location : 'bottom'
+					});
+				}
+			});
+		}
+	</script>
+</html>

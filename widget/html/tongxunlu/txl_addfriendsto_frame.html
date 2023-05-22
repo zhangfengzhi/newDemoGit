@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<title>好友加我列表</title>
+		<link rel="stylesheet" type="text/css" href="../../css/aui/aui.css" />
+		<link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+		<style>
+			body {
+			}
+			.menu-btn-jj {
+				position: absolute;
+				right: 15px;
+				top: 20px;
+			}
+			.menu-btn-yx {
+				position: absolute;
+				right: 90px;
+				top: 20px;
+			}
+			.presshover {
+				background-color: #FAFAFA;
+			}
+			.span_name {
+				width: 80%;
+				/*font-size: 18px;*/
+				/*text-align: center;*/
+				display: inline-block;
+				/*word-break: keep-all;*/
+				white-space: nowrap;
+				overflow: hidden;
+				text-overflow: ellipsis;
+			}
+			.aui-img-body{padding-right:129px;}
+			.pr0{padding-right:0 !important;}
+		</style>
+	</head>
+	<body class="tongxunlu-common">
+		<!--好友列表-->
+		<div id="friends_list_div"></div>
+		<script type="text/html" id="friends_list_script">
+			<ul class="aui-user-view">
+				<% if(applys.length == 0){ %>
+					<div style="text-align:center;color:#666; margin-top: 20px;"><span>暂无好友添加您~~</span></div>
+				<% }else{ %>
+					<%for(var i=0; i<applys.length; i++) {%>
+						<!--好友列表-->
+						<li tapmode="presshover" class="aui-user-view-cell aui-img">
+							<img class="aui-img-object aui-pull-left" src="../../image/common/header.png">
+							<div class="aui-img-body">
+								<span class="span_name"><%=applys[i].person_name %></span>
+								<p class='aui-ellipsis-1 pr0'>
+									<%if(applys[i].identity_id == 5){%>
+										教师&nbsp;&nbsp;<em><%=applys[i].apply_time.substring(0,10) %></em>
+									<%} else if(applys[i].identity_id == 6){%>
+										学生&nbsp;&nbsp;<em><%=applys[i].apply_time.substring(0,10) %></em>
+									<%} else if(applys[i].identity_id == 7){%>
+										家长&nbsp;&nbsp;<em><%=applys[i].apply_time.substring(0,10) %></em>
+									<%}%>
+								</p>
+							</div>
+							<button class="aui-btn aui-btn-primary-old menu-btn-yx" onclick="dealwithApplyFriend('<%=applys[i].apply_id %>',1);">接受</button>
+							<button class="aui-btn aui-btn-danger menu-btn-jj" onclick="dealwithApplyFriend('<%=applys[i].apply_id %>',2);">拒绝</button>
+						</li>
+					<% } %>
+				<% } %>
+			</ul>
+		</script>
+		<script type="text/javascript" src="../../script/api.js" ></script>
+		<script type="text/javascript" src="../../script/base_config.js" ></script>
+		<script type="text/javascript" src="../../script/plug-in/base64.js" ></script>
+		<script type="text/javascript" src="../../script/plug-in/template.js" ></script>
+		<script type="text/javascript" src="../../script/common/common.js" ></script>
+	</body>
+	<script type="text/javascript">
+		var person_id;
+		var identity_id;
+		var BASE_URL_ACTION;
+		apiready = function() {
+			commonSetTheme({"level":2,"type":0});
+			identity_id = $api.getStorage('identity');
+			person_id = $api.getStorage('person_id');
+			BASE_URL_ACTION = $api.getStorage('BASE_URL_ACTION');
+			initData();
+			//下拉刷新
+			commonRefreshHeaderInfo();
+		};
+		function initData() {
+			api.showProgress({
+				title : '加载中...',
+				text : '请稍候...',
+				modal : false
+			});
+			
+			//查询请求
+			var list_url = BASE_URL_ACTION + '/ypt/friend/getApplyFriend?person_id=' + person_id + '&identity_id=' + identity_id + '&random_num=' + creatRandomNum();
+			api.ajax({
+				url : list_url,
+				method : 'get',
+				dataType : 'json',
+				timeout : 30,
+				cache : false,
+				headers : {
+					'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+				}
+			}, function(ret, err) {
+				api.hideProgress();
+				commonControlRefresh();
+				if (err) {
+				    popToast('对不起，获取好友列表失败');
+				} else {
+					if (ret.success) {
+						var html_type = template.render('friends_list_script', ret);
+						document.getElementById('friends_list_div').innerHTML = html_type;
+					} else {
+						popToast('对不起，获取好友列表失败');
+					}
+				}
+			});
+		}
+		
+		/**
+		 * 接受或拒绝好友申请
+		 * 周枫
+		 * 2016.1.22
+		 */
+		function dealwithApplyFriend(apply_id, deal_flag) {
+			api.showProgress({
+				title : '加载中...',
+				text : '请稍候...',
+				modal : false
+			});
+			//获取分组
+			getGroupsInfo(function(is_true, data){
+				if(is_true) {
+					dealApplyFriend(apply_id, deal_flag, data, function(is_true, msg){
+						api.hideProgress();
+						if(is_true) {
+							//增加好友或拒绝后，刷新通讯录列表
+							$api.setStorage('friend_is_change',1);
+							
+							api.toast({
+	                            msg:msg
+                            });
+						} else {
+							api.toast({
+	                            msg:msg
+                            });
+						}
+						initData();
+					})
+				} else {
+					api.hideProgress();
+					api.toast({
+	                            msg:data
+                            });
+				}
+			});
+		}
+		
+		/**
+		 * 接受或拒绝好友申请
+		 * 周枫
+		 * 2016.1.22
+		 */
+		function dealApplyFriend(apply_id, deal_flag, group_id, callback){
+			api.ajax({
+				url : BASE_URL_ACTION + '/ypt/friend/dealwithApplyFriend?apply_id=' + apply_id + '&deal_flag=' + deal_flag + '&group_id=' + group_id + '&random_num=' + creatRandomNum(),
+				method : 'get',
+				dataType : 'json',
+				timeout : 30,
+				cache : false,
+				headers : {
+					'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+				}
+			}, function(ret, err) {
+				api.hideProgress();
+				commonControlRefresh();
+				if (err) {
+					callback(false, '对不起，添加好友失败');
+				} else {
+					if (ret.success) {
+						callback(true, ret.info);
+					} else {
+						callback(false, ret.info);
+					}
+				}
+			});
+		}
+		
+		/**
+		 * 获取好友分组，取默认群组
+		 * 周枫
+		 * 2016.1.22 
+		 */
+		function getGroupsInfo(callback){
+			api.ajax({
+				url : BASE_URL_ACTION + '/ypt/friend/getGroups?person_id='+person_id + '&identity_id=' + identity_id+ '&random_num=' + creatRandomNum(),
+				method : 'get',
+				timeout : 30,
+				dataType : 'json',
+				cache : false,
+				headers : {
+					'Cookie' : 'person_id=' + person_id + '; identity_id=' + identity_id + '; token=' + $api.getStorage("token_ypt") + ';'
+				}
+			}, function(ret, err) {
+				if (err) {
+					callback(false, '对不起，获取群组列表失败');
+				} else {
+					if (ret.success) {
+						var my_groups = ret.groups;
+						if(my_groups.length > 0) {
+							for(var i=0; i<my_groups.length; i++) {
+								if(my_groups[i].group_type == 1) {
+									callback(true, my_groups[i].group_id);
+									break;
+								}
+							}
+						}
+					} else {
+						callback(false, '对不起，获取群组列表失败');
+					}
+				}
+			});
+		}
+	</script>
+</html>

@@ -1,0 +1,44 @@
+.mode-tip{padding: 10px 10px 0 10px;font-size:12px;margin-top:5px;}
+.mode-tip ul li{position:relative;padding:0 10px 0 40%;height:120px;background:#fff;margin-bottom:10px;border:1px solid #3498db;}
+.mode-tip ul li .tip{position:absolute;top:10px;left:55px;width:20px;height:20px;background:#f00;color:#fff;line-height:20px;text-align:center;border-radius:50%;font-size:14px;}
+.mode-tip ul li .img{position:absolute;width:90px;height:90px;left:0;top:0;text-align:center;}
+.mode-tip ul li .img div{position:absolute;top:68px;left:-18px;width:100px;font-size:18px;color:#3498db}
+.mode-tip ul .height_1{height:110px}
+.mode-tip ul .height_2{height:160px}
+.mode-tip ul .height_3{height:210px}
+.mode-tip ul .height_4{height:260px}
+.mode-tip ul li:nth-child(1){padding-top:50px;}
+.mode-tip ul li:nth-child(1) .first-div{width:100%;border-bottom:1px dashed #D9D8D9;height:50px;line-height:50px;position:absolute;top:60px;left:0;padding:0 10px;font-size:14px;max-width:99%;overflow:hidden;text-overflow:ellipsis;}
+.mode-tip ul li:nth-child(1) .second-div{width:100%;border-bottom:1px dashed #D9D8D9;height:50px;line-height:50px;position:absolute;top:110px;left:0;padding:0 10px;font-size:14px}
+.mode-tip ul li:nth-child(1) .third-div{width:100%;border-bottom:1px dashed #D9D8D9;height:50px;line-height:50px;position:absolute;top:160px;left:0;padding:0 10px;font-size:14px}
+.mode-tip ul li:nth-child(1) .forth-div{width:80%;height:50px;line-height:50px;position:absolute;top:210px;left:0;padding:0 10px;font-size:14px}
+.mode-tip ul li .tu-span{height:10px;width:20px;background:url(../../../image/fun-module/iphone/init/notice.png) 3px center no-repeat;background-size: auto 12px;}
+.mode-tip ul li .tu-span-active{height:10px;width:20px;background:url(../../../image/fun-module/iphone/init/notice-active.png) 3px center no-repeat;background-size: auto 12px;}
+.mode-tip ul li .img-kqsp{width:64px;height:64px;border-radius:50%;margin:13px 0 0 13px;}
+.mode-tip ul li .img-dktj{width:64px;height:64px;border-radius:50%;margin:13px 0 0 13px;}
+.mode-tip ul li .img-wjdc{width:64px;height:64px;border-radius:50%;margin:13px 0 0 13px;}
+.mode-tip ul li .name_left{position:relative;top:35px;left:40px;color:#585657;width:40px;height:40px;line-height:40px;text-align:center;border:1px solid #D9D8D9;display:inline-block;}
+.mode-tip ul li .name_right{position:relative;top:35px;left:50px;color:#585657;width:40px;height:40px;line-height:40px;text-align:center;border:1px solid #D9D8D9;display:inline-block;}
+.mode-tip ul li#dktj{padding-right:0 !important;padding-left:80px; text-align:center;}
+.mode-tip ul li#dktj .name_right{left: auto;margin-left: 1px;width:36px;height:36px; line-height:36px;}
+.mode-tip ul li#dktj .dktj-span{position:absolute;top:30px;left:0;width:36px;}
+.mode-tip ul li .time_left{position:absolute;top:5px;left:73%;color:#585657;width:100px;height:20px;line-height:20px;text-align:center;display:inline-block;}
+.mode-tip ul li .detail{color:#ABABAB;font-size:14px;padding-top:2px;}
+.mode-tip ul li .czzj{width:33.3%;float: left;color:#ABABAB;padding-top:4px;color:#595758;}
+.mode-tip ul li .first{padding:3px 4px 0 0;}
+.mode-tip ul li .second{padding:3px 2px 0 2px;}
+.mode-tip ul li .three{padding:3px 0 0 4px;}
+.mode-tip ul li .czzj .num{border:1px solid #dfdfdf;text-align:center;border-radius:8px;}
+.mode-tip ul li .czzj .num-name{text-align:center;padding-top:5px;color:#595758;font-size:14px;}
+.first-tip{position:absolute;top:2px;left:38px;width:20px;height:20px;background:#f00;color:#fff;line-height:20px;text-align:center;border-radius:50%;font-size:14px;}
+.tzgg-back{width:100%;background:#3498db;height:60px;position:absolute;top:0;left:0;padding-left:60px;line-height:60px;color:#ffffff;font-size:18px;}
+.wdkq-span{position:absolute;top:30px;left:-2px;width:40px;}
+.dktj-span{position:absolute;top:30px;left:0;width:40px;}
+.more-tzgg{width:45px;height:45px;padding-left:2px;position:absolute;bottom:-1px;right:-1px;line-height:30px;font-size:12px;color:#ffffff}
+.tongzi-div{width:25%;float:left;color:#585657}
+.tongzi-name{width:67%;max-width:67%;float:right;left:0;height:50px;color:#585657}
+.wjdc-div{position:relative;color:#585657;height:45px;line-height:45px;text-align:center;border:none;width:95%;font-size:14px;left:0;text-align:left;max-width:95%;text-overflow:ellipsis;overflow: hidden;white-space: nowrap;word-break:break-all}
+.aui-content-padded{position:relative;}
+.aui-content-padded .tip{position:absolute;right:20px;top:0;width:50px;height:100px;background:url(../../image/quanzi.png) center 0 no-repeat;background-size:50px auto;z-index:999;}
+.bottom_0{border-bottom:none}
+.zthd-li{float:right;font-size:12px;color:#585657;width:40px;height:30px;line-height:30px;text-align:center;border:1px solid #D9D8D9;display:inline-block;}

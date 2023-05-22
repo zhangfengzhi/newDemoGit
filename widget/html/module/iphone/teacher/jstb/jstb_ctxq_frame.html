@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<!-- html5：在创建html时为了防止页面缩放等不兼容效果，要创建个viewport  -->
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<!-- 在IOS设备上，有时会将数字转为手机号，这里也要禁止下 -->
+		<meta name="format-detection" content="telephone=no"/>
+		<title>课程页面</title>
+		<link rel="stylesheet" type="text/css" href="../../../../../css/aui/aui.css" />
+		<link rel="stylesheet" type="text/css" href="../../../../../css/module/common/list_frame.css" />
+		<link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+		<style>
+			body{background:#f6f6f6}
+			.no-data{position:absolute;width: 100%;color: #8F8F94}
+			.title{color:#000;}
+			.pt5{width:80%;padding:5%;}
+			.stu-answer-title {
+				height: 55px;
+				width: 100%;
+				margin-bottom: 10px;
+			}
+			.stu-answer-title div {
+				height: 35px;
+				display: inline-block;
+				line-height: 35px;
+				margin-top: 13px;
+				padding: 0 15px;
+				color: #ffffff;
+			}
+			.detail-content{text-indent:5%;color: #8F8F94}
+			.w_zuoda{display:none;width:100%;text-align: center;margin-top:10%;color: #8F8F94;font-size:18;margin-bottom:10%}
+			.ptb10{text-indent:5%;}
+			.stu_back{height:40px;width:24%;background:#f6f6f6;border:1px solid #f6f6f6;text-align:center;float:left;margin:10px 4%;line-height:40px;}
+			.change_stu{background-color: #2ecc71;border:1px solid #2ecc71;}
+			.stu_list{padding:10px 2%;padding-left:6%;text-align: center;}
+			.stu_back_more{height:40px;width:24%;background:#f6f6f6;border:1px solid #f6f6f6;text-align:center;float:left;margin:10px 4%;line-height:40px;}
+		</style>
+	</head>
+	<body class="common-iphone-jstb">
+		<div style="background:#ffffff;" class="common-iphone-jstb">
+			<ul id="div_body" class="stu_list"><ul>
+			<script type="text/html" id="div_script">
+				<%for(var i=0;i<stu_list.length;i++){%>
+					<%if (i<5){%>
+						<li class="stu_back ellipsis" onclick="changeStu(<%=i%>);"><%=stu_list[i].student_name%></li>
+					<%}else if(i==5){%>
+						<li id="change" onclick="openOrCloseMore(1);" class="stu_back_more">更多</li>
+						<li class="stu_back more_stu ellipsis" style="display:none" onclick="changeStu(<%=i%>);"><%=stu_list[i].student_name%></li>
+					<%}else{%>
+						<li class="stu_back more_stu ellipsis" style="display:none" onclick="changeStu(<%=i%>);"><%=stu_list[i].student_name%></li>
+					<%}%>
+				<%}%>
+				<li id="closechange" onclick="openOrCloseMore(2);" style="display:none" class="stu_back">收起</li>
+			</script>
+		</div>
+		<div id="j_analysis_title" class="stu-answer-title clearfix">
+			<div>
+				当前学生
+			</div>
+		</div>
+		<div id="btn_list" class="detail-content">
+			<div id="stu_name"></div>
+		</div>
+		<div id="j_analysis_title" class="stu-answer-title clearfix">
+			<div>
+				所在班级
+			</div>
+		</div>
+		<div id="btn_list" class="detail-content">
+			<div id="class_name"></div>	
+		</div>	
+		<div id="j_analysis_title" class="stu-answer-title clearfix">
+			<div>
+				收录时间
+			</div>
+		</div>
+		<div id="btn_list" class="detail-content">
+			<div id="sl_time"></div>
+		</div>
+		<div id="j_analysis_title" class="stu-answer-title clearfix">
+			<div>学生作答</div>
+		</div>	
+		<div id="w_zuoda" class="w_zuoda">未作答</div>
+		<div class="detail-content">
+			<div id="zuoda"></div>
+		</div>
+		<div id="j_answer" class="que-answer aui-hide">
+		<div class="que-details">
+			<div class="max-height">
+				<div class="title ptb10">附件答案:</div>
+				<div d="j_fj_answer" class="fj-answer">
+					<div id="j_no_data" class="no-data aui-hide">
+                      	  没有附件答案
+                    </div>
+					<ul id="j_zg_answers">
+					</ul>
+				</div>
+				<br><br>
+				<div class="title ptb10">文本答案:</div>
+				<div id="j_text_answer" class="detail-content word-wrap pb15">
+					<div id="j_text_data" class="no-data ">
+                      	  没有文本答案
+                    </div>
+				</div>
+			</div>
+		</div>
+	</div>
+	</body>
+<script type="text/javascript" src="../../../../../script/api.js"></script>
+<script type="text/javascript" src="../../../../../script/base_config.js" ></script>
+<script type="text/javascript" src="../../../../../script/common/common.js"></script>
+<script type="text/javascript" src="../../../../../script/plug-in/template.js" ></script>
+<script type="text/javascript" src="../../../../../script/assembly/Merge.js"></script>
+<script type="text/javascript" src="../../../../../script/assembly/executeApp.js" ></script>
+<script type="text/javascript" src="../../../../../script/assembly/openResource.js" ></script>
+<script type="text/javascript" src="../../../../../script/assembly/photoBrowser.js"></script>
+<script type="text/javascript" src="../../../../../script/assembly/trans.js"></script>
+<script type="text/javascript">
+	var subject_id = "";//学科id
+	var currentPage = 1;//当前分页数
+	var totalPages = 0;//总页数
+	var totalData = 0;//定义一个变量存储第一次加载返回来的总记录数
+	var BASE_APP_TYPE;//课件类型，云版(1)还是局版(2)
+	var stu_index = 0;
+	var first_open = true;
+	apiready = function() {
+		commonSetTheme({"level":5,"type":0});
+		getStuListByQuesId();
+	};
+	
+		/*
+		 * 功能：获取学生列表
+		 * 作者：张自强
+		 * 时间：20171013
+		 */
+		function getStuListByQuesId(){
+			showSelfProgress('加载中...');
+			api.ajax({
+				url : BASE_URL_ACTION + '/xx/getStuListByQuesId?teacher_id='+$api.getStorage("person_id")+'&wq_type=1&pageSize=10000&pageNumber=1&question_id_char='+api.pageParam.question_id_char+'&que_source='+api.pageParam.que_source+'&zy_id='+api.pageParam.zy_id+'&random_num='+creatRandomNum(),
+				method : 'get',
+				timeout : 30,
+				dataType : 'json',
+				cache : false,
+	
+				headers : {
+					'Cookie' : 'person_id='+$api.getStorage("person_id")+';identity_id='+$api.getStorage("identity")+'; token='+$api.getStorage("token_ypt")+';'
+				}
+			}, function(ret, err) {
+				if (err) {
+					popToast('获取题目详情失败，请稍候重试');
+					api.hideProgress();
+				} else {
+					if(ret.success){
+						if(first_open){
+							commonAddOnceHtml('div_body','div_script',ret);
+							var arry = document.getElementsByClassName('stu_back');
+							$api.addCls(arry[0], 'change_stu');
+							first_open = false;
+						}						
+						for(var i=0;i<ret.stu_list.length;i++) {
+								if (ret.stu_list[i].que_source == 2) {
+									if (ret.stu_list[i].qt_type == 1) {
+										ret.stu_list[i].stu_answer=ret.stu_list[i].stu_answer.replace("0", "A");
+										ret.stu_list[i].stu_answer=ret.stu_list[i].stu_answer.replace("1", "B");
+										ret.stu_list[i].stu_answer=ret.stu_list[i].stu_answer.replace("2", "C");
+										ret.stu_list[i].stu_answer=ret.stu_list[i].stu_answer.replace("3", "D");
+									}
+								}
+								if(stu_index == i){
+									$api.text($api.byId('stu_name'),ret.stu_list[i].student_name);
+									$api.text($api.byId('class_name'),ret.stu_list[i].class_name);
+									$api.text($api.byId('sl_time'),ret.stu_list[i].create_time.substring(0,16));
+									if(ret.stu_list[i].stu_answer!=""&& ret.stu_list[i].stu_answer!=null){
+										if(ret.stu_list[i].qt_type==1){
+											api.hideProgress();
+											$api.css($api.byId('zuoda'),'display:block');
+											$api.text($api.byId('zuoda'),ret.stu_list[i].stu_answer);
+										}else{
+											$api.css($api.byId('j_answer'),'display:block');
+											getAnswerByStuZyQueId(ret.stu_list[i].student_id,ret.stu_list[i].question_id_char,ret.stu_list[i].zy_id,ret.stu_list[i].que_source,ret.stu_list[i].jy_subject_en_name);
+										}
+									}else{
+									    $api.css($api.byId('zuoda'),'display:none');
+									    $api.css($api.byId('j_answer'),'display:none');
+										$api.css($api.byId('w_zuoda'),'display:block');
+										api.hideProgress();
+									}
+								}
+							}
+					}else{
+						api.hideProgress();
+						popToast('获取题目详情失败，请稍候重试');
+					}
+				}
+			});
+		}
+	
+	/*
+	* author:zhaoj
+	* function:获取主观题学生作答详情
+	* interface：陈续刚
+	* data:20171012
+	*/
+	function getAnswerByStuZyQueId(student_id,question_id_char,zy_id,que_source,jy_subject_en_name){
+		api.ajax({
+			url : BASE_URL_ACTION + '/xx/getAnswerByStuZyQueId?student_id='+student_id+'&p_type=2&identity_id=6&is_need_html=0&zy_id='+zy_id+'&pageNumber=1&question_id_char='+question_id_char+'&que_source='+que_source+'&jy_subject_en_name='+jy_subject_en_name+'&random_num='+creatRandomNum(),
+			method : 'get',
+			timeout : 30,
+			dataType : 'json',
+			cache : false,
+
+			headers : {
+				'Cookie' : 'person_id='+$api.getStorage("person_id")+';identity_id='+$api.getStorage("identity")+'; token='+$api.getStorage("token_ypt")+';'
+			}
+		}, function(ret, err) {
+			$api.text($api.byId('j_zg_answers'), '');
+			if (err) {
+				api.hideProgress();
+				popToast('获取答案失败，请稍候重试');
+			} else {
+				if(ret.success){
+					if(ret.qt_type != 1){
+						//主观题
+						var answer_list = ret.stu_answer;
+						//文本答案
+						if($api.trim(ret.stu_answer_txt).length > 0){
+                        	$api.text($api.byId('j_text_answer'),ret.stu_answer_txt);
+                        }
+						for(var i = 0; i < answer_list.length; i++){
+							if(answer_list[i].resource_id_int > 0){
+								if(answer_list[i].resource_type == 1){
+									//图片
+									answer_list[i].type = 5;
+								}else{
+									//其他格式
+                            		answer_list[i].type = 3;
+                            	}
+                            }else{
+                            	answer_list[i].type = 4;
+                            }
+                            answer_list[i].img_url = '';
+							answer_list[i].resource_format = answer_list[i].ext;
+							var img_url= getImgUrl(answer_list[i]);
+							answer_list[i].img_url = img_url;
+						}
+						if(answer_list.length > 0){
+							exePic(0,answer_list,function(flag,data){
+								api.hideProgress();
+								commonAddOrRemoveHideCss('j_no_data',0);
+								if(flag){
+									for(var i = 0; i < data.length; i++){	
+										showImg(data[i]);
+									}
+								}
+							});
+						}else{
+							api.hideProgress();
+							commonAddOrRemoveHideCss('j_no_data',1);
+						}
+						commonAddOrRemoveHideCss('j_answer',1);
+					}
+				}else{
+					api.hideProgress();
+					popToast('获取答案失败，请稍候重试');
+				}
+			}
+		});
+	}
+	/*
+    *author:zhaoj
+    *function:获取缩略图路径
+    *date：20170901
+    */
+	function getImgUrl(img_json){
+		var img_url;//缩略图路径
+        if(img_json.type == 0 || img_json.type == 5){
+            //图片
+            if (BASE_APP_TYPE == 1) { 
+                img_url = BASE_IMAGE_PRE + url_path_suffix + img_json.file_id.substring(0, 2) + '\/' + img_json.file_id + '.' + img_json.resource_format + commonReturnPhotoCutSize(0);
+            } else {
+                img_url = BASE_URL_ACTION + BASE_IMAGE_BEGIN + img_json.file_id.substring(0, 2) + '/' + img_json.file_id + '.' + img_json.resource_format + commonReturnPhotoCutSize(0);
+            }
+        }else if(img_json.type == 1){
+            //音频
+            img_url = "../../../../../image/yingyong/zuoye/audio.png";
+        }else if(img_json.type == 2){
+            //视频
+            img_url = "../../../../../image/yingyong/zuoye/player.png";
+        }else if(img_json.type == 3){
+        	//资源库中的缩略图
+            if (BASE_APP_TYPE == 1) {
+				img_url = url_path + BASE_THUMB_BEGIN + img_json.thumb_id.substring(0, 2) + '\/' + img_json.thumb_id + BASE_THUMB_END;
+			} else {
+				img_url = BASE_URL_ACTION + BASE_THUMB_BEGIN + img_json.thumb_id.substring(0, 2) + '/' + img_json.thumb_id + BASE_THUMB_END;
+			}
+		}else{
+			//之前上传的答案图片
+			 if (BASE_APP_TYPE == 1) {
+				img_url = BASE_IMAGE_PRE+"down/App/"+ img_json.file_id.substring(0, 2) + "/" + img_json.file_id + '.' + img_json.ext + commonReturnPhotoCutSize(0);
+			} else {
+				img_url = BASE_URL_ACTION + "/html/thumb/App/" + img_json.file_id.substring(0, 2) + "/" + img_json.file_id + '.' + img_json.ext + commonReturnPhotoCutSize(0);
+			}
+		}
+		return img_url;
+	}
+	/*
+    *author:zhaoj
+    *function:上传音频、视频、图片的缩略图
+    *date：20170901
+    */
+    function showImg(img_json){
+    	var width = api.winWidth-api.winWidth*0.1;
+        var openHtml = "openAnswer('"+img_json.resource_id_int+"','"+img_json.img_url+"','"+ img_json.resource_info_id+"','"+ img_json.resource_type+"','"+ img_json.is_base64+"','"+ img_json.file_id+"','"+ img_json.ext+"')";
+        var li_html = '<div style="border:5px solid #f6f6f6;border-top:20px solid #f6f6f6;"></div><li onclick="'+openHtml+'">';
+        var mr_picture = "this.src='../../../../../image/yingyong/weike/wk_default_square.png'";
+    	if(img_json.type == 2){
+    		//视频默认图片
+    		li_html +='<div class="zoomImage" style="background:#141414 url('+img_json.img_url+') center center no-repeat;background-size:35% auto;"></div>';
+    	}else{
+        	li_html +='<div style="text-align:center"><img src="'+img_json.img_url+'" onerror="'+mr_picture+'" width='+width+' height="auto"/></div>';
+        }
+        li_html +='<div class="title ellipsis pt5" style="color:#8F8F94">'+img_json.resource_title+'</div>';
+        li_html +='</li>';
+        $api.append($api.byId('j_zg_answers'), li_html);
+    }
+    /*
+        *author:zhaoj
+        *function:打开主观题答案
+        *date：20170904
+        */
+        function openAnswer(resource_id_int,img_url,resource_info_id,resource_type,is_base64,file_id,ext){
+        	if(resource_id_int < 0 || resource_type == 1){
+        		api.execScript({
+				    name: api.winName,
+				    script: 'reBackType("picture")'
+				});
+        		if(is_base64==1){
+        			//有批阅痕迹的图片，先将base64转换成图片，接下来在进行显示
+        			var save_url = BASE_DOWNLOAD_YY_PATH.substring(0,BASE_DOWNLOAD_YY_PATH.length-1);
+        			var index = img_url.indexOf('base64');
+        			var finish_img_url = img_url.substring(index+7,img_url.length);
+        			var imgName = file_id+'.'+ext;
+        			trans.saveImage({"base64Str":finish_img_url,"imgPath":save_url,"imgName":imgName},function(flag,data){
+        				if(flag){
+        					common_openPicture.open(data,api.winName);
+        				}else{
+        					popToast('打开失败，请稍候重试');
+        				}
+        			});
+        		}else{
+        			common_openPicture.open(img_url,api.winName);
+        		}
+        	}else{
+        		var param_json = {"is_show_tip":1,"resource_id_int":resource_id_int,"resource_info_id":resource_info_id};
+        		commonGetResInfo(param_json,function(flag,ret){
+        			api.hideProgress();
+        			if(flag){
+ 						common_openResource.open(ret.resource_format,ret.file_id,ret.resource_title,ret.m3u8_status,api.winName,'reBackType("voice");','back();',ret.resource_id_int);
+        			}else{
+        				popToast('打开失败，请稍候重试');
+        			}
+        		});
+        	}
+        }
+	//处理图片
+		function exePic(index,answer_list,callback){
+			if(index < answer_list.length){
+				if(answer_list[index].piyue_file_path != null && answer_list[index].resource_type == 1){
+					api.download({
+					    url: answer_list[index].img_url,
+					    savePath: 'fs://lxjxt/yingyong/zuoye/'+answer_list[index].file_id+'.'+answer_list[index].ext,
+					    report: false,
+					    cache: true,
+					    allowResume: true
+					},function( ret, err ){
+						if(err) {
+							api.toast({
+			                    msg:'服务器连接失败，未找到主观题检测'
+		                    });
+		                    callback(true);
+						} else {
+							if(ret.percent == 100) {
+	                    		var savePath = ret.savePath;
+					            MergePic(savePath, answer_list[index].piyue_file_path, function(result) {
+				            		//调用这个方法合成试题和批阅痕迹,reslut为base64；建议用chrome查看该demo
+									for(var i = 0; i < answer_list.length; i++){
+										if(answer_list[i].file_id == answer_list[index].file_id){
+											answer_list[i].img_url = result;
+											answer_list[i].is_base64 = 1;
+											index++;
+											return exePic(index,answer_list,callback);
+										}
+									}
+								});
+	                    	}else{
+	                    		index++;
+								return exePic(index,answer_list,callback);
+	                    	}
+						}
+					});
+				}else{
+					index++;
+					return exePic(index,answer_list,callback);
+				}
+			}else{
+				callback(true,answer_list);
+			}
+		}
+		
+	/*
+	 * 功能：改变学生
+	 * 作者：张自强
+	 * 时间：20171013
+	 */
+	function changeStu(index){
+	     stu_index = index;
+		 var arry = document.getElementsByClassName('stu_back');
+			for(var i=0;i<arry.length;i++){
+				$api.removeCls(arry[i],'change_stu');
+				if(index == i){
+					$api.addCls(arry[i], 'change_stu');
+				}
+			}
+		 $api.css($api.byId('j_answer'),'display:none');
+		 $api.css($api.byId('w_zuoda'),'display:none');
+		 getStuListByQuesId();
+	}
+	
+	/*
+	 * 功能：点击更多
+	 * 作者：张自强
+	 * 时间：20171013
+	 */
+	function openOrCloseMore(type){
+		var cssChange = '';
+		var cssCloseChange = '';
+		if(type == 1){
+			var cssChange = 'display:none';
+			var cssCloseChange = 'display:block';
+		}else{
+				var cssChange = 'display:block';
+			var cssCloseChange = 'display:none';
+		}
+		$api.css($api.byId('change'),cssChange);
+		$api.css($api.byId('closechange'),cssCloseChange);
+		var arry = document.getElementsByClassName('more_stu');
+		for(var i=0;i<arry.length;i++){
+			$api.css(arry[i],cssCloseChange);
+		}
+	}
+</script>
+</html>

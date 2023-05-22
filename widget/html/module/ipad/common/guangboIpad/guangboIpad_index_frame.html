@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<!-- html5：在创建html时为了防止页面缩放等不兼容效果，要创建个viewport  -->
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<!-- 在IOS设备上，有时会将数字转为手机号，这里也要禁止下 -->
+		<meta name="format-detection" content="telephone=no"/>
+		<title>广播数据页面</title>
+		<link rel="stylesheet" type="text/css" href="../../../../../css/aui/aui.css" />
+		<link rel="stylesheet" type="text/css" href="../../../../../css/module/ipad/left-right-layout.css"/>
+		<link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+		<style>
+			.h1 {
+				height: 1px;
+				background: #f0f0f0;
+			}
+			.presshover {
+				background-color: #FAFAFA;
+			}
+			.span_name {
+				width: 90%;
+				/*font-size: 18px;*/
+				/*text-align: center;*/
+				display: inline-block;
+				/*word-break: keep-all;*/
+				white-space: nowrap;
+				overflow: hidden;
+				text-overflow: ellipsis;
+			}
+		</style>
+	</head>
+	<body class="left-layout-body common-ipad-guangbostu">
+		<div id="j_box_shadow" class="box-shadow aui-hide"></div>
+		<!--广播列表-->
+		<div class="thumb-content clearfix">
+			<ul id="gblist_div"></ul>
+		</div> 
+			<script type="text/html" id="gblist_script">
+				<% if(list.length == 0){ %>
+					<div style="text-align:center;color:#666;padding-top:15px;"><span>暂无校园广播</span></div>
+				<% }else{ %>
+					<%for(var i=0; i<list.length; i++) {%>
+						<li id="j_li_<%=list[i].id%>" onclick="openGuangboContent('<%=list[i].id%>');">	
+							<img class="thumb-img" src="<%=list[i].gb_img%>" onerror="this.src='../../../../../image/fun-module/ipad/xygb-bg.png'"/>
+							<div class="title pr20 pt20 mt10">
+								<span class="ellipsis">
+									
+									<%=list[i].title%>
+									
+								</span>
+							</div>
+							<div class="detail-infor mt20">
+								<div class="person-name ellipsis"><%=list[i].announcer%></div>
+								<div class="time pt5"><%=list[i].create_time.substring(0,16)%></div>
+							</div>
+						</li>
+					<% } %>
+				<% } %>
+			</script>
+	</body>
+	<script type="text/javascript" src="../../../../../script/api.js" ></script>
+	<script type="text/javascript" src="../../../../../script/base_config.js" ></script>
+	<script type="text/javascript" src="../../../../../script/plug-in/base64.js" ></script>
+	<script type="text/javascript" src="../../../../../script/plug-in/template.js" ></script>
+	<script type="text/javascript" src="../../../../../script/plug-in/echo.min.js"></script>
+	<script type="text/javascript" src="../../../../../script/common/common.js" ></script>
+	<script type="text/javascript">
+		//定义头高度
+		var header_h;
+		//总页数
+		var totalPages = 0;
+		// 定义一个变量存储第一次加载返回来的总页数
+		var totalPages = 0;
+		//当前页面为第一页
+		var currentPage;
+		var school_id;//学校id
+		apiready = function() {
+			commonSetTheme({"level":5,"type":0});
+			header_h = api.pageParam.header_h;
+			currentPage = 1;
+			school_id = api.pageParam.school_id;
+			initData(currentPage);
+			//默认是不能发送新闻资讯
+			$api.setStorage('is_add_guangbo', 0);
+			commonScrollBottomReload();
+			commonRefreshHeaderInfo();
+		};
+		/**
+		 * 获取新闻资讯列表
+		 * 周枫
+		 * 2015.11.23
+		 */
+		function initData(current_page){
+			currentPage = current_page;
+			loadGuangboListData();
+		}
+		/**
+		 * 获取新闻资讯列表
+		 * 周枫
+		 * 2015.11.23
+		 */
+		function loadGuangboListData() {
+			showSelfProgress('加载中...');
+			var org_id;
+			//学校
+			if(isEmptyString(school_id)){
+				org_id = $api.getStorage('bureau_id');
+			}else{
+				org_id = school_id;
+			}
+			//查询请求
+			var list_url = BASE_URL_ACTION + '/space/broadcast/get_broadcastinfo_list?org_id='+org_id+'&org_type=104&page_num=' + currentPage + '&page_size=' + BASE_PAGE_SIZE+ '&search_key=';
+			api.ajax({
+				url : list_url,
+				method : 'get',
+				dataType : 'json',
+				timeout : 30,
+				cache : false
+			}, function(ret, err) {
+				api.hideProgress();
+				//新闻资讯顶部下拉刷新数据加载完毕，组件会恢复到默认状态
+				commonControlRefresh();
+				if (ret.success) {
+					totalData = ret.total_row;
+					totalPages = ret.total_page;
+					var gb_list = ret.list;
+					var BASE_APP_TYPE = $api.getStorage('BASE_APP_TYPE');
+					for(var i = 0 ; i < getJsonObjLength(gb_list); i++){
+						var gb_img_id = gb_list[i].p_file_id;
+						var gb_img_con = gb_img_id.lastIndexOf(".");
+						var gb_img_ext = gb_img_id.substring(gb_img_con);
+						var gb_img = '';
+						if (BASE_APP_TYPE == 1) {
+							gb_img = BASE_IMAGE_PRE + BASE_MATERIAL_BEGIN + gb_img_id.substring(0, 2) + "/" + gb_img_id + commonReturnPhotoCutSize(1,100,80,gb_img_ext.substring(1));
+						} else {
+							gb_img = BASE_URL_ACTION + BASE_IMAGE_BEGIN + gb_img_id.substring(0, 2) + "/" + gb_img_id + commonReturnPhotoCutSize(1,100,80,gb_img_ext.substring(1));
+						}
+						gb_list[i]["gb_img"] = gb_img;
+					}
+					var html_type = template.render('gblist_script', ret);
+					if (currentPage == 1) {
+						document.getElementById('gblist_div').innerHTML = html_type;
+					} else {
+						$api.append($api.byId('gblist_div'), html_type);
+					}
+					//延迟加载图片
+					setTimeout(function() {
+						echoInit();
+					}, 300);
+				} else {
+                    popToast('获取广播失败，请稍候重试');
+				}
+			});
+		}
+		/**
+		 * 打开广播内容frame
+		 * 周枫
+		 * 2016.10.06
+		 */
+		function openGuangboContent(gb_id) {
+			setLiCss(gb_id);
+			commonCloseFrame('guangboIpad_content_frame');
+			var frame_w = Math.floor(api.winWidth*0.55);
+			var frame_x = Math.floor(api.winWidth*0.45);
+			var notice_id = 0;
+			//先重置新闻资讯window返回哪个页面
+			api.execScript({
+				name : 'guangboIpad_index_window',
+				script : 'reBackType("content");'
+			});
+			pageParamJson={"header_h":header_h,'x':frame_x,'w':frame_w,'gb_id':gb_id};//打开frame页面json数据
+			//打开内容frame
+			commonOpenFrame("guangboIpad_content_frame","guangboIpad_content_frame.html",header_h,false,false,"rgba(0,0,0,0)",pageParamJson);
+			//打开新闻资讯内容frame
+			isShowBoxShow(1);//显示虚线
+		}
+		
+		/*
+		*author:zhaoj
+		*function:是否显示虚线
+		*date：20170919
+		*/
+		function isShowBoxShow(type){
+			type ? $api.removeCls($api.byId('j_box_shadow'), 'aui-hide') : $api.addCls($api.byId('j_box_shadow'), 'aui-hide');
+		}
+		/*
+		*author:zhaoj
+		*function:设置选中样式
+		*date：20170919
+		*/
+		function setLiCss(id){
+			var li_array = $api.domAll($api.byId('gblist_div'), 'li');
+			for(var i = 0; i < li_array.length; i++){
+				$api.removeCls(li_array[i], 'active');
+			}
+			$api.addCls($api.byId('j_li_'+id), 'active');
+		}
+	</script>
+</html>

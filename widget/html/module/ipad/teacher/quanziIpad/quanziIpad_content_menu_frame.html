@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<!-- html5：在创建html时为了防止页面缩放等不兼容效果，要创建个viewport  -->
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<!-- 在IOS设备上，有时会将数字转为手机号，这里也要禁止下 -->
+		<meta name="format-detection" content="telephone=no"/>
+		<title>详情页下拉菜单</title>
+		<link rel="stylesheet" type="text/css" href="../../../../../css/aui_css_new/aui.css"/>
+		<link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+		<style>
+    	html, body {
+        	background-color: rgba(0,0,0,0) !important;
+   		 }
+    	body{padding:0;margin:0;}
+    	.shadow{position:absolute;left:0;top:0;width:100%;height:100%;z-index: 1;}
+    	.header{width:100%;height:45px;}
+    	.main{width:100%;}
+    	.menu-list{
+    		list-style:none;
+    		background-color: #ffffff;
+			box-shadow: 0px 0px 5px #cccccc;
+			position: relative;
+			width: 165px;
+			float: right;
+			z-index: 2;
+			padding: 0;
+			margin:0;
+		}
+		.menu-list li {
+			height: 48px;
+			line-height:48px;
+			display: block;
+			border-bottom: 1px solid #eeeeee;
+			color: #333;
+			font-family: sans-serif;
+			text-align:center;
+		}
+		.menu-list li .icon-box{width:50px;height:48px;display:inline-block; text-align:center;}
+		.menu-list li span{display:block;width:100%;height:48px;line-height:48px;float:left;text-align:center;}
+		.ellipsis{white-space: nowrap;overflow: hidden;text-overflow: ellipsis;}
+    </style>
+	</head>
+	<body class="init-iphone-body">
+		<div class="shadow" onclick="closeMenuFrame();"></div>
+		<div id="header" class="header"></div>
+		<div id="main" class="main aui-hide">
+			<ul id="ul" class="menu-list">	
+				<!--<li id="share_id" onclick="openShare();">
+					<span class="share">分享</span>
+				</li>-->
+				<li id="delete_id" class="aui-hide" onclick="onDelete()">
+					<span class="delete">删除</span>
+				</li>
+				<li id="readVoice_id" onclick="onRead()">
+					<span class="readVoice">语音朗读</span>
+				</li>
+				
+			</ul>
+		</div>
+	</body>
+	<script type="text/javascript" src="../../../../../script/api.js"></script>
+	<script type="text/javascript" src="../../../../../script/base_config.js" ></script>
+	<script type="text/javascript" src="../../../../../script/common/common.js"></script>
+	<script type="text/javascript" src="../../../../../script/assembly/voicePlayer.js" ></script>
+	<script type="text/javascript" src="../../../../../script/plug-in/base64.js" ></script>
+	<script type="text/javascript">
+		var person_id = 0;
+		var identity_id = 0;
+		var header_h;
+		var pageParamJson = {};
+		apiready = function () {
+//			commonSetTheme({"level":3,"type":0});
+			/*
+			 * 调整menu高度
+			 * header是隐藏的，代表工具栏到手机屏幕最上方的距离
+			 * main代表工具栏下方到手机屏幕最下方的距离
+			 * 有些手机的header_h会将上方的电池那一栏的高度也算进去，所以要特殊设置menu
+			 */
+		    header_h = api.pageParam.header_h;
+		    var head_h = header_h;
+			$api.css($api.byId('header'), 'height:' + head_h + 'px;');
+			$api.css($api.byId('main'), 'height:' + (api.winHeight - api.pageParam.h) + 'px;');
+			$api.removeCls($api.byId('main'), 'aui-hide');
+			if (api.pageParam.bShowDelete){
+				$api.removeCls($api.byId('delete_id'), 'aui-hide');
+			}
+		}
+		
+		/*
+		 * 关闭下拉菜单
+		 * 王俭
+		 * 2018.4.24
+		 */
+		function closeMenuFrame(){
+			commonExecScript('quanziIpad_index_window','','back();',0);
+		}
+		
+		function openShare(){
+			closeMenuFrame();
+			var sharedModule = api.require('shareAction');
+			var share_url = BASE_URL_ACTION+'/html/app/quanzi/share.html?&wz_id='+api.pageParam.wz_id+'&url='+Base64.encode(BASE_URL_ACTION)+'&type='+BASE_APP_TYPE+'&menu_type='+api.pageParam.menu_type+'&expand_id='+api.pageParam.expand_id+'&menu_id='+api.pageParam.menu_id+'&app_name='+Base64.encode($api.getStorage('BASE_SERVER_QY'));
+			sharedModule.share({
+				text: '分享圈子',
+				type: 'url',
+				path: share_url,
+				thumbnail:'widget://res/logo.png'
+			});
+		}
+		
+		/**
+		 * 点击删除
+		 * 王俭
+		 * 2018.4.25 
+		 */
+		function onDelete(){
+			closeMenuFrame();
+			
+			commonExecScript('quanziIpad_index_window','quanziIpad_content_frame','clickDelete();',1);
+		}
+		
+		/**
+		 * 点击语音朗读
+		 * 王俭
+		 * 2018.4.24 
+		 */
+		function onRead(){
+			closeMenuFrame();
+			commonExecScript('quanziIpad_index_window','quanziIpad_content_frame','openHeadset();',1);
+		}
+	</script>
+</html>

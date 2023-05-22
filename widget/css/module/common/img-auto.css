@@ -1,0 +1,79 @@
+/**
+ * 图片自适应样式
+ * 周枫
+ * 2017.07.26
+ * 使用：<div class="zoomImage-full-4-3" style="background-image:url(图片路径)"></div>     
+ * 转载：http://blog.csdn.net/oulihong123/article/details/54601030
+ */
+/*图片全覆盖父容器1：1等比例缩放*/
+.zoomImage-full-1-1{
+    width:100%;
+    height:0;
+    padding-bottom: 100%;
+    overflow:hidden;
+    background-position: center center;
+    background-repeat: no-repeat;
+    -webkit-background-size:cover;
+    -moz-background-size:cover;
+    background-size:cover;
+}
+/*图片全覆盖父容器4：3等比例缩放*/
+.zoomImage-full-4-3{
+    width:100%;
+    height:0;
+    padding-bottom: 75%;
+    overflow:hidden;
+    background-position: center center;
+    background-repeat: no-repeat;
+    -webkit-background-size:cover;
+    -moz-background-size:cover;
+    background-size:cover;
+}
+/*图片全覆盖父容器3：4等比例缩放*/
+.zoomImage-full-3-4{
+    width:100%;
+    height:0;
+    padding-bottom: 133.33%;
+    overflow:hidden;
+    background-position: center center;
+    background-repeat: no-repeat;
+    -webkit-background-size:cover;
+    -moz-background-size:cover;
+    background-size:cover;
+}
+/*图片局部在父容器显示，1：1等比例缩放*/
+.zoomImage-in-1-1{
+    width:50%;
+    height:0;
+    padding-bottom: 50%;
+    overflow:hidden;
+    background-position: center center;
+    background-repeat: no-repeat;
+    -webkit-background-size:cover;
+    -moz-background-size:cover;
+    background-size:cover;
+}
+/*图片局部在父容器显示，4：3等比例缩放*/
+.zoomImage-in-4-3{
+    width:50%;
+    height:0;
+    padding-bottom: 37.5%;
+    overflow:hidden;
+    background-position: center center;
+    background-repeat: no-repeat;
+    -webkit-background-size:cover;
+    -moz-background-size:cover;
+    background-size:cover;
+}
+/*图片局部在父容器显示，3：4等比例缩放*/
+.zoomImage-in-3-4{
+    width:50%;
+    height:0;
+    padding-bottom: 66.66%;
+    overflow:hidden;
+    background-position: center center;
+    background-repeat: no-repeat;
+    -webkit-background-size:cover;
+    -moz-background-size:cover;
+    background-size:cover;
+}

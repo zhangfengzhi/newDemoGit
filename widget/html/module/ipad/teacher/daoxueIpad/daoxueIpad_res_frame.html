@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>导学统计</title>
+    <link rel="stylesheet" type="text/css" href="../../../../../css/aui/aui.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../../../css/module/common/daoxueJyJs.css" />
+    <link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+    <style>
+    </style>
+</head>
+<body class="common-ipad-daoxueIpad">
+	<div id="j_student_name" class="student-name-tj"></div>
+	<table id="res_body" class="cz_table" style="table-layout: fixed; width: 100%;"></table>
+	<script type="text/html" id="res_script">
+		<%if(list.length == 0){%>
+			<div class="no-data">暂无统计</div>
+		<%}else{%>
+			<tbody>
+				<tr>
+					<th width="70%" height="40px;">
+						资源名称
+					</th>
+					<th>学习次数</th>
+				</tr>
+				<% for( var i = 0; i < list.length; i++){ %>
+					<tr class="timetabletr">
+						<td class="ellipsis"><%=list[i].res_name%></td>
+						<td><%=list[i].r_material_num%></td>
+					</tr>
+				<% } %>
+			</tbody>
+		<%}%>
+	</script>
+</body>
+<script type="text/javascript" src="../../../../../script/api.js"></script>
+<script type="text/javascript" src="../../../../../script/base_config.js" ></script>
+<script type="text/javascript" src="../../../../../script/plug-in/template.js" ></script>
+<script type="text/javascript" src="../../../../../script/common/common.js" ></script>
+<script type="text/javascript" src="../../../../../script/module/common/daoxueJyJs.js" ></script>
+<script type="text/javascript">
+	var BASE_URL_ACTION;
+	apiready = function(){
+		commonSetTheme({"level":5,"type":0});
+		BASE_URL_ACTION = $api.getStorage('BASE_URL_ACTION');
+		$api.text($api.byId('j_student_name'),'当前学生：'+api.pageParam.student_name);
+		showSelfProgress('加载中...');
+		getLeadMaterialByLeadidAndStuid();
+	};
+</script>
+</html>

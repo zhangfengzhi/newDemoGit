@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<title>学期下拉菜单</title>
+		<link rel="stylesheet" type="text/css" href="../../../../../css/aui/aui.css" />
+		<link id="j_theme_base" rel="stylesheet" type="text/css" href="" /><style>
+    	html, body {
+        	background-color: rgba(0,0,0,0) !important;
+   		 }
+    	body{padding:0;margin:0;}
+    	.shadow{position:absolute;left:0;top:0;width:100%;height:100%;z-index: 1;}
+    	.header{width:100%;height:45px;}
+    	.main{width:100%;}
+    	.menu-list{
+    		list-style:none;
+    		background-color: #ffffff;
+			box-shadow: 0px 0px 5px #cccccc;
+			position: relative;
+			width: 150px;
+			float: right;
+			z-index: 2;
+			padding: 0;
+			margin:0;
+		}
+		.menu-list li {
+			height: 48px;
+			line-height:48px;
+			display: block;
+			border-bottom: 1px solid #eeeeee;
+			color: #333;
+			font-family: sans-serif;
+			text-align:center;
+		}
+		.menu-list li .icon-box{width:50px;height:48px;display:inline-block; text-align:center;}
+		.menu-list li span{display:block;width:100%;height:48px;line-height:48px;float:left;text-align:center;}
+		
+    </style>
+	</head>
+	<body class="common-ipad-zuoyeIpad-tea">
+		<div class="shadow" tapmode onclick="api.closeFrame({name:'zuoyeIpad_tj_menu_frame'});"></div>
+		<div id="header" class="header"></div>
+		<div id="wzmenu_div" style="display:none;">
+			<div id="main" class="main">
+				<ul id="menu_body" class="menu-list">
+					<li onclick="changeOption(1);">
+						<span>整体报告</span>
+					</li>
+					<li onclick="changeOption(2);">
+						<span>按学生分析</span>
+					</li>
+					<li onclick="changeOption(3);">
+						<span>按试题分析</span>
+					</li>
+					<!--<li onclick="changeOption(4);">
+						<span>按知识点分析</span>
+					</li>-->
+				</ul>
+			</div>
+		</div>
+	</body>
+	<script type="text/javascript" src="../../../../../script/api.js"></script>
+	<script type="text/javascript" src="../../../../../script/base_config.js" ></script>
+	<script type="text/javascript" src="../../../../../script/plug-in/template.js" ></script>
+	<script type="text/javascript" src="../../../../../script/common/common.js"></script>
+	<script type="text/javascript" src="../../../../../script/common/jszy_jy_common.js"></script>
+	<script type="text/javascript">
+		var header_h;
+		var BASE_URL_ACTION;
+		var currentPage = 1;
+		apiready = function() {
+			commonSetTheme({"level":5,"type":0});
+			header_h = api.pageParam.header_h;
+			type = api.pageParam.type;
+			BASE_URL_ACTION = $api.getStorage('BASE_URL_ACTION');
+			$api.css($api.byId('header'), 'height:' + (header_h-1) + 'px;');
+			$api.css($api.byId('main'), 'height:' + (api.winHeight - header_h+1) + 'px;');
+			$api.css($api.byId('wzmenu_div'), 'display:block;');
+		};
+		/*
+		*作者:zhaoj
+		*功能:切换选项
+		*日期：20160913
+		*/
+		function changeOption(type){
+			api.execScript({
+				name : 'zuoyeIpad_tj_window',
+				script : 'changeOption('+type+');'
+			});
+			setTimeout(function(){
+				api.closeFrame({name:'zuoyeIpad_tj_menu_frame'});
+			},50);
+		}
+	</script>
+</html>

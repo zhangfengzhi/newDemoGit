@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <title>录音频</title>
+    <link rel="stylesheet" type="text/css" href="../../css/aui/aui.css" />
+    <style>
+    	body{background:#141414;}
+    	.start-audio,.bottom-content,.end-audio,.audioing,.save,.save-back{position:absolute;}
+    	.bottom-content{bottom:0;left:0;height:70%;width:100%;}
+    	.time,.text-tip{color:#ffffff;text-align:center;}
+    	.time{font-size:30px;}
+    	.text-tip{font-size:14px;padding-top:20px;}
+    	.back{width:30px;height:30px;left:13%;bottom:70px;background:url(../../image/fun-module/iphone/zuoye/audio-back.png) center center no-repeat;background-size:20px auto !important;}
+    	.start-audio{width:80px;height:80px;left:50%;bottom:50px;margin-left:-40px;background:url(../../image/fun-module/iphone/zuoye/stop.png) center center no-repeat;}
+    	.end-audio{width:80px;height:80px;left:50%;bottom:50px;margin-left:-40px;background:url(../../image/fun-module/iphone/zuoye/play.png) center center no-repeat;}
+    	.audioing{width:80px;height:80px;left:50%;top:20%;margin-left:-40px;background:url(../../image/fun-module/iphone/zuoye/audioing.gif) center center no-repeat;}
+    	.save{width:70px;height:70px;right:15%;bottom:50px;background:url(../../image/fun-module/iphone/zuoye/save.png) center center no-repeat;}		
+    
+    	.save-back{width:70px;height:70px;left:15%;bottom:50px;background:url(../../image/fun-module/iphone/zuoye/save-back.png) center center no-repeat;}	
+    	.start-audio,.end-audio,.audioing,.save,.save-back{background-size:100% auto;}
+    </style>
+</head>
+<body>
+	<!--正在录音秒数提示-->
+	<div class="bottom-content">
+		<div id="j_time" class="time">点击开始录音</div>
+		<div id="j_text_tip" class="text-tip aui-hide">正在录音</div>
+	</div>
+	<!--正在录音返回按钮-->
+	<div id="j_back" class="back" onclick="closeFrame();">&nbsp;</div>
+	<!--开始录音按钮-->
+	<div id="j_start" class="start-audio" onclick="startRecord();">&nbsp;</div>
+	<!--结束录音按钮-->
+	<div id="j_end" class="end-audio aui-hide" onclick="stopRecord();">&nbsp;</div>
+	<!--保存按钮-->
+	<div id="j_save" class="save aui-hide" onclick="uploadAmr();">&nbsp;</div>
+	<!--保存时返回按钮-->
+	<div id="j_save_back" class="save-back aui-hide" onclick="closeFrame();">&nbsp;</div>
+</body>
+<script type="text/javascript" src="../../script/api.js"></script>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        
+<script type="text/javascript" src="../../script/base_config.js" ></script>
+<script type="text/javascript" src="../../script/common/common.js" ></script>
+<script type="text/javascript">
+	var common_param={"guid_amr":'',"voice_path":"","voice_duration":"","setInterval":"","second":1};//全局参数,生成file_id，本地音频路径，音频长度,定时器变量
+	apiready = function(){
+	};
+	/**
+     *关闭录音页面
+     * 赵静
+     * 2017.09.01
+     */
+	function closeFrame(){
+	   commonExecScript(api.winName,'','back();',0);
+	}
+	/**
+	 *开始录音
+	 * 赵静
+	 * 2017.09.01
+	 */
+	function startRecord() {
+		guid_amr = newGuid();
+		//先删除再录音
+		api.stopRecord(function(ret, err) {});
+		//点击后播放开启录音的声音
+		api.startPlay({
+			path : 'widget://res/LowBattery.mp3'
+		}, function(ret, err) {
+			api.startRecord({
+				path : 'fs://' + guid_amr + '.amr'
+			});
+//			common_param.second = 1;
+//			$api.text($api.byId('j_time'),'00:00:01');
+//			clearInterval(common_param.setInterval);
+//			common_param.setInterval=setInterval(second,1000);
+			showBtns(1);
+		});
+	}
+	/**
+	 *秒数增加
+	 * 赵静
+	 * 2017.09.01
+	 */
+	function second(){
+		common_param.second = common_param.second + 1;
+		$api.text($api.byId('j_time'),sec_to_time(common_param.second).substring(0,8));
+	}
+	/**
+	 * 结束录音
+	 * path:'',              //字符串，返回的音频地址
+	 duration:0            //数字类型，音频的时长
+	 * 周枫
+	 * 2015.08.10
+	 */
+	function stopRecord() {
+		clearInterval(common_param.setInterval);
+		showBtns(0);
+		api.stopRecord(function(ret, err) {
+			if (ret) {
+				common_param.voice_path = ret.path;
+				common_param.voice_duration = ret.duration;
+			} else {
+				popToast('录音失败，请稍候重试');
+				showBtns(2);
+			}
+		}); 
+	}
+	/**
+	 * 点击开始或结束录制显示按钮
+	 * 赵静
+	 * 2017.09.01
+	 */
+	function showBtns(type){
+		if(type ==1){
+			//开始录制
+			$api.addCls($api.byId('j_start'), 'aui-hide');
+			$api.text($api.byId('j_time'), '正在录音');
+//			$api.removeCls($api.byId('j_text_tip'), 'aui-hide');
+			$api.removeCls($api.byId('j_end'), 'aui-hide');
+		}else if(type == 0){
+			//结束录制
+			$api.addCls($api.byId('j_end'), 'aui-hide');
+			$api.addCls($api.byId('j_back'), 'aui-hide');
+			$api.text($api.byId('j_time'), '录音结束');
+			$api.removeCls($api.byId('j_save'), 'aui-hide');
+			$api.removeCls($api.byId('j_save_back'), 'aui-hide');
+		}else{
+			//录音失败
+			$api.addCls($api.byId('j_text_tip'), 'aui-hide');
+			$api.addCls($api.byId('j_save'), 'aui-hide');
+			$api.addCls($api.byId('j_save_back'), 'aui-hide');
+			$api.addCls($api.byId('j_end'), 'aui-hide');
+			$api.removeCls($api.byId('j_start'), 'aui-hide');
+			$api.text($api.byId('j_time'),'录音失败');
+		}
+	}
+	/**
+	 *时间秒数格式化
+	 * 赵静
+	 * 2017.09.01
+	 */
+	function sec_to_time(s) {
+        var t;
+        if(s > -1){
+            var hour = Math.floor(s/3600);
+            var min = Math.floor(s/60) % 60;
+            var sec = s % 60;
+            if(hour < 10) {
+                t = '0'+ hour + ":";
+            } else {
+                t = hour + ":";
+            }
+
+            if(min < 10){t += "0";}
+            t += min + ":";
+            if(sec < 10){t += "0";}
+            t += sec.toFixed(2);
+        }
+        return t;
+    }
+    /**
+	* 上传音频
+	* 赵静
+	* 2017.09.01
+	*/
+	var flag=true;
+    function uploadAmr(){
+    	flag ? showSelfProgress('保存中...'):'';
+    	if(isEmptyString(common_param.voice_duration)){
+    		flag = false;
+    		setTimeout(function(){
+    			uploadAmr();
+    		},1000);
+    	}else{
+    		var params = JSON.parse(api.pageParam.params);
+    			commonExecScript(params.winName,params.frameName,params.backFun+'("'+common_param.voice_path+'","'+common_param.voice_duration+'");',1);
+    	}
+    	
+    }
+</script>
+</html>

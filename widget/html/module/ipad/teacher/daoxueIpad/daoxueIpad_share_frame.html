@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>共享范围</title>
+    <link rel="stylesheet" type="text/css" href="../../../../../css/aui/aui.css"/>
+    <link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+    <style>
+    	body{background:#f6f6f6;}
+    	.shadow{position:absolute;left:0;top:0;width:100%;height:100%;z-index: -1;}
+		.title{padding:20px 15px 10px 15px;}
+		ul{border-top:1px solid #EDECEE;}
+		ul li{list-style:none;float:left;line-height:55px;width:100%;background:#ffffff;border-bottom:1px solid #EDECEE;padding:0 15px;}
+		ul li div{max-width:80%;float:left;}
+		ul li input{float:right;}
+		.aui-radio{height:26px;width:26px;margin:14px 10px;}
+		.kb{height:65px;}
+		.footer-div{position:fixed;height:55px;background:#ffffff;display: block;bottom: 0px;width:100%;border-top:1px solid #E2E2E2;font-size:14px;}
+		.footer-div .wid{width:92%;line-height:36px;text-align:center;color:#ffffff;background:#34A8FA;margin-top:9px;border-radius:2px;margin-left:4%;}
+		.aui-radio:checked:before, .aui-radio.aui-checked:before {content:'';}
+    </style>
+</head>
+<body class="common-ipad-daoxueIpad">
+	<div id="j_shadow" class="shadow" tapmode></div>
+	<div class="title">请选择共享范围</div>
+	<ul id="share_body">
+	</ul>
+	<script type="text/html" id="share_script">
+		<%for(var i = 0; i < org_List.length; i++){%>
+			<li>
+				<div><%=org_List[i].org_name%></div>
+				<%if(org_List[i].checked){%>
+					 <input oninput="commonRemoveExpression(this)" class="aui-pull-right aui-radio aui-radio-success" value="<%=org_List[i].org_id%>" checked="checked" type="radio" name="demo">
+				<%}else{%>
+				 	<input oninput="commonRemoveExpression(this)" class="aui-pull-right aui-radio aui-radio-success" value="<%=org_List[i].org_id%>" type="radio" name="demo">
+				<%}%>
+			</li>
+		<%}%>
+	</script>
+	<div class="kb">
+		&nbsp;
+	</div>
+	<div class="footer-div footer-div2">
+		<div class="wid" onclick="shareZy();">确定</div>
+	</div>
+</body>
+<script type="text/javascript" src="../../../../../script/api.js"></script>
+<script type="text/javascript" src="../../../../../script/base_config.js" ></script>
+<script type="text/javascript" src="../../../../../script/plug-in/template.js" ></script>
+<script type="text/javascript" src="../../../../../script/common/common.js" ></script>
+<script type="text/javascript" src="../../../../../script/common/jszy_new_common.js"></script>
+<script type="text/javascript">
+	var BASE_URL_ACTION;
+	var share_org_type_array=[];//共享机构的级别标识数组
+	apiready = function(){
+		commonSetTheme({"level":5,"type":0});
+		BASE_URL_ACTION = $api.getStorage('BASE_URL_ACTION');
+		showSelfProgress('加载中...');
+		getZyShareInfo(function(is_true,ret){
+			getShareRange(function(flag,data){
+				api.hideProgress();
+				var oparam = new Object();
+				oparam.display = true;
+				oparam.org_id = -1;
+				oparam.org_name = '自己';
+				oparam.org_type = "";
+				data.org_List.push(oparam);
+				for(var i = 0; i < data.org_List.length; i++){
+					if(is_true){
+						if((ret.share_org_id==data.org_List[i].org_id) && (data.org_List[i].org_type==100?100:(data.org_List[i].org_type-0+100) == ret.share_org_type)){
+							data.org_List[i].checked=true;
+						}else{
+							data.org_List[i].checked=false;
+						}
+					}else{
+						if(data.org_List.length-1 == i){
+							data.org_List[i].checked=true;
+						}else{
+							data.org_List[i].checked=false;
+						}
+					}
+					share_org_type_array.push(data.org_List[i].org_type==100?100:(data.org_List[i].org_type-0+100));
+				}
+				var html_type = template.render('share_script', data);
+				document.getElementById('share_body').innerHTML = html_type;
+			});
+		})
+	};
+	/*
+	*作者:zhaoj
+	*功能:获取当前检测已经共享到那个范围内
+	*日期：20161028
+	*/
+	function getZyShareInfo(callback){
+		api.ajax({
+			url : BASE_URL_ACTION + '/xx/getZyShareInfo',
+			method : 'post',
+			timeout : 30,
+			dataType : 'json',
+			data : {
+				values : {
+					"random_num" : creatRandomNum(),
+					"zy_id" : api.pageParam.id,
+					"zy_type" : 2
+				}
+			},
+			headers : {
+	'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+}
+		}, function(ret, err) {
+			api.hideProgress();
+			if (err) {
+				callback(false,'');
+			} else {
+				if(ret.success){
+					callback(true,ret);
+				}else{
+					callback(false,'');
+				}
+			}
+		});
+	}
+	/*
+	*作者:zhaoj
+	*功能:获取滑动条的数据
+	*日期：20160912
+	*/
+	function getShareRange(callback){
+		api.ajax({
+			url :BASE_URL_ACTION + '/ypt/config/getShareRange?random_num='+creatRandomNum(),
+			method : 'get',
+			timeout : 30,
+			dataType : 'json',
+			headers : {
+	'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+		}
+		}, function(ret, err) {
+			if (err) {
+				callback(false,'');
+			} else {
+				if(ret.success){
+					callback(true,ret);
+				}else{
+					callback(false,'');
+				}
+			}
+		});
+	}
+	/*
+	*作者:zhaoj
+	*功能:共享检测
+	*日期：20160920
+	*/
+	function shareZy(){
+		$api.css($api.byId('j_shadow'),'z-index:3');
+		showSelfProgress('共享中...');
+		var radio = document.getElementsByName("demo");
+		var radioValue;
+		var share_org_type;//共享机构的级别标识：0全国1本省2本市3本区4本校5群组
+	   	for(var i = 0;i < radio.length;i++){
+	    	if(radio[i].checked){
+	    		radioValue = radio[i].value;
+	    		share_org_type = share_org_type_array[i];
+	    	}
+	   	}
+	   	if(radioValue != -1){
+		   	var data_value = {
+				"random_num" : creatRandomNum(),
+				"zy_id" : api.pageParam.id,
+				"zy_type" : 2,
+				"o_type" : 1,
+				"share_org_id" : radioValue,
+				"share_org_type" : share_org_type,
+				"share_person_id" : $api.getStorage("person_id"),
+				"share_identity_id" : $api.getStorage("identity")
+			}
+		}else{
+			var data_value = {
+				"random_num" : creatRandomNum(),
+				"zy_id" : api.pageParam.id,
+				"zy_type" : 2,
+				"o_type" : 2,
+				"share_org_id" : radioValue,
+				"share_person_id" : $api.getStorage("person_id"),
+				"share_identity_id" : $api.getStorage("identity")
+			}
+		}
+	   	api.ajax({
+			url : BASE_URL_ACTION + '/xx/shareZy',
+			method : 'post',
+			timeout : 30,
+			dataType : 'json',
+			data : {
+				values : data_value
+			},
+			headers : {
+	'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+}
+		}, function(ret, err) {
+			api.hideProgress();
+			if (err) {
+				$api.css($api.byId('j_shadow'),'z-index:-1');
+				popToast('共享失败,请稍候重试');
+			} else {
+				if(ret.success){
+					popToast('共享成功');
+					setTimeout(function(){
+						api.execScript({
+							name : 'daoxueIpad_share_window',
+							script : 'back();'
+						});
+					},2000);
+				}else{
+					$api.css($api.byId('j_shadow'),'z-index:-1');
+					popToast('共享失败,请稍候重试');
+				}
+			}
+		});
+	}
+</script>
+</html>

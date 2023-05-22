@@ -1,0 +1,834 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+        <meta name="format-detection" content="telephone=no"/>
+        <title>检测审批页面</title>
+        <link rel="stylesheet" type="text/css" href="../../../../../css/aui/aui.css" />
+        <link rel="stylesheet" type="text/css" href="../../../../../css/aui_css_new/aui.css" />
+        <link rel="stylesheet" type="text/css" href="../../../../../css/module/common/testQuestionShow.css" />
+        <link rel="stylesheet" type="text/css" href="../../../../../css/module/common/list_frame.css" />
+        <link rel="stylesheet" type="text/css" href="../../../../../css/module/common/jyeoo/ques_data.css" />
+        <link id="j_theme_base" rel="stylesheet" type="text/css" href="" /><style>
+            body {
+                margin: 0;
+                background: rgba(0,0,0,0);
+                position:relative;
+            }
+            .clearfix:after {
+                content: ' ';
+                display: block;
+                clear: both;
+                visibility: hidden;
+                line-height: 0;
+                height: 0;
+            }
+            .answer-title {
+                height: 55px;
+                width: 100%;
+                margin-bottom: 20px;
+            }
+            .stu-answer-title {
+                height: 55px;
+                width: 100%;
+                margin-bottom: 20px;
+            }
+            .title {
+                width: 18%;
+                float: left;
+            }
+            .answer-title div {
+                height: 35px;
+                display: inline-block;
+                line-height: 35px;
+                margin-top: 13px;
+                padding: 0 15px;
+                color: #ffffff;
+            }
+            .stu-answer-title div {
+                height: 35px;
+                display: inline-block;
+                line-height: 35px;
+                margin-top: 13px;
+                padding: 0 15px;
+                color: #ffffff;
+            }
+            
+            .next {
+                line-height: 55px;
+                text-align: right;
+            }
+            .plr15 {
+                padding: 0 15px;
+            }
+            .footer-div{
+                position:fixed;
+                z-index:999;
+                height:55px;
+                background:#ffffff;
+                display: block;
+                bottom: 0px;
+                width:100%;
+                box-shadow:3px 0 4px #aaaaaa;
+            }
+            .footer-div .prevQ,.footer-div .nextQ{display: inline-block;width:50%;float: left;}
+            .footer-div .prevQ{text-align: left;}
+            .footer-div .nextQ{text-align: right;}
+            .footer_div{height:57px;}
+            .plrb15{padding:0 15px 15px 15px;}
+            .no-question-data{text-align:center;color:#666;height:50px;line-height:50px;}
+            .footer-btn-last button{
+                float:right;
+                margin-right:15px;
+                margin-bottom:15px;
+            }
+            .check_right{
+                border-bottom: 2px solid #CCCCCC;
+                line-height: 55px;
+                width: 100%;
+            }
+            .pinglun_form{
+                line-height: 55px;
+                width: 100%;
+            }
+            textarea{width:90%;margin-left:5%;margin-bottom:3px;}
+            .tip{
+                height:30px;
+                padding:0px 0 20px 0px;
+                font-size:14px;
+                color:#f00;
+                text-indent:5%;
+            }
+            .tip-zuoda{
+                height:30px;
+                padding:0px 0 10px 0px;
+                font-size:16px;
+                color:#7E7E7E;
+                text-indent:5%;
+                margin-top:20px
+            }
+            .btn-right {
+                color: #ffffff;
+                background-color: #FFD34F;
+                border: 1px solid #FFD34F;
+            }
+            .btn-wrong{
+                color: #ffffff;
+                background-color: red;
+                border: 1px solid red;
+            }
+            .piyueing{
+                font-size: 14px;
+                color: #555555;
+            }
+            .detail-content{text-indent:5%;color: #8F8F94}
+            .no-data {
+                text-align: center;
+                color: #c0c0c0;
+                padding-top: 20px;
+                margin-bottom: 20px;
+            }
+            .zoomImage{padding-bottom:80%;}
+            .zoomImage img{
+                position:absolute;
+                width:100%;
+                top:0;
+                bottom:0;
+                height:100%;}
+            .top-div{border:5px solid #EFEFEF}
+            .li-div{border-bottom:10px solid #EFEFEF}
+            .zg_img_list{padding-left:2.5%;padding-right:2.5%}
+            .footer-btn .score-div{
+                border:1px solid #FF9900;
+                width:70%;
+                float:left;
+                margin-left:5%;
+                margin-right:2%;
+                height:20px;
+                border-radius:10px;
+                padding:0;
+             }
+            .footer-btn .score-stu-div{
+                float:left;
+                width:20%;
+                font-size:15px;
+                height:25px;
+                line-height:20px;
+                text-align:center;
+                max-width:20%;
+            }
+            .footer-btn .score-stu-div span{
+                color:#67CF22;
+                font-size:20px;
+            }
+            .footer-btn .score-btn{
+                width:100%;
+                padding-right:8%;
+                padding-top:10px;
+            }
+            .footer-btn .score-btn .add-btn{
+                float:right;
+                margin-left:30px;
+            }
+            .footer-btn .score-btn .jian-btn{
+                float:right;
+            }
+            .stu-answer-txt{
+                margin-top:5px;
+                margin-bottom:10px;
+                margin-left:5%;
+                text-indent:5%;
+                color:#909090;
+            }
+            .save-all{
+                width:40%;
+                margin:auto 30%;
+                color:#fff;
+                border-radius:20px;
+                height:40px;
+                line-height:40px;
+                margin-top:20px;
+                margin-bottom:20px;
+                text-align: center
+            }
+            .long-div{
+                width:25px;
+                background:#FF9900;
+                height:100%;
+                border-radius:10px 10px 10px 10px;
+            }
+            .fj-ul{padding:15px 0 5px 0;}
+            .fj-ul li{position:relative;width:33.3%;padding:0 5px 10px 5px;}
+            .fj-ul li .fj-name{text-align:center;font-size:14px;color:#777;height:20px;line-height: 20px;}
+            .piyue-ku{
+                padding:20px;
+                padding-top:0;
+            }
+            .piyue-ku div{
+                background:#dbe7f2;
+                font-size:16px;
+                padding:4px;
+                margin-bottom:10px;
+                padding-left:10px;
+                padding-right:10px;
+            }
+            .long-div div{
+                width:25px;
+                height:25px;
+                border-radius:25px;
+                background:#ffcc00;
+                float:right;
+                margin-top:-3px;
+            }
+        </style>
+    </head>
+    <body id="j_body" class="common-iphone-zuoye-tea">
+        <a href="" name="top_body"></a>
+        <div class="top-div"></div>
+        <div id="no_zuoda" class="no-data aui-hide">该学生已批阅完成</div>
+        <div id="body" class="aui-hide">
+            <div class="li-div">
+                <div class="stu-answer-title clearfix">
+                    <div>
+                        当前学生
+                    </div>
+                </div>
+                <div class="detail-content">
+                    <div id="stu_name">张三</div>
+                </div>
+                <div class="answer-title clearfix">
+                    <div>
+                        学生答案
+                    </div>
+                </div>
+                <div class="tip-zuoda">附件答案:</div>
+                    <div class="tip aui-hide" id="j_no_data">该学生没有作答！</div>
+                    <ul class="fj-ul" id="j_zg_answers">
+                    </ul>
+                
+                <div id="wb_zuoda" class="tip-zuoda aui-hide">文本答案:</div>
+                <div  class="stu-answer-txt" id="text_answer">
+                    <div></div>
+                </div>
+                <div class="answer-title clearfix">
+                    <div>
+                        该题正误
+                    </div>
+                </div>
+                <div class="footer-btn pinglun_form  clearfix">
+                    <div class="score-div" ontouchstart="moveAndChangeCount(1,event);" ontouchmove="moveAndChangeCount(2,event);" ontouchend="moveAndChangeCount(3,event);">
+                        <div id="_long_div" class="long-div">
+                            <div>&nbsp;</div>
+                        </div>
+                    </div>
+                    <div class="ellipsis score-stu-div">
+                        <span id="_score">0</span>分
+                    </div>
+                    <div style="" class="score-btn ellipsis">
+                        <button class="add-btn" onclick="btnAddOrReduceScore(1)">+</button>
+                        <button class="jian-btn" onclick="btnAddOrReduceScore(0)">-</button>
+                    </div>
+                </div>
+                <div id="j_analysis_title" class="answer-title clearfix">
+                    <div>
+                        该题评语
+                    </div>
+                </div>
+                <div class="piyue-ku">
+                    <div onclick="changePiyu(1);">解题思路清晰，继续努力！</div>
+                    <div onclick="changePiyu(2);">学习有些马虎，认真审题，慎思慎行！</div>
+                    <div onclick="changePiyu(3);">失败乃成功之母，别泄气！</div>
+                    <div onclick="changePiyu(4);">不可以对自己降低要求！因为你能做到更好！</div>
+                    <div onclick="changePiyu(5);">希望你更专注些，再把目标定得高些！</div>
+                </div>
+                <div id="pinglun"　class="footer-btn-last pinglun_form  clearfix">
+                    <textarea id="_comt_content" autocapitalize="off" rows="8" maxlength ='500' style="overflow-y: visible" onpropertychange="this.style.posHeight = this.scrollHeight"></textarea>
+                </div>
+                <div style="border:10px solid #FFFFFF"></div>
+            </div>
+            <div class="save-all" onclick="saveAll();">提交</div>
+        </div>
+    </body>
+    <script type="text/javascript" src="../../../../../script/api.js"></script>
+    <script type="text/javascript" src="../../../../../script/base_config.js" ></script>
+    <script type="text/javascript" src="../../../../../script/plug-in/template.js" ></script>
+    <script type="text/javascript" src="../../../../../script/plug-in/base64.js" ></script>
+    <script type="text/javascript" src="../../../../../script/common/common.js" ></script>
+    <script type="text/javascript" src="../../../../../script/assembly/Merge.js"></script>
+    <script type="text/javascript" src="../../../../../script/assembly/trans.js" ></script>
+    <script type="text/javascript" src="../../../../../script/assembly/jsdrawingBorad.js" ></script>
+    <script type="text/javascript" src="../../../../../script/assembly/executeApp.js" ></script>
+    <script type="text/javascript" src="../../../../../script/assembly/photoBrowser.js"></script>
+    <script type="text/javascript" src="../../../../../script/assembly/openResource.js" ></script>
+    <script type="text/javascript">
+        var header_h;
+        var tj_frame_isopen = false;//提交统计页面是否已经打开
+        var piyue_state = 0;
+        var stu_id = 0;//学生id
+        var zy_id = 0;//检测id
+        var stu_wpy_list = [];//未批阅的学生列表
+        var stu_ypy_list = [];//已批阅的学生列表
+        var change_type = 0;//切换已批阅(1),未批阅（2），未提交（3）按钮
+        var que_scores = 0;
+        var closeTj = false;//是否打开了已批阅详情页面
+        var closeTj_first = false;//是否第一次打开已批阅详情页面
+        var btn_hide = 2;
+        var all_stu_answer = {'list':[]};//所有学生的作答答案
+        var endX=0//触摸时的坐标
+        var stu_all_piyue = [];
+        var stu_score = 0;
+        var div_long = 0;
+        var score_now = 0;
+        var piyue_type = 1;
+        apiready = function() {
+            commonSetTheme({"level":5,"type":0});
+            header_h = api.pageParam.header_h;
+            zy_id = api.pageParam.zy_id;
+            getTextZyClassList();
+            commonRefreshHeaderInfo();
+        };
+        
+        /*
+         * 功能：给学生检测评分
+         * 作者：张自强
+         * 时间：20180516
+         */
+        function moveAndChangeCount(type,e){
+            e.preventDefault();//取消事件的默认动作,例如submit
+            var touch=e.touches[0];
+            commonAddOrRemoveHideCss('_long_div',1);
+            switch(type){
+                case 1://刚开始触摸时 
+                    var textarea_dom = $api.domAll($api.byId('j_body'), 'textarea');
+                    for(var i = 0; i < textarea_dom.length; i++){
+                        textarea_dom[i].blur();
+                    }
+                    break;
+                case 2://移动中
+                    endX = Math.abs(touch.pageX);//滑动的距离
+                    endX = endX - api.winWidth*1*0.05;//减去距离屏幕左侧的初始距离
+                    stu_score = endX*10*que_scores / (api.winWidth*1*0.7);
+                    stu_score = parseInt(stu_score);
+                    div_long = endX*100 / (api.winWidth*1*0.7);
+                    if(stu_score > que_scores*10){
+                        stu_score = que_scores;
+                        div_long = 100;
+                    }else if(endX < api.winWidth*1*0.001){
+                        stu_score = 0;
+                        div_long = 0;
+                    }else if(stu_score%10 != 0){
+                        stu_score = parseInt(stu_score/10)+0.5;
+                    }else{
+                        stu_score = parseInt(stu_score/10);
+                    }
+                    score_now = stu_score;
+                    $api.html($api.byId('_score'),stu_score);
+                    if(stu_score == 0){
+                        $api.css($api.byId('_long_div'),'width:25px;max-width:100%;');
+                    }else{
+                        $api.css($api.byId('_long_div'),'width:'+div_long+'%;max-width:100%;');
+                    }
+                    break;
+                case 3:
+                    stu_score = 0;
+                    div_long = 0;
+                    break;      
+            }
+            e.stopPropagation();
+        }
+        
+        /*
+         * 功能：按钮增减分数
+         * 作者：张自强
+         * 时间：20180529
+         */
+        function btnAddOrReduceScore(type){
+            score_now = $api.html($api.byId('_score'))*1;
+            commonAddOrRemoveHideCss('_long_div',1);
+            switch(type){
+                case 0://减0.5分
+                    if(score_now != 0){
+                        score_now  = score_now - 0.5;
+                        $api.html($api.byId('_score'),score_now);
+                        if(score_now == 0){
+                            $api.css($api.byId('_long_div'),'width:25px;max-width:100%;');
+                        }else{
+                            $api.css($api.byId('_long_div'),'width:'+score_now/que_scores*100+'%;max-width:100%;');
+                        }
+                    }
+                    break;
+                case 1://加0.5分
+                    if(score_now != que_scores){
+                        score_now  = score_now + 0.5;
+                        $api.html($api.byId('_score'),score_now);
+                        $api.css($api.byId('_long_div'),'width:'+score_now/que_scores*100+'%;max-width:100%;');
+                    }
+                    break;
+            }
+        }
+    
+    /*
+     * 功能：清空输入框的内容
+     * 作者：张自强
+     * 时间：20170822
+     */
+    function clearInput(){
+        $api.val($api.byId('_comt_content'),'');
+    }
+    
+    /*
+     * 功能：打开检测提交情况统计页面
+     * 作者：张自强
+     * 时间：20170822
+     */
+    function sortMethod(type){
+        all_stu_answer = {'list':[]};
+        var status_list = [];
+        if(type == 1){
+            status_list = stu_ypy_list;
+        }else if(type == 2){
+            status_list = stu_wpy_list;
+        }else{
+            status_list = stu_wtj_list;
+        }
+        if(tj_frame_isopen == false){
+            change_type = type;
+            var pageParamJson = {
+                "header_h" : header_h,
+                "type" : type,
+                "list" : status_list,
+                "zy_id":zy_id,
+                "stu_id" : stu_id
+            };
+            tj_frame_isopen = true;
+            api.execScript({
+                name : 'zuoyeJsJy_piyuetext_window',
+                script: 'reBackType("tj");'
+            });
+            commonExecScript('zuoyeJsJy_piyuetext_window','','reBackType("tj");',0);
+            commonOpenFrame('zuoyeJsJy_tjtjtext_frame', 'zuoyeJsJy_tjtjtext_frame.html', header_h + 64, false, false, "#ffffff", pageParamJson);
+        }else{
+            if(change_type == type){
+                change_type = type;
+                commonExecScript('zuoyeJsJy_piyuetext_window','','back();',0);
+            }else{
+                change_type = type;
+                commonExecScript('zuoyeJsJy_piyuetext_window','zuoyeJsJy_tjtjtext_frame','changeBtn('+type+','+JSON.stringify(status_list)+');',1);
+            }
+        }
+        openDownIcon(type);
+    }
+    
+    /*
+     * 功能：打开下角标
+     * 作者：张自强
+     * 时间：20170831
+     */
+    function openDownIcon(type){
+        commonExecScript('zuoyeJsJy_piyuetext_window','','openDownIcon('+type+');',0);
+    }       
+    
+    /*
+     * 功能：切换统计页面是否打开的状态
+     * 作者：张自强
+     * 时间：20170822
+     */
+    function changeTjFrame(flag){
+        tj_frame_isopen = flag; 
+    }
+    /*
+     * 功能：获取综合检测详情
+     * 作者：张自强
+     * 时间：20180605
+     * 接口：陈续刚
+     */
+    function getTextZyClassList(){
+        api.ajax({
+            url : BASE_URL_ACTION + '/xx/getPyInfo',
+            method : 'post',
+            timeout : 30,
+            dataType : 'json',
+            data : {
+                values:{
+                    'random_num' : creatRandomNum(),
+                    'zy_id' : api.pageParam.zy_id
+                }
+            },
+            headers : {
+    'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+}
+        }, function(ret, err) {
+            if (err) {
+                popToast('对不起，获取检测信息失败，请稍候重试');
+            } else {
+                if(ret){
+                    var class_list = ret.class_list;
+                    stu_wpy_list = [];//未批阅的学生列表
+                    stu_ypy_list = [];//已批阅的学生列表
+                    stu_id  = ret.select_stu_id;
+                    for(var i=0;i<class_list.length;i++){
+                        if(class_list[i].student_list.length > 0){
+                            for(var j=0;j<class_list[i].student_list.length;j++){
+                                if(stu_id == class_list[i].student_list[j].student_id){
+                                    stu_name = class_list[i].student_list[j].student_name;
+                                }
+                                var oparam = new Object();
+                                oparam.id = class_list[i].student_list[j].student_id;
+                                oparam.title = class_list[i].student_list[j].student_name;
+                                if(class_list[i].student_list[j].check_status == 0){
+                                    stu_wpy_list.push(oparam);
+                                }else{
+                                    stu_ypy_list.push(oparam);
+                                }
+                                
+                            }
+                        }
+                        if(class_list[i].group_list.length > 0){
+                            for(var j=0;j<class_list[i].group_list.length;j++){
+                                for(var k=0;k<class_list[i].group_list[j].student_list.length;k++){
+                                    if(stu_id == class_list[i].group_list[j].student_list[k].student_id){
+                                        stu_name = class_list[i].group_list[j].student_list[k].student_name;
+                                    }
+                                    var oparam = new Object();
+                                    oparam.id = class_list[i].group_list[j].student_list[k].student_id;
+                                    oparam.title = class_list[i].group_list[j].student_list[k].student_name;
+                                    if(class_list[i].group_list[j].student_list[k].check_status == 0){
+                                        stu_wpy_list.push(oparam);
+                                    }else{
+                                        stu_ypy_list.push(oparam);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    getAnswerByStuZyQueId(stu_id);
+commonExecScript('zuoyeJsJy_piyuetext_window','','addValueList('+stu_ypy_list.length+','+stu_wpy_list.length+','+0+');',0); 
+                }else{
+                    popToast('对不起，获取检测信息失败，请稍候重试');
+                }
+            }
+        });
+    }
+    
+    /*
+     * 功能：获取学生作答答案
+     * 作者：张自强
+     * 时间：20170824
+     * 接口提供人：陈旭刚
+     */
+    function getAnswerByStuZyQueId(stuId){
+        showSelfProgress('加载中...');
+        clearInput();
+        api.ajax({
+            url : BASE_URL_ACTION + '/xx/getAnswerByStuZyId?random_num=1527803',
+            method : 'post',
+            timeout : 30,
+            dataType : 'json',
+            data : {
+                values : {
+                    "random_num" : creatRandomNum(),
+                    "student_id" : stuId,
+                    "zy_id" : zy_id,
+                }
+            },
+            headers : {
+    'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+}
+        },function(ret,err){
+            if(err){
+                commonAddOrRemoveHideCss('no_zuoda',1);
+                commonAddOrRemoveHideCss('body',0);
+            }else{
+                if(ret.success){
+                    var rett = ret;
+                    commonAddOrRemoveHideCss('body',1);
+                    commonAddOrRemoveHideCss('no_zuoda',0);
+                    commonAddOrRemoveHideCss('_long_div',1);
+                    que_scores = rett.total_scores;
+                    $api.html($api.byId('_score'),rett.stu_scores);
+                    if(rett.stu_scores <= 0){
+                            rett.stu_scores = 0;
+                            $api.css($api.byId('_long_div'),'width:25px;max-width:100%;');
+                        }else{
+                            $api.css($api.byId('_long_div'),'width:'+rett.stu_scores/que_scores*100+'%;max-width:100%;');
+                        }
+                    if(rett.tea_note != null || rett.tea_note != '' || typeof(rett.tea_note) != undefined){
+                        $api.val($api.byId('_comt_content'), rett.tea_note);
+                    }
+                    if(rett.stu_answer){
+                        $api.text($api.byId('stu_name'), stu_name);
+                        var stuTextAnswer = rett.stu_answer;
+                        for(var i=0;i<stuTextAnswer.length;i++){
+                            if(stuTextAnswer[i].ext == -1 && stuTextAnswer[i].file_path != ''){
+                                commonAddOrRemoveHideCss('wb_zuoda',1);
+                                $api.text($api.byId('text_answer'),stuTextAnswer[i].file_path);
+                            }else{
+                                commonAddOrRemoveHideCss('j_zg_answers',1);
+                                commonAddOrRemoveHideCss('j_no_data',0);
+                                if(stuTextAnswer[i].resource_id_int > 0){
+                                    if(stuTextAnswer[i].resource_type == 1){
+                                        //图片
+                                        stuTextAnswer[i].type = 5;
+                                    }else{
+                                        //其他格式
+                                        stuTextAnswer[i].type = 3;
+                                    }
+                                }else{
+                                    stuTextAnswer[i].type = 4;
+                                }
+                                showImg(stuTextAnswer[i],0);
+                            } 
+                        }
+                    }else{
+                        commonAddOrRemoveHideCss('j_zg_answers',0);
+                        commonAddOrRemoveHideCss('j_no_data',1);
+                    }
+                }else{
+                    if(ret.info == '该题您还没作答'){
+                        commonAddOrRemoveHideCss('body',1);
+                        commonAddOrRemoveHideCss('no_zuoda',0);
+                        commonAddOrRemoveHideCss('j_no_data',1);
+                        $api.text($api.byId('stu_name'), stu_name);
+                    }else{
+                        commonAddOrRemoveHideCss('no_zuoda',1);
+                        commonAddOrRemoveHideCss('body',0);
+                    }
+                }
+            }
+            api.hideProgress();
+            commonControlRefresh();
+        });
+    }
+    
+    
+      /*
+        *author:zhaoj
+        *function:上传音频、视频、图片的缩略图
+        *date：20170901
+        */
+        function showImg(img_json,type){
+            var img_url;//缩略图路径
+            if(img_json.type == 0 || img_json.type == 5){
+                //图片
+                if (BASE_APP_TYPE == 1) { 
+                    img_url = BASE_IMAGE_PRE + url_path_suffix + img_json.file_id.substring(0, 2) + '\/' + img_json.file_id + '.' + img_json.resource_format + '@' + api.winWidth + 'w_' + api.winHeight + 'h_100Q_1x.png';
+                } else {
+                    img_url = BASE_URL_ACTION + BASE_IMAGE_BEGIN + img_json.file_id.substring(0, 2) + '/' + img_json.file_id + '.' + img_json.resource_format + '@' + api.winWidth + 'w_' + api.winHeight + 'h_100Q_1x.png';
+                }
+            }else if(img_json.type == 1){
+                //音频
+                img_url = "../../../../../image/fun-module/iphone/zuoye/audio.png";
+            }else if(img_json.type == 2){
+                //视频
+                img_url = "../../../../../image/fun-module/iphone/zuoye/player.png";
+            }else if(img_json.type == 3){
+                //资源库中的缩略图
+                if (BASE_APP_TYPE == 1) {
+                    img_url = url_path_down + BASE_THUMB_BEGIN + img_json.thumb_id.substring(0, 2) + '\/' + img_json.thumb_id + BASE_THUMB_END;
+                } else {
+                    img_url = BASE_URL_ACTION + BASE_THUMB_BEGIN + img_json.thumb_id.substring(0, 2) + '/' + img_json.thumb_id + BASE_THUMB_END;
+                }
+            }else{
+                //之前上传的答案图片
+                 if (BASE_APP_TYPE == 1) {
+                    img_url = BASE_IMAGE_PRE+"down/App/"+ img_json.file_id.substring(0, 2) + "/" + img_json.file_id + '.' + img_json.resource_format + '@' + api.winWidth + 'w_' + api.winHeight + 'h_100Q_1x.png';
+                } else {
+                    img_url = BASE_URL_ACTION + "/html/thumb/App/" + img_json.file_id.substring(0, 2) + "/" + img_json.file_id + '.' + img_json.resource_format + '@' + api.winWidth + 'w_' + api.winHeight + 'h_100Q_1x.png';
+                }
+            }
+            var mr_picture = "this.src='../../../../../image/fun-module/iphone/zuoye/wk_default_square.png'";
+            var openHtml = "openAnswer('"+img_json.resource_info_id+"','"+img_url+"','"+ img_json.resource_id_int+"')";
+            var li_html = '<li class="fl" onclick="'+openHtml+'">';
+                if(img_json.type == 2){
+                    //视频默认图片
+                    li_html +='<div class="zoomImage" style="background:#141414 url('+img_url+') center center no-repeat;background-size:35% auto;"></div>';
+                }else{
+                    li_html +='<div class="zoomImage"><img src="'+img_url+'" onerror="'+mr_picture+'" /></div>';
+                }
+                li_html +='<div class="fj-name ellipsis">'+img_json.resource_title+'</div>';
+                li_html +='</li>';
+            $api.append($api.byId('j_zg_answers'), li_html);
+        }
+        
+    /*
+     * 功能：提交教师批阅
+     * 作者：张自强
+     * 时间：20170825
+     */
+    function saveAll(){
+        api.confirm({
+                title :  '提示',
+                msg : '是否提交？',
+                buttons : ["确定", "取消"]
+            }, function(ret, err) {
+                if (1 == ret.buttonIndex) {
+                    showSelfProgress('加载中...');
+                    api.ajax({
+	                    url:BASE_URL_ACTION + '/xx/piyueForfjzy',
+	                    method : 'post',
+	                    dataType : 'json',
+	                    data : {
+	                       values : {
+	                           'random_num':creatRandomNum(),
+	                           'score':score_now, 
+                               'student_id':stu_id,  
+                               'tea_note':$api.trimAll($api.val($api.byId('_comt_content'))),    
+                               'zy_id':zy_id,   
+	                       }
+	                    }
+                    },function(ret,err){
+                    	if(err){
+                    	   popToast('批阅失败，请稍候重试！');
+                    	}else{
+                    	   if(ret.success){
+                    	       popToast('批阅成功！');
+                               if(piyue_type == 1){
+                                    console.log(123);
+                                    commonAddOrRemoveHideCss('wb_zuoda',0);
+                                    $api.text($api.byId('text_answer'),'');
+                                    $api.html($api.byId('j_zg_answers'),'');
+                                    getTextZyClassList();
+                               }
+                    	   }else{
+                    	       popToast('批阅失败，请稍候重试！');   
+                    	   }
+                    	}
+                    	api.hideProgress();
+                    });
+                }
+            });
+    }
+    
+        /*
+         * 功能：获取再次批阅检测时候需要的参数
+         * 作者：张自强
+         * 时间：20170831
+         */
+        function openTjTjDrawDoardFrame(file_id_id,ext,i,name,img_h,img_w,stu_again_id){
+            py_again = true;
+            py_again_stu_name = name;
+            file_id_old = file_id_id;
+            img_id_num = i;
+            py_again_stu_id = stu_again_id;
+            var content_ypy = $api.getStorage('zy_content');
+            var content_exp_ypy = $api.getStorage('zy_content_exp');
+            var content_daan_ypy = $api.getStorage('zy_content_daan');
+json={"header_h":api.pageParam.header_h,"stem":api.pageParam.zy_name_base64,"content":content_ypy,"content_exp":content_exp_ypy,"content_daan":content_daan_ypy,"file_id":file_id_id,"ext":ext,'img_h':img_h,'img_w':img_w};//打开frame页面所需参数
+            commonOpenWin('zuoyeJsJy_drawingBoard_window', 'zuoyeJsJy_drawingBoard_window.html', true, false, json);
+        }
+        
+        /*
+         * 功能：下拉刷新回调方法
+         * 作者：张自强
+         * 时间：20170906
+         */
+        function initData(current){
+            commonAddOrRemoveHideCss('wb_zuoda',0);
+            $api.text($api.byId('text_answer'),'');
+            $api.html($api.byId('j_zg_answers'),'');
+            getAnswerByStuZyQueId(stu_id);
+        }
+
+        
+           /*
+        *author:zhaoj
+        *function:打开主观题答案
+        *date：20170904
+        */
+        function openAnswer(resource_id_int,img_url,resource_info_id,resource_type,file_id,ext){
+            var param_json = {"is_show_tip":1,"resource_id_int":resource_id_int,"resource_info_id":resource_info_id};
+            commonGetResInfo(param_json,function(flag,ret){
+                api.hideProgress();
+                if(flag){
+                    common_openResource.open(ret.resource_format,ret.file_id,ret.resource_title,ret.m3u8_status,api.winName,'reBackType("voice");','back();',ret.resource_id_int);
+                }else{
+                    popToast('打开失败，请稍候重试');
+                }
+            });
+        }
+        
+        /*
+         * 功能：切换学生
+         * 作者：张自强
+         * 时间:20180607
+         */
+        function changeStu(id,name,type){
+            piyue_type = type;
+            commonAddOrRemoveHideCss('wb_zuoda',0);
+            $api.text($api.byId('text_answer'),'');
+            $api.html($api.byId('j_zg_answers'),'');
+            stu_id = id;
+            stu_name = name;
+            getAnswerByStuZyQueId(id);
+        }
+        
+        /*
+         * 功能:选中评语库
+         * 作者：张自强
+         * 时间：20180607
+         */
+        function changePiyu(type){
+            var piyue_text = '';
+            switch(type){
+                case 1:
+                    piyue_text = '解题思路清晰，继续努力！';
+                    break;
+                case 2:
+                    piyue_text = '学习有些马虎，认真审题，慎思慎行！';
+                    break;
+                case 3:
+                    piyue_text = '失败乃成功之母，别泄气！';
+                    break;
+                case 4:
+                    piyue_text = '不可以对自己降低要求！因为你能做到更好！';
+                    break;
+                case 5:
+                    piyue_text = '希望你更专注些，再把目标定得高些！';
+                    break;
+            }
+            piyue_text = $api.trimAll($api.val($api.byId('_comt_content')))+piyue_text;
+            $api.val($api.byId('_comt_content'),piyue_text);
+        }
+    </script>
+</html>

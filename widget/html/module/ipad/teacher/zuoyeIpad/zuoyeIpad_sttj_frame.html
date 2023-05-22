@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>试题统计</title>
+    <link rel="stylesheet" type="text/css" href="../../../../../css/aui/aui.css"/>
+    <link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+    <style>
+    	body{background:#f6f6f6;color:#333;}
+    	.title{padding:20px 0 5px 10px;font-size:14px;border-bottom:1px solid #efefef;color:#484848;border-top:1px solid #efefef;border-left:0 !important;}
+    	.content li{list-style:none;border-bottom:1px solid #efefef;padding:10px 15px;background:#ffffff;margin-bottom:10px;}
+    	/*.content li:last-child{border-bottom:none;}*/
+    	.top{padding-bottom:8px;border-bottom:1px dashed #efefef;}
+    	.head-img{width:58px;height:50px;float:left;}
+    	.head-img img{width:50px;height:50px;border-radius:25px;}
+    	.person-name{line-height:28px;}
+    	.tx,.rate{font-size:13px;color:#9F9F9F;float:left;padding-right:12px;padding-top:3px;}
+    	.rate font{color:#ff0000;}
+    	.tx{max-width:50%;}
+    	.bottom div{margin-top:8px;font-size:15px;color:#9F9F9F;}
+    	.bottom div font{float:right;color:#333;}
+    </style>
+</head>
+<body class="common-ipad-zuoyeIpad-tea">
+	<div class="title">按试题分析</div>
+	<ul id="div_body" class="content"></ul>
+	<script type="text/html" id="div_script">
+		<%if(stu_list.length==0){%>
+			<div class="no-data">暂无试题信息</div>
+		<%}else{%>
+			<%for(var i = 0 ;i < stu_list.length; i++){%>
+				<li onclick="showQueDetail('<%=stu_list[i].question_id_char%>',<%=stu_list[i].sort%>,'<%=stu_list[i].qt_name%>',<%=stu_list[i].qt_type%>,<%=stu_list[i].is_show%>,'<%=stu_list[i].no_answer_count%>','<%=stu_list[i].score_wrong_count%>','<%=stu_list[i].score_rirht_count%>','<%=stu_list[i].score_other_count%>',<%=stu_list[i].obj_type%>,<%=stu_list[i].obj_id%>,<%=stu_list[i].zy_id%>,<%=stu_list[i].que_source%>,'<%=stu_list[i].jy_subject_en_name%>',<%=stu_list[i].qt_id%>)">
+					<div class="top clearfix">
+						<div class="person-name">第<%=stu_list[i].sort%>题</div>
+						<div class="tx ellipsis">题型：<font><%=stu_list[i].qt_name%></font></div>
+						<%if(stu_list[i].score_rights=='--'){%>
+							<div class="rate">正确率：<font><%=stu_list[i].score_rights%></font></div>
+						<%}else{%>
+							<div class="rate">正确率：<font><%=stu_list[i].score_rights%>%</font></div>
+						<%}%>
+					</div>
+					<div class="bottom">
+						<div>零分（未作答）人数<font><%=stu_list[i].no_answer_count%></font></div>
+						<div>零分（做错）人数<font><%=stu_list[i].score_wrong_count%></font></div>
+						<div>满分人数<font><%=stu_list[i].score_rirht_count%></font></div>
+						<div>其他得分人数<font><%=stu_list[i].score_other_count%></font></div>
+					</div>
+				</li>
+			<%}%>
+		<%}%>
+		</script>
+</body>
+<script type="text/javascript" src="../../../../../script/api.js"></script>
+<script type="text/javascript" src="../../../../../script/base_config.js" ></script>
+<script type="text/javascript" src="../../../../../script/plug-in/template.js" ></script>
+<script type="text/javascript" src="../../../../../script/common/common.js" ></script>
+<script type="text/javascript" src="../../../../../script/common/jszy_jy_common.js" ></script>
+<script type="text/javascript">
+	var bar_ids =[];//滑动条项目对应的id
+	var BASE_URL_ACTION;
+	var zy_id;//检测id
+	var obj_id;//--班级/群组ID
+	var obj_type = -1;//-1 代表全部，1班级2群组
+	var bar_type=[];
+	apiready = function(){
+		commonSetTheme({"level":5,"type":0});
+		header_h = api.pageParam.header_h;
+		zy_id = api.pageParam.zy_id;
+		BASE_URL_ACTION = $api.getStorage('BASE_URL_ACTION');
+	};
+	/*
+	*作者:zhaoj
+	*功能:隐藏数据
+	*日期：20160927
+	*/
+	function hiddenData(){
+		$api.css($api.byId('div_body'),'display:none');
+	}
+	/*
+	*作者:zhaoj
+	*功能:滑动条点击回调函数
+	*日期：20160912
+	*/
+	function callBackNew(id, index) {
+		var bar_index = index;
+		obj_id = bar_ids[bar_index];
+		obj_type =bar_type[bar_index];
+		getZyTongJiByQue(bar_index);
+	}
+	/*
+	*作者:zhaoj
+	*功能:获取试题详细信息
+	*日期：20160921
+	*/
+	function getZyTongJiByQue(is_show){
+		is_show !=0 ? showSelfProgress('加载中...'):'';
+		api.ajax({
+			url : BASE_URL_ACTION + '/xx/getZyTongJiByQue?zy_id='+zy_id+'&obj_type='+obj_type+'&obj_id='+obj_id+'&random='+creatRandomNum(),
+			method : 'get',
+			timeout : 30,
+			dataType : 'json',
+			cache : false,
+		}, function(ret, err) {
+			api.hideProgress();
+			if (err) {
+				popToast('获取试题信息失败');
+			} else {
+				if(ret){
+					for(var i = 0; i < ret.stu_list.length; i++){
+						ret.stu_list[i].obj_id = obj_id;
+						ret.stu_list[i].obj_type = obj_type;
+						if(ret.stu_list[i].no_answer_count > 0 || ret.stu_list[i].score_wrong_count> 0 || ret.stu_list[i].score_rirht_count > 0||ret.stu_list[i].score_other_count > 0){
+							ret.stu_list[i].is_show = 1;
+						}else{
+							ret.stu_list[i].is_show = 0;
+						}
+					}
+					var html_type = template.render('div_script', ret);
+					document.getElementById('div_body').innerHTML = html_type;
+					$api.css($api.byId('div_body'),'display:block');
+				}else{
+					popToast('获取试题信息失败');
+				}
+			}
+		});
+	}
+</script>
+</html>

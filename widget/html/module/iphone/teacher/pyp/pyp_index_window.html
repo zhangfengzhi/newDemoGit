@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<!-- html5：在创建html时为了防止页面缩放等不兼容效果，要创建个viewport  -->
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<!-- 在IOS设备上，有时会将数字转为手机号，这里也要禁止下 -->
+		<meta name="format-detection" content="telephone=no"/>
+		<title>教师端主题活动</title>
+		<link rel="stylesheet" type="text/css" href="../../../../../css/aui/aui.css" />
+		<link rel="stylesheet" type="text/css" href="../../../../../css/module/common/kejianJs.css" />
+		<link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+		<style>
+			.tag-title{height:45px; line-height:43px;background:#ffffff ;border-bottom:2px solid #E6E6E6;width:100%;}
+			.fl{width:25%;color: #000000;float:left;text-align:center;color:#686868;}
+			.tag-title div.active{border-bottom:2px solid #34A8FA;color:#34A8FA;}
+			.tag-title .fl-last .hot{color:#686868;}
+			.tag-title .fl-last .new{color:#686868;}
+			.img{width:30px;height:30px}
+		</style>
+	</head>
+	<body class="common-iphone-pyp">
+		<div id="wrap">
+			<header class="aui-bar aui-bar-nav aui-bar-primary" id="aui-header">
+				<div id="cloud" class="topbar activebar">
+					<div id="back" class="back" onclick="back();" tapmode="">
+						<i class="aui-iconfont aui-icon-left"></i>返回
+					</div>
+					<div  class="mTitle" id="mTitle">
+						拍一拍
+					</div>
+					<div id="j_add" class="win-menu">
+						<a class="aui-iconfont aui-icon-add plr5" onclick="openAddWin()"></a>
+						<a class="aui-iconfont aui-icon-menu pl5" onclick="openMenuFrame();"></a>
+					</div>
+				</div>
+				<div class="tag-title">
+					<div class="fl active" onclick="changePyp(this,0);">全部</div>
+					<div class="fl" onclick="changePyp(this,1);">未处理</div>
+					<div class="fl" onclick="changePyp(this,2);">处理中</div>
+					<div class="fl" onclick="changePyp(this,3);">已处理</div>
+				</div>
+			</header>
+			<div  class="aui-content aui-content-padded" id="message-content">
+				<p class="aui-text-center history-date"></p>
+			</div>
+		</div>
+	</body>
+	<script type="text/javascript" src="../../../../../script/api.js"></script>
+	<script type="text/javascript" src="../../../../../script/common/common.js"></script>
+	<script type="text/javascript" src="../../../../../script/assembly/tongjiData.js"></script>
+	<script type="text/javascript" src="../../../../../script/base_config.js" ></script>
+	<script type="text/javascript">
+		var mode_type=0;//0全部,1我创建的，2：我处理的
+		var back_type = 'index';
+		var type = 1;//初始化查询权限
+		var dic_type=1;  //0所有、1未处理、2已处理、3处理中
+		var is_fzr = false;//是否是负责人
+		apiready = function() {
+		    commonSetTheme({"level":5,"type":0});
+			judgeRoles();
+			commonBackForAndroid();//安卓关闭
+			commonIosAuiHeader();//定位header位置，留出上面电池等空隙，苹果需要
+			commonOpenTjData($api.getStorage("identity")+'_'+api.winName);//记录统计
+		};
+		
+		/*
+		 * 功能：返回页面
+		 * 作者：张自强
+		 * 时间：20171019
+		 */
+		function back() {
+			switch (back_type){
+				case 'index':
+					commonCloseTjData($api.getStorage("identity")+'_'+api.winName);
+					api.closeWin();
+					break;
+				case 'add':
+				  	commonCloseFrame('pyp_add_frame');
+				  	reBackType('index');
+					break;
+				case 'open_picture':
+				  	
+				  	reBackType('add');
+					break;
+				case 'pyp_picture':
+				  	
+				  	reBackType('index');
+					break;
+				case 'menu':
+					reBackType('index');
+					commonCloseFrame('pyp_menu_frame');
+					break;
+			}
+		   
+		}
+		
+		/*
+		 * 功能；重置返回页面
+		 * 作者：张自强
+		 * 时间：20171023
+		 */
+		function reBackType(type){
+			switch(type){
+				case 'index':
+					hideOrshowAddAndMenu(1);
+					back_type = type;
+					break;
+				//如果添加页面退出
+				case 'add':
+					hideOrshowAddAndMenu(0);
+					commonSetWindowName('拍一拍');
+					back_type = 'add';
+					break;
+				//如果图片页面退出
+				case 'open_picture':
+					back_type = 'open_picture';
+					break;
+				//如果浏览退出
+				case 'picture':
+					back_type = 'imageClip';
+					break;
+				case 'menu':
+					back_type = 'menu';
+					break;
+				case 'pyp_picture':
+					back_type = 'pyp_picture';
+					break;
+			}
+		}
+		
+		/*
+		 * 功能：打开menu页
+		 * 作者：张自强
+		 * 时间：20171020
+		 */
+		function openMenuFrame(){
+			reBackType('menu');
+			var header_h = api.pageParam.header_h;
+			api.openFrame({
+	            name: 'pyp_menu_frame',
+	            url: 'pyp_menu_frame.html',
+	            bounces: false,
+	            rect: {
+	                x: 0,
+	                y: 0,
+	                w: 'auto',
+	                h: 'auto'
+	            },
+	            bgColor : 'rgba(0,0,0,0)',
+	            pageParam : {
+					'header_h' : header_h,
+					'mode_type' : mode_type,
+					'is_fzr':is_fzr
+				},
+	            reload: true
+	        });  
+		}
+
+		
+		/*
+		 * 功能：打开添加主题页面
+		 * 作者：张自强
+		 * 时间：20171020
+		 */
+		function openAddWin(){
+			reBackType('add');
+			var header_h = api.pageParam.header_h;
+			var pageParamJson={"header_h":header_h};//打开frame页面所需参数
+			commonOpenFrame('pyp_add_frame', 'pyp_add_frame.html',header_h, true, false,"#ffffff",pageParamJson);	//打开index页面
+		}
+		
+		/*
+		 * 功能：隐藏或显示添加和menu按钮
+		 * 作者：张自强
+		 * 时间：20171023
+		 */
+		function hideOrshowAddAndMenu(type){
+			if(type){
+				$api.css($api.byId('j_add'),'display:block');
+			}else{
+				$api.css($api.byId('j_add'),'display:none');
+			}
+		}
+		
+
+		
+		/*
+		 * 功能：重命名标题
+		 * 作者：张自强
+		 * 时间：20171108
+		 */
+		function reNameWin(type){
+			commonSetWindowName(type);
+		}
+		
+		/*
+		 * 功能：切换主题分类
+		 * 作者：张自强
+		 * 时间：20171020
+		 */
+		function changePyp(e,type){
+			var domArray = document.getElementsByClassName('fl');
+			for(var i=0;i<domArray.length;i++){
+				$api.removeCls(domArray[i], 'active');
+			}
+			$api.addCls(e, 'active');
+			commonExecScript('pyp_index_window','pyp_index_frame','changeDealState('+type+');',1);
+		}
+		
+		/*
+		 * 功能：修改当前查看拍一拍的分类
+		 * 作者：张自强
+		 * 时间：20171120
+		 * mode_type:0：全部，1：我创建的，2：我处理的
+		 */
+		function changeStatu(type){
+			mode_type = type;
+		}
+		
+		/*
+		 * 功能：判断当前用户是否是负责人
+		 * 作者：张自强
+		 * 时间：20171122 
+		 */
+		function judgeRoles() {
+			var rolesArray = $api.getStorage('roles');
+			for (var i = 0; i < rolesArray.length; i++) {
+//				if (rolesArray[i].role_code == "PRINCIPAL_TEACHER") {
+//					is_fzr = true;
+//				}
+				if (rolesArray[i].role_id * 1 == 2) {
+					is_fzr = true;
+				}
+			}
+			var header_h = api.pageParam.header_h;
+			var pageParamJson={"header_h":header_h,'is_fzr':is_fzr};//打开frame页面所需参数
+			commonOpenFrame('pyp_index_frame', 'pyp_index_frame.html',header_h+45, true, false,"#ffffff",pageParamJson);	//打开index页面
+		}
+	</script>
+</html>

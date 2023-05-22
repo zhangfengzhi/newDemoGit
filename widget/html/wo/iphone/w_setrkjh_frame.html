@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<!-- html5：在创建html时为了防止页面缩放等不兼容效果，要创建个viewport  -->
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<!-- 在IOS设备上，有时会将数字转为手机号，这里也要禁止下 -->
+		<meta name="format-detection" content="telephone=no"/>
+		<title>设置任课计划</title>
+		<link rel="stylesheet" type="text/css" href="../../../css/aui/aui.css" />
+		<link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+		<style>
+	    	.ellipsis{white-space: nowrap;overflow: hidden;text-overflow: ellipsis;}
+			.shadow{position:absolute;left:0;top:0;width:100%;height:100%;z-index: -1;}
+			.left-content{position:fixed;left:0;top:0;width:22%;float: left;background:#F2F4F5;height:100%;}
+			.left-content ul li{height:49px;line-height:49px;border-right:1px solid #E6E8E9;font-size:13px;text-align:center;color:#B2B3B4;}
+			.left-content ul li.active{background:#ffffff;border-right:0 !important;border:1px solid #E6E8E9;color:#FF9304;}
+			.left-content ul li.first{border-top:0;border-left:0;}
+			.right-content{width:78%;float: right;height:100%;padding:0 15px;}
+			.right-content ul li{height:49px;line-height:49px;border-bottom:1px solid #ececec;color:#717171;font-size:13px;}
+			.right-content ul li.active{color:#FF9304 !important;}
+			.no-data{text-align:center;color:#c0c0c0;padding-top:15px;}
+		</style>
+	</head>
+	<body class="w-iphone-common">
+		<div id="j_no_data" class="no-data" style="display:none;">该学校暂无任何班级</div>
+		<div id="j_left" class="left-content" style="display:none;">
+			<ul id="j_classification">
+				<li id="j_stage" class="first active" onclick="getStageBtn();">学段</li>
+				<li id="j_subject" onclick="getSubjectBtn();">学科</li>
+				<!--<li id="j_version" onclick="getVersionBtn();">教材版本</li>-->
+				<li id="j_class" onclick="getClassBtn();">任教班级</li>
+			</ul>
+		</div>
+		<div id="j_right" class="right-content" style="display:none;">
+			<!--学段-->
+			<ul id="stage_body"></ul>
+			<script type="text/html" id="stage_script">
+				<% if(xd_subject_list.length == 0){ %>
+					<div style="text-align:center;color:#666;"><span>暂无数据</span></div>
+				<% } else { %>
+					<% for(var i=0; i<xd_subject_list.length; i++){%>
+						<%if(init_xd_name == xd_subject_list[i].xd_name){%>
+							<li class="active ellipsis" onclick="getSubject(this,'<%=xd_subject_list[i].xd_name%>',<%=xd_subject_list[i].xd_id%>);"><%=xd_subject_list[i].xd_name%></li>
+						<%} else {%>
+							<li class="ellipsis" onclick="getSubject(this,'<%=xd_subject_list[i].xd_name%>',<%=xd_subject_list[i].xd_id%>);"><%=xd_subject_list[i].xd_name%></li>
+						<%}%>
+					<%}%>
+				<% } %>
+			</script>
+			<!--//学段-->
+			<!--学科-->
+			<ul id="subject_body" style="display:none;"></ul>
+			<script type="text/html" id="subject_script">
+				<% if(subject_list.length == 0){ %>
+					<div style="text-align:center;color:#666;"><span>暂无数据</span></div>
+				<% } else { %>
+					<% for(var i=0; i<subject_list.length; i++){%>
+						<%if(init_km_id == subject_list[i].subject_id){%>
+							<li class="active ellipsis" onclick="getClassData(this,'<%=subject_list[i].subject_name%>',<%=subject_list[i].subject_id%>);"><%=subject_list[i].subject_name%></li>
+						<%} else {%>
+							<li class="ellipsis" onclick="getClassData(this,'<%=subject_list[i].subject_name%>',<%=subject_list[i].subject_id%>);"><%=subject_list[i].subject_name%></li>
+						<%}%>
+					<%}%>
+				<% } %>
+			</script>
+			<!--//学科-->
+			<!--人教版本-->
+			<ul id="version_body" style="display:none;"></ul>
+			<script type="text/html" id="version_script">
+				<% if(list.length == 0){ %>
+					<div style="text-align:center;color:#666;"><span>暂无数据</span></div>
+				<% } else { %>
+					<% for(var i=0; i<list.length; i++){%>
+						<%if(init_scheme_id == list[i].SCHEME_ID){%>
+							<li class="active ellipsis" onclick="getClassData(this,'<%=list[i].SCHEME_NAME%>',<%=list[i].SCHEME_ID%>);"><%=list[i].SCHEME_NAME%></li>
+						<%} else {%>
+							<li class="ellipsis" onclick="getClassData(this,'<%=list[i].SCHEME_NAME%>',<%=list[i].SCHEME_ID%>);"><%=list[i].SCHEME_NAME%></li>
+						<%}%>
+					<%}%>
+				<% } %>
+			</script>
+			<!--//人教版本-->
+			<!--任教班级-->
+			<ul id="class_body" style="display:none;"></ul>
+			<script type="text/html" id="class_script">
+				<% if(table_List.length == 0){ %>
+					<div style="text-align:center;color:#666;"><span>暂无数据</span></div>
+				<% } else { %>
+					<% for(var i=0; i<table_List.length; i++){%>
+						<li class="ellipsis" classID="<%=table_List[i].CLASS_ID%>" onclick="setClassInfo(this);"><%=table_List[i].CLASS_NAME%></li>
+					<%}%>
+				<% } %>
+			</script>
+			<!--//任教班级-->
+	</body>
+	<script type="text/javascript" src="../../../script/api.js"></script>
+	<script type="text/javascript" src="../../../script/base_config.js"></script>
+	<script type="text/javascript" src="../../../script/common/common.js"></script>
+	<script type="text/javascript" src="../../../script/plug-in/template.js" ></script>
+	<script type="text/javascript">
+		var header_h;
+		var BASE_URL_ACTION;
+		var person_flag = false;//判断是否是同一个人
+		var flag = false;//判断这个人是否有选择班级
+		apiready = function() {
+			commonSetTheme({"level":3,"type":0});
+			//定位header位置，留出上面电池等空隙，苹果需要
+			var header = $api.byId('aui-header');
+			BASE_URL_ACTION = $api.getStorage('BASE_URL_ACTION');
+			$api.fixStatusBar(header);
+			header_h = api.pageParam.header_h;
+			isSamePerson(function(flag){
+				person_flag = flag;
+				getStageBtn();
+			});	
+		};
+		/*
+		*author:zhaoj
+		*function:判断是否为同一个人登录
+		*date：20160504
+		*/
+		function isSamePerson(callback){
+			if($api.getStorage('rkjh_person_id') == $api.getStorage("person_id")){
+				callback(true);
+			}else{
+				callback(false);
+			}
+		}
+		/*
+		*author:zhaoj
+		*function:点击学段左侧按钮
+		*date：20160503
+		*/
+		function getStageBtn(){
+			removeClassificationActive();
+			getStage(function(xd_name,xd_id,flag){
+				getSubject('',xd_name,xd_id);
+				$api.css($api.byId('j_left'),'display:block;');
+				$api.css($api.byId('j_right'),'display:block;');
+			});
+			$api.addCls($api.byId('j_stage'), 'active');
+			$api.css($api.byId('stage_body'),'display:block;');
+			$api.css($api.byId('subject_body'),'display:none;');
+			$api.css($api.byId('version_body'),'display:none;');
+			$api.css($api.byId('class_body'),'display:none;');
+		}
+		/*
+		*author:zhaoj
+		*function:点击学段左侧按钮
+		*date：20160503
+		*/
+		function getSubjectBtn(){
+			removeClassificationActive();
+			var xd_name = $api.getStorage('rkjh_xd_name');
+			var xd_id = $api.getStorage('rkjh_xd_id');
+			getSubject('',xd_name,xd_id);
+			$api.addCls($api.byId('j_subject'), 'active');
+			$api.css($api.byId('stage_body'),'display:none;');
+			$api.css($api.byId('subject_body'),'display:block;');
+			$api.css($api.byId('version_body'),'display:none;');
+			$api.css($api.byId('class_body'),'display:none;');
+		}
+		/*
+		*author:zhaoj
+		*function:点击教材版本左侧按钮
+		*date：20160809
+		*/
+		function getVersionBtn(){
+			removeClassificationActive();
+			var xd_id = $api.getStorage('rkjh_xd_id');
+			var km_id = $api.getStorage('rkjh_km_id');
+			getVersion();
+			$api.addCls($api.byId('j_version'), 'active');
+			$api.css($api.byId('stage_body'),'display:none;');
+			$api.css($api.byId('subject_body'),'display:none;');
+			$api.css($api.byId('version_body'),'display:block;');
+			$api.css($api.byId('class_body'),'display:none;');
+		}
+		/*
+		*author:zhaoj
+		*function:点击班级左侧按钮
+		*date：20160503
+		*/
+		function getClassBtn(){
+			removeClassificationActive();
+			getClass();
+			$api.addCls($api.byId('j_class'), 'active');
+			$api.css($api.byId('stage_body'),'display:none;');
+			$api.css($api.byId('subject_body'),'display:none;');
+			$api.css($api.byId('version_body'),'display:none;');
+			$api.css($api.byId('class_body'),'display:block;');
+		}
+		/*
+		*author:zhaoj
+		*function:去除左侧分类的active样式
+		*date：20160503
+		*/
+		function removeClassificationActive(){
+			var classificationArray = $api.domAll($api.byId('j_classification'), 'li');
+			for(var i = 0; i < classificationArray.length; i++){
+				$api.removeCls(classificationArray[i], 'active');
+			}
+		}
+		/*
+		*author:zhaoj
+		*function:获取学段
+		*date：20160503
+		*/
+		function getStage(callback){
+			api.showProgress({
+				title : '加载中...',
+				text : '请稍候...',
+				modal : false
+			});
+			isSamePerson(function(flag){
+				person_flag = flag;
+			});
+			//获取
+			api.ajax({	
+				url : BASE_URL_ACTION + '/ypt/getCrmStageSubject?random_num='+creatRandomNum()+'&&product_id=ybk',
+				method : 'get',
+				dataType : 'json',
+				timeout : 30,
+				cache : false,
+				headers : {
+					'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+				}
+			}, function(ret, err) {
+				api.hideProgress();
+				if (err) {
+					api.alert({
+						msg : '对不起，获取学段列表信息失败'
+					});
+				} else {
+					if (ret.success) {
+						$api.setStorage('rkjh_stage_list',ret);
+						var init_xd_name = $api.getStorage('rkjh_xd_name');
+						var init_xd_id = $api.getStorage('rkjh_xd_id');						
+						if(typeof(init_xd_name) != 'undefined' && person_flag && init_xd_name != '') {
+							callback(init_xd_name,init_xd_id);
+							ret["init_xd_name"] = init_xd_name;
+							var html_type = template.render('stage_script', ret);
+							document.getElementById('stage_body').innerHTML = html_type;
+						} else {
+							var p = 0;
+							getClassJudge(p,ret.xd_subject_list[p].xd_id,ret.xd_subject_list[p].xd_name,function(flag,id,name){
+								if(flag){
+									setRkjhStorage('rkjh_xd',id,name);
+									callback($api.getStorage('rkjh_xd_name'),$api.getStorage('rkjh_xd_id'));
+									ret["init_xd_name"] = $api.getStorage('rkjh_xd_name');
+									var html_type = template.render('stage_script', ret);
+									document.getElementById('stage_body').innerHTML = html_type;
+								}else{
+									ret["init_xd_name"] = $api.getStorage('rkjh_xd_name');
+									var html_type = template.render('stage_script', ret);
+									document.getElementById('stage_body').innerHTML = html_type;
+									var length = $api.getStorage('rkjh_stage_list').xd_subject_list.length;
+									p++;
+									if( p < length){
+										return getClassJudge(p,'','',callback);
+									}else{
+										//所有学段都没有班级
+									    $api.css($api.byId('j_no_data'),'display:block;');
+									    $api.css($api.byId('j_left'),'display:none;');
+									    $api.css($api.byId('j_right'),'display:none;');
+									    setRkjhStorage('rkjh_xd','','');
+									}
+								}
+							});
+						}
+					} else {
+						api.alert({
+							msg : '对不起，获取学段列表信息失败'
+						});
+					}
+				}
+			});
+		}
+		/*
+		*author:zhaoj
+		*function:获取学科
+		*date：20160503
+		*/
+		function getSubject(obj,xd_name,xd_id){
+			isSamePerson(function(flag){
+				person_flag = flag;
+			});
+			getClassJudge(-1,xd_id,xd_name,function(flag,id,name){
+				if(flag){
+					//获取
+					api.ajax({
+						url : BASE_URL_ACTION + '/ypt/getCrmStageSubject?random_num='+creatRandomNum()+'&&product_id=ybk',
+						method : 'get',
+						dataType : 'json',
+						timeout : 30,
+						cache : false,
+						headers : {
+							'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+						}
+					}, function(ret, err) {
+						api.hideProgress();
+						if (err) {
+							api.alert({
+								msg : '对不起，获取学科列表信息失败'
+							});
+						} else {
+							if (ret.success) {
+								$api.setStorage('rkjh_scheme_name','');
+								var init_km_name = $api.getStorage('rkjh_km_name');
+								var init_km_id = $api.getStorage('rkjh_km_id');
+								var index=0;
+								for(var i=0;i<ret.xd_subject_list.length;i++){
+									if(xd_id==ret.xd_subject_list[i].xd_id){
+										index = i;
+										break;
+									}
+								}
+								var list_json = ret.xd_subject_list[index];
+								if(typeof(init_km_name) != 'undefined' && person_flag) {
+									list_json["init_km_id"] = init_km_id;
+								} else {
+									setRkjhStorage('rkjh_km',ret.xd_subject_list[index].subject_list[0].subject_id,ret.xd_subject_list[index].subject_list[0].subject_name);
+									list_json["init_km_id"] = ret.xd_subject_list[index].subject_list[0].subject_id;
+								}
+								var html_type = template.render('subject_script', list_json);
+								document.getElementById('subject_body').innerHTML = html_type;
+							} else {	
+								api.alert({
+									msg : '对不起，获取学科列表信息失败'
+								});
+							}
+						}
+					});
+					if(obj != ''){
+						setRkjhStorage('rkjh_xd',id,name);
+						getSubjectBtn();
+					}
+				}else{
+					api.alert({
+						msg : '当前学段下暂无班级，请更换学段。'
+					}, function(ret, err) {
+						
+					});
+				}
+			});
+		}
+		function getVersion(){
+			isSamePerson(function(flag){
+				person_flag = flag;
+			});
+			//获取
+			api.ajax({
+				url : BASE_URL_ACTION + '/scheme/getSchemeListByPlat',
+				method : 'post',
+				dataType : 'json',
+				timeout : 30,
+				cache : false,
+				data : {
+						values : {
+							"random_num" : creatRandomNum(),
+							"b_use" : 1,
+							"page_number" : 1,
+							"page_size" : 10000,
+							"plat_id" :1,
+							"stage_id" :$api.getStorage('rkjh_xd_id'),
+							"subject_id" :$api.getStorage('rkjh_km_id')
+						}
+					},
+				headers : {
+					'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+				}
+			}, function(ret, err) {
+				api.hideProgress();
+				if (err) {
+					api.alert({
+						msg : '对不起，获取教材版本信息失败'
+					});
+				} else {
+					if (ret.success) {
+						var init_scheme_name = $api.getStorage('rkjh_scheme_name');
+						var init_scheme_id = $api.getStorage('rkjh_scheme_id');
+						var list_json = ret;
+						if(typeof(init_scheme_name) != 'undefined' && person_flag && init_scheme_name != '') {
+							list_json["init_scheme_id"] = init_scheme_id;
+						} else {
+							setRkjhStorage('rkjh_scheme',ret.list[0].SCHEME_ID,ret.list[0].SCHEME_NAME);
+							list_json["init_scheme_id"] = ret.list[0].SCHEME_ID;
+						}
+						var html_type = template.render('version_script', list_json);
+						document.getElementById('version_body').innerHTML = html_type;
+					} else {	
+						api.alert({
+							msg : '对不起，获取教材版本信息失败'
+						});
+					}
+				}
+			});
+		}
+		/*
+		*author:zhaoj
+		*function:点击具体学科，获取教材版本信息
+		*date：20160503
+		*/
+		function getVersionData(obj,subject_name,subject_id){
+			setRkjhStorage('rkjh_km',subject_id,subject_name);
+			var classArray = $api.domAll($api.byId('class_body'), 'li');
+			for (var j = 0; j < classArray.length; j++) {
+				$api.removeCls(classArray[j], 'active');
+			}
+			var subjectArray = $api.domAll($api.byId('subject_body'), 'li');
+			for (var i = 0; i < subjectArray.length; i++) {
+				$api.removeCls(subjectArray[i], 'active');
+			}
+			$api.addCls(obj, 'active');
+			getVersionBtn();
+		}
+		/*
+		*author:zhaoj
+		*function:点击具体学科，获取教材版本信息
+		*date：20160503
+		*/
+		function getClassData(obj,subject_name,subject_id){
+//			setRkjhStorage('rkjh_scheme',scheme_id,scheme_name);
+			setRkjhStorage('rkjh_km',subject_id,subject_name);
+			var classArray = $api.domAll($api.byId('class_body'), 'li');
+			for (var j = 0; j < classArray.length; j++) {
+				$api.removeCls(classArray[j], 'active');
+			}
+			var subjectArray = $api.domAll($api.byId('subject_body'), 'li');
+			for (var i = 0; i < subjectArray.length; i++) {
+				$api.removeCls(subjectArray[i], 'active');
+			}
+			$api.addCls(obj, 'active');
+			getClassBtn();
+		}
+		/*
+		*author:zhaoj
+		*function:判断是否有班级
+		*date：20160503
+		*/
+		function getClassJudge(p,xd_id,xd_name,callback){
+			var stage_id;
+			if(p == -1){
+				stage_id = xd_id;
+			}else{
+				var data = $api.getStorage('rkjh_stage_list');
+				stage_id = data.xd_subject_list[p].xd_id;
+			}
+			api.ajax({
+				url : BASE_URL_ACTION + '/class/getClassList',
+				method : 'post',
+				dataType : 'json',
+				timeout : 30,
+				cache : false,
+				data : {
+					values : {
+						"org_id" : $api.getStorage('bureau_id'),
+						"pageNumber" : 1,
+						"pageSize" : 1000,
+						"stage_id" : stage_id,
+						"random_num" : creatRandomNum()
+					}
+				},
+				headers : {
+					'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity")  + '; background_bureau_id=' + $api.getStorage("bureau_id") + '; token=' + $api.getStorage("token_ypt") + ';'
+				}
+			}, function(ret, err) {
+				if (err) {
+					callback(false,xd_id,xd_name);
+				} else {
+					if (ret.success) {
+						if(ret.table_List.length > 0){
+							callback(true,xd_id,xd_name);
+							var html_type = template.render('class_script', ret);
+							document.getElementById('class_body').innerHTML = html_type;
+						}else{
+							callback(false,xd_id,xd_name);
+						}	
+					}else{
+						callback(false,xd_id,xd_name);
+					}
+				}
+			});
+			getClass();
+		}
+		/*
+		*author:zhaoj
+		*function:获取任教班级
+		*date：20160503
+		*/
+		function getClass(){
+			api.ajax({
+				url : BASE_URL_ACTION + '/class/getTeachPlanByPersonId?xq_id='+ $api.getStorage('rkjh_xq_id') +'&person_id=' + $api.getStorage("person_id") +'&random_num=' + creatRandomNum(),
+				method : 'get',
+				dataType : 'json',
+				cache : false,
+				timeout : 30,
+				headers : {
+					'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+				}
+			}, function(ret, err) {
+				if (err) {
+				} else {
+					if (ret) {	
+						for(var i = 0; i < ret.length; i++){
+							var classIdArray = ret[i].class_ids.split(",");
+							if($api.getStorage('rkjh_xd_id') == ret[i].stage_id && $api.getStorage('rkjh_km_id') == ret[i].subject_id && $api.getStorage('rkjh_scheme_id') == ret[i].scheme_id){
+								var classArray = $api.domAll($api.byId('class_body'), 'li');
+								for (var j = 0; j < classArray.length; j++) {
+									var classID = classArray[j].getAttribute("classID");
+									for(var k = 0; k < classIdArray.length; k++){
+										if(classIdArray[k]*1 == classID*1){
+											$api.addCls(classArray[j], 'active');
+										}
+									}
+								}
+							}
+						}
+					}else{
+					}
+				}
+			});
+		}
+		/*
+		*author:zhaoj
+		*function:去除学段的active样式
+		*date：20160503
+		*/
+		function removeStageActive(obj,xd_id) {	
+			//选中处理
+			var stageArray = $api.domAll($api.byId('stage_body'), 'li');
+			for (var i = 0; i < stageArray.length; i++) {
+				$api.removeCls(stageArray[i], 'active');
+			}
+			$api.addCls(obj, 'active');
+		}
+		/*
+		*author:zhaoj
+		*function:获取缓存学段的值
+		*date：20160503
+		*/
+		function setRkjhStorage(id,value,name){
+			$api.setStorage(id + '_id',value);
+			$api.setStorage(id + '_name',name);
+		}
+		/*
+		*author:zhaoj
+		*function:设置任教班级信息
+		*date：20160503
+		*/
+		function setClassInfo(obj){
+			flag = true;
+			if($api.hasCls(obj, 'active')){
+				$api.removeCls(obj, 'active');
+			}else{
+				$api.addCls(obj, 'active');
+			}
+		}
+		/*
+		*author:zhaoj
+		*function:保存任课计划信息
+		*date：20160503
+		*/
+		function saveClassInfo(){
+			if(flag){
+				var class_ids= new Array();
+				var classArray = $api.domAll($api.byId('class_body'), 'li');
+				for (var j = 0; j < classArray.length; j++) {
+					if($api.hasCls(classArray[j], 'active')){
+						class_ids.push(classArray[j].getAttribute("classID"));
+					}
+				}
+				var classIds = (class_ids.toString() == null) ? '' : class_ids.toString();
+				api.showProgress({
+					title : '保存中...',
+					text : '请稍候...',
+					modal : false
+				});
+				setTimeout(function(){
+					api.ajax({
+						url : BASE_URL_ACTION + '/class/saveTeachPlan?xq_id='+ $api.getStorage('rkjh_xq_id') +'&person_id=' + $api.getStorage("person_id") +'&class_ids=' + classIds +'&subject_id=' + $api.getStorage('rkjh_km_id')+'&scheme_id='+$api.getStorage('rkjh_scheme_id')+'&random_num=' + creatRandomNum(),
+						method : 'get',
+						dataType : 'json',
+						timeout : 30,
+						cache : false,
+						headers : {
+							'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+						}
+					}, function(ret, err) {
+						api.hideProgress();
+						if (err) {
+							popAlert('保存失败，请稍候再试。');
+						} else {
+							if (ret.success) {
+								api.execScript({
+									name : 'w_rkjh_window',
+						            script: 'back();'
+					            });	
+							}else{
+								popAlert('保存失败，请稍候再试。');
+							}
+						}
+					});
+				},3000);
+			}else{
+				api.execScript({
+					name : 'w_rkjh_window',
+		            script: 'back();'
+	            });	
+			}
+		}
+	</script>
+</html>

@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <title>考勤统计</title>
+    <link rel="stylesheet" type="text/css" href="../../../../../css/aui/aui.css"/>
+    <link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+    <style>
+        body{background:#F8F7F3;color:#141414;}
+        .content{height:40px;line-height:40px;padding:0 15px;}
+        .content div{display:inline-block;float:right;color:#666666;}
+        .bb{border-bottom:1px solid #efefef;}
+        .bt{border-top:1px solid #efefef;}
+        .hr{height:10px;}
+        .bgf{background:#ffffff;}
+        .pie-chart{position:relative;}
+        .detail-info{position:absolute;top:50%;right:0;width:40%;}
+        .detail-info .main{height:25px;line-height:22px;font-size:12px;}
+        .detail-info .main .name{position:relative;padding-right:55px;}
+        .detail-info .main .precent{position:absolute;display:inline-block;right:10px;top:0;}
+        .detail-info .main span{display:inline-block;float:left;margin:6px 15px 0 0;width:12px;height:12px;border-radius:6px;}
+        .s-yellow{background:#A27600;}
+        .q-yellow{background:#FCF227;}
+        .yellow{background:#FAFA24;}
+        .s-blue{background:#0543FA;}
+        .q-blue{background:#5A6CA0;}
+        .blue{background:#4369DB;}
+        .s-pink{background:#fe66ff;}
+        .q-pink{background:#ff6699;}
+        .pink{background:#ed66a1;}
+        .s-green{background:#04AE8C;}
+        .q-green{background:#7FEC8B;}
+        .green{background:#87C720;}
+        .s-orange{background:#FCA500;}
+        .q-orange{background:#FAC96A;}
+        .orange{background:#FDB225;}
+        .s-red{background:#FF0000;}
+        .q-red{background:#ED5D5D;}
+        .red{background:#FA4848;}
+        .s-gray{background:#767676;}
+        .q-gray{background:#D1D1D1;}
+        .gray{background:#B9B9B9;}
+        .s-yellow-font{color:#A27600;}
+        .q-yellow-font{color:#FCF227;}
+        .yellow-font{color:#FAFA24;}
+        .s-blue-font{color:#0543FA;}
+        .q-blue-font{color:#5A6CA0;}
+        .blue-font{color:#4369DB;}
+        .s-pink-font{color:#fe66ff;}
+        .q-pink-font{color:#ff6699;}
+        .pink-font{color:#ed66a1;}
+        .s-green-font{color:#04AE8C;}
+        .q-green-font{color:#7FEC8B;}
+        .green-font{color:#87C720;}
+        .s-orange-font{color:#FCA500;}
+        .q-orange-font{color:#FAC96A;}
+        .orange-font{color:#FDB225;}
+        .s-red-font{color:#FF0000;}
+        .q-red-font{color:#ED5D5D;}
+        .red-font{color:#FA4848;}
+        .s-gray-font{color:#767676;}
+        .q-gray-font{color:#D1D1D1;}
+        .gray-font{color:#B9B9B9;}
+        .qj-detail{padding:0 15px;}
+        .qj-detail ul{width:100%;}
+        .qj-detail ul li{list-style:none;height:40px;line-height:40px;color:#666666;}
+        .qj-detail ul li div{float:right;}
+        .no-data{line-height:30px;text-align:center;color:#666666;}
+        .tip{display:inline-block;color:#f00 !important;display:inline-block;padding-left:10px;font-size:14px;}
+    </style>
+</head>
+<body class="common-iphone-kaoqin">
+    <div class="hr bb"></div>
+    <div class="content bb bgf" onclick="openPickerTime(0);">
+        起始日期
+        <div id="start_time"></div>
+    </div>
+    <div class="content bb bgf" onclick="openPickerTime(1);">
+        结束日期
+        <div id="end_time"></div>
+    </div>
+    <div class="hr"></div>
+    <div id="j_no_data" class="no-data" style="display:none;"></div>
+    <div id="j_tjt_title" class="content bt bb bgf" style="display:none;">
+        统计图
+    </div>
+    <div id="pie_chart" class="pie-chart bb bgf clearfix" style="display:none;">
+        <div id="pic_body" class="detail-info"></div>
+        <script type="text/html" id="pic_script">
+            <%for(var i=0; i<list.length; i++) {%>
+                <div class="main">
+                    <span class="<%=list[i].class_name%>">&nbsp;</span>
+                    <div class="name">
+                       <%=list[i].name%>
+                       <div class="precent <%=list[i].font_class_name%>"><%=list[i].value%>%</div>
+                    </div>
+                </div>
+            <% } %>
+        </script>
+    </div>
+    <div id="j_heji_hr" class="hr bb" style="display:none;"></div>
+    <div id="j_heji" class="content bb bgf" style="display:none;">
+    </div>
+    <div id="qj_count" class="content bb bgf" style="display:none;">
+    </div>
+    <div id="j_tjxq_hr" class="hr bb" style="display:none;"></div>
+    <div id="j_tjxq_title" class="content bb bgf" style="display:none;">
+        统计详情
+    </div>
+    <div id="j_tjxq_content" class="qj-detail bb bgf" style="display:none;">
+        <ul id="qj_body">
+            <!--<li class="bb">
+                婚假
+                <div>7天</div>
+            </li>
+            <li class="bb">
+                病假
+                <div>1天3小时</div>
+            </li>
+            <li>
+                事假
+                <div>2天3小时</div>
+            </li>-->
+        </ul>
+        <script type="text/html" id="qj_script">
+            <%for(var i=0; i<list.length; i++) {%>
+                <li class="<%if(i != list.length-1){%>bb<%}%>">
+                    <%=list[i].type_name%>
+                    <div><%=list[i].time%></div>
+                </li>
+            <% } %>
+        </script>
+    </div>
+    <div class="hr"></div>
+</body>
+<script type="text/javascript" src="../../../../../script/api.js"></script>
+<script type="text/javascript" src="../../../../../script/base_config.js" ></script>
+<script type="text/javascript" src="../../../../../script/common/common.js"></script>
+<script type="text/javascript" src="../../../../../script/plug-in/template.js" ></script>
+<script type="text/javascript" src="../../../../../script/common/kaoqin_common.js"></script>
+<script type="text/javascript">
+    var type = 0;//判读是请假还是公出，默认是请假
+    var qjTypeData;
+    var gcTypeData;
+    var ruleType;//1请假2，公出
+    var pieChart;//饼状图初始化变量
+    var pieID =0;//饼状图id
+    var classArray = ['green','orange','pink','blue','red','yellow','gray','s-green','s-orange','s-pink','s-blue','s-red','s-yellow','s-gray','q-green','q-orange','q-pink','q-blue','q-red','q-yellow','q-gray'];
+    var classFontArray = ['green-font','orange-font','pink-font','blue-font','red-font','yellow-font','gray-font','s-green-font','s-orange-font','s-pink-font','s-blue-font','s-red-font','s-yellow-font','s-gray-font','q-green-font','q-orange-font','q-pink-font','q-blue-font','q-red-font','q-yellow-font','q-gray-font'];
+    var colorArray = ['#87C720','#FDB225','#ed66a1','#4369DB','#FA4848','#FAFA24','#B9B9B9','#04AE8C','#FCA500','#fe66ff','#0543FA','#FF0000','#A27600','#767676','#7FEC8B','#FAC96A','#ff6699','#5A6CA0','#ED5D5D','#FCF227','#D1D1D'];
+    apiready = function(){
+        commonSetTheme({"level":5,"type":0});
+        changeType(api.pageParam.type);
+    };
+    /*
+    *author:zhaoj
+    *function:初始化请假类型和公出类型数据
+    *date：20160623
+    */
+    function initTypeData(rule_type){
+        getRuleTypeList(0,rule_type,function(flag,data){
+            if(flag){
+                if(rule_type == 1){
+                    //请假类型数据处理
+                    qjTypeData = manageTypeData(data);
+                }else{
+                    //公出类型数据处理
+                    gcTypeData = manageTypeData(data);
+                }
+            }
+        })
+    }
+    /*
+    *author:zhaoj
+    *function:请假/公出类型数据处理
+    *date：20160623
+    */
+    function manageTypeData(data){
+        var dataArray = {"list":[]};
+        for(var i = 0; i<data.list.length; i ++){
+            var oparam = new Object();
+            oparam.id = data.list[i].id;
+            oparam.name = data.list[i].name;
+            oparam.class_name = classArray[data.list[i].id*1-1];
+            oparam.font_class_name = classFontArray[data.list[i].id*1-1];
+            oparam.color_value = colorArray[data.list[i].id*1-1];
+            dataArray.list.push(oparam);
+        }
+        return dataArray;
+    }
+    /*
+    *author:zhaoj
+    *function:更改是请假还是公出的状态type：0请假，type：1公出
+    *date：20160620
+    */
+    function changeType(num){
+        type = num;
+        setTime(0,getNowTime(0));//开始时间
+        setTime(1,getNowTime(1));//结束时间
+        if(type){
+            ruleType = 2;
+            $api.text($api.byId('j_no_data'), '本期间内暂无公出');
+            getMyLeaveStatistical(1,2,$api.text($api.byId('start_time')),$api.text($api.byId('end_time')));
+        }else{
+            ruleType = 1;
+            $api.text($api.byId('j_no_data'), '本期间内暂无请假');
+            getMyLeaveStatistical(1,1,$api.text($api.byId('start_time')),$api.text($api.byId('end_time')));
+        }
+    }
+    /*
+    *author:zhaoj
+    *function:打开饼状图
+    *date：20160523
+    */
+    function openPieChart(picArray){
+        pieChart = api.require('pieChart');
+        pieID++;
+        pieChart.open({
+              x: 15+api.winWidth * 0.23,
+              y: 15+120+20+api.winWidth * 0.23,
+              radius: api.winWidth * 0.23,
+              id: pieID,
+              center:{
+                  title: '考勤',
+                  subTitle: '统计',
+                  titleColor:'#484848',
+                  titleSize :11,
+                  subTitleColor:'#484848',
+                  subTitleSize:11
+              },
+              elements:picArray,
+            fixedOn: api.frameName,
+            fixed: false
+        }, function(ret, err) {
+        });
+    }
+    /*
+    *author:zhaoj
+    *function:选择时间type=0开始时间，type=1结束时间
+    *date：20160622
+    */
+    function openPickerTime(type){
+        var nowTime;
+        var title;
+        if(type){
+            title ='结束日期';
+            nowTime = $api.text($api.byId('end_time'));
+        }else{
+            title ='起始日期';
+            nowTime = $api.text($api.byId('start_time'));
+        }
+        api.openPicker({
+            type: 'date',
+            date: nowTime,
+            title: title
+        }, function(ret, err){
+            if( ret ){
+                var month = ret.month > 9 ? ret.month : '0'+ret.month;
+                var day = ret.day > 9 ? ret.day : '0'+ret.day;
+                var time = ret.year+'-'+month+'-'+day;
+                if(type == 0){
+                    //开始时间
+                    if(Date.parse(time.replace(/-/g,'\/'))<=Date.parse($api.text($api.byId('end_time')).replace(/-/g,'\/'))){
+                        setTime(0,time);
+                        setTimeout(function(){
+                            openPickerTime(1);
+                        },250);
+                    }else{
+                        setTime(0,time);
+                        var endTime = Date.parse(time.replace(/-/g,'\/'))+24*3600*1000;
+                        setTime(1,getDate(endTime));//结束时间
+                        setTimeout(function(){
+                            openPickerTime(1);
+                        },250);
+                    }
+                }else{
+                    if(Date.parse($api.text($api.byId('start_time')).replace(/-/g,'\/'))<=Date.parse(time.replace(/-/g,'\/'))){
+                        setTime(1,time);
+                        getMyLeaveStatistical(1,ruleType,$api.text($api.byId('start_time')),$api.text($api.byId('end_time')));
+                    }else{
+                        popAlertBackData('结束日期不能小于起始日期，请重新选择！',function(flag){
+                            //openPickerTime(1);
+                        })
+                    }
+                }
+            }
+        });
+    }
+    /*
+    *author:zhaoj
+    *function:获取当前时间,返回年月日
+    *date：20160622
+    */
+    function getNowTime(type){
+        time = new Date();
+        var year = time.getFullYear();
+        var month = time.getMonth() + 1;
+        var month_string = month > 9 ? month : '0'+month;;
+        var day = time.getDate();
+        var day_string = day = day > 9 ? day : '0'+day;
+        switch(type){
+            case 0:
+                return year+'-'+month_string+'-01';
+                break;
+            case 1:
+                return year+'-'+month_string+'-'+day_string;
+                break;
+            case 2:
+                return year+'-'+month+'-'+day;
+                break;
+            default:
+                break;
+        }
+    }
+    /*
+     *author:zhaoj
+     *function:将毫秒数转换成正常的日期
+     *date：20160624
+     */
+    function getDate(end_time) {
+        var time = new Date(end_time);
+        var year = time.getFullYear();
+        var month = time.getMonth() + 1;
+        month = month > 9 ? month : '0'+month;
+        var day = time.getDate();
+        day = day > 9 ? day : '0'+day;
+        return year+'-'+month+'-'+day;
+    }
+    /*
+    *author:zhaoj
+    *function:设置时间type=0开始时间，type=1结束时间
+    *date：20160622
+    */
+    function setTime(type,time){
+        if(type){
+            $api.text($api.byId('end_time'), time);
+        }else{
+            $api.text($api.byId('start_time'), time);
+        }
+    }
+    /*
+    *author:zhaoj
+    *function:获取我的考勤统计
+    *date：20160622
+    */
+    function getMyLeaveStatistical(show_type,rule_type,start_data,end_data){
+        if(show_type == 1){
+            showSelfProgress('加载中...');
+        }
+        api.ajax({
+            url : BASE_URL_ACTION + '/leave/getMyLeaveStatistical',
+            method : 'get',
+            timeout : 0,
+            dataType : 'json',
+            data : {
+                values : {
+                    "random_num" : creatRandomNum(),
+                    "start_data" : start_data,
+                    "end_data" : end_data,
+                    "rule_type" : rule_type
+                }
+            },
+            headers : {
+    'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+    }
+            }, function(ret, err) {
+                api.hideProgress();
+                if (err) {
+                    popToast('统计获取失败');
+                } else {
+                    if(ret.success){
+                        if(ret.list.length > 0){
+                            dealData(ret,function(data){
+                                dealTjData(rule_type,data,function(flag){
+                                    showDisplay(1,'block','none');
+                                });
+                            });
+                        }else{
+                            showDisplay(0,'none','block');
+                        }
+                    }else{
+                        popToast('统计获取失败');
+                    }
+                }
+        });
+    }
+    /*
+     *author:zhaoj
+     *function:处理数据
+     *date：20160623
+     */
+    function dealData(ret,callback){
+        var timeTotal=0;//一共请假的分钟数
+        var qjCount=0;//一共请假的次数
+        for(var i = 0; i < ret.list.length; i++){
+            var time='';
+            var timeNum=0;
+            if(ret.list[i].total_days*1>0){
+                time = ret.list[i].total_days+'天';
+                timeNum = timeNum + ret.list[i].total_days*1*8*60;
+            }
+            if(ret.list[i].total_hours*1>0){
+                time = time + ret.list[i].total_hours+'小时';
+                timeNum = timeNum + ret.list[i].total_hours*1*60;
+            }
+            if(ret.list[i].total_minutes*1>0){
+                time = time + ret.list[i].total_minutes+'分钟';
+                timeNum = timeNum + ret.list[i].total_minutes*1;
+            }
+            ret.list[i].time = time;
+            ret.list[i].timeNum = timeNum;
+            timeTotal=timeTotal+timeNum;
+            qjCount=qjCount*1+ret.list[i].count*1;
+        }
+        var hjTime='';
+        if(ret.total_days*1>0){
+                hjTime= ret.total_days+'天';
+            }
+        if(ret.total_hours*1>0){
+            hjTime = hjTime + ret.total_hours+'小时';
+        }
+        if(ret.total_minutes*1>0){
+            hjTime = hjTime + ret.total_minutes+'分钟';
+        }
+        ret.timeTotal = timeTotal;
+        ret.qjCount = qjCount*1;
+        if(ruleType == 1){      
+            $api.html($api.byId('qj_count'), '请假次数<div id="hj_count">共'+qjCount+'次</div>');
+            $api.html($api.byId('j_heji'), '请假合计<div id="hj_count">共'+hjTime+'</div>');
+        }else{
+            $api.html($api.byId('qj_count'), '公出次数<div id="hj_count">共'+qjCount+'次</div>');
+            $api.html($api.byId('j_heji'), '公出合计<div id="hj_count">共'+hjTime+'</div>');
+        }
+        addTemplateHtml('qj_body', 'qj_script', ret,1);
+        callback(ret);
+    }
+    /*
+     *author:zhaoj
+     *function:处理数据
+     *date：20160623
+     */
+    function dealTjData(rule_type,data,callback){
+        var picArray=new Array();
+        var picData={"list":[]};
+        var typeData;
+        if(rule_type == 1){
+            typeData=qjTypeData;
+        }else{
+            typeData=gcTypeData;
+        }
+        for(var i = 0; i < data.list.length; i++){
+            var oparam1 = new Object();
+            var oparam2 = new Object();
+            var percent = (data.list[i].timeNum/data.timeTotal)*100;
+                percent = percent.toString();
+                percent = percent.substring(0,5)*1;
+            oparam1.value = percent;
+            oparam2.value = percent;
+            if(typeData){
+                for(var j = 0; j < typeData.list.length; j++){
+                    if(data.list[i].type_id == typeData.list[j].id && data.list[i].type_name == typeData.list[j].name){
+                        oparam1.color = typeData.list[j].color_value;
+                        oparam2.color = typeData.list[j].color_value;
+                        oparam2.class_name = typeData.list[j].class_name;
+                        oparam2.font_class_name = typeData.list[j].font_class_name;
+                        oparam2.name = typeData.list[j].name;
+                    }
+                }
+            }else{
+                oparam1.color = colorArray[data.list[i].type_id*1-1];
+                oparam2.color = colorArray[data.list[i].type_id*1-1];
+                oparam2.class_name = classArray[data.list[i].type_id*1-1];
+                oparam2.font_class_name = classFontArray[data.list[i].type_id*1-1];
+                oparam2.name = data.list[i].type_name;
+            }
+            picArray.push(oparam1);
+            picData.list.push(oparam2);
+        }
+        
+        //打开饼状图
+        openPieChart(picArray);
+        var pieHeight = Math.floor(api.winWidth * 0.46)+30;
+        $api.css($api.byId('pie_chart'),'height:'+pieHeight+'px;');
+        
+        //赋值饼状图右端数据显示
+        addTemplateHtml('pic_body', 'pic_script', picData,1);
+        var marginTopNum = picData.list.length*22/2;
+        $api.css($api.byId('pic_body'),'margin-top:-'+marginTopNum+'px;');
+        
+        callback(true);
+    }
+    /*
+     *author:zhaoj
+     *function:隐藏或显示模块
+     *date：20160623
+     */
+    function showDisplay(type,css1,css2){
+        $api.css($api.byId('j_tjt_title'), 'display:'+css1+';');
+        $api.css($api.byId('pie_chart'), 'display:'+css1+';');
+        $api.css($api.byId('j_tjxq_hr'), 'display:'+css1+';');
+        $api.css($api.byId('j_tjxq_title'), 'display:'+css1+';');
+        $api.css($api.byId('j_tjxq_content'), 'display:'+css1+';');
+        $api.css($api.byId('qj_count'), 'display:'+css1+';');
+        $api.css($api.byId('j_heji'), 'display:'+css1+';');
+        $api.css($api.byId('j_heji_hr'), 'display:'+css1+';');
+        $api.css($api.byId('j_no_data'), 'display:'+css2+';');
+        if(!type){
+            if(pieChart){
+                for(var i =0 ; i <= pieID; i++){
+                    pieChart.close({
+                        id: i
+                    });
+                }
+            }
+        }
+    }
+</script>
+</html>

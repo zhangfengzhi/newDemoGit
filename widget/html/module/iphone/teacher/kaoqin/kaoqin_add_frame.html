@@ -1,0 +1,1139 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<title>考勤申请</title>
+		<link rel="stylesheet" type="text/css" href="../../../../../css/aui/aui.css"/>
+		<link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+		<style>
+			body {
+				background: #F8F7F3;
+				color: #666666;
+			}
+			.shadow {
+				position: absolute;
+				left: 0;
+				top: 0;
+				width: 100%;
+				height: 100%;
+				z-index: -1;
+				background: #000000;
+				opacity: 0;
+			}
+			.bgf {
+				background: #ffffff;
+			}
+			.mb10 {
+				margin-bottom: 10px !important;
+			}
+			.common-name .name {
+				min-width: 90px;
+				max-width:30%;
+				display: inline-block;
+				float: left;
+				line-height: 45px;
+				font-size: 16px;
+				white-space: nowrap;
+				overflow: hidden;
+				text-overflow: ellipsis;
+				color:#141414;
+			}
+			.common-name .name font {
+				font-size: 13px;
+				color: #ABABAB;
+			}
+			.plr15 {
+				padding: 0 15px;
+			}
+			.plrtb {
+				padding: 15px;
+			}
+			.add-img {
+				padding: 15px 20px 10px 20px;
+			}
+			.aui-btn-block {
+				padding: 8px 0;
+				margin-bottom: 0;
+			}
+			.manage {
+				display: inline-block;
+				float: right;
+				color: #0062CC;
+				font-size: 14px;
+				line-height: 45px;
+				padding-left:3px;
+			}
+			.manage a{margin-right:-4px;}
+			.clearfix:after {
+				content: ' ';
+				display: block;
+				clear: both;
+				visibility: hidden;
+				line-height: 0;
+				height: 0;
+			}
+			.sucai {
+				position: relative;
+			}
+			.sucai-name {
+				border-bottom: 2px solid #f6f6f6;
+				line-height: 45px;
+			}
+			.sucai button {
+				width: 48%;
+				float: left;
+			}
+			.shanchu {
+				position: absolute;
+				top: 25px;
+				right: 30px;
+			}
+			.mr4 {
+				margin-right: 4%;
+			}
+			input[type="text"], textarea {
+				margin-bottom: 0 !important;
+				width: 100%;
+				line-height: 20px;
+				padding: 12px 15px 6px 15px;
+				border: 0;
+				border-radius: 0px;
+			}
+			input[type="text"] {
+				padding-left: 0;
+			}
+			.mt5 {
+				margin-top: 5px;
+			}
+			.mt10 {
+				margin-top: 10px;
+			}
+			.aui-iconfont {
+				color: #666666;
+			}
+			.question-file {
+				padding: 10px 15px;
+			}
+			.question-file dl {
+				position: relative;
+				width: 18%;
+				display: inline-block;
+				text-align: center;
+				float: left;
+				margin-right: 2.5%;
+			}
+			.question-file dl dd {
+				position: absolute;
+				z-index: 1px;
+				top: -10px;
+				right: -10px;
+				width: 25px;
+				height: 25px;
+				text-align: center;
+				line-height: 30px;
+			}
+			.question-file dl dd img {
+				width: 13px;
+				height: 13px;
+			}
+			.question-file dl.mr0 {
+				margin-right: 0;
+			}
+			.question-file dl img {
+				width: 100%;
+			}
+			.question-file dl dt.add-img-btn {
+				border-radius: 8px;
+				border: 2px solid #C4C4C4;
+			}
+			.question-file dl .img {
+				border-radius: 8px;
+				border: 2px solid #C4C4C4;
+			}
+			.question-file dl .img img {
+				border-radius: 6px;
+			}
+			.clearfix:after {
+				content: ' ';
+				display: block;
+				clear: both;
+				visibility: hidden;
+				line-height: 0;
+				height: 0;
+			}
+			.add-img .aui-iconfont {
+				float: none;
+			}
+			i.aui-iconfont {
+				color: #C4C4C4;
+				font-size: 23px;
+				font-weight: bolder;
+			}
+			.content {
+				background: #ffffff;
+			}
+			.firstblock, .secondblock, .thirdblock {
+				background-color: #fff;
+			}
+			/* 设置条目 */
+			.item {
+				height: 50px;
+				line-height: 50px;
+				padding-left: 15px;
+				background-color: #fff;
+			}
+			.item_ico {
+				float: left;
+				width: 30px;
+				padding: 10px 10px 10px 0;
+			}
+			.item_arrow {
+				float: right;
+				width: 16px;
+				padding: 17px 15px 15px 0;
+			}
+			.presshover {
+				background-color: #FAFAFA;
+			}
+			.item_right {
+				color: #696969;
+				font-size: 14px;
+				padding-right: 15px;
+			}
+			.time-content{height:40px;line-height:40px;padding:0 15px;color:#141414;}
+	    	.time-content div{display:inline-block;float:right;color:#666666;}
+	    	.bb{border-bottom:1px solid #efefef;}
+	    	.bt{border-top:1px solid #efefef;}
+	    	.hr{height:10px;}
+	    	.bgf{background:#ffffff;}
+	    	.input-time[type="text"]{display: inline-block;width: 40px;padding: 9px 0 6px 0;text-align:center;height:39px;}
+	    	.common-name span{float:right;line-height: 45px;}
+	    	.tip{padding:0 0 10px 15px;font-size:14px;color:#ff0000;}
+		</style>
+	</head>	
+	<body id="body" class="common-iphone-kaoqin">
+		<div id="shadow" class="shadow"></div>
+		<!--请假类别开始-->
+		<div id="style_div" class="common-name bb bgf plr15 clearfix " onclick="openAddSeltypeFrame(this);">
+			<a id="j_type" class="aui-iconfont name">请假类型</a>
+			<div class="manage">
+				<a class="aui-iconfont aui-icon-right"></a>
+			</div>
+			<span id="style">事假</span>
+		</div>
+		<!--请假事由内容-->
+		<div class="content clearfix">
+			<textarea id="j_content" class="wz-textarea bgf" rows="5" onscroll="this.rows++;"></textarea>
+			<div id="j_files" class="question-file clearfix">
+				<dl id="j_add_btn" class="mr0" onclick="openAddFilesOpn()">
+					<dt class="add-img-btn">
+						<i class="aui-iconfont aui-icon-camera"></i>
+					</dt>
+					<dd></dd>
+				</dl>
+			</div>
+		</div>
+		<div class="hr"></div>
+		<div class="tip bb">注：合计时间根据公司上下班时间进行计算！</div>
+		<div class="time-content bb bgf" onclick="openPickerTime(0);">
+			开始时间
+			<div id="start_time"></div>
+		</div>
+		<div class="time-content bb bgf" onclick="openPickerTime(1);">
+			结束时间
+			<div id="end_time"></div>
+		</div>
+		<div class="time-content bb bgf">
+			合计时间
+			<div id="total_time">
+				<input id="j_days" class="input-time" type="text" disabled="disabled" />天
+				<input id="j_hours" class="input-time" type="text" disabled="disabled" />时
+				<input id="j_minutes" class="input-time" type="text" disabled="disabled" />分
+			</div>
+		</div>
+		<p class="common-content bgf plrtb mb10 mt10">
+			<button class="aui-btn aui-btn-primary aui-btn-block" name="btn" onclick="addLeaveInfo();">
+				确定
+			</button>
+		</p>
+	</body>
+	</body> 
+	<script type="text/javascript" src="../../../../../script/api.js"></script>
+	<script type="text/javascript" src="../../../../../script/base_config.js" ></script>
+	<script type="text/javascript" src="../../../../../script/common/common.js"></script>
+	<script type="text/javascript" src="../../../../../script/assembly/UIAlbumBrowser.js"></script>
+	<script type="text/javascript" src="../../../../../script/assembly/getPicture.js"></script>
+	<script type="text/javascript" src="../../../../../script/common/kaoqin_common.js"></script>
+	<script type="text/javascript">
+		//判读是请假还是公出，默认是请假
+		var type = 0;
+		var header_h;
+		var img_size;
+		var obj_scan;
+		var ruleType = 1;//1请假，2公出
+		var per_id = $api.getStorage("person_id");
+		apiready = function() {
+			commonSetTheme({"level":5,"type":0});
+			header_h = api.pageParam.header_h;
+			changeType(api.pageParam.type);
+		};
+		/*
+		 *author:zhaoj
+		 *function:更改是请假还是公出的状态type：0请假，type：1公出
+		 *date：20160620
+		 */
+		function changeType(num) {
+			type = num;
+			setTime(0,getNowTime(2));//开始时间
+			var endTime = Date.parse(getNowTime(2).replace(/-/g,'\/'))+24*3600*1000;
+			setTime(1,getDate(endTime));//结束时间
+			var styleDiv = document.getElementById('style_div');
+			var typeId = styleDiv.getAttribute('styleID');
+			if (type) {
+				ruleType = 2;
+				$api.text($api.byId('j_type'), '公出类型');
+				initTypeData(ruleType,2);
+				$api.attr($api.byId('j_content'), 'placeholder', '请输入公出事由（必填）');
+				//获取时间段
+				getSinglePersonWaiChuInfo(typeId,getNowTime(2),getDate(endTime),function(flag,ret){
+					if(flag){
+						$api.val($api.byId('j_days'), ret.days);
+						$api.val($api.byId('j_hours'), ret.hours);
+						$api.val($api.byId('j_minutes'), ret.minutes);
+					}else{
+						getTimeSlot(getNowTime(2),getDate(endTime));
+					}
+				});
+				//isAllowInput(false)
+			} else {
+				ruleType = 1;
+				$api.text($api.byId('j_type'), '请假类型');
+				initTypeData(ruleType,1);
+				$api.attr($api.byId('j_content'), 'placeholder', '请输入请假事由（必填）');
+				getSinglePersonLeaveInfo(typeId,getNowTime(2),getDate(endTime),function(flag,ret){
+					if(flag){
+						$api.val($api.byId('j_days'), ret.days);
+						$api.val($api.byId('j_hours'), ret.hours);
+						$api.val($api.byId('j_minutes'), ret.minutes);
+					}else{
+						getTimeSlot(getNowTime(2),getDate(endTime));
+					}
+				});
+				//isAllowInput(true);
+			}
+			setImgBtnHeight();
+		}
+		/*
+		 *author:zhaoj
+		 *function:设置添加图片按钮的高度
+		 *date：20160623
+		 */
+		function setImgBtnHeight(){
+			var addBtnWidth = $api.cssVal($api.byId('j_add_btn'), 'width');
+			$api.css($api.dom($api.byId('j_add_btn'),'dt'), 'height:'+addBtnWidth+';line-height:'+(addBtnWidth.replaceAll('px','')*1-4)+'px;');
+		}
+		/*
+		 *author:zhaoj
+		 *function:添加点击事件
+		 *date：20160316
+		 */
+		function addClickedEvent(div_name, method_name) {
+			var name = document.getElementById(div_name);
+			name.addEventListener("click", method_name);
+		}
+		
+		/**
+		 * 打开请假类型选择页面 
+		 */
+		function openAddSeltypeFrame(self){
+			var id = self.getAttribute("styleID");
+			commonExecScript('kaoqin_add_window','','reBackType("style");',0);
+			var header_h = api.pageParam.header_h;
+			var pageParamJson={"header_h":header_h,rule_type : ruleType,id : id};//打开frame页面所需参数
+			commonOpenFrame('kaoqin_add_seltype_frame', 'kaoqin_add_seltype_frame.html',header_h+45, false, false,"#ffffff",pageParamJson);	//打开index页面
+		}
+		
+		/**
+		 * 打开相册选择附件
+		 * 周枫
+		 * 2016.6.22 
+		 */
+		function openAddFilesOpn(mk_type) {
+			api.actionSheet({
+				title : '',
+				cancelTitle : '取消',
+				buttons : ['图片', '拍照'],
+				style : {
+					titleFontColor : '#ff0000'
+				}
+			}, function(ret, err) {
+				if (ret) {
+					if (ret.buttonIndex == 1) {
+						//相册
+						album();
+					} else if (ret.buttonIndex == 2) {
+						//拍照
+						openPicture();
+					}
+				} 
+			});
+		}
+		/*
+		 *author:zhaoj
+		 *function:选择图片
+		 *date：20160225
+		 */
+		function album() {
+			var dlArray = $api.domAll($api.byId('j_files'), '.j_file');
+			var num = 5 - dlArray.length;
+			if(num != 0){
+				UIAlbumBrowser.open(num,function(data){
+					//递归上传图片
+		            commonUiUploadFiles({"data":data,"is_trans":1}, function(ret_data) {
+		            	for(var i = 0; i < ret_data.length; i++){
+		            		var json_data = JSON.parse(ret_data[i]);
+		            		var file_id = json_data.file_id;
+							var ext = json_data.ext;
+							getImgSize();
+							img_suffix = commonReturnPhotoCutSize(0);
+							if (BASE_APP_TYPE == 1) {
+								var img_url = BASE_IMAGE_PRE+"down/Material/" + file_id.substring(0, 2) + "/" + file_id + '.' + ext + commonReturnPhotoCutSize(0);
+							} else {
+								var img_url = BASE_URL_ACTION + "/html/thumb/Material/" + file_id.substring(0, 2) + "/" + file_id + '.' + ext + commonReturnPhotoCutSize(0);
+								
+							}
+							if (getfilesNum() == 4) {
+								$api.css($api.byId('j_add_btn'), 'display:none');
+								addFiles(img_url, 'mr0');
+							} else {
+								addFiles(img_url, '');
+							}
+		            	}
+		            });
+				});
+			}else{
+				popToast('最多上传5张图片');
+			}
+		}
+		/*
+    *author:zhaoj
+    *function:打开拍照
+    *date：20170914
+    */
+    function openPicture(){
+    	getPicture.open({"type":1},function(data){
+    		//递归上传图片
+            commonUiUploadFiles({"data":data,"is_trans":0}, function(ret_data) {
+            	for(var i = 0; i < ret_data.length; i++){
+            		var json_data = JSON.parse(ret_data[i]);
+            		var file_id = json_data.file_id;
+					var ext = json_data.ext;
+					getImgSize();
+					img_suffix = commonReturnPhotoCutSize(0);
+					if (BASE_APP_TYPE == 1) {
+						var img_url = BASE_IMAGE_PRE+"down/Material/" + file_id.substring(0, 2) + "/" + file_id + '.' + ext + commonReturnPhotoCutSize(0);
+					} else {
+						var img_url = BASE_URL_ACTION + "/html/thumb/Material/" + file_id.substring(0, 2) + "/" + file_id + '.' + ext + commonReturnPhotoCutSize(0);
+						
+					}
+					if (getfilesNum() == 4) {
+						$api.css($api.byId('j_add_btn'), 'display:none');
+						addFiles(img_url, 'mr0');
+					} else {
+						addFiles(img_url, '');
+					}
+            	}
+            });
+    	});
+    }
+		/*
+		 * 给模块添加文件
+		 * 周枫
+		 * 2016.06.22
+		 */
+		function addFiles(img_url, css) {
+			var dl_height = $api.cssVal($api.byId('j_add_btn'), 'height')
+			var dl_html = '<dl class="j_file' + ' ' + css + '" style="height:' + dl_height + ';">' + '<dt class="img" style="width:' + img_size + 'px;height:' + img_size + 'px;" onclick="openImage(this.parentNode,this.parentNode.parentNode)">' + '<img class="j_img" src=' + img_url + ' width="' + (img_size - 1) + '" height="' + (img_size - 4) + '" />' + '</dt>' + '<dd onclick="deleteFile(event,this.parentNode)"><img src="../../../../../image/fun-module/common/shanchu.png" /></dd>' + '</dl>';
+			$api.before($api.byId('j_add_btn'), dl_html);
+		}
+		
+		/*
+		 *author:zhaoj
+		 *function:打开图片
+		 *date：20160225
+		 */
+		function openImage(parent, grandpa) {
+			var index;
+			if (parent) {
+				index = 0;
+				while ( parent = parent.previousSibling) {
+					if (parent.nodeType == 1)
+						index++;
+				}
+			}
+			var openImgArray = [];
+			var dlArray = $api.domAll($api.byId('j_files'), '.j_file');
+			for (var i = 0; i < dlArray.length; i++) {
+				openImgArray.push($api.attr($api.dom(dlArray[i], '.j_img'), 'src'));
+			}
+			var imageBrowser = api.require('imageBrowser');
+			imageBrowser.openImages({
+				imageUrls : openImgArray,
+				//是否以九宫格方式显示图片
+				showList : false,
+				//showList : true,
+				activeIndex : index
+			});
+		}
+		
+		/*
+		 *author:zhaoj
+		 *function:删除当前文件
+		 *date：20160225
+		 */
+		function deleteFile(e, parent) {
+			parent.parentNode.removeChild(parent);
+			var dlArray = $api.domAll($api.byId('j_files'), '.j_file');
+			var length = getfilesNum() - 1;
+			if (length == 3) {
+				$api.removeCls(dlArray[length], 'mr0');
+				$api.css($api.byId('j_add_btn'), 'display:inline-block');
+			}
+			e.stopPropagation();
+		}
+		
+		/*
+		 *author:zhaoj
+		 *function:根据模块获取子文件的个数
+		 *date：20160224
+		 */
+		function getfilesNum() {
+			var dlArray = $api.domAll($api.byId('j_files'), '.j_file');
+			return dlArray.length;
+		}
+		
+		/*
+		 *author:zhaoj
+		 *function:图片格式
+		 *date：20160222
+		 */
+		function getImgSize() {
+			img_size = (api.winWidth - 30) * 0.18;
+			img_size = Math.floor(img_size);
+			var img_format = '@' + img_size + 'w_' + img_size + 'h_100Q_1x.';
+			return img_format;
+		}
+		/*
+		*author:zhaoj
+		*function:选择时间type=1开始时间，type=2结束时间
+		*date：20160622
+		*/
+		function openPickerTime(type){
+			var nowDay;
+			var nowTime;
+			var title;
+			var title1;
+			if(type==0){
+				nowDay = $api.text($api.byId('start_time')).substring(0,10);
+				nowTime = $api.text($api.byId('start_time')).substring(0,16);
+				title ='开始时间';
+				title1 = '开始日期';
+				
+			}else{
+				nowDay = $api.text($api.byId('end_time')).substring(0,10);
+				nowTime = $api.text($api.byId('end_time')).substring(0,16);
+				title ='结束时间';
+				title1 = '结束日期';
+			}
+			var styleDiv = document.getElementById('style_div');
+			var typeId = styleDiv.getAttribute('styleID');
+			if(api.systemType=='android'){
+			    api.openPicker({
+			        type: 'date',
+					date: nowDay,
+			        title:title1,
+			    },function(ret,err){
+					if(ret){
+				        var year = ret.year;
+				        var month = ret.month;
+						month = month > 9 ? month : '0'+month;
+				        var day = ret.day;
+						day = day > 9 ? day : '0'+day;
+				        //这是选择的是日期
+				        var value1 = year+'-'+month+'-'+day;
+				        //选择时间
+						setTimeout(function(){
+							api.openPicker({
+					            type: 'time',
+								date: nowTime,
+					            title:title
+					        },function(ret,err){
+					            var hours = ret.hour;
+								hours  = hours  > 9 ? hours  : '0'+ hours;
+					            var minutes = ret.minute;
+								minutes  = minutes  > 9 ? minutes  : '0'+ minutes;
+					            var value2 = hours+':'+minutes;
+					            var time = value1+' '+value2;
+								var time1 = Date.parse(value1.replace(/-/g,'\/'))+24*3600*1000;
+								time1 = getDate(time1).substring(0,10)+' '+value2; 
+					            //组装一下
+								if(type == 0){
+						    		//开始时间
+						    		setTime(0,time);
+						    		//结束时间
+						    		setTime(1,time1);
+						    		getTimeSlot(time,time1);
+						    		//选择结束时间
+						    		setTimeout(function(){
+						    			openPickerTime(1);
+						    		},250);
+						    	}else{
+									if(Date.parse($api.text($api.byId('start_time')).replace(/-/g,'\/'))<Date.parse(time.replace(/-/g,'\/'))){
+						    			setTime(1,time);
+						    			//获取时间段
+							    		if(ruleType == 2){	    											getSinglePersonWaiChuInfo(typeId,$api.text($api.byId('start_time')),time,function(flag,ret){
+												if(flag){
+													$api.val($api.byId('j_days'), ret.days);
+													$api.val($api.byId('j_hours'), ret.hours);
+													$api.val($api.byId('j_minutes'), ret.minutes);
+												}else{
+													getTimeSlot($api.text($api.byId('start_time')),time);
+												}
+											});
+						    			}else{
+						    				getSinglePersonLeaveInfo(typeId,$api.text($api.byId('start_time')),time,function(flag,ret){
+												if(flag){
+													$api.val($api.byId('j_days'), ret.days);
+													$api.val($api.byId('j_hours'), ret.hours);
+													$api.val($api.byId('j_minutes'), ret.minutes);
+												}else{
+													getTimeSlot($api.text($api.byId('start_time')),time);
+												}
+											})
+						    			}
+						    		}else{
+						    			popAlertBackData('结束时间不能小于开始时间，请重新选择！',function(flag){
+						    				openPickerTime(1);
+						    			})
+						    		}
+						    	}
+					        });
+						},250);
+					}
+				});
+			}else{
+				api.openPicker({
+			        type: 'date_time',
+					date: nowTime,
+			        title:title
+			    },function(ret,err){
+			        var year = ret.year;
+			        var month = ret.month;
+					month = month > 9 ? month : '0'+month;
+			        var day = ret.day;
+					day = day > 9 ? day : '0'+day;
+					var hours = ret.hour;
+					hours  = hours  > 9 ? hours  : '0'+ hours;
+		            var minutes = ret.minute;
+					minutes  = minutes  > 9 ? minutes  : '0'+ minutes;
+			        //这是选择的是日期
+					var value1=year+'-'+month+'-'+day;
+			        var time = year+'-'+month+'-'+day+' '+hours+':'+minutes;
+					var time1 = Date.parse(value1.replace(/-/g,'\/'))+24*3600*1000;
+					time1 = getDate(time1).substring(0,10)+' '+hours+':'+minutes;
+			        if(type == 0){
+			    		//开始时间
+			    		setTime(0,time);
+			    		//结束时间
+			    		setTime(1,time1);
+			    		//选择结束时间
+			    		setTimeout(function(){
+			    			openPickerTime(1);
+			    		},250);
+			    	}else{
+						if(Date.parse($api.text($api.byId('start_time')).replace(/-/g,'\/'))<Date.parse(time.replace(/-/g,'\/'))){
+			    			setTime(1,time);
+			    			//获取时间段
+			    			if(ruleType == 2){
+			    				getSinglePersonWaiChuInfo(typeId,$api.text($api.byId('start_time')),time,function(flag,ret){
+									if(flag){
+										$api.val($api.byId('j_days'), ret.days);
+										$api.val($api.byId('j_hours'), ret.hours);
+										$api.val($api.byId('j_minutes'), ret.minutes);
+									}else{
+										getTimeSlot($api.text($api.byId('start_time')),time);
+									}
+								});
+			    			}else{
+			    				getSinglePersonLeaveInfo(typeId,$api.text($api.byId('start_time')),time,function(flag,ret){
+									if(flag){
+										$api.val($api.byId('j_days'), ret.days);
+										$api.val($api.byId('j_hours'), ret.hours);
+										$api.val($api.byId('j_minutes'), ret.minutes);
+									}else{
+										getTimeSlot($api.text($api.byId('start_time')),time);
+									}
+								})
+			    			}
+			    		}else{
+			    			popAlertBackData('结束时间不能小于开始时间，请重新选择！',function(flag){
+			    				openPickerTime(1);
+			    			})
+			    		}
+			    	}
+			    });
+			} 
+		}
+		/*
+		*author:zhaoj
+		*function:是否允许输入框输入
+		*date：20160730
+		*/
+		function isAllowInput(flag){
+			if(flag){
+				$api.attr($api.byId('j_days'), 'disabled',flag);
+				$api.attr($api.byId('j_hours'), 'disabled',flag);
+				$api.attr($api.byId('j_minutes'), 'disabled',flag);
+			}else{
+				$api.removeAttr($api.byId('j_days'), 'disabled');
+				$api.removeAttr($api.byId('j_hours'), 'disabled');
+				$api.removeAttr($api.byId('j_minutes'), 'disabled');
+			}
+		}
+		/*
+		*author:zhaoj
+		*function:获取当前时间,返回年月日
+		*date：20160622
+		*/
+		function getNowTime(type){
+			time = new Date();
+			var year = time.getFullYear();
+			var month = time.getMonth() + 1;
+			month = month > 9 ? month : '0'+month;
+			var day = time.getDate();
+			day = day > 9 ? day : '0'+day;
+			var hours = time.getHours();
+			hours  = hours  > 9 ? hours  : '0'+ hours;
+			var minutes = time.getMinutes();
+			minutes  = minutes  > 9 ? minutes  : '0'+ minutes;
+			var startTime = year+'-'+month+'-'+day +' '+hours+':'+minutes;
+			switch(type){
+				case 0:
+					return year+'-'+month+'-'+day;
+					break;
+				case 1:
+					return hours+':'+minutes;
+					break;
+				case 2:
+					return year+'-'+month+'-'+day +' '+hours+':'+minutes;;
+					break;
+				default:
+					break;
+			}
+		}
+		/*
+		*author:zhaoj
+		*function:设置时间type=0开始时间，type=1结束时间
+		*date：20160622
+		*/
+		function setTime(type,time){
+			if(type){
+				$api.text($api.byId('end_time'), time);
+			}else{
+				$api.text($api.byId('start_time'), time);
+			}
+		}
+		/*
+		*author:zhaoj
+		*function:初始化请假类型和公出类型数据
+		*date：20160623
+		*/
+		function initTypeData(rule_type,id){
+			getRuleTypeList(1,ruleType,function(flag,data){
+				if(flag){
+					if(data.list.length > 0){
+						modifyStyle(data.list[0].name, data.list[0].id)
+					}else{
+						if(ruleType == 1){
+							$api.html($api.byId('style'), '暂无请假类型');
+						}else{
+							$api.html($api.byId('style'), '暂无公出类型');
+						}
+					}
+				}
+			})
+		}
+		/*
+		 *author:zhaoj
+		 *function:修改请假或公出的类型
+		 *date：20160623
+		 */
+		function modifyStyle(name, id) {
+			if(ruleType == 1){
+				$api.html($api.byId('style'),name);
+				getSinglePersonLeaveInfo(id,$api.text($api.byId('start_time')),$api.text($api.byId('end_time')),function(flag,ret){
+					if(flag){
+						$api.val($api.byId('j_days'), ret.days);
+						$api.val($api.byId('j_hours'), ret.hours);
+						$api.val($api.byId('j_minutes'), ret.minutes);
+					}else{
+						getTimeSlot($api.text($api.byId('start_time')),time);
+					}
+				});
+			}else{
+				$api.html($api.byId('style'),name);
+				getSinglePersonWaiChuInfo(id,$api.text($api.byId('start_time')),$api.text($api.byId('end_time')),function(flag,ret){
+					if(flag){
+						$api.val($api.byId('j_days'), ret.days);
+						$api.val($api.byId('j_hours'), ret.hours);
+						$api.val($api.byId('j_minutes'), ret.minutes);
+					}else{
+						getTimeSlot($api.text($api.byId('start_time')),time);
+					}
+				});
+			}
+			$api.attr($api.byId('style_div'), 'styleID', id);
+		}
+		/*
+		 *author:zhaoj
+		 *function:申请请假或公出
+		 *date：20160623
+		 */
+		function addLeaveInfo(){
+			$api.css($api.byId('shadow'),'z-index:3;');
+			var styleDiv = document.getElementById('style_div');
+			var typeId = styleDiv.getAttribute('styleID');
+			if(!typeId){
+				$api.css($api.byId('shadow'),'z-index:-1;');
+				if(ruleType == 1){
+					popAlert("没有相关的请假类型");
+				}else{
+					popAlert("没有相关的公出类型");
+				}
+				return false;
+			}
+			
+			var start_time = $api.text($api.byId('start_time'));
+			var end_time = $api.text($api.byId('end_time'));
+			if(Date.parse(start_time.replace(/-/g,'\/'))>=Date.parse(end_time.replace(/-/g,'\/'))){
+				$api.css($api.byId('shadow'),'z-index:-1;');
+				popAlert("开始时间不能大于或等于结束时间");
+				return false;
+			}
+			var content = $api.val($api.byId('j_content'));
+			if(content.length == 0){
+				$api.css($api.byId('shadow'),'z-index:-1;');
+				if(ruleType == 1){
+					popAlert("请输入请假事由");
+				}else{
+					popAlert("请输入公出事由");
+				}
+				return false;
+			}
+			var days = $api.val($api.byId('j_days'));
+			var hours = $api.val($api.byId('j_hours'));
+			var minutes = $api.val($api.byId('j_minutes'));
+			if(!days){
+				days = 0;
+			}
+			if(!hours){
+				hours = 0;
+			}
+			if(!minutes){
+				minutes = 0;
+			}
+			if(days==0&&hours==0&&minutes==0){
+				$api.css($api.byId('shadow'),'z-index:-1;');
+				popAlert("请假时间在休息时间之内，不用请假！");
+				return false;
+			}
+			//验证是否有附件
+			var file_id='';
+			var dlArray = $api.domAll($api.byId('j_files'), '.j_file');
+			if (dlArray.length != 0) {
+				for (var i = 0; i < dlArray.length; i++) {
+					var img_src = $api.attr($api.dom(dlArray[i], '.j_img'), 'src');
+					var firstIndex = img_src.lastIndexOf('/');
+					var lastIndex = img_src.lastIndexOf('@');
+					img_src = img_src.substring(firstIndex+1,lastIndex);
+					if(i != dlArray.length-1){
+						file_id = file_id + img_src+',';
+					}else{
+						file_id = file_id + img_src;
+					}
+				}
+			}
+			showSelfProgress('申请中...');
+			console.log(BASE_URL_ACTION + '/leave/addLeaveInfo?random_num='+creatRandomNum()+'&rule_type='+ruleType+'&type_id='+typeId+'&start_time='+start_time+'&end_time='+end_time+'&content='+content+'&days='+days+'&hours='+hours+'&minutes='+minutes+'&file_id='+file_id);
+			api.ajax({
+				url : BASE_URL_ACTION + '/leave/addLeaveInfo',
+				method : 'post',
+				timeout : 0,
+				dataType : 'json',
+				data : {
+					values : {
+						"random_num" : creatRandomNum(),
+						"rule_type" : ruleType,
+						"type_id" : typeId,
+						"start_time" : start_time,
+						"end_time" : end_time,
+						"content" : content,
+						"days" : days,
+						"hours" : hours,
+						"minutes" : minutes,
+						"file_id" : file_id
+					}
+				},
+				headers : {
+		'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+		}
+				}, function(ret, err) {
+					if (err) {
+						api.hideProgress();
+						$api.css($api.byId('shadow'),'z-index:-1;');
+						popToast('申请失败');
+					} else {
+						if(ret.success){
+							if(ruleType == 1){
+								commonExecScript('kaoqin_wdkq_window','','openQjListFrame();',0);
+							}else{
+								commonExecScript('kaoqin_wdkq_window','','openGcListFrame();',0);
+							}
+							//发送系统消息通知审批
+								var target_person = ret.check_person_id + "_5_" + $api.getStorage("BASE_SERVER_NAME");
+								if(ret.check_person_id) {
+									sendSysMsg(target_person);
+								}
+							setTimeout(function(){
+								popToast('申请成功');
+								if(ruleType == 1){
+									commonExecScript('kaoqin_wdkq_window','kaoqin_qjlist_frame','initData(0);',1);
+								}else{
+									commonExecScript('kaoqin_wdkq_window','kaoqin_gclist_frame','initData(0);',1);
+								}
+								commonExecScript('kaoqin_add_window','','back();',0);
+							},3000);
+						}else{
+							api.hideProgress();
+							$api.css($api.byId('shadow'),'z-index:-1;');
+							popAlert(ret.info);
+						}
+					}
+			});
+		}
+		/*
+		 *author:zhaoj
+		 *function:将毫秒数转换成正常的日期
+		 *date：20160624
+		 */
+		function getDate(end_time) {
+			var time = new Date(end_time);
+			var year = time.getFullYear();
+			var month = time.getMonth() + 1;
+			month = month > 9 ? month : '0'+month;
+			var day = time.getDate();
+			day = day > 9 ? day : '0'+day;
+			var hours = time.getHours();
+			hours  = hours  > 9 ? hours  : '0'+ hours;
+			var minutes = time.getMinutes();
+			minutes  = minutes  > 9 ? minutes  : '0'+ minutes;
+			return year+'-'+month+'-'+day +' '+hours+':'+minutes;;
+		}
+		/*
+		 *author:zhaoj
+		 *function:获取时间段
+		 *date：20160630
+		 */
+		function getTimeSlot(sDataTime,eDataTime){
+			var s_data = Date.parse(sDataTime.substring(0,10).replace(/-/g,"/")); 
+			var e_data = Date.parse(eDataTime.substring(0,10).replace(/-/g,"/")); 
+			var s_time = parseInt(sDataTime.substring(11,13));
+			var e_time = parseInt(eDataTime.substring(11,13));
+			var s_minutes = parseInt(sDataTime.substring(14,16));
+			var e_minutes = parseInt(eDataTime.substring(14,16));
+			
+			var days = 0;
+			var hours = 0;
+			var minutes = 0;	
+			if ((e_time-s_time) >8){
+				days+=Math.floor((e_time-s_time)/8);
+				hours+=(e_time-s_time)%8;	
+			}else{
+				hours = e_time-s_time;
+			}
+			
+			minutes = e_minutes - s_minutes;
+			if(minutes < 0 || e_time-s_time < 0){
+				minutes = 0;
+			}
+			
+			if(hours < 0){
+				hours = 0;
+			}
+			var time = Math.ceil((e_data-s_data)/(24*60*60*1000));
+			if(time == 0){
+				days = 0;
+			}else{
+				days=days+time;
+			}
+			$api.val($api.byId('j_days'), days);
+			$api.val($api.byId('j_hours'), hours);
+			$api.val($api.byId('j_minutes'), minutes);
+		}
+		/*
+		 *author:zhaoj
+		 *function:验证时间
+		 *date：20160630
+		 */
+		function clearNoNum(obj)
+		{
+			if(obj.value.match(/[^\d.]/g)){
+		   		popAlertBackData('只能输入数字和小数点',function(flag){
+    				obj.value = obj.value.replace(/[^\d.]/g,"");  //清除“数字”和“.”以外的字符
+    			})
+    			return false;
+		   	}
+		   	if(obj.value.match(/^\./g)){
+		   		popAlertBackData('第一位必须是数字',function(flag){
+    				obj.value = obj.value.replace(/^\./g,"");  //验证第一个字符是数字而不是.
+    			})
+    			return false;
+		   	}
+		   if(obj.value.match(/\.{2,}/g)){
+		   		popAlertBackData('只能保留一个小数点',function(flag){
+    				obj.value = obj.value.replace(/\.{2,}/g,"."); //只保留第一个. 清除多余的.
+    			})
+    			return false;
+		   	}
+		   obj.value = obj.value.replace(".","$#$").replace(/\./g,"").replace("$#$",".");
+		   var index = obj.value.indexOf('.');
+		   if(index>0){
+		   		if(obj.value.substring(index+1,index+2)*1!=5&&obj.value.substring(index+1,obj.value.length).length==1){
+			   		popAlertBackData('小数点之后只能保留一位数字5',function(flag){
+	    				obj.value = obj.value.substring(0,index+1)+'5';
+	    			})
+	    		}else if(obj.value.substring(index+1,obj.value.length).length>1){
+	    			popAlertBackData('小数点之后只能保留一位数字',function(flag){
+	    				obj.value = obj.value.substring(0,index+2);
+	    			})
+	    		}
+    			return false;
+		   }
+		}
+		function yzhours(obj)
+		{
+		   	if(obj.value.match(/[^0-7]/g)){
+		   		popAlertBackData('只能输入0-7之内的数字',function(flag){
+    				obj.value = obj.value.replace(/[^0-7]/g,"");  //清除0-8以外的字符
+    			})
+    			return false;
+		   	}
+		   	if(obj.value.length>1){
+		   		popAlertBackData('只能输入0-7之内的数字',function(flag){
+    				obj.value = obj.value.substring(0,1);
+    			})
+    			return false;	
+		  	}
+		}
+		function yzMinutes(obj)
+		{
+		  	if(obj.value.match(/[^0-9]/g)){
+		   		popAlertBackData('只能输入0-59之内的数字',function(flag){
+    				obj.value = obj.value.replace(/[^0-9]/g,"");  //清除0-8以外的字符
+    			})
+		   	}
+		   	if(obj.value.length>2){
+		   		popAlertBackData('只能输入0-59之内的数字',function(flag){
+    				obj.value = obj.value.substring(0,2);
+    			})	
+    			return false;
+		  	}
+		  	if(obj.value>59){
+		   		popAlertBackData('只能输入0-59之内的数字',function(flag){
+    				obj.value = "";
+    			})	
+		  	}
+		}
+		
+		/**
+		 * 发布申请系统消息
+		 * 周枫
+		 * 2016.07.02 
+		 */
+		function sendSysMsg(target_login_name){
+			var sender_id = $api.getStorage('person_id');
+			var sender_person_name = $api.getStorage("person_name");
+			var sender_login_name = commonNewParamToOldParam($api.getStorage("login_name")); 
+			var sender_identity = $api.getStorage("identity");
+			var target_login_names = [target_login_name];
+			var is_url = 1;
+			var url_name = 'kaoqin_kqsp_window';
+			var param_num = 101;
+			var sysmsg_code = 'KAOQIN_ADD_FRAME';
+			var qj_type = $api.html($api.byId('style'));
+			if(qj_type == '' || typeof(qj_type) == 'undefined') {
+				qj_type = '事假';
+			}
+			var bureau_id = $api.getStorage('bureau_id');
+			( typeof (bureau_id) == 'undefined') ? bureau_id = -1 : bureau_id = bureau_id;
+			
+			var district_id = $api.getStorage('district_id');
+			( typeof (district_id) == 'undefined') ? district_id = -1 : district_id = district_id;
+			
+			var city_id = $api.getStorage('city_id');
+			( typeof (city_id) == 'undefined') ? city_id = -1 : city_id = city_id;
+			
+			var province_id = $api.getStorage('province_id');
+			( typeof (province_id) == 'undefined') ? province_id = -1 : province_id = province_id;
+//			var p_2 = '审批申请(' + sender_person_name + ')';
+			var params = ['考勤消息',sender_person_name,qj_type];
+			commonSendSysMsg(sender_id, sender_person_name, sender_login_name, sender_identity, target_login_names, is_url, url_name, param_num, sysmsg_code, bureau_id, district_id, city_id, province_id, params, function(is_true){
+				if(is_true) {
+	               
+				} else {
+					
+				}
+			});
+		}
+		
+		/*
+		 *author:zhaoj
+		 *function:获取输入框的值或图片的数量
+		 *date：201600707
+		 */
+		function verExitContent(){
+		  document.getElementById('j_content').blur();
+			var content = $api.val($api.byId('j_content'));
+			var msg = ruleType == 1 ? '是否放弃请假？' : '是否放弃公出？'
+			var name = ruleType == 1 ? 'openGcFrame(1)' : 'openQjFrame(1)';
+			if(content.length > 0 || getfilesNum() > 0){
+			 setTimeout(function(){
+				api.confirm({
+				    title: '提示',
+				    msg: msg,
+				    buttons: ['确定', '取消']
+				}, function(ret, err){
+				    var index = ret.buttonIndex;
+				    if(index == 1){
+				    	resetValue();
+						commonExecScript('kaoqin_add_window','',name,0);
+				    }
+				});
+				  },200);
+			}else{
+				commonExecScript('kaoqin_add_window','',name,0);
+			}
+		}
+		/*
+		 *author:zhaoj
+		 *function:重置
+		 *date：201600707
+		 */
+		function resetValue(){
+			$api.val($api.byId('j_content'), '');
+			var imgHtml = '<dl id="j_add_btn" class="mr0" onclick="openAddFilesOpn()"><dt class="add-img-btn"><i class="aui-iconfont aui-icon-camera"></i></dt><dd></dd></dl>';
+			$api.html($api.byId('j_files'),imgHtml);
+		}
+	</script>
+</html>

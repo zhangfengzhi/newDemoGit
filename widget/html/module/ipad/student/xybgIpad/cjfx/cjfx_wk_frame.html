@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>名师云课</title>
+    <link rel="stylesheet" type="text/css" href="../../../../../../css/aui/aui.css"/>
+    <link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+    <style>
+    	.blank{position:relative;}
+    	.blank img{width:100%;height:100%;}
+    	.blank .wk-name{position:absolute;left:0;bottom:0;width:100%;height:35px;line-height:35px;padding: 0 10px;background:rgba(0,0,0,0.5);color:#fff;font-size:12px;}
+    	.common{margin-bottom:10px;background:#fff;}
+    	.mb10{margin-bottom:10px;}
+    	.title{position:relative;padding:12px 10px 8px 10px;border-bottom:1px solid #e0e0e0;font-size:14px;font-weight:600;}
+    	.more-btn{position:absolute;right:10px;color:#1abc9c;font-weight:normal;}
+    	.class-info{line-height:25px;padding:10px;font-size:14px;color:#666;}
+    	.tea-info,.study-res{font-size:14px;}
+    	.tea-info .com-detail{position:relative;line-height:45px;padding:0 10px;border-bottom:1px solid #e0e0e0;}
+    	.tea-info .com-detail .name{position:absolute;left:10px;}
+    	.tea-info .com-detail .detail{text-align:right;color:#666;}
+    	.study-res div{line-height:35px;color:#0000FF;}
+    	.study-res div span{font-size:14px;}
+	</style>
+</head>
+<body id="j_body" class="common-ipad-cjfx">
+	<div id="j_blank" class="blank display-none" onclick="openVideo();">
+		<img id='j_wk_img' src="" onerror="this.src='../../../../../../css/module/common/wk_default.png'" alt="视频缩略图" />
+		<div id="j_wk_name" class="wk-name ellipsis"></div>
+	</div>
+	<div id="j_detail" class="common display-none">
+		<div class="tea-info">
+			<div class="com-detail">
+				<div class="name">上传教师</div>
+				<div id="j_teacher_name" class="detail"></div>
+			</div>
+			<div class="com-detail">
+				<div class="name">上传时间</div>
+				<div id="j_time" class="detail"></div>
+			</div>
+			<div class="com-detail">
+				<div class="name">播放次数</div>
+				<div id="j_play_count" class="detail"></div>
+			</div>
+		</div>
+	</div>
+</body>
+<script type="text/javascript" src="../../../../../../script/api.js"></script>
+<script type="text/javascript" src="../../../../../../script/base_config.js" ></script>
+<script type="text/javascript" src="../../../../../../script/common/common.js"></script>
+<script type="text/javascript" src="../../../../../../script/assembly/openResource.js" ></script>
+<script type="text/javascript" src="../../../../../../script/assembly/photoBrowser.js"></script>
+<script type="text/javascript" src="../../../../../../script/assembly//scrollPicture.js"></script>
+<script type="text/javascript" src="../../../../../../script/module/common/cjfxXs.js"></script>
+<script type="text/javascript">
+	var transmit_param;
+	var wk_vedio_json={"image":[],"file_id":[],"title":[],"m3u8_status":[],"extension":[]};//所有微课的缩略图、播放路径、视频的预览状态、视频名称以及视频格式
+	apiready = function(){
+		commonSetTheme({"level":6,"type":0});
+		changePersonInfo();
+		transmit_param = JSON.parse(api.pageParam.transmit_param);
+		if(transmit_param.wkid > 0){
+			getwkdsInfo();
+			$api.css($api.byId('j_body'), 'background:#efeff4');
+			$api.removeCls($api.byId('j_blank'), 'display-none');
+			$api.removeCls($api.byId('j_detail'), 'display-none');
+		}else{
+			$api.html($api.byId('j_body'), '<div class="no-data">暂无微课讲解</div>');
+		}
+		$api.css($api.byId('j_blank'),"height:"+Math.floor(api.frameWidth/4*3)+'px;');
+	};
+	/*
+	*author:zhaoj
+	*function:获取微课详情
+	* 谷长江
+	*date：20170725
+	*/
+	function getwkdsInfo(){
+		showSelfProgress('加载中...');
+		api.ajax({
+			url : ip_url_data + '/wkds/getwkdsInfo?random_num='+creatRandomNum()+'&id='+transmit_param.wkid,
+			method : 'get',
+			dataType : 'json',
+			timeout : 30,
+			cache : false,
+			headers : {
+				'Cookie' : 'person_id=' + student_id_mr + '; identity_id=' + identity_mr + '; token=' + token+ ';'
+			}
+		}, function(ret, err) {
+			api.hideProgress();
+			if(err){
+				popToast('获取微课讲解失败，请稍候重试');
+			} else {
+				if(ret) {		
+					$api.text($api.byId('j_teacher_name'),ret.teacher_name);
+					$api.text($api.byId('j_play_count'),ret.play_count+'次');
+					$api.text($api.byId('j_time'),ret.oper_time.substring(0,10));
+					getAllWkImgPlayPath(ret.sp_list);
+				} else {
+					popToast('获取微课讲解失败，请稍候重试');
+				}
+			}
+		});
+	}
+	/*
+		*作者:zhaoj
+		*功能:获取所有微课的缩略图、播放路径、视频的预览状态、视频名称以及视频格式
+		*日期：20170705
+		*/
+		function getAllWkImgPlayPath(data){
+			var BASE_APP_TYPE = $api.getStorage('BASE_APP_TYPE');
+			for(var i = 0; i < data.length; i++){
+				wk_vedio_json.title.push(data[i].title);
+				wk_vedio_json.m3u8_status.push(data[i].m3u8_status);
+				wk_vedio_json.file_id.push(data[i].file_id);
+				wk_vedio_json.extension.push(data[i].extension);
+				var wk_thumb_url;//视频缩略图地址
+				if (BASE_APP_TYPE == 1) {
+	                wk_thumb_url = url_path + BASE_THUMB_BEGIN + data[i].thumb_id.substring(0, 2) + '\/' + data[i].thumb_id + BASE_THUMB_END;
+	            } else {
+	                wk_thumb_url = ip_url_data + BASE_THUMB_BEGIN + data[i].thumb_id.substring(0, 2) + '/' + data[i].thumb_id + BASE_THUMB_END;
+	            }
+	            wk_vedio_json.image.push(wk_thumb_url);
+			}
+			//获取轮播图的图片路径
+			var params_json={"paths":[],"captions":[]};
+			params_json.paths = wk_vedio_json.image;
+			params_json.captions = wk_vedio_json.title;
+			
+			$api.attr($api.byId('j_wk_img'), 'src', params_json.paths[0]);
+			$api.text($api.byId('j_wk_name'), params_json.captions[0]);
+			//打开录播图
+//			UIScrollPicture.open(params_json,function(flag,data){
+//				openVideo(flag,data);
+//			});
+		}
+		/*
+		*author:zhaoj
+		*function:播放视频文件
+		*date：20170706
+		*/
+		function openVideo(){
+//			if(data.status){
+//				if(data.eventType == 'click'){
+					common_openResource.open(wk_vedio_json.extension[0],wk_vedio_json.file_id[0],wk_vedio_json.title[0],wk_vedio_json.m3u8_status[0],api.winName,'reBackType("voice")','back();','');
+					setPlayCount();
+//				}
+//			}
+		}
+		/*
+		*author:zhaoj
+		*function:记录播放次数
+		*申建
+		*date：20170706
+		*/
+		function setPlayCount(){
+			api.ajax({
+				url : ip_url_data + '/ypt/wkds/setPlayCount?random_num='+creatRandomNum()+'&id='+transmit_param.wkid,
+				method : 'get',
+				dataType : 'json',
+				timeout : 30,
+				cache : false,
+				headers : {
+					'Cookie' : 'person_id=' + student_id_mr + '; identity_id=' + identity_mr + '; token=' + token + ';'
+				}
+			}, function(ret, err) {
+			});
+		}
+</script>
+</html>

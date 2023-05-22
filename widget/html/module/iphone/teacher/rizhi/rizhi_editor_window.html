@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+		<title>title</title>
+		<link rel="stylesheet" type="text/css" href="../../../../../css/aui/aui.css" />
+		<link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+		<style>
+		</style>
+	</head>
+	<body class="common-iphone-rizhi">
+		<header class="aui-bar aui-bar-nav aui-bar-primary" id="aui-header">
+			<div id="cloud" class="topbar activebar">
+				<div id="back" class="back" onclick="back();" tapmode="">
+					<i class="aui-iconfont aui-icon-left"></i>返回
+				</div>
+				<div class="mTitle" id="mTitle">
+					编辑页面
+				</div>
+			</div>
+		</header>
+	</body>
+	<script type="text/javascript" src="../../../../../script/api.js"></script>
+	<script type="text/javascript" src="../../../../../script/common/common.js"></script>
+	<script type="text/javascript" src="../../../../../script/assembly/log-current-time.js"></script>
+	<script type="text/javascript" src="../../../../../script/plug-in/base64.js" ></script>
+	<script type="text/javascript" src="../../../../../script/base_config.js" ></script>
+	<script type="text/javascript">
+		//顶部高度
+		var header_h;
+		// 点击windoew返回按钮时 判断发布页面是否有内容1有内容  2无内容
+		var back_index;
+		var logTpye;//1发布日志2编辑日志
+		apiready = function() {
+			commonSetTheme({"level":5,"type":0});
+			header_h = api.pageParam.header_h;
+			logTpye = api.pageParam.logTpye;
+			//定位header位置，留出上面电池等空隙，苹果需要
+			commonIosAuiHeader();
+			//安卓关闭
+			commonBackForAndroid();
+			openEditorFrame();
+		};
+		/*
+		 *author:ws
+		 *function:打开frame页面
+		 *date：20170222
+		 */
+		function openEditorFrame() {
+			var pageParamJson = {
+				"header_h" : header_h,
+				"jxzData" : api.pageParam.jxzData,
+				"tcData" : api.pageParam.tcData,
+				"zhData" : api.pageParam.zhData,
+				"bzData" : api.pageParam.bzData,
+				"wcData" : api.pageParam.wcData,
+				"tpljData" : api.pageParam.tpljData,
+				"logTpye" : api.pageParam.logTpye,
+				"shijianData" : api.pageParam.shijianData
+			};
+			commonOpenFrame('rizhi_fabu_frame', 'rizhi_fabu_frame.html', header_h, false, true, "000000", pageParamJson);
+		}
+
+		/*
+		 *author:ws
+		 *function:window页面返回时检测是否有内容
+		 *date：20170324
+		 */
+		function checkNull(index) {
+			//index1发布页面有内容 2发布页面无内容
+			back_index = index;
+			if (back_index == 1) {
+				api.confirm({
+					title : '提示',
+					msg : '是否保存日志内容？',
+					buttons : ["确定", "取消"]
+				}, function(ret, err) {
+					if (1 == ret.buttonIndex) {
+						saveConfirm();
+					} else if (2 == ret.buttonIndex) {
+						api.closeWin();
+					}
+				});
+			} else if (back_index == 2) {
+				api.closeWin();
+			}
+		}
+
+		/*
+		 *author:ws
+		 *function:发布页面有内容返回时保存
+		 *date：20170324
+		 */
+		function saveConfirm() {
+			commonExecScript('rizhi_editor_window','rizhi_fabu_frame', 'sureSumbitLog();',1);
+		}
+
+		/*
+		 *author:ws
+		 *function:返回
+		 *date：20170222
+		 */
+		function back() {
+			//back_index 点击windoew返回按钮时 判断发布页面是否有内容1有内容  2无内容
+			commonExecScript('rizhi_editor_window','rizhi_fabu_frame', 'checkContentNull("'+logTpye+'");',1);
+		}
+	</script>
+</html>

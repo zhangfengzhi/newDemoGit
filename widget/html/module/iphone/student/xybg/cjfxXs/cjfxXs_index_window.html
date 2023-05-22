@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<!-- html5：在创建html时为了防止页面缩放等不兼容效果，要创建个viewport  -->
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<!-- 在IOS设备上，有时会将数字转为手机号，这里也要禁止下 -->
+		<meta name="format-detection" content="telephone=no"/>
+		<title>成绩分析</title>
+	    <link rel="stylesheet" type="text/css" href="../../../../../../css/aui/aui.css" />        
+		<link rel="stylesheet" type="text/css" href="../../../../../../css/module/common/cjfxXs.css" />
+		<link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+	</head>
+	<body class="common-iphone-cjfxXs">
+		<div id="wrap">
+			<header class="aui-bar aui-bar-nav aui-bar-primary" id="aui-header">
+				<div id="cloud" class="topbar activebar">
+					<div id="back" class="back" onclick="back();" tapmode="">
+						<i class="aui-iconfont aui-icon-left"></i>返回
+					</div>
+					<div class="mTitle" id="mTitle">
+						考试选择
+					</div>
+					<div class="win-menu">
+						<font id="j_rl" onclick="claimExam();">去认领</font>
+						<a id='menu1' class="aui-iconfont aui-icon-menu back" onclick="openMenuFrame();"></a>
+						<a id='menu2' class="aui-iconfont aui-icon-check back display-none"  onclick="screenTest();"></a>
+					</div>
+				</div>
+				<div class="aui-searchbar-wrap demo" id="search">
+			        <div class="aui-searchbar aui-border-radius" tapmode onclick="commonDoSearch();">
+			            <i class="aui-iconfont aui-icon-search"></i>
+			            <div class="aui-searchbar-text">请输入搜索内容</div>
+			            <div class="aui-searchbar-input">
+			            	<form action="javascript:startSearch(1);">
+			            	<input oninput="commonRemoveExpression(this)" type="text" placeholder="按标题搜索,最多支持20个字符" id="search-input" maxlength ='20'>
+			            	</form>
+			            </div>
+			            <i class="aui-iconfont aui-icon-roundclosefill" tapmode onclick="commonClearInput()"></i>
+			        </div>
+			        <div class="aui-searchbar-cancel aui-text-info" tapmode onclick="commonCancelSearch()">取消</div>
+			    </div>
+			</header>
+			<div  class="aui-content aui-content-padded" id="message-content">
+				<p class="aui-text-center history-date"></p>
+			</div>
+		</div>
+	</body>
+	<script type="text/javascript" src="../../../../../../script/api.js"></script>
+	<script type="text/javascript" src="../../../../../../script/plug-in/base64.js" ></script>
+	<script type="text/javascript" src="../../../../../../script/common/common.js"></script>
+	<script type="text/javascript" src="../../../../../../script/assembly/tongjiData.js"></script> 
+	<script type="text/javascript" src="../../../../../../script/module/common/cjfxXs.js"></script>
+	<script type="text/javascript">
+		var back_type = 'index';
+		apiready = function() {
+			commonSetTheme({"level":6,"type":0});
+			$api.setStorage('cjfx_ys',0);//初始化进来不是演示功能
+			var header_h = api.pageParam.header_h;
+			var pageParamJson={"header_h":header_h,'winName':api.winName};//打开frame页面所需参数
+			if($api.getStorage("identity") == 7){
+				$api.css($api.byId('j_rl'), 'display:none');
+			}
+			commonOpenFrame('cjfxXs_index_frame', 'cjfxXs_index_frame.html',header_h+50, false, false,"#ffffff",pageParamJson);	//打开index页面
+			commonBackForAndroid();//安卓关闭
+			commonIosAuiHeader();//定位header位置，留出上面电池等空隙，苹果需要
+			commonOpenTjData($api.getStorage("identity")+'_'+api.winName);//记录统计
+		};
+		/*
+		*author:zhaoj
+		*function:认领考试
+		*date：20170321
+		*/
+		function claimExam(){
+			reBackType('rlks');
+			var header_h = api.pageParam.header_h;
+			var pageParamJson={"header_h":header_h,'winName':api.winName};//打开frame页面所需参数
+			commonOpenFrame('cjfxXs_rlks_frame', 'cjfxXs_rlks_frame.html',header_h, false, false,"#ffffff",pageParamJson);	//打开index页面
+		}
+		/*
+		*author:zhaoj
+		*function:返回页面
+		*date：20170118
+		*/
+		function back() {
+			switch(back_type) {
+				case 'index':
+					changePersonInfo(true);
+					commonCloseTjData($api.getStorage("identity")+'_'+api.winName);
+					api.closeWin();
+					break;
+				case 'rlks':
+					commonCloseFrame('cjfxXs_rlks_frame');
+					reBackType('index');
+					break;
+				case 'qrrl':
+					commonCloseFrame('cjfxXs_qrrl_frame');
+					reBackType('rlks');
+					break;
+				case 'menu':
+					commonCloseFrame('cjfxXs_menu_frame');
+					$api.addCls($api.byId('menu2'), 'display-none');
+					$api.removeCls($api.byId('menu1'), 'display-none');
+					reBackType('index');
+					break;
+			}
+		}
+		/**
+		 * 重置window标题
+		 * 周枫
+		 * 2015.12.17
+		 */
+		function reWindowName(win_name) {
+			$api.html($api.byId('mTitle'), win_name);
+		}
+		/**
+		 * 重置从哪个页面退出
+		 * 周枫
+		 * 2015.12.17
+		 */
+		function reBackType(type) {
+			switch(type) {
+				case 'index':
+					reWindowName('考试选择');
+					if($api.getStorage("identity") == 6){
+						$api.css($api.byId('j_rl'), 'display:inline-block;');
+					}
+					$api.removeCls($api.byId('menu1'), 'display-none');
+					back_type = 'index';
+					break;
+				case 'rlks':
+					reWindowName('考试认领');
+					$api.css($api.byId('j_rl'), 'display:none');
+					$api.addCls($api.byId('menu1'), 'display-none');
+					$api.addCls($api.byId('menu2'), 'display-none');
+					back_type = 'rlks';
+					break;
+				case 'qrrl':
+					reWindowName('考试认领');
+					$api.css($api.byId('j_rl'), 'display:none');
+					$api.addCls($api.byId('menu1'), 'display-none');
+					$api.addCls($api.byId('menu2'), 'display-none');
+					back_type = 'qrrl';
+					break;
+				case 'menu':
+					reWindowName('考试筛选');
+					$api.css($api.byId('j_rl'), 'display:none');
+					$api.addCls($api.byId('menu1'), 'display-none');
+					$api.removeCls($api.byId('menu2'), 'display-none');
+					back_type = 'menu';
+					break;
+			}
+		}
+		/*
+		*author:zhaoj
+		*function:打开菜单页面
+		*date：20170421
+		*/
+		function openMenuFrame(){
+			api.execScript({
+                name : 'cjfxXs_index_window',
+                frameName:"cjfxXs_index_frame",
+                script : 'openMenuFrame();'
+            });
+		}
+		/*
+		*author:zhaoj
+		*function:筛选考试
+		*date：20170424
+		*/
+		function screenTest(){
+			api.execScript({
+                name : 'cjfxXs_index_window',
+                frameName:"cjfxXs_menu_frame",
+                script : 'screenTest();'
+            });
+		}
+		/*
+		*作者:zhaoj
+		*功能:开始搜索
+		*日期：20161024
+		*/
+		function startSearch(type){
+			commonSearch(type,function(data){
+				api.execScript({
+					name : 'cjfxXs_index_window',
+					frameName : 'cjfxXs_index_frame',
+					script : 'setKeyword("'+data+'");'
+				});
+			})
+		}
+	</script>
+</html>

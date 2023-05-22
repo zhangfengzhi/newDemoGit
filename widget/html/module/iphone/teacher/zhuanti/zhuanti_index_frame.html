@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>专题列表</title>
+    <link rel="stylesheet" type="text/css" href="../../../../../css/aui_css_new/aui.css"/>
+    <link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+    <style>
+		img.avatar {
+			width: 18px;
+			height: 18px;
+			border-radius: 50%;
+		}
+		.boxCont {
+			position: relative;
+		}
+		.no-data{position:absolute;width: 100%;}
+		.li-list{float:left;width:47%;margin-left:2%;border: 1px solid #c8c7cc; margin-bottom: 10px;}
+		.li-list img{width: 100%;margin: 0;display: block;}
+		.zt-name{background: #ffffff;color: #666;padding: 10px;font-size: 0.8em;}
+		.zt-footer{background: #f4f4f4;padding: 10px;font-size: 0.75em;color: #666;}
+		.zoomImage{ position:relative;width:100%;height:0;padding-bottom: 100%;overflow:visible;background-position: center center;background-repeat: no-repeat; -webkit-background-size:cover; -moz-background-size:cover;background-size:cover;}
+		.zoomImage{padding-bottom:63%;}
+		.zoomImage img{bottom:0 !important;width:100%;height:100%;position: absolute;}
+	</style>
+</head>
+<body class="common-iphone-zhuanti-tea">
+	<div class="aui-content">
+		<!--游戏列表-->
+		<div id="zt_body"><ul id="aui-waterfall"></ul></div>
+		<script type="text/html" id="zt_script">
+			<% if(list.length == 0){ %>
+				<div class="no-data"><span>暂无专题</span></div>
+			<% }else{ %>
+					<%for(var i=0; i<list.length; i++) {%>
+						<li class="li-list" onclick="openDetailWindow('<%=list[i].name_base64%>','<%=list[i].zt_thumb_url%>',<%=list[i].id%>,<%=list[i].res_id%>);">
+							<div>
+								<div class="zoomImage">
+									<img onerror="this.src='../../../../../image/fun-module/common/wk_default.png'" src="../../../../../image/fun-module/common/wk_default.png" alt="" data-echo="<%=list[i].zt_thumb_url%>">
+								</div>
+							</div>
+							<div class="zt-name ellipsis">
+								<%=list[i].res_name%>
+							</div>
+							<div class="zt-footer">
+								<span class="aui-text-info"> 
+									<%=list[i].create_time.substring(0,10)%> 
+								</span>
+								
+									<!--<span class="aui-pull-right"> 
+										 <i class="aui-text-success">学习：</i>
+										 <i class="aui-text-success"><%=list[i].play_count%>&nbsp;次</i>
+									</span>-->
+								
+							</div>
+						</li>
+					<% } %>
+			<% } %>
+		</script>
+	</div>
+</body>
+<script type="text/javascript" src="../../../../../script/api.js"></script>
+<script type="text/javascript" src="../../../../../script/plug-in/base64.js" ></script>
+<script type="text/javascript" src="../../../../../script/base_config.js" ></script>
+<script type="text/javascript" src="../../../../../script/plug-in/template.js" ></script>
+<script type="text/javascript" src="../../../../../script/plug-in/echo.min.js"></script>
+<script type="text/javascript" src="../../../../../script/common/common.js"></script>
+<script type="text/javascript" src="../../../../../script/module/common/zhuanti_tearcher.js"></script>
+<script type="text/javascript">
+	var header_h;//顶部header高度
+	var currentPage=1;//当前分页数
+	var totalPages;//总页数
+	var BASE_URL_ACTION;
+	var subject_id;//学科id
+	var stage_id;//学段id
+	var type_id;//专题类型
+	var keyword = "";//搜索条件
+	var order_type=1;//排序方式，1最新，2最热
+	var subject_data;//菜单学科html
+	var total_param={};
+	apiready = function(){
+		commonSetTheme({"level":5,"type":0});
+		header_h = api.pageParam.header_h;
+		BASE_URL_ACTION = $api.getStorage('BASE_URL_ACTION');
+		total_param.person_id = $api.getStorage("person_id");
+		total_param.identity = $api.getStorage("identity");
+		showSelfProgress("加载中...");
+		isSamePerson(function(flag){
+			getSubjectByStudentId(function(ret){
+				if(ret.ssvt_list.length>0){
+					subject_data =ret;
+					if(flag && $api.getStorage("zhuanti_subject_id")>=0&&$api.getStorage("zhuanti_order_type")){
+						subject_id = $api.getStorage("zhuanti_subject_id");
+						order_type = $api.getStorage("zhuanti_order_type");
+						stage_id = $api.getStorage("zhuanti_stage_id");
+					}else{
+						subject_id = ret.ssvt_list[0].xk_id;
+						stage_id = ret.ssvt_list[0].xd_id;
+					}
+					openNavigationBar();//打开专题类型滑动条
+				}else{
+					popAlertAndShowTitle("提示",Base64.encode("暂无学科信息"),"closeWindow()");
+				}
+			});
+		});	
+		commonRefreshHeaderInfo();//下拉刷新
+		commonScrollBottomReload();//上拉加载更多数据
+	};
+	/*
+	*author:zhaoj
+	*function:打开游戏类型
+	*date：20161220
+	*/
+	function openNavigationBar() {
+		commonCloseNavigationBar();
+		//获取专题类型
+		gametypelist(function(data){
+			var bar_items = [
+				{
+					"title" : '全部',
+					"id" : -1,
+				}
+			];
+			for(var i = 0; i < data.list.length; i++){
+				var oparam = new Object();
+				oparam.title = data.list[i].topic_type_name;
+				oparam.id = data.list[i].topic_type_id;
+				bar_items.push(oparam);
+			}
+			var params = {
+			     w:api.winWidth,
+				y : header_h +50,
+				items : bar_items,
+				winName : 'zhuanti_index_window',
+				frameName : 'zhuanti_index_frame',
+				file_level:2
+			};
+			commonMyNavigationBar(params);
+		});
+	}
+	/*
+	*author:zhaoj
+	*function:点击游戏类型回调函数
+	*date：20161220
+	*/
+	function callBackNew(id, index) {
+		type_id = id;
+		showSelfProgress("加载中...");
+		initData(1);
+	}
+	/*
+	*author:zhaoj
+	*function:加载数据
+	*date：20161220
+	*/
+	function initData(current_page){
+		currentPage = current_page;
+		var list_url = "";
+		if(subject_id>0){
+			getGameOrTopicList(function(ret){
+				totalPages = ret.totalPage;
+				var data = getImgUrl(ret);
+				commonAddManyHtml('aui-waterfall','zt_script',data);
+				//延迟加载图片
+				setTimeout(function() {
+					echoInit();
+				}, 300);
+			});
+		}else{
+			getGameTopicPreview(function(ret){
+				var data = getImgUrl(ret);
+				commonAddOnceHtml('aui-waterfall','zt_script',data);
+				//延迟加载图片
+				setTimeout(function() {
+					echoInit();
+				}, 300);
+			});
+		}
+		
+		//通知顶部下拉刷新数据加载完毕，组件会恢复到默认状态
+		commonControlRefresh();
+		api.hideProgress();
+	}
+	/*
+	*author:zhaoj
+	*function:加获取图片的路径以及base64加密的专题名称
+	*date：20161224
+	*/
+	function getImgUrl(ret){
+		var list_l = getJsonObjLength(ret.list);
+		if (list_l > 0) {
+			for (var i = 0; i < list_l; i++) {
+				var game_thumb_id = ret.list[i].thumb_url;
+				var extension = game_thumb_id.split(".")[1];
+				var index = game_thumb_id.lastIndexOf('.');
+				game_thumb_id = game_thumb_id.substring(0,index);
+				var game_thumb_url = BASE_IMAGE_PRE_ONLY_YUN + BASE_GAME_TOPIC_PATH + game_thumb_id.substring(0, 2) + '\/' + game_thumb_id+'.' + extension + commonReturnPhotoCutSize(0,0,0,undefined,1);
+				ret.list[i]["zt_thumb_url"] = game_thumb_url;
+				
+				ret.list[i]["name_base64"] = Base64.encode(ret.list[i].res_name);
+			}
+		}
+		return ret;
+	}
+	/*
+	*author:zhaoj
+	*function:打开游戏详情页面
+	*date：20161220
+	*/
+	function openDetailWindow(name_base64,img_url,id,res_id) {
+		var pageParamJson = {"header_h":header_h,"name_base64":name_base64,"img_url":img_url,"id":id,"res_id":res_id};//打开window页面json数据
+		commonOpenWin('zhuanti_detail_window', 'zhuanti_detail_window.html', false, false, pageParamJson);
+	}
+	/*
+	*author:zhaoj
+	*function:打开菜单页面
+	*date：20161220
+	*/
+	function openMenuFrame(){
+		var li_html = "";
+		var fir_xd_id = subject_data.ssvt_list[0].xd_id;
+		if(stage_id == subject_data.ssvt_list[0].xd_id){
+			var li_html_xd = '<li class="active" onclick="changeType(this,3,'+ subject_data.ssvt_list[0].xd_id+')"><span>'+subject_data.ssvt_list[0].xd_name+'</span></li>';
+		}else{
+			var li_html_xd = '<li onclick="changeType(this,3,'+ subject_data.ssvt_list[0].xd_id+')"><span>'+subject_data.ssvt_list[0].xd_name+'</span></li>';
+		}
+		
+		if(subject_id == 0){
+			li_html = '<li id="zuijin" class="active" onclick="changeType(this,1,0)"><span>最近访问</span></li>';
+		}else{
+			li_html = '<li id="zuijin" onclick="changeType(this,1,0)"><span>最近访问</span></li>';
+		}
+		for(var i = 0; i < subject_data.ssvt_list.length; i++){
+			//筛选学科数据
+			if(fir_xd_id.indexOf(subject_data.ssvt_list[i].xd_id)>=0){
+				
+			}else{
+				fir_xd_id = fir_xd_id + ',' +subject_data.ssvt_list[i].xd_id;
+				if(stage_id == subject_data.ssvt_list[i].xd_id){
+					li_html_xd = li_html_xd + '<li class="active" onclick="changeType(this,3,'+ subject_data.ssvt_list[i].xd_id+')"><span>'+subject_data.ssvt_list[i].xd_name+'</span></li>';
+				}else{
+					li_html_xd = li_html_xd + '<li onclick="changeType(this,3,'+ subject_data.ssvt_list[i].xd_id+')"><span>'+subject_data.ssvt_list[i].xd_name+'</span></li>';
+				}
+				
+			}
+			
+			if(subject_id == subject_data.ssvt_list[i].xk_id){
+				li_html = li_html + '<li class="active aui-hide show'+subject_data.ssvt_list[i].xd_id+'" onclick="changeType(this,1,'+subject_data.ssvt_list[i].xk_id+')" subject_attr="'+subject_data.ssvt_list[i].xk_id+'"><span>'+subject_data.ssvt_list[i].xk_name+'</span></li>';
+			}else{
+				li_html = li_html + '<li class="aui-hide show'+subject_data.ssvt_list[i].xd_id+'" onclick="changeType(this,1,'+subject_data.ssvt_list[i].xk_id+')" subject_attr="'+subject_data.ssvt_list[i].xk_id+'"><span>'+subject_data.ssvt_list[i].xk_name+'</span></li>';
+			}
+		}
+		
+		pageParamJson={"header_h":header_h,"subject_id":subject_id,"order_type":order_type,"stage_id":stage_id,"li_html":li_html,"li_html_xd":li_html_xd};//打开frame页面json数据
+		//打开游戏菜单的frame页面
+		commonOpenFrame("zhuanti_menu_frame","zhuanti_menu_frame.html",header_h,false,false,"#ffffff",pageParamJson);
+	}
+	/*
+	*author:zhaoj
+	*function:切换学科和排序
+	*date：20161224
+	*/
+	function changeType(subject,order,stage){
+		subject_id = subject;
+		order_type = order;
+		stage_id = stage;
+		recordeHistoryType();
+		openNavigationBar();
+		initData(1);
+		api.execScript({
+			name : 'zhuanti_index_window',
+			script : 'back();'
+		});
+	}
+	/*
+	*author:zhaoj
+	*function:设置搜索值，并根据搜索条件加载相关数据数据
+	*date：20161220
+	*/
+	function setKeyword(type,data) {
+		keyword = $api.trimAll(data);
+		if (keyword != '') {
+			var keyword_encode = Base64.encode(keyword);
+			if (api.systemType == 'ios') {
+				//keyword = keyword_encode.replace(/\+/g, "%2B");
+			}
+		}
+		if(type == 0 || type ==1){
+            initData(1);
+        }
+	}
+	/*
+	*author:zhaoj
+	*function:记录这次的操作
+	*date：20161226
+	*/
+	function recordeHistoryType(){
+		$api.setStorage("zhuanti_subject_id",subject_id);
+		$api.setStorage("zhuanti_order_type",order_type);
+		$api.setStorage("zhuanti_stage_id",stage_id);
+		$api.setStorage('zhuanti_person_id',$api.getStorage("person_id"));
+	}
+	/*
+	*author:zhaoj
+	*function:判断是否为同一个人登录
+	*date：20161226
+	*/
+	function isSamePerson(callback){
+		if($api.getStorage('zhuanti_person_id') == $api.getStorage("person_id")){
+			callback(true);
+		}else{
+			callback(false);
+		}
+	}
+</script>
+</html>

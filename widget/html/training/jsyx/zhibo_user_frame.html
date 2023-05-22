@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+		<title>普通用户直播frame</title>
+		<link rel="stylesheet" type="text/css" href="../../../css/training/jsyx/aui.css" />
+		<style>
+			body {
+			}
+		</style>
+	</head>
+	<body></body>
+	<script type="text/javascript" src="../../../script/api.js"></script>
+	<script type="text/javascript" src="../../../script/training/jsyx/zbLive.js" ></script>
+	<script type="text/javascript">
+		//顶部header高度
+		var header_h;
+		var room_id;
+		var anchor_pwd;
+		var assist_pwd;
+		var user_pwd;
+		var room_name;
+		var person_name = $api.getStorage('person_name');
+		apiready = function() {
+			header_h = api.pageParam.header_h;
+			room_id = api.pageParam.room_id;
+			anchor_pwd = api.pageParam.anchor_pwd;
+			assist_pwd = api.pageParam.assist_pwd;
+			user_pwd = api.pageParam.user_pwd;
+			room_name = api.pageParam.room_name;
+			openViewPlay();
+		};
+		function openViewPlay() {
+			//清除房间验证信息，销毁session实例
+			zbLiveCore.destroyRoomSession(room_id, user_pwd, person_name);
+			//验证房间信息。session是对应一个直播房间的，验证通过才能获取直播间的信息
+			zbLiveCore.authRoomSession(room_id, user_pwd, person_name, function(is_true, ret) {
+				if (is_true) {
+					zbLiveCore.getLiveContext(room_id, user_pwd, person_name, function(is_true, ret){
+						if(is_true) {
+							if(ret.recordingStatus == 1) {
+								//初始化播放模块
+								zbLivePlayer.init(room_id, user_pwd, person_name);
+								//初始化播放
+								zbLivePlayer.play('zhibo_user_frame', 'original', 0, 0, api.frameWidth, api.frameHeight);
+							} else {
+								api.alert({
+									msg : '对不起，当前主播没有开始直播'
+                                },function(ret,err){
+                                	api.execScript({
+                                		name : 'zhibo_user_window',
+	                                    script: 'back();'
+                                    });
+                                });
+							}
+						} else {
+						
+						}
+					});
+					
+				} else {
+				}
+			});
+		}
+		
+		function stopPlayer(){
+			zbLivePlayer.stop();
+		}
+	</script>
+</html>

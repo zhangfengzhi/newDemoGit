@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>检测</title>
+    <link rel="stylesheet" type="text/css" href="../../../../../css/aui/aui.css" />
+    <link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+    <style>
+    	body{font-size:18px;}
+    	.stop-day{color:#FFD34F;}
+    	.correct-rate{color:#FE6461;}
+    	.time-axis-body{padding:0 6px 0 40px;}
+    	.time-axis-body .time-axis-month{padding-top:50px;}
+    	.time-axis-body .time-axis-month .month-name{left:-63px;}
+    	.time-axis-zy{width:50%;float:left;height:150px;margin-top:20px;}
+    	.time-axis-zy .zy-content{position:relative;border:1px solid #e0e0e0;height:100%;}
+    	.time-axis-zy .zy-content .left{position:absolute;left:15px;bottom:0;height:100%;background:url(../../../../../image/fun-module/ipad/zuoye/zy-list.png) center 10px no-repeat;background-size:100% auto;}
+    	.time-axis-zy .zy-content .left .pub-time{margin-top:112px;font-size:16px;color:#777;}
+    	.time-axis-zy .zy-content .right{position:relative;height:100%;margin:0 20px 0 160px;padding:20px 0;}
+    	.time-axis-zy .zy-content .right .zy-name{padding-bottom:15px;border-bottom:1px dashed #e0e0e0;}
+    	.time-axis-zy .zy-content .right .zy-name span{display:inline-block;max-width:90%;}
+    	.time-axis-zy .zy-content .right .time{position:relative;color:#777;font-size:16px;}
+    	.time-axis-zy .zy-content .right .time .stop{background:url(../../../../../image/fun-module/ipad/zuoye/stop.png) center left no-repeat;}
+    	.time-axis-zy .zy-content .right .time .jxz{background:url(../../../../../image/fun-module/ipad/zuoye/jxz.png) center left no-repeat;}
+    	.time-axis-zy .zy-content .right .time .stop,.time-axis-zy .zy-content .right .time .jxz{height:50px;line-height:50px;padding-left:30px;background-size:26px auto;}
+    	.time-axis-zy .zy-content .right .time .zzl{position:absolute;right:20px;top:14px;}
+    	.time-axis-zy .zy-content .right .time .zzl font{font-size:27px;color:#FE6562;}
+    	.st-count{padding:19px 110px 0 30px;}
+    	.st-count.icon-jxz{background:url(../../../../../image/fun-module/ipad/zuoye/ti-count.png) 0 16px no-repeat;}
+    	.st-count.icon-stop{background:url(../../../../../image/fun-module/ipad/zuoye/ti-count-stop.png) 0 16px no-repeat;}
+    	.st-count.icon-jxz,.st-count.icon-stop{background-size:26px auto;}
+    	.time-axis-zy .zy-content .right .tip{width:10px;height:10px;background:#f00;border-radius:50%; position: relative;top:-6px;display:inline-block;}
+    	.zy-tip{position:absolute;right:-20px;top:0;width:55px;height:55px;}
+    	.wtj{background:url(../../../../../image/fun-module/ipad/zuoye/zy-tip.png) 0 0 no-repeat;}
+    	.ytj{background:url(../../../../../image/fun-module/ipad/zuoye/zy-tip.png) 0 -55px no-repeat;}
+    	.ypy{background:url(../../../../../image/fun-module/ipad/zuoye/zy-tip.png) 0 -110px no-repeat;}
+    	.wtj,.ytj,.ypy{background-size:100% auto;}
+    	.time-axis-body .hr{margin-left:-34px;margin-top:25px;width:102%;}
+    </style>
+</head>
+<body class="axis-body common-ipad-zuoyeIpadstu">
+	<div class="msg-top"></div>
+	<div id="msg_top_all" style="height:0px; overflow:hidden"></div>
+	<div class="time-axis">
+		<div id="div_body" class="time-axis-body clearfix">
+			<!--<div class="hr">&nbsp;</div>
+			<div class="time-axis-month dsf clearfix">
+				<div class="month-name">
+					<div class="month"><div class="triangle-left"></div>2017年6月</div>
+				</div>
+			</div>
+			<div class="time-axis-zy clearfix">
+				<div class="zy-content">
+					<div class="left">
+						<div class="tip"></div>
+						<div class="pub-time">2017-07-29 10:50</div>
+					</div>
+					<div class="right">
+						<div class="zy-name">汉语拼音1 aoe</div>
+						<div class="time">
+							<div class="st-count icon-jxz">共20道题</div>
+							<div class="stop">已截止</div>
+							<div class="jxz">截至：2017-05-12 09:18</div>
+							<div class="zzl">正确率：<font>25%</font></div>
+						</div>
+						<div class="zy-tip ypy"></div>
+					</div>
+				</div>
+			</div>
+			<div class="hr">&nbsp;</div>-->
+		</div>
+		<script type="text/html" id="script_body">
+			<% if(length == 0){ %>
+				<div id="j_no_data" class="no-data"><span>暂无检测</span></div>
+			<% }else{ %>
+				<%for(var i=0; i<list.length; i++) {%>
+					<%if(list[i].month_list.length != 0){%>
+						<%if(list[i].is_live == 0){%>
+							<div class="hr">&nbsp;</div>
+							<div class="time-axis-month clearfix">
+								<div class="month-name">
+									<div class="month" id="j_<%=year%>_<%=list[i].num%>"><div class="triangle-left"></div><%=year%>年<%=list[i].month%></div>
+								</div>
+							</div>
+						<%}%>
+						<%for(var j=0; j<list[i].month_list.length; j++) {%>
+							<%if(list[i].month_list[j].zy_tijiao_statu){%>
+								<div class="time-axis-zy clearfix <%if(j%2==0){%>pr15<%}else{%>pl15<%}%>" onclick="openSubmitWin(<%=list[i].month_list[j].zy_id%>,'<%=list[i].month_list[j].zy_name_base64%>',<%=list[i].month_list[j].is_public%>,'<%=list[i].month_list[j].zy_desc_base64%>','<%=list[i].month_list[j].rights%>');">
+									<div class="zy-content">
+										<div class="left">
+											<div class="pub-time"><%=list[i].month_list[j].start_time.substring(0,16)%></div>
+										</div>
+										<div class="right">
+											<div class="zy-name ellipsis">
+												<span  class="ellipsis">
+													<%=list[i].month_list[j].zy_name%>
+												</span>
+											</div>
+											<div class="time">
+												<%if(list[i].month_list[j].is_stop){%>
+													<div class="st-count icon-stop">共<%=list[i].month_list[j].ti_count%>道题</div>
+													<div class="stop">已截止</div>
+												<%}else{%>
+													<div class="st-count icon-jxz">共<%=list[i].month_list[j].ti_count%>道题</div>
+													<div class="jxz">截至：<%=list[i].month_list[j].end_time.substring(0,16)%></div>
+												<%}%>
+												<div class="zzl">正确率：<font><%=list[i].month_list[j].rights%></font></div>
+											</div>
+											<div class="zy-tip <%if(list[i].month_list[j].is_piyue==2){%>ypy<%}else{%>ytj<%}%>"></div>
+										</div>
+									</div>
+								</div>
+							<%}else{%>	
+								<div class="time-axis-zy clearfix <%if(j%2==0){%>pr15<%}else{%>pl15<%}%>" onclick="isFirstRead(this,<%=list[i].month_list[j].is_read%>,<%=list[i].month_list[j].zy_id%>,'<%=list[i].month_list[j].zy_desc_base64%>','<%=list[i].month_list[j].zy_name_base64%>',<%=list[i].month_list[j].is_stop%>);">
+									<div class="zy-content">
+										<div class="left">
+											<div class="pub-time"><%=list[i].month_list[j].start_time.substring(0,16)%></div>
+										</div>
+										<div class="right">
+											<div class="zy-name ellipsis">
+												<span class="ellipsis">
+													<%=list[i].month_list[j].zy_name%>
+												</span>
+												<%if(list[i].month_list[j].is_read != 1){%>
+													<div class="tip"></div>
+												<%}%>
+											</div>
+											<div class="time">
+												<%if(list[i].month_list[j].is_stop){%>
+													<div class="st-count icon-stop">共<%=list[i].month_list[j].ti_count%>道题</div>
+													<div class="stop">已截止</div>
+												<%}else{%>
+													<div class="st-count icon-jxz">共<%=list[i].month_list[j].ti_count%>道题</div>
+													<div class="jxz">截至：<%=list[i].month_list[j].end_time.substring(0,16)%></div>
+												<%}%>
+											</div>
+											<div class="zy-tip wtj"></div>
+										</div>
+									</div>
+								</div>
+							<%}%>
+						<%}%>
+					<%}%>
+				<%}%>
+			<% } %>
+		</script>
+	</div>
+</body>
+<script type="text/javascript" src="../../../../../script/api.js"></script>
+<script type="text/javascript" src="../../../../../script/base_config.js" ></script>
+<script type="text/javascript" src="../../../../../script/common/common.js" ></script>
+<script type="text/javascript" src="../../../../../script/plug-in/template.js" ></script>
+<script type="text/javascript" src="../../../../../script/plug-in/base64.js" ></script>
+<script type="text/javascript">
+	var BASE_URL_ACTION;
+	var template_data;//整理之后的数据列表
+	var currentPage=1;//当前页码
+	var subject_id;//学科id
+	var zy_statu=0;//检测的状态，0代表全部，1代表未提交。。。
+	var totalPage;//总页数
+	var nowTime;
+	var nowYear;
+	var nowMillisecond;
+	var keyword='';//搜索条件
+	var common_param={"student_id":'',"identity_id":"","header_h":0};//全局参数
+	apiready = function(){
+		commonSetTheme({"level":5,"type":0});
+		showSelfProgress('加载中...');
+		common_param.header_h = api.pageParam.header_h;
+		BASE_URL_ACTION = $api.getStorage('BASE_URL_ACTION');
+		commonGetCurrentDate(function(now_Time,now_Millisecond){
+			nowTime = now_Time;
+			nowYear = nowTime.getFullYear();
+			nowMillisecond = now_Millisecond;
+			commonGetStudentInfoByParentId($api.getStorage('person_id'),$api.getStorage('identity') , function(is_true, stu_info_json){
+				if(is_true) {
+					common_param.student_id = stu_info_json.student_id;
+					common_param.identity_id = stu_info_json.roles[0].role_id;
+					getZySubjectList();//获取学科
+				}else{
+					popToast(stu_info_json);
+				}
+			});
+		});
+		commonRefreshHeaderInfo();//上拉刷新
+		commonScrollBottomReload();//下拉加载
+	};
+	/*
+	*author:zhaoj
+	*function:初始化检测数据
+	*date：20160324
+	*/
+	function initZyData(){
+		zy_data={"list":[],"length":0,'now_year':nowYear,'year':'','is_live':''};
+	}
+	/*
+	*author:zhaoj
+	*function:打开检测详情页面
+	*date：20160324
+	*/
+	function openSubmitWin(zy_id,zy_name,is_public,zy_desc,rights){
+		commonOpenWin('zuoyeIpad_submit_window', 'zuoyeIpad_submit_window.html', false, false, {'header_h':common_param.header_h,'zy_id':zy_id,"zy_name":zy_name,"is_public":is_public,"zy_desc":zy_desc,"rights":rights});
+	}
+	/*
+	*author:zhaoj
+	*function:学生是否是第一次查看这个检测
+	*date：20160405
+	*/
+	function isFirstRead(self,is_read,zy_id,zy_desc,zy_name,is_stop){
+		openDetailsWin(zy_id,zy_desc,zy_name,is_stop,is_read);
+	}
+	/*
+	*author:zhaoj
+	*function:打开写检测页面
+	*date：20160325
+	*/
+	function openWriteWin(zy_id,zy_desc,zy_name,is_stop){
+		commonOpenWin('zuoyeIpad_write_window', 'zuoyeIpad_write_window.html', false, false, {'header_h':common_param.header_h,'zy_id':zy_id,"zy_desc":zy_desc,"zy_name":zy_name,"subject_id":subject_id,"zy_statu":zy_statu,"is_stop":is_stop});
+	}
+	/*
+	*author:zhaoj
+	*function:获取检测列表
+	*date：20160331
+	*/
+	function getStudentZylist(){
+		showSelfProgress('加载中...');
+		commonSetMonthData(currentPage,template_data.year);
+		api.ajax({
+			url : BASE_URL_ACTION + '/xx/getStudentZylist',
+			method : 'get',
+			timeout : 30,
+			dataType : 'json',
+			returnAll : false,
+			data : {
+				values : {
+					"random_num" : creatRandomNum(),
+					"student_id" : common_param.student_id,
+					"subject_id" : subject_id,
+					"zy_statu" : zy_statu,
+					"pageSize" : BASE_PAGE_SIZE,
+					"pageNumber" :currentPage,
+					"p_type" : 2,
+					"zy_type" : 1,
+					"keyword" : keyword
+				}
+			}
+		}, function(ret, err) {
+			api.hideProgress();
+			if (err) {
+				popToast('获取检测失败，请稍候重试');
+			} else {
+				if(ret.success){
+					totalPages = ret.total_page;
+					template_data.length = ret.totalRow;
+					template_data.flag=true;
+					var list = ret.zy_list;
+					var nowYear = nowTime.getFullYear();
+					var nowMonth = nowTime.getMonth()+1;
+					if(list.length > 0){
+						for(var i = 0; i < list.length; i++){
+							var startTime = list[i].start_time.replace(/\-/g, "/");
+							startTime = Date.parse(startTime);
+							//起始时间小于或等于当前时间，并且是教师发布的
+							if(startTime <= nowMillisecond && list[i].is_xiafa){
+								list[i].is_show = 1;
+							}else{
+								list[i].is_show = 0;
+							}
+							//对比现在时间，检测是否截止
+							var endTime = list[i].end_time.replace(/\-/g, "/");
+							endTime = Date.parse(endTime);
+							if(endTime > nowMillisecond){
+								list[i].is_stop = 0;
+							}else{
+								list[i].is_stop = 1;
+							}
+							if(list[i].rights *1>= 0){
+								list[i].rights = list[i].rights+'%';
+							}else{
+								list[i].rights = list[i].rights;
+							}
+							list[i].zy_desc_base64 = Base64.encode(list[i].zy_desc);
+							list[i].zy_name_base64 = Base64.encode(list[i].zy_name);
+						}
+						for (var i = 0; i < list.length; i++) {
+							var oparam = new Object();
+							oparam.time = list[i].start_time;
+							oparam.data = list[i];
+							oparam.div_name = 'div_body';
+							oparam.script_name = 'script_body';
+							commonSetTimeAxisData(JSON.stringify(oparam));
+						}
+						//显示时轴列表最上方的空白处
+						$api.removeCls($api.byId('j_blank'),'aui-hide');
+					}else{
+						//隐藏时轴列表最上方的空白处
+						$api.addCls($api.byId('j_blank'),'aui-hide');
+					}
+					if(template_data.flag){
+						commonAddTimeAxisManyHtml('div_body', 'script_body',template_data,currentPage);
+					}else{
+						commonAddTimeAxisManyHtml('div_body', 'script_body',template_data,2);
+					}
+					//设置竖线的最小高度
+					var div_height = api.winHeight-api.pageParam.header_h*1 -25-65;
+					$api.css($api.byId('div_body'),'min-height:'+div_height+'px;');
+					$api.css($api.byId('j_no_data'),'min-height:'+div_height+'px;');
+				}else{
+					popToast('获取检测失败，请稍候重试');
+				}
+			}
+		});
+		//通知顶部下拉刷新数据加载完毕，组件会恢复到默认状态
+		commonControlRefresh();
+	}
+	/*
+	*author:zhaoj
+	*function:学科导航显示
+	*date：20160329
+	*/
+	function openNavigationBar(subject_items) {
+		//关闭滑动条
+		commonCloseNavigationBar();
+		var params = {
+			y : common_param.header_h,
+			w : api.winWidth-300,
+			h:65,
+			items : subject_items,
+			winName:'zuoyeIpad_index_window',
+			frameName:'zuoyeIpad_index_frame',
+			file_level:2
+		};
+		commonMyNavigationBar(params);
+	}
+	/*
+	*author:zhaoj
+	*function:学科导航回调
+	*date：20160329
+	*/
+	function callBackNew(id,index) {
+		subject_id = id;
+		currentPage = 1;
+		initData(1);
+	}
+	/*
+	*author:zhaoj
+	*function:检测的状态，0代表全部，1代表未提交。。。
+	*date：20170825
+	*/
+	function changeZyStatu(name,statu){
+		zy_statu = statu;
+		commonExecScript('zuoyeIpad_index_window','','changeZyStatu("'+name+'",'+statu+')',0);
+		currentPage = 1;
+		initData(1);
+	}
+	/*
+	*author:zhaoj
+	*function:初始化数据
+	*date：20180825
+	*/
+
+	function initData(page){
+		msg_top_all.scrollIntoView();//切换学科时，定位到最上方 
+		if(page == 1){
+			template_data={"list":[],"length":0,'year':'','is_live':'','flag':true};
+		}
+		getStudentZylist();
+	}
+	/*
+	*author:zhaoj
+	*function:获取学生哪些学科下有检测
+	*date：20160331
+	*/
+	function getZySubjectList(){
+		showSelfProgress('加载中...');
+		var subject_items=[{
+			"title":"全部",
+			"id":0
+		}];
+		api.ajax({
+			url : BASE_URL_ACTION + '/xx/getZySubjectList',
+			method : 'get',
+			timeout : 30,
+			dataType : 'json',
+			returnAll : false,
+			data : {
+				values : {
+					"random_num" : creatRandomNum(),
+					"student_id" : common_param.student_id,
+					"zy_type" : 1
+				}
+			}
+		}, function(ret, err) {
+			if (err) {
+			} else {
+				if(ret.success){
+					var list = ret.subject_list;
+					if(list.length>0){
+						for(var i = 0; i < list.length; i++){
+							var param = new Object();
+							param.title = list[i].subject_name;
+							param.id = list[i].subject_id;
+							subject_items.push(param);
+						}
+					}
+				}
+			}
+			openNavigationBar(subject_items);
+		});
+	}
+	/*
+	*author:zhaoj
+	*function:打开下拉菜单
+	*date：20160328
+	*/
+	function openMenu(statu){
+		var pageParamJson={"header_h":common_param.header_h,"subject_id":subject_id,"statu":statu};//打开frame页面所需参数
+		commonOpenFrame('zuoyeIpad_index_menu_frame', 'zuoyeIpad_index_menu_frame.html',0, false, false,"rgba(0,0,0,0)",pageParamJson);	//打开index页面
+	}
+	
+	/*
+	*author:zhaoj
+	*function:打开检测详情页面
+	*date：20160324
+	*/
+	function openDetailsWin(zy_id,zy_desc,zy_name,is_stop,is_read){
+		commonOpenWin('zuoyeIpad_details_window', 'zuoyeIpad_details_window.html', false, false, {'header_h':common_param.header_h,'zy_id':zy_id,"zy_desc":zy_desc,"zy_name":zy_name,"subject_id":subject_id,"zy_statu":zy_statu,"is_stop":is_stop,"type":1,"is_read":is_read});
+	}
+	/*
+	*作者:zhaoj
+	*功能:设置搜索值，并根据搜索条件加载相关数据数据
+	*日期：20161024
+	*/
+    function setKeyword(type,data){
+    	keyword = data;
+    	if(keyword !=''){
+			if (api.systemType == 'ios') {
+				keyword = keyword.replace(/%2B/g, "+");
+			}
+			keyword = Base64.decode(keyword);
+		}
+		if(type ==0 || type ==1){
+        	currentPage = 1;
+        	initData(currentPage);
+        }
+    }
+</script>
+</html>

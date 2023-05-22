@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>title</title>
+    <link rel="stylesheet" type="text/css" href="../../../../../css/aui/aui.css" />
+    <link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+    <style>
+    	body{background:#f3f3f3;}
+    	.bm-top{padding-left:15px;}
+    	.bm-name{font-size:18px;margin-top:12px;}
+    	.zg-detail{color:#959595;font-size:18px;margin-top:15px;}
+    	.bm-person{padding:0px 0 20px 0;}
+    	.bm-person li{list-style:none;width:25%;float:left;text-align:center;padding-top:20px;}
+    	.bm-person li .header-img,.bm-person li .more{position:relative;width:100px;height:100px;margin:0 auto;}
+    	.bm-person li .more div{width:100px;height:100px;border:1px solid #e0e0e0;border-radius:25px;font-size:12px;line-height:50px;background:#efefef;color:#3E3E3E;}
+    	.bm-person li .header-img img{width:100px;height:100px;border-radius:55px;border:1px solid #ccc;}
+    	.bm-person li .header-img div{position:absolute;top:0;width:50px;height:50px;line-height:50px;border-radius:25px;z-index:-1;background:rgba(155,155,155,0.7);color:#004083;font-size:18px;}
+    	.bm-person li .header-img div.active{z-index:2;}
+    	.bm-person li .person-name{padding-top:10px;color:#333;font-size:18px;}
+    </style>
+</head>
+<body class="common-ipad-kaoqinIpad-tea">
+	<div class="msg-top"></div>
+	<div class="bm-top">
+		<div id="j_tip" class="zg-detail"></div>
+	</div>
+	<ul id="person_body" class="bm-person"></ul>
+	<script type="text/html" id="person_script">
+		<%if(list.length==0){%>
+			<div class="no-data">暂无人员信息</div>
+		<%}else{%>
+			<%for(var i =0; i < list.length; i++){%>	
+				<li>
+					<div class="header-img">
+						<img onerror="this.src='../../../../../image/common/header.png'"  src="<%=list[i].avatar_file_id%>" data-echo="<%=list[i].avatar_file_id%>" alt="" />
+						<%if(list[i].type_id == 1){%>
+							<div class="header-cover active">请假</div>
+						<%}else if(list[i].type_id == 2){%>
+							<div class="header-cover active">公出</div>
+						<%}%>
+					</div>
+					<div class="person-name"><%=list[i].person_name%></div>
+				</li>
+			<%}%>	
+		<%}%>	
+	</script>
+</body>
+<script type="text/javascript" src="../../../../../script/api.js"></script>
+<script type="text/javascript" src="../../../../../script/plug-in/template.js" ></script>
+<script type="text/javascript" src="../../../../../script/base_config.js" ></script>
+<script type="text/javascript" src="../../../../../script/common/common.js" ></script>
+<script type="text/javascript" src="../../../../../script/plug-in/echo.min.js"></script>
+<script type="text/javascript" src="../../../../../script/common/kaoqinIpad_common.js"></script>
+<script type="text/javascript">
+	var BASE_URL_ACTION;
+	var all_data;//所有人数据
+	var qj_data={"list":[]};//请假人信息
+	var gc_data={"list":[]};//公出人信息
+	var type_history =0;//记录历史操作	
+	apiready = function(){
+		commonSetTheme({"level":5,"type":0});
+		BASE_URL_ACTION = $api.getStorage('BASE_URL_ACTION');
+		getOnTheJobInfo();
+	};
+	/*
+	*作者:zhaoj
+	*功能:切换类型
+	*日期：20160906
+	*/
+	function changeType(type){
+		if(type == 0 && type_history != type){
+			if(all_data.list.length == 0){
+				$api.css($api.byId('j_tip'), 'display:none');
+			}else{
+             $api.css($api.byId('j_tip'), 'display:block');
+            }
+			$api.html($api.byId('j_tip'), '在岗：'+all_data.y_onthejob+'人&nbsp;&nbsp;不在岗：'+all_data.n_onthejob+'人');
+			addTemplateHtml('person_body', 'person_script', all_data,1);
+		}else if(type ==1 && type_history != type){
+			if(qj_data.list.length == 0){
+				$api.css($api.byId('j_tip'), 'display:none');
+			}else{
+             $api.css($api.byId('j_tip'), 'display:block');
+            }
+			$api.html($api.byId('j_tip'), '请假：'+qj_data.list.length+'人');
+			addTemplateHtml('person_body', 'person_script', qj_data,1);
+		}else if(type ==2 && type_history != type){
+			if(gc_data.list.length == 0){
+				$api.css($api.byId('j_tip'), 'display:none');
+			}else{
+             $api.css($api.byId('j_tip'), 'display:block');
+            }
+			$api.html($api.byId('j_tip'), '公出：'+gc_data.list.length+'人');
+			addTemplateHtml('person_body', 'person_script', gc_data,1);
+		}
+		type_history = type;
+	}
+	/*
+	*作者:zhaoj
+	*功能:获取人员请假公出信息
+	*日期：20160906
+	*/
+	function getOnTheJobInfo(){
+		api.ajax({
+			url : BASE_URL_ACTION + '/leave/getOnTheJobInfo?bureau_id='+$api.getStorage('bureau_id')+'&org_id='+api.pageParam.id+'&random_num='+creatRandomNum(),
+			method : 'get',
+			timeout : 30,
+			dataType : 'json',
+			headers : {
+				'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+			}
+		}, function(ret, err) {
+			api.hideProgress();
+			if (err) {
+				popToast('对不起，获取人员信息失败');
+			} else {
+				if (ret.success) {
+					if(ret.list.length == 0){
+						$api.css($api.byId('j_tip'), 'display:none');
+					}else{
+		             $api.css($api.byId('j_tip'), 'display:block');
+		            }
+					all_data={"list":[],"y_onthejob":ret.y_onthejob,"n_onthejob":ret.n_onthejob};
+					var zg_data={"list":[]};
+					$api.html($api.byId('j_tip'), '在岗：'+ret.y_onthejob+'人&nbsp;&nbsp;不在岗：'+ret.n_onthejob+'人');
+					var BASE_APP_TYPE = $api.getStorage('BASE_APP_TYPE');
+					for(var i = 0; i < ret.list.length; i++){
+						var oparam = new Object;
+						oparam.person_id = ret.list[i].person_id;
+						oparam.person_name = ret.list[i].person_name;
+						oparam.type_id = ret.list[i].type_id;
+						if (BASE_APP_TYPE == 1) {
+								oparam.avatar_file_id = BASE_IMAGE_PRE+url_path_suffix + ret.list[i].avatar_file_id.substring(0, 2) + "/" + ret.list[i].avatar_file_id +'@90w_90h_100Q_1x.jpg';
+								ret.list[i].avatar_file_id =BASE_IMAGE_PRE+url_path_suffix + ret.list[i].avatar_file_id.substring(0, 2) + "/" + ret.list[i].avatar_file_id +'@90w_90h_100Q_1x.jpg' ;
+						} else {
+							oparam.avatar_file_id = BASE_URL_ACTION + BASE_IMAGE_BEGIN + ret.list[i].avatar_file_id.substring(0, 2) + "/" + ret.list[i].avatar_file_id +'@90w_90h_100Q_1x.jpg';
+							ret.list[i].avatar_file_id = BASE_URL_ACTION + BASE_IMAGE_BEGIN + ret.list[i].avatar_file_id.substring(0, 2) + "/" + ret.list[i].avatar_file_id +'@90w_90h_100Q_1x.jpg';
+						}
+						if(ret.list[i].type_id == 1){
+							qj_data.list.push(oparam);
+						}else if(ret.list[i].type_id == 2){
+							gc_data.list.push(oparam);
+						}else{
+							zg_data.list.push(oparam);
+						}
+					}
+					for(var i = 0 ; i < qj_data.list.length;i++){
+						var oparam = new Object;
+						oparam.person_id = qj_data.list[i].person_id;
+						oparam.person_name = qj_data.list[i].person_name;
+						oparam.type_id = qj_data.list[i].type_id;
+						oparam.avatar_file_id = qj_data.list[i].avatar_file_id;
+						all_data.list.push(oparam);
+					}
+					for(var i = 0 ; i < gc_data.list.length;i++){
+						var oparam = new Object;
+						oparam.person_id = gc_data.list[i].person_id;
+						oparam.person_name = gc_data.list[i].person_name;
+						oparam.type_id = gc_data.list[i].type_id;
+						oparam.avatar_file_id = gc_data.list[i].avatar_file_id;
+						all_data.list.push(oparam);
+					}
+					for(var i = 0 ; i < zg_data.list.length;i++){
+						var oparam = new Object;
+						oparam.person_id = zg_data.list[i].person_id;
+						oparam.person_name = zg_data.list[i].person_name;
+						oparam.type_id = zg_data.list[i].type_id;
+						oparam.avatar_file_id = zg_data.list[i].avatar_file_id;
+						all_data.list.push(oparam);
+					}
+					addTemplateHtml('person_body', 'person_script', all_data,1);
+					//延迟加载图片
+					setTimeout(function() {
+						echoInit();
+					}, 300);
+				} else {
+					popToast('对不起，获取人员信息失败');
+				}
+			}
+		});
+	}
+</script>
+</html>

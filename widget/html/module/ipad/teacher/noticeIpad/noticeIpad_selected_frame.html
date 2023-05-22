@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no" />
+    <title>通知</title>
+    <link rel="stylesheet" type="text/css" href="../../../../../css/aui/aui.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../../../css/module/common/aui-list-swipe.css" />
+    <link rel="stylesheet" type="text/css" href="../../../../../css/module/ipad/left-right-layout.css"/>
+    <link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+    <style>
+        .type-div{height:50px;line-height:50px;border-bottom:1px solid #c4c2c2;width:100%;text-align:center;}
+        body{height:100%;width:100%;background:#fff;border-left:1px solid #c4c2c2}
+		ul{padding:5px;}
+		.selected-li{height:40px;line-height:40px;width:40px;border-radius:40px;background:#34a8f6;float:left;text-align:center;margin-bottom:5px;color:#fff}
+		.person_li{background:#1bbc9b}
+		ul li{float:left;height:50px;width:50px;margin-left:15px;}
+		.sure-button{float:right;width:20%;height:45px;line-height:45px;padding-top:5px;}
+		.delete-img{position:absolute;top:0;left:30px;width:15px;height:15px;background:url(../../../../../image/fun-module/common/shanchu.png) center center no-repeat;background-size:15px 15px;z-index:999}
+		.li-div{position:relative}
+    </style>
+</head>
+<body class="common-ipad-noticeIpad-tea">
+	  <!-- 人员 -->
+	  <div class="type-div">已选</div>
+	  <div>
+		  <ul id="select_ul" class="ellipsis"></ul>
+		  <script type="text/html" id="select_script">
+		      <%if(list.length == 0){%>
+                <div class="no-data">暂无人员</div>
+              <%}else{%>
+			      <%for(var i=0;i<list.length;i++){%>
+			          <%if(list[i].type == -3){%>
+			              <li class="ellipsis">
+			                  <div class="li-div">
+			                      <div class="selected-li person_li">
+	                                  <%=list[i].name.substring(0,1)%>
+	                              </div>
+	                              <div class="delete-img" onclick="deleteSelected(event,'<%=list[i].name%>',<%=list[i].type%>,'<%=list[i].id%>','<%=list[i].rode%>')">
+	                                  &nbsp;
+	                              </div>
+			                  </div>
+			              </li>
+			          <%}else{%>
+			              <li class="ellipsis">
+			                  <div class="li-div">
+	    		                  <div class="selected-li">
+	                                  <%=list[i].name.substring(0,1)%>
+	                              </div>
+	                              <div class="delete-img" onclick="deleteSelected(event,'<%=list[i].name%>',<%=list[i].type%>,'<%=list[i].id%>','<%=list[i].rode%>')">
+	                                &nbsp;
+	                              </div>
+	                          </div>
+			              </li>
+			          <%}%>
+			      <%}%>
+		      <%}%>
+		  </script>
+	</div>
+</body>
+<script type="text/javascript" src="../../../../../script/api.js"></script>
+<script type="text/javascript" src="../../../../../script/plug-in/aui-list-swipe.js"></script>
+<script type="text/javascript" src="../../../../../script/base_config.js" ></script>
+<script type="text/javascript" src="../../../../../script/plug-in/template.js" ></script>
+<script type="text/javascript" src="../../../../../script/plug-in/base64.js" ></script>
+<script type="text/javascript" src="../../../../../script/common/common.js"></script>
+<script type="text/javascript" src="../../../../../script/module/ipad/teacher/noticeIpad.js"></script>
+<script type="text/javascript">
+	apiready = function(){
+	       loadData();
+	   }
+	 
+		
+	/*
+	 * 功能：加载已选人员数据
+	 * 作者：张自强
+	 * 时间：20180727
+	 */
+	function loadData(){
+	   var list = $api.getStorage('now_select_all');
+	   if(!list){
+	   	list = [];
+	   }
+	   commonExecScript(api.winName,'','showNumOfSelectedPerson('+list.length+')',0);
+	   commonAddOnceHtml('select_ul', 'select_script', {'list':list});
+	}
+	
+	/*
+	 * 功能：保存已选中的数据
+	 * 作者：张自强
+	 * 时间：20180727
+	 */
+	function saveSelected(){
+	  commonExecScript('noticeIpad_add_window','noticeIpad_add_frame','checkAndDealData();',1);
+	  api.closeWin();
+	}
+	
+	/*
+	 * 功能：删除已选人员
+	 * 作者：张自强
+	 * 时间：20180731
+	 */
+	function deleteSelected(e,name,type,id,rode){
+	  var list = $api.getStorage('now_select_all');
+	  var type_from = 0;
+	  switch(type*1){
+	      case 1://教育局
+	      case 2://学校
+	      case 7://教辅单位
+commonExecScript('noticeIpad_person_window','','selectOrgn(1,'+type+','+id+',"'+name+'","'+rode+'",2);',0);
+              break;
+          case -2://群组
+              commonExecScript('noticeIpad_person_window','','selectGroup(1,'+id+',"'+name+'",2);',0);
+              break;
+          case -3://人员
+              commonExecScript('noticeIpad_person_window','noticeIpad_person_frame','selectPersonYuan(1,'+id+',"'+name+'","'+rode+'",2);',1);
+              break;
+          case -4://下属教育局
+            type_from = 1;
+            commonExecScript('noticeIpad_person_window','','selectOrgnAndChild(1,'+type_from+',"'+id+'","'+name+'",1,2);',0);
+              break;
+          case -5://下属教辅单位
+            type_from = 7;
+            commonExecScript('noticeIpad_person_window','','selectOrgnAndChild(1,'+type_from+',"'+id+'","'+name+'",1,2);',0);
+              break;
+          case -6://下属学校
+            type_from = 2;
+            var xx_name = '';
+            var xx_id = '';
+            switch(name){
+                case '初中':
+                    xx_name = 'cz_list'
+                    break;
+                case '高中':
+                    xx_name = 'gz_list'
+                    break;
+                case '九年一贯制':
+                    xx_name = 'jnygz_list'
+                    break;
+                case '十二年一贯制':
+                    xx_name = 'senygz_list'
+                    break;
+                case '完全中学':
+                    xx_name = 'wqgz_list'
+                    break;
+                case '小学':
+                    xx_name = 'xx_list'
+                    break;
+                case '大学':
+                    xx_name = 'dx_list'
+                    break;
+                case '小幼初一体':
+                    xx_name = 'xycyt_list'
+                    break;
+                case '小幼一体':
+                    xx_name = 'xyyt_list'
+                    break;
+                case '幼儿':
+                    xx_name = 'ye_list'
+                    break;
+                case '职业':
+                    xx_name = 'zy_list'
+                    break;
+            }
+            xx_id = id.replace(xx_name,'');
+            commonExecScript('noticeIpad_person_window','','selectOrgnAndChild(1,'+type_from+',"'+xx_id+'","'+name+'","'+xx_name+'",2);',0);
+              break;
+          case 0://内部科室（根节点）
+              var type_from = 0;    commonExecScript('noticeIpad_person_window','','selectOrgnAndChild(1,'+type_from+',"'+id+'","'+name+'",1,2);',0);
+              break;
+          case 3://内部科室（子节点）
+   commonExecScript('noticeIpad_person_window','','selectOrgn(1,'+3+','+id+',"'+name+'","'+rode+'",2);',0);
+              break;
+	  }
+	  e.stopPropagation();
+	}
+</script>
+</html>

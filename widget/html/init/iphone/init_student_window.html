@@ -1,0 +1,331 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <!-- 在IOS设备上，有时会将数字转为手机号，这里也要禁止下 -->
+	<meta name="format-detection" content="telephone=no"/>
+    <title>学生-主页</title>
+    <link rel="stylesheet" type="text/css" href="../../../css/aui_css_new/aui.css" />
+    <link rel="stylesheet" type="text/css" href="../../../css/module/common/img-auto.css" />
+    <link rel="stylesheet" type="text/css" href="../../../css/module/iphone/init-iphone.css" />
+    <link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+</head>
+<body id="j_body" class="common-init init-iphone-body">
+	<div id="j_top" style="height:0px; overflow:hidden"></div>
+	<div class="mode-tip">
+		<ul id="dbsx_body">
+		</ul>
+		<script id="dbsx_script" type="text/html">
+			<%if(list.length != 0){%>
+				<%for(var i = 0; i < list.length; i++){%>
+					<%if(list[i].business =="uncheck_homework_stu"){%>
+						 <li onclick="openModule({'win_url':'zuoyeXsJy_index_window','type':'1','code':'hxx_zy'});">
+                            <div class="img zy bd">
+                                <div>&nbsp;</div>
+                            </div>
+                            <%if(list[i].data.account && list[i].data.account != 0){%>
+                                <div class="tip"><%=list[i].data.account%></div>
+                            <%}%>
+                            <div class="name">检测</div>
+                            <%if(!list[i].data.unScanHomeworkInfo || list[i].data.unScanHomeworkInfo.length ==0){%>
+                                <div class="detail ellipsis">暂无检测</div>
+                            <%}else{%>
+                                <%for(var j = 0; j < list[i].data.unScanHomeworkInfo.length; j++){%>
+                                    <div class="detail ellipsis">[<%=list[i].data.unScanHomeworkInfo[j].subject_name%>]<%=list[i].data.unScanHomeworkInfo[j].zy_name%></div>
+                                <%}%>
+                            <%}%>
+                        </li>
+					<%}%>
+				<%}%>
+			<%}%>
+		</script>
+	</div>
+	<div id="no_quanzi" class="no-quanzi" style="display:none">暂无圈子</div>
+			<div class="aui-content-padded" style="margin:0">
+                <div id="quanzi_div"></div>
+                <script id="quanzi_script" type="text/html">
+                <%if(page_number == 1 &&list.length >0){%>
+			    	<div class="common-quanzi-tip">&nbsp;</div>
+			    <%}%>
+				<%for(var i=0;i<list.length;i++){%>
+					<%if(list[i].is_del){%>
+					<%}else{%>
+						<ul class="quzi_ul" id="<%=list[i].id%>">
+						    <li class="aui-list-view"
+						    	 onclick="openXQ(<%=list[i].id%>,<%=list[i].expand_id%>,'<%=list[i].title%>','<%=list[i].avatar_fileid%>',0,'<%=category_id%>','<%=list[i].person_name%>','<%=list[i].create_time.substring(0,16)%>',<%=list[i].person_id%>,<%=list[i].identity_id%>,'<%=list[i].loging_name%>','<%=list[i].curPage%>');"
+						    	style="margin-bottom:0;border-bottom:1px solid #e0e0e0">
+						        <div class="aui-user-view-cell aui-img quanzi_header">						
+						            <img class="aui-img-object aui-pull-left"
+						            	 onclick="getPersonData(event,'<%=list[i].person_name%>','<%=list[i].loging_name%>','<%=list[i].avatar_fileid%>','<%=list[i].person_id%>','<%=list[i].identity_id%>')"
+						            	style="border-radius:8px"  onerror="this.src='../../../image/common/header.png'" src='<%=list[i].avatar_fileid%>'>
+						            <div class="aui-img-body">
+						                <span class="person-name"
+						                	 onclick="getPersonData(event,'<%=list[i].person_name%>','<%=list[i].loging_name%>','<%=list[i].avatar_fileid%>','<%=list[i].person_id%>','<%=list[i].identity_id%>')"
+						                	><%=list[i].person_name%></span>
+						            </div>
+						        </div>
+						        <div class="quanzi-content-div">
+							        <%if(list[i].title){%>
+							        	<div class="content">
+								       		
+								       		<div class="ellipsis quanzi-title-middle"><%=list[i].title%></div>
+								       		
+								        </div>
+							        <%}%>
+							        <%if(list[i].overview){%>
+							        	<div class="quanzi-content">
+								        <%=list[i].overview%>
+								        </div>
+							        <%}%>
+						        </div>
+						        <%if(list[i].thumb_id != ""){%>							        
+							       <div>
+									<ul class="aui-list-view aui-grid-view zoomImage-full-4-3">
+							            <%for(var j=0;j<list[i].thumb_ids.length;j++){%>
+							            	<%if(list[i].thumb_ids.length > 9 && j>8){%>
+							            	<%}else{%>
+							            		<%if(list[i].open_thumbs_id[j] != -1){%>
+							            		<li class="aui-list-view-cell aui-img aui-col-xs-4" onclick="openImage(event,'<%=list[i].open_thumbs_id[j] %>');">
+									            <img class="aui-img-object" onerror="this.src='../../../image/common/tpsx.png'"  src="<%=list[i].thumb_ids[j]%>" style="height:80px">
+									            </li>
+										    <%}%>
+							            	<%}%>								      
+							            <%}%>
+							         </ul>
+							        </div>
+						        <%}%>
+						        	<div class="content-border"></div>
+						        <div onclick="">
+						        	<div class='aui-ellipsis-1'><em><%=list[i].create_time.substring(0,16)%></em></div>
+						       		<div class="pinglun-liulan-dianzan-back ellipsis">
+						       			评论<span id="comment_num_<%=list[i].id%>"><%=list[i].comment_num%></span>次 浏览<span id="browse_num_<%=list[i].id%>"><%=list[i].browse_num%></span>次 点赞<span id="praise_count_<%=list[i].id%>"><%=list[i].praise_count%></span>次
+						       		</div> 
+								</div>
+								 <div style="height:30px"></div>  	
+						    </li>
+						</ul>
+					<%}%>
+				<%}%>	
+			</div>	
+		</script>
+</body>
+<script type="text/javascript" src="../../../script/api.js" ></script>
+<script type="text/javascript" src="../../../script/base_config.js" ></script>
+<script type="text/javascript" src="../../../script/plug-in/template.js" ></script>
+<script type="text/javascript" src="../../../script/plug-in/base64.js" ></script>
+<script type="text/javascript" src="../../../script/common/common.js"></script>
+<script type="text/javascript" src="../../../script/common/init_common.js" ></script>
+<script type="text/javascript" src="../../../script/plug-in/echo.min.js" ></script>
+<script type="text/javascript" src="../../../script/assembly/photoBrowser.js"></script>
+<script type="text/javascript" src="../../../script/init/init_config.js"></script>
+<script type="text/javascript" src="../../../script/init/iphone/init_quanzi.js"></script>
+<script type="text/javascript">
+    var currentPage = 1;//当前分页数
+	var totalPages = 0;//总页数
+	var totalData = 0;//定义一个变量存储第一次加载返回来的总记录数
+	var header_h = 0;//定义头高度
+	var org_type = 104;//定义区域类型，104学校，105班级
+	var org_id = 0; //定义区域id，学校id或班级id
+	var org_name = '';
+	var picture_sz = [];
+	var list_url = '';
+	var isBackTop = false;
+    apiready = function () {
+    	commonSetTheme({"level":3,"type":0});
+		header_h = api.pageParam.header_h;
+		getOrgIdOrgTypeOrgName();
+		commonScrollBottomReload();
+		commonRefreshHeaderInfo();
+		
+    }
+    
+    /*
+     * 加载数据
+     * 张自强
+     * 20170725
+     * 接口提供人：张海
+     */
+    function initData(current_page,url,isRefresh){
+    	api.removeEventListener({name : 'scrolltobottom'});
+    	get_waithandle_list();//获取待办事项
+    	api.showProgress({
+			title : '加载中',
+			text : '请稍候...',
+			modal : false
+		});
+   		currentPage = current_page;
+		if (list_url == ''){
+			list_url = BASE_URL_ACTION + '/blog_expand/list_article_expand?random_num='+creatRandomNum()+'&search_type=title&pagesize='+BASE_PAGE_SIZE+'&business_type=3&business_id='+org_id+'&business_iid=105&identity_id=6';		
+		}
+    	
+    	isBackTop = false;
+		if (url && url != ""){
+			list_url = url;
+			isBackTop = true;
+		}
+    	
+    	if (!isRefresh && current_page * 1 == 1){
+    		isBackTop = true;
+    	}
+    	
+    	setData(list_url,isRefresh);
+    }
+	/*
+	*author:zhaoj
+	*function:获取待办事项
+	*interface:张海
+	*date：20171028
+	*/
+	function get_waithandle_list(){
+		var request_urls={
+		       "request_urls": [
+		       {
+		            "url":"/dsideal_yy/xx/getUncheckHomework?person_id="+$api.getStorage("person_id")+"&identity_id="+ $api.getStorage("identity")+"&limit=2",
+		            "business":"uncheck_homework_stu"
+		        },{
+		            "url":"/dsideal_yy/space/waithandle/get_news?a_id="+$api.getStorage("class_id")+"_1_bjgg&a_identity_id=105&page_number=1&page_size=2",
+		            "business":"news"
+		        }
+		    ]
+		}
+		var _url = BASE_URL_ACTION+'/ypt/space/waithandle/get_waithandle_list?param='+ encodeURIComponent(JSON.stringify(request_urls));
+		api.ajax({
+			url : _url,
+			method : 'get',
+			timeout : 0,
+			dataType : 'json',
+			headers : {
+	'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+	}
+			}, function(ret, err) {
+				if(err){
+					popToast('获取待办事项失败，请稍候重试');
+				}else{
+					if(ret){
+						var data = {"list":ret};
+						commonAddOnceHtml('dbsx_body',"dbsx_script",data);
+					}else{
+						popToast('获取待办事项失败，请稍候重试');
+					}
+				}
+		});
+	}
+	
+	function setData(url){
+		list_url = url;
+		var listLen = 0;
+		var screenSetData = $api.getStorage('screenSetData');
+		if (screenSetData){
+			org_type = screenSetData.org_type;
+		}
+		
+		api.showProgress({
+				title : '加载中',
+				text : '请稍候...',
+				modal : true
+			});
+		api.ajax({
+	    	url : url  + '&pagenum=' + currentPage,
+			method : 'get',
+			timeout : 30,
+			dataType : 'json',
+			headers : {
+				'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+			}
+	    },function (ret,err){
+	    	if(err){
+        		popToast('获取圈子信息失败，请稍候重试');
+        		$api.text($api.byId('quanzi_div'), '');
+        		$api.css($api.byId('no_quanzi'),'display:block');
+        	}else{
+        		if(ret.success){
+        			totalData = ret.total_row;
+					totalPages = ret.total_page;
+        			if(ret.list.length > 0){
+        				var index_del = 0;//记录被删除的消息个数
+        				var list = ret.list;
+        				for(var i=0;i<list.length;i++){
+        					var thumbs_id = [];
+        					var open_thumbs_id = [];
+        					if(ret.list[i].thumb_ids != '[]'){
+        						ret.list[i].thumb_ids = ret.list[i].thumb_ids.substring(1,ret.list[i].thumb_ids.length-1);
+        						thumbs_id = ret.list[i].thumb_ids.split(",");
+								for(var j=0;j<thumbs_id.length;j++){
+									var text_str = 'dsideal_yy';
+									if(thumbs_id[j].indexOf(text_str)!=-1){
+										if(BASE_APP_TYPE == 1){
+											open_thumbs_id[j] = thumbs_id[j].substring(1,thumbs_id[j].length-1);
+											thumbs_id[j] =  thumbs_id[j].substring(1,thumbs_id[j].length-1);	 							
+										}else{
+											open_thumbs_id[j] = BASE_URL_ACTION + BASE_IMAGE_BEGIN + thumbs_id[j].substring(thumbs_id[j].indexOf("Material")+9,thumbs_id[j].length-1);
+											thumbs_id[j] = BASE_URL_ACTION + BASE_IMAGE_BEGIN + thumbs_id[j].substring(thumbs_id[j].indexOf("Material")+9,thumbs_id[j].length-1)+ commonReturnPhotoCutSize(0,0,0,thumbs_id[j].substring(thumbs_id[j].length-4,thumbs_id[j].length-1));
+										}
+									}else{
+										open_thumbs_id[j] =thumbs_id[j].substring(1,thumbs_id[j].length-1);
+										thumbs_id[j] =thumbs_id[j].substring(1,thumbs_id[j].length-1);
+									}
+									if(open_thumbs_id[j].indexOf('glyphicon-paperclip-org.png')!=-1){
+										open_thumbs_id[j]=-1;
+									}
+								}
+	        				}
+        					ret.list[i].thumb_ids = thumbs_id;
+        					ret.list[i].open_thumbs_id = open_thumbs_id;
+        					ret.list[i].curPage = currentPage;
+        					var param = new Object();
+        					param.open_thumbs_id = open_thumbs_id;
+        					picture_sz.push(param);
+        						if(list[i].is_del*1){//判断消息是否别删除，不显示已删除的消息
+									ret.list[i].is_del = true;
+									index_del++;
+								}else{
+									ret.list[i].is_del = false;
+									
+								}
+								
+								var screenSetData = $api.getStorage('screenSetData');
+								if (screenSetData && screenSetData.partIndex == 0){
+									ret.list[i].avatar_fileid = $api.getStorage('avatar_url');
+								}
+								else{
+									if(BASE_APP_TYPE == 1){
+									ret.list[i].avatar_fileid = BASE_IMAGE_PRE + url_path_suffix + ret.list[i].avatar_fileid.substring(0, 2) + "/" +ret.list[i].avatar_fileid + commonReturnPhotoCutSize(1,96,96,ret.list[i].avatar_fileid.substring((ret.list[i].avatar_fileid.length)-3));
+									}else{
+										ret.list[i].avatar_fileid = BASE_URL_ACTION + BASE_IMAGE_BEGIN + ret.list[i].avatar_fileid.substring(0, 2) + "/" + ret.list[i].avatar_fileid + commonReturnPhotoCutSize(1,96,96,ret.list[i].avatar_fileid.substring((ret.list[i].avatar_fileid.length)-3));
+									}
+								}
+        						listLen = ret.list.length;
+		    					if(i==(ret.list.length-1)){//判断循环是否执行完，执行完再渲染页面
+		    						if(index_del == list.length && currentPage == 1){
+		    							$api.text($api.byId('quanzi_div'), '');
+        								$api.css($api.byId('no_quanzi'),'display:block');
+		    						}else{
+		    							commonAddManyHtml('quanzi_div','quanzi_script',ret);
+		    						//延迟加载图片
+									setTimeout(function() {
+										echoInit();
+									}, 300);	
+		    						}
+		    					}
+        				}
+        			}else{
+          				$api.text($api.byId('quanzi_div'), '');
+        				$api.css($api.byId('no_quanzi'),'display:block');
+        			}
+        		}else{
+        			popToast('获取圈子信息失败，请稍候重试');
+        		}
+        	}
+        	//通知顶部下拉刷新数据加载完毕，组件会恢复到默认状态
+			commonControlRefresh();
+			commonScrollBottomReload();
+			api.hideProgress();
+			if (isBackTop){
+				$api.byId("j_body").scrollTop = 0;
+			}
+			commonScrollBottomReload();
+		});
+	}
+</script>
+</html>

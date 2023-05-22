@@ -1,0 +1,203 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<title>直播</title>
+		<link rel="stylesheet" type="text/css" href="../../../css/training/jsyx/aui.css" />
+		<style>
+			.history-date {
+				font-size: 12px;
+			}
+			#message-content {
+				overflow-y: auto;
+				display: none;
+			}
+			.t_display_n {
+				display: none;
+			}
+			.t_display_b {
+				display: block;
+			}
+		</style>
+	</head>
+	<body>
+		<div id="wrap">
+			<header class="aui-bar aui-bar-nav aui-bar-primary" id="aui-header">
+				<div id="cloud" class="topbar activebar">
+					<div id="back" class="back" onclick="back();" tapmode="">
+						<i class="aui-iconfont aui-icon-left"></i>返回
+					</div>
+					<div  class="mTitle" id="mTitle"></div>
+				</div>
+			</header>
+			<div  class="aui-content aui-content-padded" id="message-content">
+				<p class="aui-text-center history-date"></p>
+			</div>
+		</div>
+	</body>
+	<script type="text/javascript" src="../../../script/api.js"></script>
+	<script type="text/javascript" src="../../../script/common/common.js"></script>
+	<script type="text/javascript" src="../../../script/tongjiData.js"></script>
+	<script type="text/javascript">
+		//顶部header高度
+		var header_h;
+		//云直播 我的直播
+		var zb_from_t;
+		//云直播html
+		var title_btn_y_html;
+		//我的直播html
+		var title_btn_w_html;
+		//是否有创建直播权限，1：有，0：无
+		var is_add_zb = 1;
+		var BASE_SERVER_NAME;
+		var back_type = 'index';//返回参数
+		apiready = function() {
+			BASE_SERVER_NAME = $api.getStorage('BASE_SERVER_NAME');
+			//定位header位置，留出上面电池等空隙，苹果需要
+			var header = $api.byId('aui-header');
+			$api.fixStatusBar(header);
+			var headerPos = $api.offset(header);
+			header_h = api.pageParam.header_h;
+			//设置标题
+			title_btn_y_html = '<div id="btn_title" class="btn-title"><div class="btn-l btn-top-active btn-top" onclick="changeBtnTitle(this,1);">云直播</div><div class="btn-r btn-top" onclick="changeBtnTitle(this,2);">我的直播</div></div>';
+			title_btn_w_html = '<div id="btn_title" class="btn-title"><div class="btn-l btn-top" onclick="changeBtnTitle(this,1);">云直播</div><div class="btn-r btn-top-active btn-top" onclick="changeBtnTitle(this,2);">我的直播</div></div>';
+			//是否允许创建直播
+			if (is_add_zb == 1) {
+				//定义云，我切换
+				reWindowName(title_btn_y_html);
+				//打开直播列表frame
+				openZbListFrame(1);
+				zb_from_t = 1;
+			} else {
+				$api.css($api.byId('mTitle'), 'margin-left:0px;');
+				reWindowName('云直播');
+				//打开直播列表frame
+				openZbListFrame(0);
+			}
+			//安卓关闭
+			commonBackForAndroid();
+			commonOpenTjData($api.getStorage("identity")+'_'+api.winName);//记录统计
+		};
+		/**
+		 * 打开直播列表frame,1:有创建直播权限，0：没有创建直播权限
+		 * 周枫
+		 * 2016.11.01
+		 */
+		function openZbListFrame(zb_from_type) {
+			//打开直播列表frame页面
+			api.openFrame({
+				name : 'zhibo_index_frame',
+				scrollToTop : true,
+				allowEdit : true,
+				url : 'zhibo_index_frame.html',
+				reload : true,
+				rect : {
+					x : 0,
+					y : header_h,
+					w : api.winWidth,
+					h : api.winHeight - header_h,
+				},
+				pageParam : {
+					header_h : header_h,
+					zb_from_type : zb_from_type,
+					is_add_zb : is_add_zb
+				},
+				vScrollBarEnabled : true,
+				hScrollBarEnabled : false,
+				//页面是否弹动 为了下拉刷新使用
+				bounces : true
+			});
+		}
+
+		/**
+		 * 切换按钮，btn_type：1.云直播，2.我的直播
+		 * 周枫
+		 * 2016.11.01
+		 */
+		function changeBtnTitle(btn_obj, btn_type) {
+			//如果当前直播，不需要更新
+			if (zb_from_t != btn_type) {
+				var $btn_title = $api.byId('btn_title');
+				var $btn_title_all = $api.domAll($btn_title, 'div');
+				for (var j = 0; j < $btn_title_all.length; j++) {
+					$api.removeCls($btn_title_all[j], 'btn-top-active');
+				}
+				if (btn_type == 1) {
+					zb_from_t = btn_type;
+					$api.addCls(btn_obj, 'btn-top-active');
+					$api.addCls($api.byId('btn_title'), 't_display_b');
+					$api.removeCls($api.byId('back'), 't_display_n');
+					openZbListFrame(btn_type);
+				} else {
+					zb_from_t = btn_type;
+					$api.addCls(btn_obj, 'btn-top-active');
+					$api.removeCls($api.byId('btn_title'), 't_display_b');
+					$api.removeCls($api.byId('back'), 't_display_n');
+					openZbListFrame(btn_type);
+				}
+			}
+		}
+
+		/**
+		 * 重置window标题
+		 * 周枫
+		 * 2015.12.17
+		 */
+		function reWindowName(win_name) {
+			$api.html($api.byId('mTitle'), win_name);
+		}
+		/**
+		 * 返回应用页面
+		 * 周枫
+		 * 2015.10.11
+		 */
+		function back() {
+			switch(back_type) {
+				case 'index':
+					commonCloseTjData($api.getStorage("identity")+'_'+api.winName);//记录统计
+					api.closeWin();
+					break;
+				case 'content':
+					api.closeFrame({
+						name : 'zhibo_content_frame'
+					});
+					break;
+			}
+			reBackType('index');
+		}
+		
+		/**
+		 * 重置从哪个页面退出
+		 * 周枫
+		 * 2016.11.01
+		 */
+		function reBackType(type) {
+			switch(type) {
+				//如果直播列表页面退出
+				case 'index':
+					//有创建直播权限
+					if (is_add_zb == 1) {
+						if(zb_from_t == 1){
+							//定义云，我切换
+							reWindowName(title_btn_y_html);
+						} else {
+							//定义云，我切换
+							reWindowName(title_btn_w_html);
+						}
+						$api.css($api.byId('menu1'), 'display:inline-block;');
+					} else {
+						reWindowName('云直播');
+					}
+					back_type = 'index';
+					break;
+				//如果直播内容页面退出
+				case 'content':
+					reWindowName('云直播');
+					$api.css($api.byId('menu1'), 'display:none;');
+					back_type = 'content';
+					break;
+			}
+		}
+	</script>
+</html>

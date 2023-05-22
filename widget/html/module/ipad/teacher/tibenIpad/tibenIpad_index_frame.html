@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>题本</title>
+    <link rel="stylesheet" type="text/css" href="../../../../../css/aui/aui.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../../../css/module/common/jyeoo/ques_data.css" />
+    <link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+    <style>
+    	body {
+			background: #f0f0f0;
+			color:#98979D;
+			font-size: 14px;
+		}
+
+		.zuoye-content li {
+			position: relative;
+			display: block;
+			padding: 20px 20px 0 20px;
+			margin:20px 20px 0 20px;
+			background: #ffffff;
+			border-radius: 1px;
+		}
+		.zuoye-content li:last-child{margin-bottom:20px;}
+		.zuoye-content li .time {
+			height: 20px;
+			font-size: 16px;
+			color: #000;
+		}
+		.zuoye-content li .name {
+			color: #686868;
+			line-height: 40px;
+			display: inline-block;
+			padding-top: 10px;
+			font-size:18px;
+		}
+		.zuoye-content li .name p ,.zuoye-content li .name div ,.zuoye-content li .name span{
+			font-size:18px;
+		}
+		.zuoye-content li .name img {
+			max-width: 100%;
+		}
+		.wid100 {
+			width: 100%;
+		}
+    </style>
+</head>
+<body class="common-ipad-tibenIpad-tea">
+	<div class="msg-top"></div>
+	<div id="j_no_data" class="no-data aui-hide">暂无试题</div>
+	<div id="tblist_div"></div>
+	<script type="text/html" id="tblist_script">
+		<% if(que_list.length == 0){ %>
+			<div class="no-data"><span>暂无试题</span></div>
+		<% }else{ %>
+			<ul class="zuoye-content">
+			<%for(var i=0; i<que_list.length; i++) {%>
+				<%if(que_list[i].que_source == 1) {%>
+					<%if(que_list[i].html_json) {%>
+						<li onclick="openDetailWin('<%=que_list[i].q_base64%>');">
+							<div class="time wid100">
+								<%=que_list[i].create_time%>
+							</div>
+							<div class="name wid100 ellipsis">
+								<%=#commonRemoveQuestionEdit(que_list[i].html_json.question_title) %>
+							</div>
+						</li>
+					<%}%>
+				<%}else{%>
+					<li onclick="openDetailWin('<%=que_list[i].q_base64%>');">
+						<div class="time wid100">
+							<%=que_list[i].create_time%>
+						</div>
+						<div class="name wid100 ellipsis">
+							<%=#commonRemoveQuestionEdit(que_list[i].html_json.Content)%>
+						</div>
+					</li>
+				<%}%>
+			<% } %>
+		<% } %>
+	</script>
+</body>
+<script type="text/javascript" src="../../../../../script/api.js"></script>
+<script type="text/javascript" src="../../../../../script/base_config.js" ></script>
+<script type="text/javascript" src="../../../../../script/plug-in/template.js" ></script>
+<script type="text/javascript" src="../../../../../script/common/common.js"></script>
+<script type="text/javascript" src="../../../../../script/plug-in/base64.js" ></script>
+<script type="text/javascript">
+	var currentPage = 1;//当前分页数
+	var totalPages = 0;//总页数
+	var total_json = {};//全局参数
+	var q_list={"que_list":[]};//试题信息
+	apiready = function(){
+		commonSetTheme({"level":5,"type":0});
+		commonScrollBottomReload();
+		commonRefreshHeaderInfo();
+		showSelfProgress('加载中...');
+		commonGetListSemester(function(flag,ret){
+			if(flag){
+				for(var i = 0; i < ret.xqlist.length; i++){
+					if(ret.xqlist[i].SFDQXQ == 1){
+						total_json.xq_id = ret.xqlist[i].XQ_ID;
+						getTeachPlanByTeacherId();
+					}
+				}
+			}else{
+				api.hideProgress();
+				popToast(ret);
+			}
+		});
+	};
+	/*
+	* author:zhaoj
+	* function:获取任教班级以及任教学科
+	* interface：基础数据（具体是谁不知道，目前有基础数据组负责）
+	* data:20171012
+	*/
+	function getTeachPlanByTeacherId(){
+		api.ajax({
+			url : BASE_URL_ACTION + '/person/getTeachPlanByTeacherId',
+			method : 'post',
+			timeout : 30,
+			dataType : 'json',
+			cache : false,
+			data : {
+				values : {
+					"random_num":creatRandomNum(),
+		            "teacher_id": $api.getStorage("person_id"),
+		            "xq_id": total_json.xq_id,
+		            "pageNumber": 1,
+		            "pageSize": 9999
+				}
+			},
+			headers : {
+				'Cookie' : 'person_id='+$api.getStorage("person_id")+';identity_id='+$api.getStorage("identity")+'; token='+$api.getStorage("token_ypt")+';'
+			}
+		}, function(ret, err) {
+			if (err) {
+				api.hideProgress();
+				popToast('获取班级信息失败，请稍候重试');
+			} else {
+				if(ret){
+				    if(ret.table_List && ret.table_List.length > 0){
+				        total_json.class_all_data = ret.table_List;//获取任课计划
+                        total_json.stage_subject = [];//去掉重复的学段学科
+                        for(var i = 0; i < ret.table_List.length; i++){
+                            var count = 0;
+                            for(j = 0;j < total_json.stage_subject.length;j++){
+                                if(ret.table_List[i].STAGE_ID == total_json.stage_subject[j].stage_id && ret.table_List[i].SUBJECT_ID == total_json.stage_subject[j].subject_id){
+                                    count++;
+                                }
+                            }
+                            if(count == 0){
+                                var oparam = new Object();
+                                oparam.stage_id = ret.table_List[i].STAGE_ID;
+                                oparam.stage_name = ret.table_List[i].STAGE_NAME;
+                                oparam.subject_id = ret.table_List[i].SUBJECT_ID;
+                                oparam.subject_name = ret.table_List[i].SUBJECT_NAME;
+                                total_json.stage_subject.push(oparam);
+                            }
+                        }
+                        if(total_json.stage_subject.length > 0 ){
+                            commonExecScript('tibenIpad_index_window','','setStageSubject("'+total_json.stage_subject[0].stage_name+'","'+total_json.stage_subject[0].subject_name+'",0);',0);//显示学段学科
+                        }else{
+                            api.hideProgress();
+                            commonAddOrRemoveHideCss('j_no_data',1);
+                        }
+				    }else{
+				        popAlertAndShowTitle('提示', Base64.encode('当前还没有任课班级，请先设置任课计划！'), 'commonExecScript("'+api.winName+'","","back();",0);');
+				    }
+				}else{
+					api.hideProgress();
+					popToast('获取班级信息失败，请稍候重试');
+				}
+			}
+		});
+	}
+	/*
+	* author:zhaoj
+	* function:获取当前学段和学科下的任教班级
+	* data:20171012
+	*/
+	function getClass(index){
+		var list = total_json.class_all_data;
+		total_json.subject_id = total_json.stage_subject[index].subject_id;
+		total_json.class_data = [{"title":"全部","id":-1}];//当前学段学科下的班级
+		for(var i = 0; i < list.length; i++){
+			if(list[i].STAGE_ID == total_json.stage_subject[index].stage_id && list[i].SUBJECT_ID == total_json.stage_subject[index].subject_id){
+				var oparam = new Object();
+					oparam.title = list[i].CLASS_NAME;
+					oparam.id = list[i].CLASS_ID;
+				total_json.class_data.push(oparam);
+			}
+		}
+		openNavigationBar();
+	}
+	/*
+	*author:zhaoj
+	*function:学科导航显示
+	*date：20171012
+	*/
+	function openNavigationBar() {
+		//关闭滑动条
+		commonCloseNavigationBar();
+		var header_h = api.pageParam.header_h;
+		var params = {
+			y : header_h,
+			w : api.winWidth,
+			h:65,
+			items : total_json.class_data,
+			winName:'tibenIpad_index_window',
+			frameName:'tibenIpad_index_frame',
+			file_level:2
+		};
+		commonMyNavigationBar(params);
+	}
+	/*
+	* author:zhaoj
+	* function:班级导航回调
+	* data:20171012
+	*/
+	function callBackNew(id,index) {
+		total_json.class_id = id;
+		currentPage = 1;
+		initData(currentPage);
+	}
+	/*
+	* author:zhaoj
+	* function:初始化列表数据
+	* data:20171012
+	*/
+	function initData(page){
+		currentPage = page;
+		q_list={"que_list":[]};//试题信息
+		getTeacherQuestions();
+	}
+	/*
+	* author:zhaoj
+	* function:获取当前学段学科以及班级下的错题列表
+	* interface：陈续刚
+	* data:20171012
+	*/
+	function getTeacherQuestions(){
+		api.ajax({
+			url : BASE_URL_ACTION + '/xx/getTeacherQuestions?teacher_id='+$api.getStorage("person_id")+'&wq_type=1&pageSize='+BASE_PAGE_SIZE+'&pageNumber='+currentPage+'&subject_id='+total_json.subject_id+'&class_id='+total_json.class_id+'&qt_id=-1&random_num='+creatRandomNum(),
+			method : 'get',
+			timeout : 30,
+			dataType : 'json',
+			cache : false,
+
+			headers : {
+				'Cookie' : 'person_id='+$api.getStorage("person_id")+';identity_id='+$api.getStorage("identity")+'; token='+$api.getStorage("token_ypt")+';'
+			}
+		}, function(ret, err) {
+			api.hideProgress();
+			if (err) {
+				popToast('获取试题信息失败，请稍候重试');
+			} else {
+				if(ret.success){
+					q_list.commonRemoveQuestionEdit=commonRemoveQuestionEdit;
+					var  list = ret.que_list;
+					totalPages = ret.totalPage;
+					if(list.length>0){
+						for(var i = 0; i<list.length;i++){
+							var oparam = new Object();
+							oparam.list_length = list.length;
+							oparam.question_id = -1;
+							oparam.create_time = list[i].create_time;
+							oparam.que_scores = list[i].que_scores;
+							oparam.que_source = list[i].que_source;
+							oparam.jy_subject_en_name = list[i].jy_subject_en_name;
+							oparam.qt_type = list[i].qt_type;
+							oparam.qt_id = list[i].qt_id;
+							oparam.sort = list[i].sort;
+							oparam.qt_name = list[i].qt_name;
+							oparam.question_id_char= list[i].question_id_char;
+							oparam.jx_info = 0;
+							//试题相关操作
+							if(list[i].html_json){
+								if(list[i].que_source == 1){
+									//东师理想本地试题
+									oparam.html_json={};
+									var question_title = Base64.decode(list[i].html_json.question_title);
+									var key = '/dsideal_yy';
+									var key_re = BASE_URL_ACTION;
+									oparam.html_json.question_title = question_title;
+									if(oparam.html_json.question_title.indexOf(key_re) == -1){
+									   oparam.html_json.question_title = question_title.replaceAll(key, key_re);
+									}
+									var question_analysis=Base64.decode(list[i].html_json.question_analysis);
+									oparam.html_json.question_analysis = question_analysis;
+									if(oparam.html_json.question_analysis.indexOf(key_re) == -1){
+									   oparam.html_json.question_analysis = question_analysis.replaceAll(key, key_re);
+									}
+									oparam.html_json.question_analysis = oparam.html_json.question_analysis == ""?"略":oparam.html_json.question_analysis;
+									oparam.html_json.question_answer= Base64.decode(list[i].html_json.question_answer);
+									if(oparam.html_json.question_answer.indexOf(key_re) == -1){
+									   oparam.html_json.question_answer= Base64.decode(list[i].html_json.question_answer).replaceAll(key, key_re);
+									}
+									if(list[i].html_json.quetionOption != ''){
+										var count_length = getJsonObjLength(list[i].html_json.quetionOption);
+										oparam.html_json.question_answer_length = count_length;
+										oparam.html_json.quetionOption=JSON.parse(commonQuetionOption(count_length,JSON.stringify(list[i].html_json.quetionOption),key,key_re));
+										oparam.html_json.question_answer_first = JSON.parse(commonQuetionOptionFirst(count_length))
+									}else{
+										oparam.html_json.question_answer_length = 0;
+									}
+								}else{
+									//菁优网试题
+									oparam.html_json={};
+									oparam.html_json.Method= list[i].html_json.Method;
+									oparam.html_json.Answers= list[i].html_json.Answers;
+									oparam.html_json.Topics= list[i].html_json.Topics;
+									oparam.html_json.Analyse= list[i].html_json.Analyse;
+									oparam.html_json.Content= list[i].html_json.Content;
+									oparam.html_json.Discuss= list[i].html_json.Discuss;
+									oparam.html_json.Options= list[i].html_json.Options;
+									oparam.html_json.Options_first = JSON.parse(commonQuetionOptionFirst(list[i].html_json.Options.length));
+									oparam.html_json.Points= list[i].html_json.Points;
+									oparam.html_json.Label= list[i].html_json.Label;
+								}
+							}else{
+								if (list[i].que_source == 1){
+									oparam.html_json = {"question_title": "该题信息获取失败"};
+								}else{
+									oparam.html_json = {"Content": "该题信息获取失败"};
+								}
+							}
+							oparam.q_base64 = Base64.encode(JSON.stringify(oparam));
+							q_list.que_list.push(oparam);
+						}
+					}
+					commonAddManyHtml('tblist_div','tblist_script',q_list);
+				}else{
+					popToast('获取试题信息失败，请稍候重试');
+				}
+			}
+			//通知顶部下拉刷新数据加载完毕，组件会恢复到默认状态
+			commonControlRefresh();
+		});
+	}
+	/*
+	*author:zhaoj
+	*function:打开下拉菜单页面
+	*date：20171011
+	*/
+	function openMenuFrame(index_menu){
+		var header_h = api.pageParam.header_h;//顶部高度
+		pageParamJson={"header_h":header_h,"index_menu":index_menu,"stage_subject":Base64.encode(JSON.stringify(total_json.stage_subject))};//打开frame页面json数据
+		//打开frame页面
+		commonOpenFrame("tibenIpad_menu_frame","tibenIpad_menu_frame.html",0,false,false,"rgba(0,0,0,0)",pageParamJson);
+	}
+	/*
+	*author:zhaoj
+	*function:打开详情页面
+	*date：20171012
+	*/
+	function openDetailWin(q_base64){
+		var header_h = api.pageParam.header_h;
+		var pageParamJson={"header_h":header_h,"q_base64":q_base64};//打开frame页面所需参数
+		commonOpenWin('tibenIpad_detail_window', 'tibenIpad_detail_window.html', false, false, pageParamJson);
+	}
+</script>
+</html>

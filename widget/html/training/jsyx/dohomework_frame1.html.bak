@@ -1,0 +1,265 @@
+<!DOCTYPE html>	
+<html>	
+<head>	
+	<meta charset="utf-8">	
+	<title>frame</title>	
+	<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>	
+	<link rel="stylesheet" type="text/css" href="../../../css/api.css" />	
+    <link rel="stylesheet" type="text/css" href="../../../css/common.css" />
+    <link rel="stylesheet" type="text/css" href="../../../css/aui.css" />	
+	
+	<style>	
+		html, body {width: 100%;min-height: 100%;background: #e6ded6;}	
+		.h80 {height: 80px;}	
+		.h40 {height: 40px;}	
+		.h20 {height: 20px;}	
+    	.h10 {height: 10px;background: #e5e5e5;}	
+		.h1 {height: 1px;margin-left: 15px;background: #e5e5e5;}	
+		.fr {float: right;}	
+		.fl {float: left;}	
+		.hightitem {background-color: #fff;}	
+	
+			/* 2X2样式 */	
+		.row {display: -webkit-box;display: -webkit-flex;	
+        display: flex;}	
+		.col {-webkit-box-flex:1; -webkit-flex:1; flex:1;position: relative;}	
+		.col img {position: absolute; right: 0; width: 80px; top: 0;}	
+		.col .matrixcell {display: table-cell;vertical-align: middle; padding-left: 10px;}	
+		.col .matrixcell .title {margin-bottom: 10px;}	
+		.matrix {display: table;height: inherit;}	
+		/* 猜你喜欢 */	
+		.home-tuan-list .item {position: relative; display: block;}	
+		.home-tuan-list{ margin-bottom: 50px;}
+		.home-tuan-list .cnt { display: box; display: -webkit-box;display: -webkit-flex; display: flex;
+		                      background-size: auto 1px;  border-bottom: 1px #cfd9de solid;  }		
+		.home-tuan-list .pic {margin-right: 10px; background: center;  width: 80px;	 margin-left:5px; height: 60px;padding: 2px;	border: 1px solid #e7e7e7;	border-radius: 2px;	}		
+		.home-tuan-list img {width: 90px; height: 66px; margin-top: 7px; margin-bottom: 5px; border-radius: 3px; }	
+		.home-tuan-list .wrap {-webkit-box-flex: 1;-webkit-flex:1; flex:1;}	
+		.home-tuan-list .wrap2 {display: table; max-height: 200px; width: 100%; }	
+		.home-tuan-list .content {-webkit-box-flex: 1; -webkit-flex:1; flex:1; box-flex: 1;	display: table-cell; vertical-align: middle; padding-left: 10px;}	
+		.home-tuan-list .shopname {color: #333; font-size: 16px; max-width: 24em; white-space: nowrap; word-wrap: normal; text-overflow: ellipsis; overflow: hidden; min-height: 10px; padding-bottom: 2px; padding-top: 3px; display: inline-block;}	
+	
+		.home-tuan-list .comment {margin-bottom: 6px; position: relative; }	
+		.home-tuan-list .comment span {vertical-align: middle; color: #999; font-size: 12px;}	
+	
+	
+		.home-tuan-list .classify {color: #fb5240; font-size: 13px;}
+	
+		/* 4. tabbar*/	
+		.tabbar {height: 50px;line-height: 50px;text-align: center;/*border-bottom: 1px solid #e0e0e0;*/ background:#f5f6f7; }	
+		.tabbar .col {font-size: 14px;  color: #696969}	
+	
+		/* 1 滑动栏*/	
+		.movieslide {position: relative; width:100%; min-height:200px; line-height:24px; margin: 0 auto; z-index: 400; overflow-y: hidden; 
+		            overflow-x: visible; background: #fff;  color: #696969; border-bottom: 1px #cccccc solid;}	
+		.movieslide .slider {width: 520px; height: 190px;}	
+		.movieslide tr {width:100%; text-align: left; }
+		 td{margin: 0; padding: 0; text-align:left;vertical-align:top; }
+		.td1{ width:90px;}
+	   /* .movieslide tr .td1{ width:30%;}
+	   .movieslide tr .td2{width:70%;}*/
+	    
+		.active {color: #f60;}	
+		.indicator {height: 3px; width: 100%; background: #6ab494; position: absolute; bottom: 0;}	
+		.hide{display:none;}
+		.pldiv{margin-top:20px; position:fixed; bottom:5px;left:0; height: 50px; width: 100%; }
+		.pl{width:73%;background-color: white; height: 50px;  border: 3px #c1c1c1 solid; }
+		.wrap{ margin-top: 5px;}
+	    .pldiv .buttom{ background-color: #fb5240; color: #fff; text-align: center; height: 54px; width:25%; }
+	    .shuru{background: #e6ded6;height: 80px;}
+	    .xian{border-bottom: 1px solid #18bc9a;height: 40px;line-height: 40px;
+		     vertical-align: middle;text-align: center; font-size: 16px; color: #373636; background-color: #f5f6f7;}
+		.changDiv input{border: 1px solid #c1c1c1;width:50%;height: 32px;background-color: #fafafa;border-radius:4px;}
+		.changDiv select{text-align: center;height: 32px;border: 1px solid #c1c1c1; background-color: #fafafa;border-radius:4px;}
+		.changDiv .button{text-align: center; height: 40px; width:90%;background-color: #fb5240;border-radius:5px; border: 0; color: #fff; }
+		.changDiv{height: 42px;line-height: 42px;vertical-align: middle;}
+		.changDiv span{height: 32px;line-height: 32px;padding-left: 10px;width:100px; font-size: 18px; margin-left: 5px;  margin-top:15px; color: #696969}
+		.bgf {
+				background: #ffffff;
+			}
+			.mb10 {
+				margin-bottom: 10px !important;
+			}
+			.common-name .name {
+				width: 85%;
+				display: inline-block;
+				float: left;
+				line-height: 45px;
+				font-size: 16px;
+				white-space: nowrap;
+				overflow: hidden;
+				text-overflow: ellipsis;
+			}
+			.common-name .name font {
+				font-size: 13px;
+				color: #ABABAB;
+			}
+			.plr15 {
+				padding: 0 15px;
+			}
+			.plrtb {
+				padding: 15px;
+			}
+			.add-img {
+				padding: 15px 20px 10px 20px;
+			}
+			.aui-btn-block {
+				padding: 8px 0;
+				margin-bottom: 0;
+			}
+			.manage {
+				display: inline-block;
+				float: right;
+				color: #0062CC;
+				font-size: 14px;
+				line-height: 45px;
+			}
+			.clearfix:after {
+				content: ' ';
+				display: block;
+				clear: both;
+				visibility: hidden;
+				line-height: 0;
+				height: 0;
+			}
+			.sucai {
+				position: relative;
+			}
+			.sucai-name {
+				border-bottom: 2px solid #f6f6f6;
+				line-height: 45px;
+			}
+			.sucai button {
+				width: 48%;
+				float: left;
+			}
+			.shanchu {
+				position: absolute;
+				top: 25px;
+				right: 30px;
+			}
+			.mr4 {
+				margin-right: 4%;
+			}
+			input[type="text"], textarea {
+				margin-bottom: 0 !important;
+				width: 100%;
+				line-height: 20px;
+				padding: 12px 10px 6px 10px;
+				border: 0;
+				border-radius: 0px;
+			}
+			input[type="text"] {
+				padding-left: 0;
+			}
+			.mt5 {
+				margin-top: 5px;
+			}
+			.mt10 {
+				margin-top: 10px;
+			}
+			.aui-iconfont {
+				color: #1ABC9C;
+			}
+			.bb {
+				border-bottom: 1px solid #1ABC9C;
+			}
+			.shadow {
+				position: absolute;
+				left: 0;
+				top: 0;
+				width: 100%;
+				height: 100%;
+				z-index: -1;
+				background: #000000;
+				opacity: 0;
+			}
+			.question-file {
+				padding: 10px 15px;
+			}
+			.question-file dl {
+				position: relative;
+				width: 18%;
+				display: inline-block;
+				text-align: center;
+				float: left;
+				margin-right: 2.5%;
+			}
+			.question-file dl dd {
+				position: absolute;
+				z-index: 1px;
+				top: -10px;
+				right: -10px;
+				width: 25px;
+				height: 25px;
+				text-align: center;
+				line-height: 30px;
+			}
+			.question-file dl dd img {
+				width: 13px;
+				height: 13px;
+			}
+			.question-file dl.mr0 {
+				margin-right: 0;
+			}
+			.question-file dl img {
+				width: 100%;
+			}
+			.question-file dl dt.add-img-btn{
+				border-radius: 8px;
+				border: 2px solid #C4C4C4;
+			}
+			.question-file dl .img {
+				border-radius: 8px;
+				border: 2px solid #C4C4C4;
+			}
+			.question-file dl .img img {
+				border-radius: 6px;
+			}
+			.clearfix:after {
+				content: ' ';
+				display: block;
+				clear: both;
+				visibility: hidden;
+				line-height: 0;
+				height: 0;
+			}
+			.add-img .aui-iconfont{float:none;}
+			i.aui-iconfont{color:#C4C4C4;font-size:23px;font-weight:bolder;}
+			.content {
+				background: #ffffff;
+			}
+	</style>	
+</head>	
+<body>	
+	<!-- 1 2X2 -->	
+	
+	<div class="xian">检测</div>
+	<div class="movieslide" id="kcxx">	
+	<textarea id='zy_content' rows='14' style="width: 100%;height: 100%;"></textarea>
+	<div id="j_files" class="question-file clearfix">
+				<dl id="j_add_btn" class="mr0" onclick="openAddFilesOpn()">
+					<dt class="add-img-btn">
+						<i class="aui-iconfont aui-icon-camera"></i>
+					</dt>
+					<dd></dd>
+				</dl>
+			</div>
+	</div>	
+	<div class="changDiv mt20 mb10" align="center">	
+	<input type="button" value="保存" class="button" onclick="getArticleValue()"/><!--onclick="fillResource()"-->
+	</div>
+	<!-- 2 列表 -->	
+	
+	
+	<!--<div class="home-tuan-list" id="list">	
+       
+	</div>-->
+	
+	
+</body>	
+<script type="text/javascript" src="../../../script/api.js"></script>	
+<script type="text/javascript" src="../../../script/base_config.js"></script>
+<script type="text/javascript" src="../../../script/yingyong/jsyx/constant.js"></script>
+<script type="text/javascript" src="../../../script/yingyong/jsyx/dohomework_frame1.js"></script>		
+</html>	

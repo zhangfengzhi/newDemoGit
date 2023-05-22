@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<!-- html5：在创建html时为了防止页面缩放等不兼容效果，要创建个viewport  -->
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<!-- 在IOS设备上，有时会将数字转为手机号，这里也要禁止下 -->
+		<meta name="format-detection" content="telephone=no"/>
+		<title>教师端主题活动</title>
+		<link rel="stylesheet" type="text/css" href="../../../../../css/aui/aui.css" />
+		<link rel="stylesheet" type="text/css" href="../../../../../css/module/common/kejianJs.css" />
+		<link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+		<style>
+			.tag-title{height:45px; line-height:43px;background:#ffffff ;border-bottom:2px solid #E6E6E6;width:100%;}
+			.fl{width:21%;color: #000000;float:left;text-align:center;color:#686868;}
+			.fl-last{width:15%;float:left;text-align:center;color:red;height:28px;line-height:28px;border-left:3px solid #CDCDCD;margin:7px auto;margin-left:1%;}
+			.tag-title .fl-last .active{color:#686868;}
+			.img{width:30px;height:30px}
+		</style>
+	</head>
+	<body class="common-Iphone-zthdIphone-par">
+		<div id="wrap">
+			<header class="aui-bar aui-bar-nav aui-bar-primary" id="aui-header">
+				<div id="cloud" class="topbar activebar">
+					<div id="back" class="back" onclick="back();" tapmode="">
+						<i class="aui-iconfont aui-icon-left"></i>返回
+					</div>
+					<div  class="mTitle" id="mTitle">
+						<!--<div id="btn_title" class="btn-title">
+							<div id="index_title">
+								<div class="btn-l btn-top-active btn-top" onclick="changeBtnTitle(this,2);">孩子发布的</div>
+								<div class="btn-r btn-top" onclick="changeBtnTitle(this,3);">邀请孩子的</div>
+							</div>
+						</div>-->
+						主题活动
+					</div>
+					<div id="j_add" class="win-menu">
+						<a class="aui-iconfont aui-icon-menu pl5" onclick="openMenuFrame();"></a>
+					</div>
+				</div>
+				<div class="tag-title">
+					<div class="fl active" onclick="changeZt(this,1);">全部活动</div>
+					<div class="fl" onclick="changeZt(this,3);">火热进行</div>
+					<div class="fl" onclick="changeZt(this,2);">即将开始</div>
+					<div class="fl" onclick="changeZt(this,4);">已经结束</div>
+					<div class="fl-last"  id="fl_last" onclick="changePx(1);"><font id="new" class="new"><img src="../../../../../image/fun-module/ipad/zthd/new.png" class="img"></font><font id="hot" class="hot aui-hide"><img class="img" src="../../../../../image/fun-module/ipad/zthd/hot.png"></font></div>
+				</div>
+			</header>
+			<div  class="aui-content aui-content-padded" id="message-content">
+				<p class="aui-text-center history-date"></p>
+			</div>
+		</div>
+	</body>
+	<script type="text/javascript" src="../../../../../script/api.js"></script>
+	<script type="text/javascript" src="../../../../../script/common/common.js"></script>
+	<script type="text/javascript" src="../../../../../script/assembly/tongjiData.js"></script>
+	<script type="text/javascript">
+		var mode_type=0;//0代表我的导学案,1代表精品导学案
+		var back_type = 'index';
+		var type = 1;//初始化查询权限
+		var dic_type=1;  //1全部活动、2我发布的、3邀请我的
+		apiready = function() {
+			commonSetTheme({"level":5,"type":0});
+			var header_h = api.pageParam.header_h;
+			var pageParamJson={"header_h":header_h};//打开frame页面所需参数
+			commonOpenFrame('zthd_index_frame', 'zthd_index_frame.html',header_h+45, true, false,"#ffffff",pageParamJson);	//打开index页面
+			commonBackForAndroid();//安卓关闭
+			commonIosAuiHeader();//定位header位置，留出上面电池等空隙，苹果需要
+			commonOpenTjData($api.getStorage("identity")+'_'+api.winName);//记录统计
+		};
+		
+		/*
+		 * 功能：返回页面
+		 * 作者：张自强
+		 * 时间：20171019
+		 */
+		function back() {
+			api.hideProgress();
+			switch (back_type){
+				case 'index':
+					commonCloseTjData($api.getStorage("identity")+'_'+api.winName);
+					api.closeWin();
+					break;
+				case 'hd':
+					reBackType('index');
+					break;
+				case 'add':
+				  	commonCloseFrame('zthd_add_frame');
+				  	reBackType('index');
+					break;
+				case 'open_picture':
+				  	
+				  	reBackType('add');
+					break;
+				case 'imageClip':
+				  	commonCloseImageClipFrame();
+				  	reBackType('add');
+					break;
+			}
+		   
+		}
+		
+		/*
+		 * 功能；重置返回页面
+		 * 作者：张自强
+		 * 时间：20171023
+		 */
+		function reBackType(type){
+			switch(type){
+				case 'index':
+					hideOrshowAddAndMenu(1);
+					back_type = type;
+					break;
+				case 'hd':
+					hideOrshowAddAndMenu(0);
+					back_type = type;
+					break;
+				//如果添加页面退出
+				case 'add':
+					hideOrshowAddAndMenu(0);
+					commonSetWindowName('发布主题');
+					back_type = 'add';
+					break;
+				//如果图片页面退出
+				case 'open_picture':
+					back_type = 'open_picture';
+					break;
+				//如果图片裁剪退出
+				case 'imageClip':
+					back_type = 'imageClip';
+					break;
+			}
+		}
+		
+		/*
+		 * 功能：打开menu页
+		 * 作者：张自强
+		 * 时间：20171020
+		 */
+		function openMenuFrame(){
+			var header_h = api.pageParam.header_h;
+			api.openFrame({
+	            name: 'zthd_menu_frame',
+	            url: 'zthd_menu_frame.html',
+	            bounces: false,
+	            rect: {
+	                x: 0,
+	                y: 0,
+	                w: 'auto',
+	                h: 'auto'
+	            },
+	            bgColor : 'rgba(0,0,0,0)',
+	            pageParam : {
+					'header_h' : header_h,
+					'dic_type' : dic_type
+				},
+	            reload: true
+	        });  
+		}
+		
+		/*
+		 * 功能：切换主题分类
+		 * 作者：张自强
+		 * 时间：20171020
+		 */
+		function changeZt(e,type){
+			var domArray = document.getElementsByClassName('fl');
+			for(var i=0;i<domArray.length;i++){
+				$api.removeCls(domArray[i], 'active');
+			}
+			$api.addCls(e, 'active');
+			commonExecScript('zthd_index_window','zthd_index_frame','changeTimeFlag('+type+');',1);
+		}
+		
+		/*
+		 * 功能：打开添加主题页面
+		 * 作者：张自强
+		 * 时间：20171020
+		 */
+		function openAddWin(){
+			reBackType('add');
+			var header_h = api.pageParam.header_h;
+			var pageParamJson={"header_h":header_h};//打开frame页面所需参数
+			commonOpenFrame('zthd_add_frame', 'zthd_add_frame.html',header_h, true, false,"#ffffff",pageParamJson);	//打开index页面
+		}
+		
+		/*
+		 * 功能：隐藏或显示添加和menu按钮
+		 * 作者：张自强
+		 * 时间：20171023
+		 */
+		function hideOrshowAddAndMenu(type){
+			if(type){
+				$api.css($api.byId('j_add'),'display:block');
+			}else{
+				$api.css($api.byId('j_add'),'display:none');
+			}
+		}
+		
+			/*
+			 * 功能：改变主题活动排序分类
+			 * 作者：张自强
+			 * 时间：20171023
+			 */
+			function changePx(type){
+				var tip = '';
+				if(type == 1){
+					type = 2;
+					tip='changePx(2);';
+					commonAddOrRemoveHideCss('hot',1);
+					commonAddOrRemoveHideCss('new',0);
+					$api.attr($api.byId('fl_last'), 'onclick', tip);
+				}else{
+					type = 1;
+					tip='changePx(1);';
+					commonAddOrRemoveHideCss('hot',0);
+					commonAddOrRemoveHideCss('new',1);
+					$api.attr($api.byId('fl_last'), 'onclick', tip);
+				}
+				commonExecScript('zthd_index_window','zthd_index_frame','changePx('+type+');',1);
+			}
+			
+			/*
+			 * 功能：重命名标题
+			 * 作者：张自强
+			 * 时间：20171108
+			 */
+			function reNameWin(type){
+				dic_type = type;
+				var name = '';
+				switch (type){
+					case 1:
+						name = '全部活动';
+						break;
+					case 2:
+						name = '孩子发布的';
+						break;
+					case 3:
+						name = '邀请孩子的';
+						break;
+				}
+				commonSetWindowName(name);
+			}
+	</script>
+</html>

@@ -1,0 +1,222 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+        <title>APP</title>
+        <link rel="stylesheet" type="text/css" href="../../../../../../css/aui/aui.css" />
+        <link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+    </head>
+     <style>
+        .ellipsis{white-space: nowrap;overflow: hidden;text-overflow: ellipsis;}
+        .shadow{position:absolute;left:0;top:0;width:100%;height:100%;z-index: -1;}
+        .left-content{position:fixed;left:0;top:0;width:22%;float: left;background:#F2F4F5;height:100%;}
+        .left-content ul li{height:49px;line-height:49px;border-right:1px solid #E6E8E9;font-size:13px;text-align:center;color:#B2B3B4;}
+        .left-content ul li.active{background:#ffffff;border-right:0 !important;border:1px solid #E6E8E9;color:#FF9304;}
+        .left-content ul li.first{border-top:0;border-left:0;}
+        .right-content{width:78%;float: right;height:100%;padding:0 15px;}
+        .right-content ul li{height:49px;line-height:49px;border-bottom:1px solid #ececec;color:#717171;font-size:13px;}
+        .right-content ul li.active{color:#FF9304 !important;}
+    </style>
+    <body class="common-iphone-cjfxXs">
+        <div id="j_shadow" class="shadow" tapmode></div>
+        <div class="left-content">
+            <ul id="j_classification">
+                <li id="j_time" class="first active" onclick="getTimeBtn();">考试时间</li>
+                <li id="j_category" onclick="getCategoryBtn();">考试类别</li>
+            </ul>
+        </div>
+        <div class="right-content">
+            <!--时间-->
+            <ul id="j_time_body">
+            	<li id="j_time_thisWeek" class="ellipsis" onclick="selectQueryDate(this,'thisWeek');">本周</li>
+            	<li id="j_time_30" class="ellipsis" onclick="selectQueryDate(this,30);">过去30天</li>
+            	<li id="j_time_90" class="ellipsis" onclick="selectQueryDate(this,90);">过去90天</li>
+            	<li id="j_zdy_time" class="ellipsis" onclick="selectQueryDate(this,'CUSTOM');">自定义</li>
+            </ul>
+            <!--//时间-->
+            <!--类别-->
+            <ul id="j_category_body" class="display-none">
+            	<li id="j_category_4" class="ellipsis" onclick="selectTestType(this,4);">班级考试</li>
+            	<li id="j_category_3" class="ellipsis" onclick="selectTestType(this,3);">校级考试</li>
+            	<li id="j_category_2" class="ellipsis" onclick="selectTestType(this,2);">区级考试</li>
+            	<li id="j_category_1" class="ellipsis" onclick="selectTestType(this,1);">市级考试</li>
+            </ul>
+            <!--//类别-->
+        </div>
+        <script type="text/javascript" src="../../../../../../script/api.js" ></script>
+        <script type="text/javascript" src="../../../../../../script/base_config.js" ></script>
+        <script type="text/javascript" src="../../../../../../script/common/common.js"></script>
+    </body>
+    <script type="text/javascript">
+    	var select_list_data;//
+    	var start_time = '';//自定义开始时间
+    	apiready = function() {
+    		commonSetTheme({"level":6,"type":0});
+    		start_time = getNowTime(1);
+    		select_list_data = JSON.parse(api.pageParam.select_list_data);
+    		if(select_list_data.queryDate == 'CUSTOM'){
+    			$api.text($api.byId('j_zdy_time'), select_list_data.startDate+' 到 '+ select_list_data.endDate);
+    			$api.addCls($api.byId('j_zdy_time'), 'active');
+    		}else if(select_list_data.queryDate){
+    			$api.addCls($api.byId('j_time_'+select_list_data.queryDate), 'active');
+    		}
+    		if(select_list_data.testType){
+    			$api.addCls($api.byId('j_category_'+select_list_data.testType), 'active');
+    		}
+        };
+        /*
+        *author:zhaoj
+        *function:点击选择时间
+        *date：20170421
+        */
+    	function getTimeBtn(){
+    		$api.removeCls($api.byId('j_category'), 'active');
+    		$api.addCls($api.byId('j_time'), 'active');
+    		$api.addCls($api.byId('j_category_body'), 'display-none');
+    		$api.removeCls($api.byId('j_time_body'), 'display-none');
+    	}
+    	/*
+        *author:zhaoj
+        *function:点击选择类别
+        *date：20170421
+        */
+    	function getCategoryBtn(){
+    		$api.removeCls($api.byId('j_time'), 'active');
+    		$api.addCls($api.byId('j_category'), 'active');
+    		$api.addCls($api.byId('j_time_body'), 'display-none');
+    		$api.removeCls($api.byId('j_category_body'), 'display-none');
+    	}
+    	/*
+        *author:zhaoj
+        *function:点击选择具体时间
+        *date：20170421
+        */
+    	function selectQueryDate(self,type){
+    		if($api.hasCls(self, 'active')){
+    			$api.removeCls(self, 'active')
+    			select_list_data.queryDate="";
+    			if(type == 'CUSTOM'){
+    				$api.text($api.byId('j_zdy_time'),'自定义');
+    				select_list_data.startDate="";
+					select_list_data.endDate="";
+    			}
+    		}else{
+    			var li_array = $api.domAll($api.byId('j_time_body'),'li');
+    			for(var i =0; i < li_array.length; i++){
+    				$api.removeCls(li_array[i], 'active');
+    			}
+                select_list_data.queryDate=type;
+                $api.addCls(self, 'active');
+    			if(type == 'CUSTOM'){
+    				openPickerTime(0);
+    			}
+    		}
+    	}
+    	/*
+        *author:zhaoj
+        *function:点击选择具体考试类别
+        *date：20170421
+        */
+    	function selectTestType(self,type){
+    		if($api.hasCls(self, 'active')){
+    			$api.removeCls(self, 'active')
+    			select_list_data.testType="";
+    		}else{
+    			var li_array = $api.domAll($api.byId('j_category_body'),'li');
+    			for(var i =0; i < li_array.length; i++){
+    				$api.removeCls(li_array[i], 'active');
+    			}
+    			$api.addCls(self, 'active')
+    			select_list_data.testType=type;
+    		}
+    	}
+    	/*
+	*author:zhaoj
+	*function:选择时间type=0开始时间，type=1结束时间
+	*date：20160622
+	*/
+	function openPickerTime(type){
+		var nowTime;
+		var title;
+		if(type){
+			title ='结束日期';
+			nowTime = start_time;
+		}else{
+			title ='起始日期';
+			nowTime = start_time;
+		}
+		api.openPicker({
+		    type: 'date',
+		    date: nowTime,
+		    title: title
+		}, function(ret, err){
+		    if( ret ){
+		        var month = ret.month > 9 ? ret.month : '0'+ret.month;
+		    	var day = ret.day > 9 ? ret.day : '0'+ret.day;
+		    	var time = ret.year+'-'+month+'-'+day;
+		    	if(type == 0){
+		    		//开始时间
+		    		start_time = time;
+		    		setTimeout(function(){
+		    			openPickerTime(1);
+		    		},250);
+		    	}else{
+		    		if(Date.parse(start_time.replace(/-/g,'\/'))<=Date.parse(time.replace(/-/g,'\/'))){
+		    			end_time = time;
+		    			$api.text($api.byId('j_zdy_time'),start_time+' 到 '+ end_time);
+		    			select_list_data.startDate=start_time;
+						select_list_data.endDate=end_time;
+						$api.addCls($api.byId('j_zdy_time'), 'active')
+    					select_list_data.queryDate='CUSTOM';
+		    		}else{
+		    			popAlertBackData('结束日期不能小于开始日期，请重新选择！',function(flag){
+		    				openPickerTime(1);
+		    			})
+		    		}
+		    	}
+		    }else{
+		    }
+		});
+	}
+	/*
+	*author:zhaoj
+	*function:获取当前时间,返回年月日
+	*date：20160622
+	*/
+	function getNowTime(type){
+		time = new Date();
+		var year = time.getFullYear();
+		var month = time.getMonth() + 1;
+		var month_string = month > 9 ? month : '0'+month;;
+		var day = time.getDate();
+		var day_string = day = day > 9 ? day : '0'+day;
+		switch(type){
+			case 0:
+				return year+'-'+month_string+'-01';
+				break;
+			case 1:
+				return year+'-'+month_string+'-'+day_string;
+				break;
+			case 2:
+				return year+'-'+month+'-'+day;
+				break;
+			default:
+				break;
+		}
+	}
+	/*
+	*author:zhaoj
+	*function:筛选考试
+	*date：20160624
+	*/
+	function screenTest(){
+		var data = JSON.stringify(select_list_data);
+		api.execScript({
+                name : api.pageParam.winName,
+                frameName:"cjfxXs_index_frame",
+                script : "screenTest('"+data+"');"
+            });
+	}
+    </script>
+</html>

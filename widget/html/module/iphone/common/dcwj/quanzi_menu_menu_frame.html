@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<title>文章下拉菜单</title>
+		<link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+		<style>
+    	html, body {
+        	background-color: rgba(0,0,0,0) !important;
+   		 }
+    	body{padding:0;margin:0;}
+    	.shadow{position:absolute;left:0;top:0;width:100%;height:100%;z-index: 1;}
+    	.header{width:100%;height:45px;}
+    	.main{width:100%;}
+    	.menu-list{
+    		list-style:none;
+    		background-color: #ffffff;
+			box-shadow: 0px 0px 5px #cccccc;
+			position: relative;
+			width: 150px;
+			float: right;
+			z-index: 2;
+			padding: 0;
+			margin:0;
+		}
+		.menu-list li {
+			height: 48px;
+			line-height:48px;
+			display: block;
+			border-bottom: 1px solid #eeeeee;
+			color: #333;
+			font-family: sans-serif;
+			text-align:center;
+		}
+		.menu-list li .icon-box{width:50px;height:48px;display:inline-block; text-align:center;}
+		.menu-list li span{display:block;width:100%;height:48px;line-height:48px;float:left;text-align:center;}
+		.ellipsis{white-space: nowrap;overflow: hidden;text-overflow: ellipsis;}
+		.display-n{display:none;}
+    </style>
+	</head>
+	<body class="common-Iphone-dcwjIphone-common">
+		<div class="shadow" tapmode onclick="api.closeFrame({name:'quanzi_menu_menu_frame'});"></div>
+		<div id="header" class="header"></div>
+		<div id="j_share" class="display-n">
+			<ul class="menu-list">
+				<li onclick="shareWenzhang(1);">
+					<span class="ellipsis">推荐给朋友</span>
+				</li>
+				<li onclick="shareWenzhang(2);">
+					<span class="ellipsis">分享到</span>
+				</li>
+			</ul>
+		</div>
+	</body>
+	<script type="text/javascript" src="../../../../../script/api.js"></script>
+	<script type="text/javascript" src="../../../../../script/base_config.js" ></script>
+	<script type="text/javascript" src="../../../../../script/plug-in/template.js" ></script>
+	<script type="text/javascript" src="../../../../../script/common/common.js" ></script>
+	<script type="text/javascript" src="../../../../../script/plug-in/base64.js" ></script>
+	<script type="text/javascript">
+		var header_h;
+		var BASE_URL_ACTION;
+		apiready = function() {
+			commonSetTheme({"level":5,"type":0});
+			header_h = api.pageParam.header_h;
+			BASE_URL_ACTION = $api.getStorage('BASE_URL_ACTION');
+			$api.css($api.byId('header'), 'height:' + header_h + 'px;');
+			$api.css($api.byId('main'), 'height:' + (api.winHeight - header_h) + 'px;');
+			$api.removeCls($api.byId('j_share'), 'display-n');
+			
+		};
+		
+		/*
+		 *author:zhaoj
+		 *function:打开分享
+		 *date：20160321
+		 */
+		function shareWenzhang(type){
+			if(type == 1){
+				commonOpenWin('quanzi_person_window', 'quanzi_person_window.html', false, false, {'wz_id':api.pageParam.wz_id,'menu_type':api.pageParam.menu_type,'expand_id':api.pageParam.expand_id,'menu_id':api.pageParam.menu_id,"header_h":header_h,'wz_name':api.pageParam.title,'person_name' : api.pageParam.person_name,'time':api.pageParam.time,'title':api.pageParam.title,'avatar_fileid':api.pageParam.avatar_fileid});
+			}else{
+				var sharedModule = api.require('shareAction');
+				var share_url = BASE_URL_ACTION+'/html/app/wenzhang/share.html?&wz_id='+api.pageParam.wz_id+'&url='+Base64.encode(BASE_URL_ACTION)+'&type='+BASE_APP_TYPE+'&menu_type='+api.pageParam.menu_type+'&expand_id='+api.pageParam.expand_id+'&menu_id='+api.pageParam.menu_id+'&app_name='+Base64.encode($api.getStorage('BASE_SERVER_QY'));
+				sharedModule.share({
+					text: '分享圈子',
+				    type: 'url',
+				    path: share_url,
+				    thumbnail:'widget://res/logo.png'
+				});
+			}
+			
+			  api.closeFrame({
+				name : 'quanzi_menu_menu_frame'
+			});
+		}
+	</script>
+</html>

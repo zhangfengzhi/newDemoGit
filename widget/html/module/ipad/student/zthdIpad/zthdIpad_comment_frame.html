@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>主题活动</title>
+    <link rel="stylesheet" type="text/css" href="../../../../../css/aui/aui.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../../../css/module/ipad/popup-body.css"/>
+    <link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+    <style>
+    	.tip{color:#333;text-align:right;font-size:16px;color:#f00;}
+    	textarea{margin:0;height:240px;}
+    	.popup-body-new .commont-content .position{font-size:16px;padding:19px 0 0 30px;}
+    </style>
+</head>
+<body id="j_body" class="popup-body-new common-ipad-zthdIpadstu">
+	<div class="commont-content plr20">
+		<div class="top fl">
+			<div class="name">评论</div>
+			<div class="close fr" onclick="closeFrame();"></div>
+		</div>
+		<div class="content plr20">
+			<textarea id="comt_content" placeholder="鼓励、吐槽、表扬......想说啥就说啥！（最多500字）" maxlength ='500'></textarea>
+		</div>
+		<div class="btn" onclick="saveBbs();">保存</div>
+	</div>
+</body>
+<script type="text/javascript" src="../../../../../script/api.js"></script>
+<script type="text/javascript" src="../../../../../script/base_config.js" ></script>
+<script type="text/javascript" src="../../../../../script/common/common.js"></script>
+<script type="text/javascript">
+	apiready = function(){
+		commonSetTheme({"level":5,"type":0});
+		if(api.pageParam.type == 0){
+			$api.text($api.byId('j_name'), '评论');
+		}else{
+			$api.text($api.byId('j_name'), '回复评论');
+		}
+		$api.removeCls($api.byId('j_body'), 'aui-hide');
+	};
+	/*
+	*author:zhaoj
+	*function:关闭页面
+	*date：20170912
+	*/
+	function closeFrame(){
+		commonExecScript('zthdIpad_detail_window','','back();',0);
+	}
+	/*
+	*author:zhaoj
+	*function:提示评论还剩多少个字
+	*date：20160318
+	*/
+	function showTip(length,self){
+        var count = 500 - length;
+        if(count == 500){
+        	$api.text($api.byId('tip'),'最多支持500个字符');
+        }else{
+        	$api.text($api.byId('tip'),'剩余'+count+'个字符');
+        }
+        commonRemoveExpression(self);
+    }
+    /*
+	*author:zhaoj
+	*function:发表评论
+	*date：20160319
+	*/
+	function messageBoard_addDialog(){
+		saveBbs();
+    }
+    /*
+    *author:zhaoj
+    *function:保存主题活动评论
+    *interface:张海
+    *date：20171024
+    */
+	function saveBbs(){
+		var context = $api.val($api.byId('comt_content'));
+    	if($api.trimAll(context).length == 0){
+    		popToast('评论内容不能为空');
+    		return;
+    	}
+		
+		var text = context;
+    	text = $api.trimAll(text);
+//  	showSelfProgress('检测中...');
+//		textAntispamScan(text,function(flag){
+//			api.hideProgress();
+//			if(flag){	//如果不存在敏感词
+				save_content_vad(context);
+//			}
+//		});
+	}
+	function save_content_vad(context){
+		showSelfProgress('保存中...');
+		var parent_id='';
+		var type_id=''
+		if(api.pageParam.type == 0){
+			type_id = 'space_topic_works_';
+		}else if(api.pageParam.type == 1){
+			parent_id =api.pageParam.parent_id;
+			type_id = 'space_topic_works_';
+		}else{
+			type_id = 'space_topic_';
+			parent_id =api.pageParam.parent_id;
+		}
+		api.ajax({
+			url : BASE_URL_ACTION + '/ypt/bbs/message/save',
+			method : 'post',
+			timeout : 0,
+			dataType : 'json',
+			data : {
+				values : {
+					"random_num":creatRandomNum(),
+					"context":context,
+		            "person_id": $api.getStorage("person_id"),
+		            "parent_id":api.pageParam.parent_id,
+		            "person_name":$api.getStorage('person_name'),
+		            "identity_id":$api.getStorage("identity"),
+		            "message_type": 2,
+		            "type_id": type_id+api.pageParam.id
+				}
+			},
+			headers : {
+	'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+	}
+			}, function(ret, err) {
+				if(err){
+					api.hideProgress();
+					popToast('保存失败，请稍候重试');
+				}else{
+					if(ret.success){
+						
+						var options = {
+			                business_type:404,
+			                relatived_id:api.pageParam.id,
+			                r_person_id:api.pageParam.person_id,
+			                r_identity_id:api.pageParam.identity_id,
+			                operation_content:$api.getStorage("person_name")+ "在主题活动中发表活动评论。",
+			                e_relatived_id:''
+			            };
+			            creditWriteToQueue(options);
+			            var options = {
+			                business_type:405,
+			                relatived_id:api.pageParam.id,
+			                r_person_id:api.pageParam.person_id,
+			                r_identity_id:api.pageParam.identity_id,
+			                operation_content:api.pageParam.person_name + '在主题活动中发起的活动被' + $api.getStorage("person_name") + '评论。',
+			                e_relatived_id:''
+			            };
+			            creditWriteToQueue(options);
+						
+						if(api.pageParam.type == 0 ||api.pageParam.type == 1){
+							addCommentNum(api.pageParam.id);
+							setTimeout(function(){
+	        					popToast('保存成功');
+		        				api.hideProgress();
+		        				commonExecScript(api.winName,'zthdIpad_works_detailContent_frame','setIndexFrameCommentNum(1);',1);
+		        				commonExecScript(api.winName,'zthdIpad_works_detailContent_frame','getCommentInfo();',1);
+		        			},2900);
+		        			setTimeout(function(){
+		        				commonExecScript(api.winName,'','back();',0);
+		        			},3000);
+						}else{
+							setTimeout(function(){
+	        					popToast('保存成功');
+		        				api.hideProgress();
+		        				commonExecScript(api.winName,'zthdIpad_detail_frame','initData(1);',1);
+		        			},2900);
+		        			setTimeout(function(){
+		        				commonExecScript(api.winName,'','back();',0);
+		        			},3000);
+						}
+					}else{
+						api.hideProgress();
+						popToast('保存失败，请稍候重试');
+					}
+				}
+			});
+	}
+	/*
+	*author:zhaoj
+	*function:个人评论数加1
+	*date：20160319
+	*/
+    function addCommentNum(){
+    	api.ajax({
+			url : BASE_URL_ACTION + '/ypt/space/topic/add_comment_num',
+			method : 'post',
+			dataType : 'json',
+			timeout : 30,
+			cache : false,
+			data : {
+				values : {
+					"random_num":creatRandomNum(),
+                    "works_id": api.pageParam.id
+				}
+			},
+			headers : {
+				'Cookie' : 'person_id='+$api.getStorage("person_id")+';identity_id='+$api.getStorage("identity")+'; token='+$api.getStorage("token_ypt")+';'
+			}
+		}, function(ret, err) {
+		});
+    }
+</script>
+</html>

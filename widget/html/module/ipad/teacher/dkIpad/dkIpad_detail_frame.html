@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <title>日程详情页</title>
+   	<link rel="stylesheet" type="text/css" href="../../../../../css/aui_css_new/aui.css" />
+    <link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+    <style>
+    	body{padding:0;margin:0;background:rgba(0,0,0,0);}
+    	.shadow{position:absolute;left:0;top:0;width:100%;height:100%;z-index: 1;background:rgba(0,0,0,0.5);}
+    	.all{width:80%;background:#fff;margin-left:10%;padding-bottom:13px;vertical-align: middle;position: absolute;top:50%;z-index: 2;}
+    	.top{height:45px;line-height:45px;color:#ffffff;}
+    	.top .close{float: right;padding-right:10px;height:40px;width:40px;text-align:right;}
+    	.title{display:inline-block;padding-left:10px;}
+    	.bg{height:40px;line-height:40px;background:url(../../../../../image/fun-module/iphone/rcbg.png) repeat-x 0 -3px;margin-right:10px;}
+    	.common-title{display:inline-block;background:#ffffff;padding:0 10px;}
+    	.rc-content{margin:0 10px;line-height:25px;text-indent:2em;display:block;border:none;}
+    	.mt1{margin-top:-169px;}
+    	.mt2{margin-top:-61px;}
+    	.mt3{margin-top:-94px;}
+    	.mt4{margin-top:-61px;}
+    	.aui-icon-close{color:#ffffff !important;margin-top:-5px;}
+    </style>
+</head>
+<body class="common-ipad-dakaIpad-tea">
+	<div class="shadow" tapmode onclick="api.closeFrame({name:'dkIpad_detail_frame'});"></div>
+	<div id="all" class="all mt169" style="display:none;">
+		<div class="top">
+			<span class="title">签到详情</span>
+			<div class="close"  tapmode="" onclick="closeDetailFrame();">
+				<i class="aui-iconfont aui-icon-close"></i>
+			</div>
+		</div>
+		<div id="j_1" class="content" style="display:none;">
+			<div class="bg">
+				<span class="common-title">上午签到</span>
+			</div>
+			<div id="j_1_time1" class="rc-content"></div>
+			<div class="bg">
+				<span class="common-title">上午签退</span>
+			</div>
+			<div id="j_1_time2" class="rc-content"></div>
+			<div class="bg">
+				<span class="common-title">下午签到</span>
+			</div>
+			<div id="j_1_time3" class="rc-content"></div>
+			<div class="bg">
+				<span class="common-title">下午签退</span>
+			</div>
+			<div id="j_1_time4" class="rc-content"></div>
+		</div>
+		<div id="j_2" class="content"  style="display:none;">
+			<div class="bg">
+				<span class="common-title">签到时间</span>
+			</div>
+			<div id="j_2_time" class="rc-content"></div>
+		</div>
+		<div id="j_3" class="content" style="display:none;">
+			<div class="bg">
+				<span class="common-title">签到时间</span>
+			</div>
+			<div id="j_3_time1" class="rc-content"></div>
+			<div class="bg">
+				<span class="common-title">签退时间</span>
+			</div>
+			<div id="j_3_time2" class="rc-content"></div>
+		</div>
+		<div id="j_4" class="content"  style="display:none;">
+			<div class="bg">
+				<span class="common-title">签退时间</span>
+			</div>
+			<div id="j_4_time" class="rc-content"></div>
+		</div>
+	</div>
+</body>
+<script type="text/javascript" src="../../../../../script/api.js"></script>
+<script type="text/javascript" src="../../../../../script/base_config.js" ></script>
+<script type="text/javascript" src="../../../../../script/common/common.js"></script>
+<script type="text/javascript">
+	var BASE_URL_ACTION;
+	var year;
+	var month;
+	var type;
+	var ban;
+	var day;
+	apiready = function(){
+		commonSetTheme({"level":5,"type":0});
+		BASE_URL_ACTION = $api.getStorage('BASE_URL_ACTION');
+		type = api.pageParam.type;	
+		year = api.pageParam.year;
+		month = api.pageParam.month;
+		ban = api.pageParam.ban;
+		day = api.pageParam.day;
+		$api.css($api.byId('j_'+type),'display:block;');
+		$api.addCls($api.byId('all'),'mt'+type);
+		if(type == 1 || type == 3){
+			getOneDayClockInfo();
+		}else{
+			getOneDayOneWorkShiftClockInfo();
+		}
+	};
+	/*
+	*author:zhaoj
+	*function:关闭详情页面
+	*date：20160116
+	*/
+	function closeDetailFrame(){
+		api.execScript({
+			name : 'dkIpad_index_window',
+			script : 'back();'
+		});
+	}
+	/*
+	*author:zhaoj
+	*function:获取一次打卡时间
+	*date：20160812
+	*/
+	function getOneDayOneWorkShiftClockInfo(){
+		api.showProgress({
+			title : '获取时间中',
+			text : '请稍候...',
+			modal : false
+		});
+		api.ajax({
+			url : BASE_URL_ACTION + '/clockin/getOneDayOneWorkShiftClockInfo?bureau_id='+$api.getStorage("bureau_id")+'&person_id='+$api.getStorage("person_id")+ '&year='+year+'&month='+month+'&day='+day+'&workshift='+ban,
+			method : 'get',
+			dataType : 'json',
+			timeout : 30,
+			headers : {
+				'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+			}
+		}, function(ret, err) {
+			api.hideProgress();
+			if(ret){
+				if (ret.success){
+					$api.text($api.byId('j_'+type+'_time'),ret.iclock_time.substring(0,19) );
+					$api.css($api.byId('all'),'display:block;');
+				}else{
+					popToast('获取打卡信息失败');
+				}
+			}else{
+				popToast('获取打卡信息失败');
+			}
+		});
+	}
+	/*
+	*author:zhaoj
+	*function:获取一天打卡时间
+	*date：20160812
+	*/
+	function getOneDayClockInfo(){
+		api.showProgress({
+			title : '获取时间中',
+			text : '请稍候...',
+			modal : false
+		});
+		api.ajax({
+			url : BASE_URL_ACTION + '/clockin/getOneDayClockInfo?bureau_id='+$api.getStorage("bureau_id")+'&person_id='+$api.getStorage("person_id")+ '&year='+year+'&month='+month+'&day='+day,
+			method : 'get',
+			dataType : 'json',
+			timeout : 30,
+			headers : {
+				'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+			}
+		}, function(ret, err) {
+			api.hideProgress();
+			if(ret){
+				if (ret.success){
+					$api.text($api.byId('j_'+type+'_time1'),ret.ban1.substring(0,19) );
+					$api.text($api.byId('j_'+type+'_time2'),ret.ban2.substring(0,19) );
+					if(type == 1){
+						$api.text($api.byId('j_'+type+'_time3'),ret.ban3.substring(0,19) );
+						$api.text($api.byId('j_'+type+'_time4'),ret.ban4.substring(0,19) );
+					}
+					$api.css($api.byId('all'),'display:block;');
+				}else{
+					popToast('获取打卡信息失败');
+				}
+			}else{
+				popToast('获取打卡信息失败');
+			}
+		});
+	}
+</script>
+</html>

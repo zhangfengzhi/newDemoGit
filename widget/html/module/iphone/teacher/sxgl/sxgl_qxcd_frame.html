@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+		<title>title</title>
+		<link rel="stylesheet" type="text/css" href="../../../../../css/aui/aui.css"/>
+		<link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+		<style>
+			body {
+				background: #F8F7F3;
+				color: #666666;
+			}
+			.shadow {
+				position: absolute;
+				left: 0;
+				top: 0;
+				width: 100%;
+				height: 100%;
+				z-index: -1;
+				background: #000000;
+				opacity: 0;
+			}
+			.bgf {
+				background: #ffffff;
+			}
+			.mb10 {
+				margin-bottom: 10px !important;
+			}
+			.common-name .name {
+				min-width: 90px;
+				max-width: 30%;
+				display: inline-block;
+				float: left;
+				line-height: 45px;
+				font-size: 16px;
+				white-space: nowrap;
+				overflow: hidden;
+				text-overflow: ellipsis;
+				color: #141414;
+			}
+			.common-name .name font {
+				font-size: 13px;
+				color: #ABABAB;
+			}
+			.plr15 {
+				padding: 0 15px;
+			}
+			.plrtb {
+				padding: 15px;
+			}
+			.add-img {
+				padding: 15px 20px 10px 20px;
+			}
+			.aui-btn-block {
+				padding: 8px 0;
+				margin-bottom: 0;
+			}
+			.manage {
+				display: inline-block;
+				float: right;
+				color: #0062CC;
+				font-size: 14px;
+				line-height: 45px;
+				padding-left: 3px;
+			}
+			.manage a {
+				margin-right: -4px;
+			}
+			.clearfix:after {
+				content: ' ';
+				display: block;
+				clear: both;
+				visibility: hidden;
+				line-height: 0;
+				height: 0;
+			}
+			.sucai {
+				position: relative;
+			}
+			.sucai-name {
+				border-bottom: 2px solid #f6f6f6;
+				line-height: 45px;
+			}
+			.sucai button {
+				width: 48%;
+				float: left;
+			}
+			.shanchu {
+				position: absolute;
+				top: 25px;
+				right: 30px;
+			}
+			.mr4 {
+				margin-right: 4%;
+			}
+			input[type="text"], textarea {
+				margin-bottom: 0 !important;
+				width: 100%;
+				line-height: 20px;
+				padding: 12px 15px 6px 15px;
+				border: 0;
+				border-radius: 0px;
+			}
+			input[type="text"] {
+				padding-left: 0;
+			}
+			.mt5 {
+				margin-top: 5px;
+			}
+			.mt10 {
+				margin-top: 10px;
+			}
+			.aui-iconfont {
+				color: #666666;
+			}
+			.question-file {
+				padding: 10px 15px;
+			}
+			.question-file dl {
+				position: relative;
+				width: 18%;
+				display: inline-block;
+				text-align: center;
+				float: left;
+				margin-right: 2.5%;
+			}
+			.question-file dl dd {
+				position: absolute;
+				z-index: 1px;
+				top: -10px;
+				right: -10px;
+				width: 25px;
+				height: 25px;
+				text-align: center;
+				line-height: 30px;
+			}
+			.question-file dl dd img {
+				width: 13px;
+				height: 13px;
+			}
+			.question-file dl.mr0 {
+				margin-right: 0;
+			}
+			.question-file dl img {
+				width: 100%;
+			}
+			.question-file dl dt.add-img-btn {
+				border-radius: 8px;
+				border: 2px solid #C4C4C4;
+			}
+			.question-file dl .img {
+				border-radius: 8px;
+				border: 2px solid #C4C4C4;
+			}
+			.question-file dl .img img {
+				border-radius: 6px;
+			}
+			.clearfix:after {
+				content: ' ';
+				display: block;
+				clear: both;
+				visibility: hidden;
+				line-height: 0;
+				height: 0;
+			}
+			.add-img .aui-iconfont {
+				float: none;
+			}
+			i.aui-iconfont {
+				color: #C4C4C4;
+				font-size: 23px;
+				font-weight: bolder;
+			}
+			.content {
+				background: #ffffff;
+			}
+			.firstblock, .secondblock, .thirdblock {
+				background-color: #fff;
+			}
+			/* 设置条目 */
+			.item {
+				height: 50px;
+				line-height: 50px;
+				padding-left: 15px;
+				background-color: #fff;
+			}
+			.item_ico {
+				float: left;
+				width: 30px;
+				padding: 10px 10px 10px 0;
+			}
+			.item_arrow {
+				float: right;
+				width: 16px;
+				padding: 17px 15px 15px 0;
+			}
+			.presshover {
+				background-color: #FAFAFA;
+			}
+			.item_right {
+				color: #696969;
+				font-size: 14px;
+				padding-right: 15px;
+			}
+			.time-content {
+				height: 40px;
+				line-height: 40px;
+				padding: 0 15px;
+				color: #141414;
+			}
+			.time-content div {
+				display: inline-block;
+				float: right;
+				color: #666666;
+			}
+			.bb {
+				border-bottom: 1px solid #efefef;
+			}
+			.bt {
+				border-top: 1px solid #efefef;
+			}
+			.hr {
+				height: 10px;
+			}
+			.bgf {
+				background: #ffffff;
+			}
+			.input-time[type="text"] {
+				display: inline-block;
+				width: 40px;
+				padding: 9px 0 6px 0;
+				text-align: center;
+				height: 39px;
+			}
+			.common-name span {
+				float: right;
+				line-height: 45px;
+			}
+		</style>
+	</head>
+	<body id="body">
+		<header class="aui-bar aui-bar-nav aui-bar-primary" id="aui-header">
+			<div id="cloud" class="topbar activebar">
+				<div id="back" class="back" onclick="back();" tapmode="">
+					<i class="aui-iconfont aui-icon-left"></i>返回
+				</div>
+				<div  class="mTitle" id="mTitle"></div>
+			</div>
+		</header>
+		<div id="shadow" class="shadow"></div>
+		<div id="style_div" class="common-name bb bgf plr15 clearfix " onclick="openAddSeltypeFrame(this);">
+			<a id="j_type" class="aui-iconfont name">请输入原因</a>
+		</div>
+		<!--内容-->
+		<div class="content clearfix">
+			<textarea id="j_content" class="wz-textarea bgf" rows="5" onscroll="this.rows++;"></textarea>
+		</div>
+		<div class="hr bb"></div>
+	<!--	<div  id = "qxcd_time" class="time-content bb bgf" onclick="pickerTimeOpen(0);">
+			<div id="data_time"></div>
+		</div>-->
+		<p class="common-content bgf plrtb mb10 mt10">
+			<button class="aui-btn aui-btn-primary aui-btn-block" name="btn" onclick="sureInfo();">
+				确定
+			</button>
+		</p>
+	</body>
+	<script type="text/javascript" src="../../../../../script/api.js"></script>
+	<script type="text/javascript" src="../../../../../script/common/kaoqin_common.js"></script>
+	<script type="text/javascript">
+		var index;
+		apiready = function() {
+		    commonSetTheme({"level":5,"type":0});
+			//1缺席2迟到
+			index = api.pageParam.index;
+			if (index == 1) {
+				$api.html($api.byId('mTitle'), "");
+				$api.append($api.byId('mTitle'), '缺席');
+				//				$api.html($api.byId('qxcd_time'), "");
+				$api.append($api.byId('qxcd_time'), '缺席时间');
+			} else if (index == 2) {
+				$api.html($api.byId('mTitle'), "");
+				$api.append($api.byId('mTitle'), '迟到');
+				//				$api.html($api.byId('qxcd_time'), "");
+				$api.append($api.byId('qxcd_time'), '迟到时间');
+			}
+			//获取今天时间
+//			todayTime()
+		};
+		function todayTime() {
+			var myDate = new Date();
+			//获取完整的年份(4位,1970-????)
+			var nYear = myDate.getFullYear();
+			//获取当前月份(0-11,0代表1月)
+			var nMonth = myDate.getMonth() + 1;
+			var Month = nMonth < 10 ? '0' + nMonth : nMonth;
+			//获取当前日(1-31)
+			var nDate = myDate.getDate();
+			//获取当前小时数(0-23)
+			var nHour = myDate.getHours();
+			//获取当前分钟数(0-59)
+			var nMinute = myDate.getMinutes();	
+			hour = nHour < 10 ? '0' + nHour : nHour;
+			minute = nMinute < 10 ? '0' + nMinute : nMinute;	
+			appointDate = nYear + '-' + Month + '-' + nDate + ' ' + hour + '-' + minute;
+			var today = document.getElementById('data_time');
+			$api.text(today, appointDate.substring(0, 4) + '-' + appointDate.substring(5, 7) + '-' + appointDate.substring(8, 10) + ' ' + appointDate.substring(11, 13) + ':' + appointDate.substring(14, 16));
+		}
+
+		//时间选择器
+		function pickerTimeOpen(type) {
+			var nowDay;
+			var nowTime;
+			var title;
+			var title1;
+			nowDay = $api.text($api.byId('data_time')).substring(0, 10);
+			nowTime = $api.text($api.byId('data_time')).substring(0, 16);
+			title1 = '开始日期';
+			title = '开始时间';
+//			alert("nowDay=" + nowDay);
+//			alert("nowTime=" + nowTime);
+			
+			api.openPicker({
+				type : 'date',
+				date : nowDay,
+				title : title1
+			}, function(ret, err) {
+//				console.log("riqi555=" + JSON.stringify(ret));
+				if (ret) {
+				    var value1 = ret.year+'-'+ret.month+'-'+ret.day;
+//				    alert("value1="+value1);
+					setTimeout(function() {
+						api.openPicker({
+							type : 'time',
+							date : nowTime,
+							title : title
+						}, function(ret, err) {
+						
+						
+//							console.log("time333=" + JSON.stringify(ret));
+							var hour = ret.hour < 10 ? '0' + ret.hour : ret.hour;
+							var minute = ret.minute < 10 ? '0' + ret.minute : ret.minute;
+							
+							var value2 = hour+':'+minute;
+//							alert("value2="+value2);
+							var today = document.getElementById('data_time');
+							$api.text(today, value1+" "+value2);
+		
+		
+		
+						});
+					}, 250)
+				} else {
+				}
+			});
+		}
+
+		function back() {
+			api.closeFrame({
+			});
+		}
+		
+		function sureInfo(){
+		
+		var content = $api.val($api.byId('j_content'));
+//		alert("content="+content);
+//		api.ajax({
+//				url : '',
+//				method : 'post',
+//				dataType : 'json',
+//				data : {
+//					values : {
+//					    
+//					}
+//				}
+//      },function(ret,err){
+//      	//coding...
+//      });
+		}
+	</script>
+</html>

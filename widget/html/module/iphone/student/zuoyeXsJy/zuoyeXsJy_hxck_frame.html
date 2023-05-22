@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="minimum-scale=1.0, initial-scale=1.0, width=device-width"/>
+		<meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+		<title>点名</title>
+		<link rel="stylesheet" type="text/css" href="../../../../../css/aui/aui.css" />
+		<link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+		<style>
+			body {padding: 0;margin: 0;line-height:0;}
+			.wid4{width: 25%;float: left;font-size:12px;}
+			.header-img{text-align:center;}
+			.header-img img{width:70%;}
+			ul{padding:15px 0;}
+			ul li{text-align:center;}
+			.person-name{display:inline-block;width:70%;text-align:center;line-height:28px;margin-bottom:8px;}
+			.ellipsis{white-space: nowrap;overflow: hidden;text-overflow: ellipsis;}
+			.no-data{text-align:center;color:#666;height:50px;line-height:50px;}
+		</style>
+	</head>
+	<body class="common-iphone-zuoyeXsJy">
+		<div id="div_body" class="seat_body"></div>
+		<script type="text/html" id="script_body">
+			<%if(list.length==0){%>
+				<div class="no-data">暂无学生答题</div>
+			<%}else{%>
+				<ul>
+					<%for(var i = 0; i < list.length; i++){%>
+						<li class="wid4" onclick="openOtherProblemWin('<%=list[i].student_name%>','<%=list[i].student_id%>')">
+							<div class="header-img">
+								<%=#list[i].img_html%>
+							</div>
+							<div class="person-name ellipsis"><%=list[i].student_name%></div>
+						</li>
+					<%}%>
+				</ul>
+			<%}%>
+		</script>
+			<!--<ul>
+				<li class="wid4">
+					<div class="header-img">
+						<img src="http://10.10.6.199/dsideal_yy/html/thumb/Material/79/799016E6-7076-E966-BC9F-48393584DF08.jpg" alt="头像" />
+					</div>
+					<div class="person-name ellipsis">世勋</div>
+				</li>
+				<li class="wid4">
+					<div class="header-img">
+						<img src="http://10.10.6.199/dsideal_yy/html/thumb/Material/79/799016E6-7076-E966-BC9F-48393584DF08.jpg" alt="头像" />
+					</div>
+					<div class="person-name ellipsis">世勋</div>
+				</li>
+				<li class="wid4">
+					<div class="header-img">
+						<img src="http://10.10.6.199/dsideal_yy/html/thumb/Material/79/799016E6-7076-E966-BC9F-48393584DF08.jpg" alt="头像" />
+					</div>
+					<div class="person-name ellipsis">世勋</div>
+				</li>
+				<li class="wid4">
+					<div class="header-img">
+						<img src="http://10.10.6.199/dsideal_yy/html/thumb/Material/79/799016E6-7076-E966-BC9F-48393584DF08.jpg" alt="头像" />
+					</div>
+					<div class="person-name ellipsis">世勋</div>
+				</li>
+				<li class="wid4">
+					<div class="header-img">
+						<img src="http://10.10.6.199/dsideal_yy/html/thumb/Material/79/799016E6-7076-E966-BC9F-48393584DF08.jpg" alt="头像" />
+					</div>
+					<div class="person-name ellipsis">世勋</div>
+				</li>
+			</ul>-->
+	</body>
+	<script type="text/javascript" src="../../../../../script/api.js"></script>
+	<script type="text/javascript" src="../../../../../script/base_config.js" ></script>
+	<script type="text/javascript" src="../../../../../script/common/common.js" ></script>
+	<script type="text/javascript" src="../../../../../script/plug-in/template.js" ></script>
+	<script type="text/javascript">
+		var header_h;
+		var BASE_URL_ACTION;
+		var BASE_APP_TYPE;
+		//初始化
+		apiready = function() {
+		    commonSetTheme({"level":5,"type":0});
+			header_h = api.pageParam.header_h;
+			BASE_APP_TYPE = $api.getStorage('BASE_APP_TYPE');
+			getSubmitStudentLis();
+		};
+		/*
+		*author:zhaoj
+		*function:获取学生列表
+		*date：20160411
+		*/
+		function getSubmitStudentLis(){
+			api.ajax({
+				url : BASE_URL_ACTION + '/xx/getSubmitStudentList',
+				method : 'post',
+				dataType : 'json',
+				timeout : 30,
+				data : {
+					values : {
+						"random_num" : creatRandomNum(),
+						"zy_id" : api.pageParam.zy_id,
+						"pageNumber" : 1,
+						"pageSize" : 1000,
+					}
+				}
+			}, function(ret, err) {
+				api.hideProgress();
+				if(err) {
+					api.toast({
+	                    msg:'获取学生列表失败，请稍候再试！'
+                    });
+				} else {
+					if(ret.success) {
+						var list = ret.stu_list;
+						var data ={"list":[]};
+						for(var i = 0;i < getJsonObjLength(list);i++){
+							var oparam = new Object();
+							oparam.student_id = list[i].student_id;
+							var img_url;
+							if(BASE_APP_TYPE == 1){
+								img_url = BASE_IMAGE_PRE + url_path_suffix+ list[i].avatar_file_id.substring(0, 2) + "/" + list[i].avatar_file_id + commonReturnPhotoCutSize(0);
+							}else{
+								img_url = BASE_URL_ACTION + BASE_IMAGE_BEGIN + list[i].avatar_file_id.substring(0, 2) + "/" + list[i].avatar_file_id + commonReturnPhotoCutSize(0);
+							}
+							var img_size= Math.floor(api.winWidth*0.25*0.7);
+							var img_size2 = img_size*0.5;
+							var errorHtml = "this.src='../../../../../image/common/header.png'";
+							var img_html = '<img onerror='+errorHtml+' src="'+img_url+'" alt="头像" width='+img_size+' height='+img_size+' style="border-radius:'+img_size2+'px;" />'
+							oparam.img_html = img_html;
+							oparam.student_name = list[i].student_name;
+							data.list.push(oparam);
+						}
+						commonAddOnceHtml('div_body', 'script_body', data);
+					} else {
+						api.toast({
+		                    msg:'获取学生列表失败，请稍候再试！'
+	                    });
+					}
+				}				
+			});
+		}
+		/*
+		*author:zhaoj
+		*function:打开题目页面
+		*date：20160411
+		*/
+		function openOtherProblemWin(student_name,student_id){
+		    var pageParamJson = {
+		        'header_h' : header_h,
+                'zy_id' :api.pageParam.zy_id,
+                'zy_name' : api.pageParam.zy_name,
+                'student_id' : student_id,
+                'student_name' : student_name
+		    };
+		    commonOpenWin('zuoyeXsJy_problems_other_window', 'zuoyeXsJy_problems_other_window.html', false, false, pageParamJson);
+		}
+	</script>
+</html>

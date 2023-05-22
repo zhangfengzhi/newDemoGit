@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+		<title>日志window页面</title>
+		<link rel="stylesheet" type="text/css" href="../../../../../css/aui/aui.css" />
+		<link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+		<style>
+			.time-content {
+				height: 50px;
+				line-height: 40px;
+				padding: 5px 30px 0 15px;
+				color: #141414;
+				background: #ffffff;
+			}
+			.time-content div {
+				display: inline-block;
+				float: right;
+				color: #666666;
+			}
+		</style>
+	</head>
+	<body class="common-iphone-rizhi">
+		<header class="aui-bar aui-bar-nav aui-bar-primary" id="aui-header">
+			<div id="cloud" class="topbar activebar">
+				<div id="back" class="back" onclick="back();" tapmode="">
+					<i class="aui-iconfont aui-icon-left"></i>返回
+				</div>
+				<div class="mTitle" id="mTitle"></div>
+				<div class="win-menu">
+					<a id="bianji" class="aui-iconfont aui-icon-edit display-none" tapmode="tap-active" onclick="openEditorWin()"></a>&nbsp; <a id="shanchu" class="aui-iconfont aui-icon-delete display-none" tapmode="tap-active" onclick="deleteLogContent()"></a>
+				</div>
+			</div>
+		</header>
+		<div class="time-content" onclick="chooseData()">
+			选择日期 <div id="select_time"></div>
+		</div>
+	</body>
+	<script type="text/javascript" src="../../../../../script/api.js"></script>
+	<script type="text/javascript" src="../../../../../script/common/common.js"></script>
+	<script type="text/javascript" src="../../../../../script/assembly/tongjiData.js"></script>
+	<script type="text/javascript" src="../../../../../script/assembly/log-current-time.js"></script>
+	<script type="text/javascript" src="../../../../../script/plug-in/base64.js" ></script>
+	<script type="text/javascript" src="../../../../../script/base_config.js" ></script>
+	<script type="text/javascript">
+		//顶部高度
+		var header_h;
+		//部门html
+		var title_btn_dep_html;
+		//我html
+		var title_btn_w_html;
+		var frameNameLog;
+		var winNameLog;
+		var timeParam;
+		//1按天查询2按照月查询
+		var judgeMonth;
+		//删除id
+		var deleteId;
+		var yearValue;
+		var monthValue;
+		//区分是否是领导1普通员工2领导
+		var checkLeader;
+		//以下字段是点击编辑页面所带入的值
+		var jxzData;
+		var tcData;
+		var zhData;
+		var bzData;
+		var wcData;
+		var tpljData;
+		var shijianData;
+		apiready = function() {
+			commonSetTheme({"level":5,"type":0});
+			header_h = api.pageParam.header_h;
+			//定位header位置，留出上面电池等空隙，苹果需要
+			commonIosAuiHeader();
+			//安卓关闭
+			commonBackForAndroid();
+			//获取时间
+			setCurrentTime();
+			judgeMonth = 1;
+			timeParam = todayTime();
+			title_btn_dep_html = '<div id="btn_title" class="btn-title"><div class="btn-l btn-top-active btn-top" onclick="changeBtnTitle(this,1);">部门</div><div class="btn-r btn-top" onclick="changeBtnTitle(this,2);">我</div></div>';
+			title_btn_w_html = '<div id="btn_title" class="btn-title"><div class="btn-l btn-top" onclick="changeBtnTitle(this,1);">部门</div><div class="btn-r btn-top-active btn-top" onclick="changeBtnTitle(this,2);">我</div></div>';
+			getPersonLimit();
+			getIdDelete(0);
+			//统计
+			commonOpenTjData($api.getStorage("identity") + '_' + api.winName);
+		};
+		/*
+		 *author:ws
+		 *function:判断人员权限
+		 *date：20170302
+		 */
+		function getPersonLimit() {
+			checkDataNull($api.getStorage("person_id"), 1, timeParam, function(flag, data) {
+			    api.hideProgress();
+				if (flag) {
+					checkLeader = parseInt(data.data_list[0].personLimit);
+					//personLimit 1普通员工2领导  checkLogNull 1无日志内容  2今天有日志内容
+					if (data.data_list[0].personLimit == "1") {
+						//定义部门和我切换
+						reWindowName(title_btn_w_html);
+				        openLogContentFrame(2, checkLeader);
+					} else if (data.data_list[0].personLimit == "2") {
+						//领导
+						//定义部门和我切换
+						reWindowName(title_btn_dep_html);
+						openLogContentFrame(1, checkLeader);
+					}
+				} else {
+					popBottomToast("网络繁忙，请稍候重试");
+				}
+			})
+		}
+
+		/*
+		 *author:ws
+		 *function:重置标题
+		 *date：20170221
+		 */
+		function reWindowName(win_name) {
+			$api.html($api.byId('mTitle'), win_name);
+		}
+
+		/*
+		 *author:ws
+		 *function:切换按钮
+		 *date：20170221
+		 */
+		function changeBtnTitle(btn_obj, btn_type) {
+			var $btn_title = $api.byId('btn_title');
+			var $btn_title_all = $api.domAll($btn_title, 'div');
+			for (var j = 0; j < $btn_title_all.length; j++) {
+				$api.removeCls($btn_title_all[j], 'btn-top-active');
+			}
+			if (btn_type == 1) {
+				$api.addCls(btn_obj, 'btn-top-active');
+				$api.removeCls($api.byId('back'), 't_display_n');
+				getIdDelete(0);
+				openLogContentFrame(btn_type, checkLeader);
+			} else {
+				$api.addCls(btn_obj, 'btn-top-active');
+				$api.removeCls($api.byId('back'), 't_display_n');
+				openLogContentFrame(btn_type, checkLeader);
+			}
+		}
+
+		/*
+		 *author:ws
+		 *function:请求时间
+		 *date：20170309
+		 */
+		function requreDateTime(type, time) {
+			timeParam = time;
+		}
+
+		/*
+		 *author:ws
+		 *function:打开日志内容页面
+		 *date：20170215
+		 */
+		function openLogContentFrame(btn_type, checkLeader) {
+			if (btn_type == 1) {
+				api.closeFrame({
+					name : "rizhi_content_frame"
+				});
+				frameNameLog = "rizhi_department_frame";
+				winNameLog = "rizhi_index_window";
+				var pageParamJson = {
+					"header_h" : header_h,
+					"judgeMonth" : judgeMonth,
+					"timeParam" : timeParam,
+					"yearDay" : yearValue,
+					"frameNameLog_p" : frameNameLog,
+					"winNameLog_p" : winNameLog,
+					"checkLeader" : checkLeader
+				};
+				commonOpenFrame('rizhi_department_frame', 'rizhi_department_frame.html', header_h + 50, false, false, "#ffffff", pageParamJson);
+			} else if (btn_type == 2) {
+				api.closeFrame({
+					name : "rizhi_department_frame"
+				});
+				frameNameLog = "rizhi_content_frame";
+				winNameLog = "rizhi_index_window";
+				var pageParamJson = {
+					"header_h" : header_h,
+					"judgeMonth" : judgeMonth,
+					"timeParam" : timeParam,
+					"person_id" : $api.getStorage("person_id")
+				};
+				commonOpenFrame('rizhi_content_frame', 'rizhi_content_frame.html', header_h + 50, false, false, "#f0f0f0", pageParamJson);
+			}
+		}
+
+		/*
+		 *author:ws
+		 *function:返回应用页面
+		 *date：20170215
+		 */
+		function back() {
+			//统计
+			commonCloseTjData($api.getStorage("identity") + '_' + api.winName);
+			api.closeWin();
+		}
+
+		/*
+		 *author:ws
+		 *function:打开日期选项
+		 *date：20170222
+		 */
+		function chooseData() {
+			api.actionSheet({
+				cancelTitle : '取消',
+				buttons : ['按月查询', '按日查询'],
+				style : {
+					titleFontColor : '#ff0000'
+				}
+			}, function(ret, err) {
+				if (ret) {
+					if (ret.buttonIndex == 1) {
+						//按照月查询
+						selectMonth();
+					} else if (ret.buttonIndex == 2) {
+						//按照日查询
+						pickerDateOpen();
+					}
+				} else {
+					popBottomToast('网络繁忙，请稍候重试');
+				}
+			});
+		}
+
+		/*
+		 *author:ws
+		 *function:选择月份
+		 *date：20170222
+		 */
+		function selectMonth() {
+			var pageParamJson = {
+				"header_h" : header_h,
+				"year" : yearValue,
+				"month" : parseInt(monthValue),
+				"nameWin" : "rizhi_index_window",
+				"nameFrame" : frameNameLog,
+			};
+			commonOpenFrame('rizhi_select_month_frame', 'rizhi_select_month_frame.html', header_h, false, false, "rgba(0,0,0,0)", pageParamJson);
+		}
+
+		/*
+		 *author:zhaoj
+		 *function:获取时间(设置时间格式2017年3月)
+		 *date：20160803
+		 */
+		function setTimeValue(year, month) {
+			var Month = month > 9 ? month : '0' + month;
+			var setDateValue = year + '年' + Month + '月';
+			var today = document.getElementById('select_time');
+			yearValue = year;
+			monthValue = Month;
+			judgeMonth = 2;
+			timeParam = Month;
+			$api.html(today, setDateValue);
+		}
+
+		/*
+		 *author:ws
+		 *function:设置时间格式2017-03-07
+		 *date：20170315
+		 */
+		function setTime(time) {
+			var current = document.getElementById('select_time');
+			timeParam = time;
+			judgeMonth = 1;
+			$api.text(current, time);
+		}
+
+		/*
+		 *author:ws
+		 *function:删除日志提示信息
+		 *date：20170222
+		 */
+		function deleteLogContent() {
+			popTwoBtnConfirm('提示', '确定删除该日志吗？', 'deleteConfirm();');
+		}
+
+		/*
+		 *author:ws
+		 *function:删除日志
+		 *date：20170222
+		 */
+		function deleteConfirm() {
+			api.ajax({
+				url : BASE_URL_ACTION + '/dsjxt/rizhi/deleteLog',
+				method : 'post',
+				dataType : 'json',
+				timeout : 30,
+				data : {
+					values : {
+						"delete_id" : deleteId
+					}
+				}
+			}, function(ret, err) {
+				var LogDate = $api.text($api.byId('select_time'));
+				if (ret) {
+					if (ret.success) {
+						popBottomToast("操作成功");
+						setTimeout(function() {
+							api.execScript({
+								name : "rizhi_index_window",
+								frameName : "rizhi_content_frame",
+								script : 'checkDataNullLog(1,"' + LogDate + '");'
+							});
+						}, 1000);
+					} else {
+						popBottomToast("操作失败");
+					}
+				} else {
+					popBottomToast("操作失败");
+				}
+			});
+		}
+
+		/*
+		 *author:ws
+		 *function:打开编辑页面
+		 *date：20170222
+		 */
+		function openEditorWin() {
+			var pageParamJson = {
+				"header_h" : header_h,
+				"jxzData" : jxzData,
+				"tcData" : tcData,
+				"zhData" : zhData,
+				"bzData" : bzData,
+				"wcData" : wcData,
+				"tpljData" : tpljData,
+				"shijianData" : shijianData,
+				"logTpye" : 2//1发布日志2编辑日志
+			};
+			commonOpenWin('rizhi_editor_window', 'rizhi_editor_window.html', false, false, pageParamJson);
+		}
+
+		/*
+		 *author:ws
+		 *function:删除、编辑个人日志按钮显示隐藏
+		 *date：20170313
+		 */
+		function getIdDelete(index) {
+			if (index == 0) {
+				$api.addCls($api.byId('bianji'), 'display-none');
+				$api.addCls($api.byId('shanchu'), 'display-none');
+			} else {
+				deleteId = index;
+				$api.removeCls($api.byId('bianji'), 'display-none');
+				$api.removeCls($api.byId('shanchu'), 'display-none');
+			}
+		}
+
+		/*
+		 *author:ws
+		 *function:编辑个人日志
+		 *date：20170313
+		 */
+		function getPeopleData(jxz, tc, zh, bz, wc, tplj, shijian) {
+			jxzData = jxz;
+			tcData = tc;
+			zhData = zh;
+			bzData = bz;
+			wcData = wc;
+			tpljData = tplj;
+			shijianData = shijian;
+		}
+	</script>
+</html>

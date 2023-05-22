@@ -1,0 +1,172 @@
+/*
+@Filename: cjcxXs.css
+@Description: 学生端成绩分析模块样式
+@Version: 2017-03-16
+@author: zhaoj
+*/
+/**
+* 功能：考试选择列表页面样式
+* 日期：2017-03-16
+* 作者：zhaoj
+* *****************************************************
+*/
+.win-menu font{
+	display:inline-block;
+	height:100%;
+	font-size:14px;
+	line-height:100%;
+}
+.tip{
+	padding:15px 15px 0 15px;
+	color:#ff0000;
+}
+.index-tip{
+	padding:5px 15px;
+	font-size:12px;
+	color:#fff;
+	background:#34A8FA;
+}
+.detail-tip{
+	position:fixed;
+	top:0;
+	width:100%;
+	padding:5px 15px;
+	font-size:12px;
+	color:#333;
+	background:#efefef;
+}
+.mt30{
+	margin-top:30px;
+}
+.bt{
+	border-top:1px solid #dbdbdb;
+}
+.score{
+	color:#333;
+}
+.score li{
+	padding:10px 15px;
+	border-bottom:1px solid #dbdbdb;
+}
+.score .exam-name{
+	font-size:14px;
+}
+.score .exam-detail{
+	padding-top:5px;
+}
+.score .exam-detail{
+	color:#666;
+	font-size:12px;
+}
+.score .exam-detail .time,
+.score .exam-detail .grade{
+	display: inline-block;
+	padding-left:20px;
+}
+.score .exam-detail .time{
+	padding-right:5px;
+	background:url(../../image/yingyong/cjfx/cjfx_lb.png) 0 2px no-repeat;
+	background-size:16px 65px;
+}
+.score .exam-detail .grade{
+	background:url(../../image/yingyong/cjfx/cjfx_lb.png) 0 -25px no-repeat;
+	background-size:17px 69px;
+}
+.score .exam-detail .subject{
+	padding:5px 0 0 20px;
+	background:url(../../image/yingyong/cjfx/cjfx_lb.png) 0 -47px no-repeat;
+	background-size:17px 69px;
+}
+.rl-score li{
+	position:relative;
+}
+.rl-score li{
+}
+.rl-score li .rl-btn{
+	position:absolute;
+	right:15px;
+	bottom:5px;
+	width:50px;
+	border-radius:4px;
+	line-height:28px;
+	text-align:center;
+	color:#fff;
+	font-size:14px;
+	background:#34A8FA;
+}
+.person-cj{
+
+}
+.person-cj li{
+	padding:8px 15px;
+	color:#333;
+	font-size:14px;
+	border-bottom:1px solid #dbdbdb;
+}
+.person-cj span{
+	display:inline-block;
+	float:left;
+	width:50%;
+	padding-top:5px;
+	color:#666;
+	font-size:14px;
+}
+.person-cj li span.fs font{
+	font-size:16px;
+}
+.person-cj li span.fs font.green{
+}
+.person-cj span.subject font{
+	color:#333;
+	font-size:14px;
+}
+.person-cj li:first-child span.subject font{
+	font-size:16px;
+}
+.person-cj li span font.up{
+	color:#34A8FA;
+	font-size:14px;
+}
+.person-cj li span font.down{
+	color:#ff0000;
+	font-size:14px;
+}
+.student-id{
+	padding-top:10px;
+}
+.student-id,.student-name{
+	padding-left:15px;
+	padding-right:15px;
+	color:#333;
+}
+.student-name{
+	padding-top:5px;
+}
+.student-id input,.student-name input{
+	margin-bottom:0;
+}
+.student-id div,.student-name div{
+	line-height:35px;
+}
+.footer-div{
+	height:55px;
+	background:#F6F6F6;
+	display: block;
+	bottom: 0px;
+	width:100%;
+	border-top:1px solid #E2E2E2;
+	font-size:14px;
+}
+.wid{
+	width:92%;
+	line-height:36px;
+	text-align:center;
+	color:#ffffff;
+	background:#F23E30;
+	margin-top:15px;
+	border-radius:2px;
+	margin-left:4%;
+}
+.no-data{
+	background:#fff;
+}

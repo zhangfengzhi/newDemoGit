@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<!-- html5：在创建html时为了防止页面缩放等不兼容效果，要创建个viewport  -->
+	<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+	<!-- 在IOS设备上，有时会将数字转为手机号，这里也要禁止下 -->
+	<meta name="format-detection" content="telephone=no"/>
+    <title>知识点选择</title>
+    <link rel="stylesheet" type="text/css" href="../../../../../css/aui/aui.css" />
+    <link rel="stylesheet" type="text/css" href="../../../../../css/module/common/daoxueJyJs.css" />
+    <link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+</head>
+<body class="zsd-body common-ipad-daoxueIpad">
+	<div id="j_zsd" class="all-zsd">
+		<!--<div class="first-child">
+			<div onclick="selectZsd(this);">
+				<span class="display-child jiedian">&nbsp;</span>
+				<span class="name">
+					入学教育
+				</span>
+				<span class="right">
+					<font>33</font>
+				</span>
+			</div>
+		</div>
+		<div class="first-child">
+			<div onclick="selectZsd(this);">
+				<span id="j_display_1" class="display-child show" onclick="displayChild(event,1)">&nbsp;</span>
+				<span class="name">汉语拼音</span>
+				<span class="right">
+					<font>33</font>
+				</span>
+			</div>
+			<ul id="j_child_1" class="second-child">
+				<li class="active" onclick="selectZsd(this);">
+					<span class="name">汉语拼音1 aoe</span>
+					<span class="num">3</span>
+				</li>
+				<li onclick="selectZsd(this);">
+					<span class="name">汉语拼音2 iuvuyw</span>
+					<span class="num">3</span>
+				</li>
+			</ul>
+		</div>
+		<div class="first-child">
+			<div onclick="selectZsd(this);">
+				<span id="j_display_2" class="display-child hidden" onclick="displayChild(event,2)">&nbsp;</span>
+				<span class="name">汉语拼音</span>
+				<span class="right">
+					<font>33</font>
+				</span>
+			</div>
+			<ul id="j_child_2" class="second-child display-none">
+				<li onclick="selectZsd(this);">
+					<span class="name">汉语拼音1 aoe</span>
+					<span class="num">3</span>
+				</li>
+				<li onclick="selectZsd(this);">
+					<span class="name">汉语拼音2 iuvuyw</span>
+					<span class="num">3</span>
+				</li>
+			</ul>
+		</div>-->
+	</div>
+	<script type="text/html" id="zsd_script">
+		<%if(section_list.length == 0){%>
+			<div class="no-data">暂无知识点</div>
+		<%}else{%>
+			<%for(var i = 0; i < section_list.length; i++) {%>
+				<div class="first-child">
+					<div onclick="selectZsd(this,<%=section_list[i].structure_id%>);" STRUCTURENAME="<%=section_list[i].structure_name%>" <%if(section_list[i].structure_id == active_structure_id ){%> class="active"<%}%>>
+						<%if(section_list[i].structure_list.length > 0){%>
+							<span id="j_display_<%=i%>" class="display-child hidden" onclick="displayChild(event,<%=i%>,1)">&nbsp;</span>
+						<%}else{%>
+							<span class="display-child jiedian">&nbsp;</span>
+						<%}%>
+						<span class="name">
+							<%=section_list[i].structure_name%>
+						</span>
+<!--						<span class="right">
+							<font>33</font>
+						</span>-->
+					</div>
+					<%if(section_list[i].structure_list.length > 0){%>
+						<ul id="j_child_<%=i%>" class="second-child display-none">
+							<%for(var j = 0;j < section_list[i].structure_list.length; j++){%>
+								<li STRUCTURENAME="<%=section_list[i].structure_list[j].structure_name%>" onclick="selectZsd(this,<%=section_list[i].structure_list[j].structure_id%>);" <%if(section_list[i].structure_list[j].structure_id ==active_structure_id ){%> class="active"<%}%>>
+									<span class="name"><%=section_list[i].structure_list[j].structure_name%></span>
+									<!--<span class="num">3</span>-->
+								</li>
+							<%}%>
+						</ul>
+					<%}%>
+				</div>
+			<% } %>
+		<%}%>
+	</script>
+</body>
+<script type="text/javascript" src="../../../../../script/api.js"></script>
+<script type="text/javascript" src="../../../../../script/base_config.js" ></script>
+<script type="text/javascript" src="../../../../../script/plug-in/template.js" ></script>
+<script type="text/javascript" src="../../../../../script/common/common.js" ></script>
+<script type="text/javascript" src="../../../../../script/module/common/daoxueJyJs.js" ></script>
+<script type="text/javascript">
+	var BASE_URL_ACTION;
+	var lobal_variable;//全局变量json
+	apiready = function(){
+		commonSetTheme({"level":5,"type":0});
+		BASE_URL_ACTION = $api.getStorage('BASE_URL_ACTION');
+		lobal_variable = JSON.parse(api.pageParam.lobal_variable);
+		showSelfProgress('加载中...');
+		getSectionAndStruc(function(zsd_flag,zsd_data){
+			api.hideProgress();
+			if(zsd_flag){
+				zsd_data.active_structure_id = lobal_variable.structure_id;
+				commonAddOnceHtml('j_zsd','zsd_script',zsd_data);
+				for(var i = 0; i < zsd_data.section_list.length; i++){
+					for(var j = 0; j < zsd_data.section_list[i].structure_list.length; j++){
+						if(zsd_data.section_list[i].structure_list[j].structure_id == zsd_data.active_structure_id){
+							displayChild(event,i,0);
+						}
+					}
+				}
+			}else{
+				popToast(zsd_data);
+			}
+		});
+	};
+	/*
+	*author:zhaoj
+	*function:展示二级知识点
+	*date：20170329
+	*/
+	function displayChild(e,index,type){
+		if($api.hasCls($api.byId('j_child_'+index), 'display-none')){
+			$api.removeCls($api.byId('j_display_'+index), 'hidden');
+			$api.addCls($api.byId('j_display_'+index), 'show');
+			$api.removeCls($api.byId('j_child_'+index), 'display-none');
+		}else{
+			$api.removeCls($api.byId('j_display_'+index), 'show');
+			$api.addCls($api.byId('j_display_'+index), 'hidden');
+			$api.addCls($api.byId('j_child_'+index), 'display-none');
+		}
+		type?e.stopPropagation():'';
+	}
+	/*
+	*author:zhaoj
+	*function:选择知识点
+	*date：20170329
+	*/
+	function selectZsd(self,id){
+	    var name = $api.attr(self, 'STRUCTURENAME');
+		var child_first_array = $api.domAll($api.byId('j_zsd'),'.first-child');
+		for(var i =0; i < child_first_array.length; i++){
+			var div_obj = $api.first(child_first_array[i],'div');
+			$api.removeCls(div_obj,'active');
+		}
+		var li_array = $api.domAll($api.byId('j_zsd'),'li');
+		for(var i =0; i < li_array.length; i++){
+			$api.removeCls(li_array[i],'active');
+		}
+		$api.addCls(self,'active');
+		api.execScript({
+			name : 'daoxueIpad_index_window',
+			frameName:'daoxueIpad_index_frame',
+			script : 'setStructure('+id+',"'+name+'")'
+		});
+		setTimeout(function(){
+			api.execScript({
+				name : 'daoxueIpad_index_window',
+				script : 'back()'
+			});
+		},100);
+	}
+</script>
+</html>

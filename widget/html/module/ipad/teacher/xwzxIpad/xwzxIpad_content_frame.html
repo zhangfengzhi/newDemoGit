@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<!-- html5：在创建html时为了防止页面缩放等不兼容效果，要创建个viewport  -->
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<!-- 在IOS设备上，有时会将数字转为手机号，这里也要禁止下 -->
+		<meta name="format-detection" content="telephone=no"/>
+		<title>新闻资讯数据页面</title>
+		<link rel="stylesheet" type="text/css" href="../../../../../css/aui/aui.css" />
+		<link rel="stylesheet" type="text/css" href="../../../../../css/module/ipad/left-right-layout.css"/>
+		<link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+		<style>
+	    	.right-layout-body .person-info .headset{width:55px;}
+	    	.right-layout-body .person-info .headset div{background-size:30px auto;height:30px;margin-top:0;}
+	    	.right-layout-body .person-info{padding:20px 145px 10px 92px;}
+	    	.right-layout-body .person-info .header-img{width:58px;height:58px;border-radius: 5px;}
+	    	@media screen and (max-width: 464px) {
+	    		.right-layout-body .person-info{padding:20px 75px 10px 100px;}
+	    	}
+	    </style>
+	</head>
+	<body class="right-layout-body common-ipad-xwzxIpad-tea">
+		<div class="top">
+			<div class="name">详情</div>
+			<div class="close" onclick="closeFrame();">关闭</div>
+		</div>
+		<div class="person-info">
+			<img id="j_header_img" class="header-img" onerror="this.src='../../../../../image/common/header.png'" src="../../../../../image/fun-module/ipad/xwzx-person.png" />
+			<div id="j_person_name" class="person-name ellipsis"></div>
+			<div id="j_time" class="time"></div>
+		</div>
+		<div id="j_title" class="detail-title word-wrap"></div>
+		<div id="j_content" class="detail-content word-wrap"></div>
+	</body>
+	<script type="text/javascript" src="../../../../../script/api.js" ></script>
+	<script type="text/javascript" src="../../../../../script/base_config.js" ></script>
+	<script type="text/javascript" src="../../../../../script/plug-in/template.js" ></script>
+	<script type="text/javascript" src="../../../../../script/base_config.js" ></script>
+	<script type="text/javascript" src="../../../../../script/plug-in/base64.js" ></script>
+	<script type="text/javascript" src="../../../../../script/common/common.js"></script>
+	<script type="text/javascript" src="../../../../../script/assembly/photoBrowser.js"></script>
+	<script type="text/javascript">
+		var notice_id;
+		var BASE_URL_ACTION;
+		var BASE_APP_TYPE;
+		var image_array=[];//所有图片路径
+		apiready = function() {
+			commonSetTheme({"level":5,"type":0});
+			notice_id = api.pageParam.notice_id;
+			BASE_URL_ACTION = $api.getStorage('BASE_URL_ACTION');
+			BASE_APP_TYPE = $api.getStorage('BASE_APP_TYPE');
+			loadNoticeContentData(notice_id);
+		};
+		/**
+		 * 加载新闻资讯内容
+		 * 周枫
+		 * 2015.11.24
+		 */
+		function loadNoticeContentData(notice_id) {
+			api.showProgress({
+				title : '加载中...',
+				text : '请稍候...',
+				modal : false
+			});
+			api.ajax({
+				url : BASE_URL_ACTION + '/notice/getNoticeById?notice_id=' + notice_id,
+				method : 'get',
+				dataType : 'json',
+				timeout : 30,
+				cache : false
+			}, function(ret, err) {
+				api.hideProgress();
+				if (ret.success) {
+					var notice_con = ret.notice.content;
+					var notice_str1 = '';
+					var notice_str2 = '';
+					var notice_str11 = '';
+					var onerror_html = "this.src='../../../../../image/common/tpsx.png'";
+					if (BASE_APP_TYPE == 1) {
+						notice_str1 = 'src=\"down\/Material\/';
+						notice_str11 = 'src=\"' + url_path_down + 'down\/Material\/';
+						//解决云版图片不缩放问题
+						notice_str5 = '<img';
+						notice_str2 = '<img class="ima_notice" onclick="openPicture(this);" onerror='+onerror_html;
+						//解决网络图片不缩放问题
+						notice_str6 = '<img src=';
+						notice_str7 = '<img class="ima_notice" src= ';
+					} else {
+						notice_str1 = 'src=\"/dsideal_yy/';
+						notice_str2 = 'src=\"' + BASE_URL_ACTION + '\/';
+						notice_str6 = '<img src=';
+						notice_str7 = '<img class="ima_notice" onerror='+onerror_html+' onclick="openPicture(this)" src=';
+					}
+					var notice_str3 = '<p>';
+					var notice_str4 = '<p style="font-size: 16px; color: #000000;">'
+					if (BASE_APP_TYPE == 1) {
+//						notice_con = notice_con.replaceAll(notice_str1, notice_str2);
+//						notice_con = notice_con.replaceAll(notice_str11, notice_str2);
+						notice_con = notice_con.replaceAll(notice_str1, notice_str11);
+						notice_con = notice_con.replaceAll(notice_str5, notice_str2);
+						notice_con = notice_con.replaceAll(notice_str6, notice_str7);
+					} else {
+						notice_con = notice_con.replaceAll(notice_str1, notice_str2);
+						notice_con = notice_con.replaceAll(notice_str6, notice_str7);
+					}
+					var notice_person_name = ret.notice.person_name;
+					notice_con.replace(/<img [^>]*src=['"]([^'"]+)[^>]*>/gi, function (match, capture) {
+					  image_array.push(capture);
+					});
+					$api.text($api.byId('j_person_name'),ret.notice.person_name);
+					var notice_create_time = ret.notice.create_time.substring(0, 16);
+					$api.text($api.byId('j_time'),ret.notice.create_time.substring(0,16));
+					$api.html($api.byId('j_title'),ret.notice.title);
+					notice_con = transferBrStr(notice_con);
+					$api.html($api.byId('j_content'), notice_con);
+
+					//播放内容需要加密
+			        var voice_content = $api.text($api.byId('j_content'));
+			        commonVoiceContent(voice_content);
+				} else {
+					popToast('获取新闻资讯信息失败，请稍候重试');
+				}
+			});
+		}
+
+		//替换所有的回车换行
+		function transferBrStr(content) {
+			var string = content;
+			try {
+				string = string.replace(/\r\n/g, "<br />")
+				string = string.replace(/\n/g, "<br />");
+			} catch(e) {
+				popAlert(e.message);
+			}
+			return string;
+		}
+		
+		/*
+		*author:zfz
+		*function:关闭页面
+		*date：20171013
+		*/
+		function closeFrame(){
+			commonExecScript('xwzxIpad_index_window','','back();',0);
+		}
+		
+		
+		/*
+		*author:zhaoj
+		*function:打开图片预览
+		*date：20171026
+		*/
+		function openPicture(e){
+			//图片
+			commonExecScript('xwzxIpad_index_window','','reBackType("picture_detail");',0);
+			var res_url=$api.attr(e, 'src');
+			//打开图片
+			var index = 0;
+			for(var i = 0; i <image_array.length;i++){
+				if(image_array[i] == res_url){
+					index = i;
+				}
+			}
+			photoBrowser.open(image_array, index);
+		}
+	</script>
+</html>

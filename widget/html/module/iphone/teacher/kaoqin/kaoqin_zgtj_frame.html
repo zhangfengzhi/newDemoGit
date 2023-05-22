@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<!-- html5：在创建html时为了防止页面缩放等不兼容效果，要创建个viewport  -->
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<!-- 在IOS设备上，有时会将数字转为手机号，这里也要禁止下 -->
+		<meta name="format-detection" content="telephone=no"/>
+		<title>资源数据页面</title>
+		<link rel="stylesheet" type="text/css" href="../../../../../css/aui_css_new/aui.css" />
+		<link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+		<style>
+			body{color:#333;background:#ffffff;}
+			.select-detail{padding:15px 0 15px 25px;width:100%;background:#fff;overflow-y:auto;z-index:3;max-height:100%;position:relative;z-index: 3;}
+			.select-detail li{list-style:none;float: left;width:100%;position: relative;}
+			.select-detail li .show-num{position:absolute;background:#79aca2;color:#ffffff;display:inline-block;padding:0 5px;font-size:12px;border-radius:10px;line-height:20px;right:5px;top:11px;}
+			.select-detail li div{height:45px;line-height:45px;padding:0 80px 0 25px;background:url(../../../../../image/fun-module/iphone/kaoqin/person.png) left center no-repeat;background-size:20px 17px;position: relative;}
+			.select-detail li .have-child{background:url(../../../../../image/fun-module/iphone/kaoqin/bm.png) left center no-repeat;background-size:20px 17px;}
+			.child-list{padding-left:25px;}
+			.child-list li{list-style:none;float: left;width:100%;padding:0 80px 0 25px;height:45px;line-height:45px;background:url(../../../../../image/fun-module/iphone/kaoqin/person.png) left center no-repeat;background-size:20px 17px;}
+		</style>
+	</head>
+	<body class="common-iphone-kaoqin">
+		<ul id="bm_body" class="select-detail">
+			<!--<li>
+				<div class="have-child">基础教育事业部</div>
+				<ul class="child-list">
+					<li class="ellipsis">平台软件研发部平台软件研发部</li>
+					<li>管理事业部</li>
+				</ul>
+			</li>
+			<li onclick="openListWin();">
+				<div class="">基础教育事业部</div>
+			</li>-->
+		</ul>
+		<script type="text/html" id="bm_script">
+			<%if(list.length==0){%>
+				<div class="no-data">暂无部门信息</div>
+			<%}else{%>
+				<%for(var i =0; i < list.length; i++){%>	
+					<li>
+						<div class="ellipsis <%if(list[i].child_list.length > 0){%>have-child<%}%>" onclick="openListWin(<%=list[i].id%>,'<%=list[i].name_base64%>') ;"><%=list[i].name%><span class="show-num">在岗:<%=list[i].person_num%>人</span></div>
+						<%if(list[i].child_list.length > 0){%>
+							<ul class="child-list">
+							<%for(var j = 0; j < list[i].child_list.length; j++){%>
+								<li class="ellipsis" onclick="openListWin(<%=list[i].child_list[j].id%>,'<%=list[i].child_list[j].name_base64%>') ;"><%=list[i].child_list[j].name%><span class="show-num">在岗:<%=list[i].child_list[j].person_num%>人</span></li>
+							<%}%>
+							</ul>
+						<%}%>
+					</li>
+				<%}%>
+			<%}%>		
+		</script>
+	</body>
+	<script type="text/javascript" src="../../../../../script/api.js" ></script>
+	<script type="text/javascript" src="../../../../../script/base_config.js" ></script>
+	<script type="text/javascript" src="../../../../../script/plug-in/base64.js" ></script>
+	<script type="text/javascript" src="../../../../../script/plug-in/template.js" ></script>
+	<script type="text/javascript" src="../../../../../script/common/common.js" ></script>
+	<script type="text/javascript" src="../../../../../script/common/kaoqin_common.js"></script>
+	<script type="text/javascript">
+		apiready = function() {
+			commonSetTheme({"level":5,"type":0});
+			getAsyncOrgTree();
+		};
+		/*
+		*作者:zhaoj
+		*功能:关闭窗口
+		*日期：20160901
+		*/
+		function closeSelectFrame(){
+			commonExecScript('kaoqin_zgtj_window','kaoqin_zgtj_frame','closeMenuFrame('+type+');',1);
+		}
+		/*
+		*作者:zhaoj
+		*功能:选择难度
+		*日期：20160902
+		*/
+		function selectNandu(obj,id,name){
+			var domArray = $api.domAll($api.byId('j_tx'),'.j_tx_name');
+			for(var i = 0; i < domArray.length; i++){
+				$api.removeCls(domArray[i],'active');
+				$api.remove($api.next(domArray[i]));
+			}
+			$api.addCls($api.first(obj), 'active');
+			$api.append(obj,'<div class="right"></div>');
+			api.execScript({
+				name: 'st_list_window', 
+				frameName : 'st_list_frame',
+				script: 'setName('+id+',"'+name+'",'+type+');'
+			})
+		}
+		/*
+		*作者:zhaoj
+		*功能:选择题型
+		*日期：20160902
+		*/
+		function selectTixing(obj,id,name){
+			var domArray = $api.domAll($api.byId('j_nd'),'.j_nd_name');
+			for(var i = 0; i < domArray.length; i++){
+				$api.removeCls(domArray[i],'active');
+				$api.remove($api.next(domArray[i]));
+			}
+			$api.addCls($api.first(obj), 'active');
+			$api.append(obj,'<div class="right"></div>');
+			api.execScript({
+				name: 'st_list_window', 
+				frameName : 'st_list_frame',
+				script: 'setName('+id+',"'+name+'",'+type+');'
+			})
+		}
+		/*
+		*author:zhaoj
+		*function:获取结构数据
+		*date：20160627
+		*/
+		function getAsyncOrgTree() {
+			showSelfProgress('加载中...');
+			api.ajax({
+				url : BASE_URL_ACTION + '/ypt/org/getAsyncOrgTree?org_id='+$api.getStorage('bureau_id')+'&org_type=5&get_next=1&random_num='+creatRandomNum(),
+				method : 'get',
+				timeout : 0,
+				dataType : 'json',
+				headers : {
+		'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+		}
+				}, function(ret_data, err) {
+				    console.log(JSON.stringify(ret_data));
+					var data={"list":[]};
+					if (err) {
+						popToast('获取部门信息失败，请稍候再试！');
+					} else {
+						if(ret_data){
+							//递归获取部门的在岗人数
+							getOnTheJobInfo(0, ret_data, function(ret) {
+								api.hideProgress();
+								for(var i = 0; i < ret.length; i++){
+									if(ret[i].level == 2){
+										var oparam = new Object();
+										oparam.district_id = ret[i].district_id;
+										oparam.id = ret[i].id;
+										oparam.level = ret[i].level;
+										oparam.person_num = ret[i].person_num;
+										oparam.city_id = ret[i].city_id;
+										oparam.org_type= ret[i].org_type;
+										oparam.pId= ret[i].pId;
+										oparam.province_id= ret[i].province_id;
+										oparam.name= ret[i].name;
+										oparam.name_base64= Base64.encode(ret[i].name);
+										oparam.child_list= [];
+										data.list.push(oparam);
+									}
+								}
+								for(var i = 0; i < ret.length; i++){
+									if(ret[i].level == 3){
+										for(var j = 0; j < data.list.length; j++){
+											if(data.list[j].id == ret[i].pId){
+												var oparam = new Object();
+												oparam.district_id = ret[i].district_id;
+												oparam.person_num = ret[i].person_num;
+												oparam.id = ret[i].id;
+												oparam.level = ret[i].level;
+												oparam.city_id = ret[i].city_id;
+												oparam.org_type= ret[i].org_type;
+												oparam.pId= ret[i].pId;
+												oparam.province_id= ret[i].province_id;
+												oparam.name= ret[i].name;
+												oparam.name_base64= Base64.encode(ret[i].name);
+												data.list[j].child_list.push(oparam);
+											}
+										}
+									}
+								}
+								addTemplateHtml('bm_body', 'bm_script', data,1);
+							});
+							
+						}else{
+							popToast('获取部门信息失败，请稍候再试！');
+						}
+					}
+			});
+		}
+		/*
+		*作者:zhaoj
+		*功能:获取人员请假公出信息
+		*日期：20160906
+		*/
+		function getOnTheJobInfo(index,data_list,callback){
+			var data_l = getJsonObjLength(data_list);
+			if (index < data_l) {
+				api.ajax({
+					url : BASE_URL_ACTION + '/leave/getOnTheJobInfo?bureau_id='+$api.getStorage('bureau_id')+'&org_id='+data_list[index].id+'&random_num='+creatRandomNum(),
+					method : 'get',
+					timeout : 30,
+					dataType : 'json',
+					headers : {
+						'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+					}
+				}, function(ret, err) {
+					if (err) {
+						return getOnTheJobInfo(index,data_list,callback);
+					} else {
+						if (ret.success) {
+							data_list[index].person_num = ret.y_onthejob;
+							index++;
+							return getOnTheJobInfo(index,data_list,callback);
+						} else {
+							return getOnTheJobInfo(index,data_list,callback);
+						}
+					}
+				});
+			}else{
+				callback(data_list);
+			}
+		}
+		/*
+		 *author:zhaoj
+		 *function:打开我的考勤详情页面
+		 *date：20160620
+		 */
+		function openListWin(id,name_base64) {
+			var header_h = api.pageParam.header_h;
+			commonOpenWin('kaoqin_zgtjList_window','kaoqin_zgtjList_window.html', false, false,{header_h : api.pageParam.header_h,id : id,name_base64:name_base64});
+		}
+	</script>
+</html>

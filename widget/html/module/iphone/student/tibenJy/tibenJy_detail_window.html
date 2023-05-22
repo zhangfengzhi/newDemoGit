@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<!-- html5：在创建html时为了防止页面缩放等不兼容效果，要创建个viewport  -->
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<!-- 在IOS设备上，有时会将数字转为手机号，这里也要禁止下 -->
+		<meta name="format-detection" content="telephone=no"/>
+		<title>错题本</title>
+		<link rel="stylesheet" type="text/css" href="../../../../../css/aui/aui.css" />
+		<link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+		<style>
+			.history-date {
+				font-size: 12px;
+			}
+			#message-content {
+				overflow-y: auto;
+				display: none;
+			}
+			
+			
+			.t_display_n {
+				display: none;
+			}
+			.t_display_b {
+				display: block;
+			}
+			.win-menu{font-size:15px;line-height:48px;height:100%;}
+			.menu{display:inline-block;width:24px;height:100%;background: url(../../../../../image/fun-module/iphone/page_menu_icon.png) center center no-repeat;background-size: 24px 24px;}
+			.ellipsis{white-space: nowrap;overflow: hidden;text-overflow: ellipsis;}
+		</style>
+	</head>
+	<body class="common-iphone-tibenJy">
+		<div id="wrap">
+			<header class="aui-bar aui-bar-nav aui-bar-primary" id="aui-header">
+				<div id="cloud" class="topbar activebar">
+					<div id="back" class="back" onclick="back();" tapmode="">
+						<i class="aui-iconfont aui-icon-left"></i>返回
+					</div>
+					<div  class="mTitle" id="mTitle">
+						做错的题
+					</div>
+					<div class="win-menu">
+						<a id='menu' class="aui-iconfont aui-icon-menu back aui-hide" tapmode="tap-active" onclick="openMenu();"></a>
+					</div>
+				</div>
+			</header>
+			<div  class="aui-content aui-content-padded" id="message-content">
+				<p class="aui-text-center history-date"></p>
+			</div>
+		</div>
+	</body>
+	<script type="text/javascript" src="../../../../../script/api.js"></script>
+	<script type="text/javascript" src="../../../../../script/common/common.js"></script>
+	<script type="text/javascript" src="../../../../../script/base_config.js" ></script>
+	<script type="text/javascript">
+		var header_h;//定位header位置，留出上面电池等空隙，苹果需要
+		var back_type;//返回参数
+		var jr_type;//1：错题本，2：好题本
+		var is_have_wk;//是否存储
+		var que_id;//试题id
+		var back_type;
+		var que_id_char;//试题id
+		var zy_id;
+		var is_master_menu_use;  //打开menu菜单时传值用
+		apiready = function() {
+		    commonSetTheme({"level":5,"type":0});
+			header_h = api.pageParam.header_h;
+			is_have_wk = api.pageParam.is_have_wk;
+			zy_id = api.pageParam.zy_id;
+			que_id = api.pageParam.que_id;
+			que_id_char = api.pageParam.que_id_char;
+			jr_type = api.pageParam.jr_type;
+			is_master_menu_use = api.pageParam.is_master;
+			reSetNamed();
+			openDetailFrame(zy_id, que_id, que_id_char);
+			back_type = 'index';
+			//判断下拉菜单是否显示
+			isShowMenu(1);
+			commonBackForAndroid();//安卓关闭
+			commonIosAuiHeader();//定位header位置，留出上面电池等空隙，苹果需要
+		};
+		/*
+		*author:zhaoj
+		*function:重命名
+		*date：20160607
+		*/
+		function reSetNamed(){
+			if(jr_type == 1){
+				commonSetWindowName('做错的题');
+			}else{
+				commonSetWindowName('收藏的题');
+			}
+		}
+		/*
+		*author:zhaoj
+		*function:打开添加检测列表的frame
+		*date：20160307
+		*/
+		function openDetailFrame(zy_id, que_id, que_id_char) {
+		    var pageParamJson = {
+		        'header_h' : header_h,
+                'cross_w' : 'auto',
+                'zy_id' : zy_id,
+                'que_id' : que_id,
+                'que_id_char' : que_id_char,
+                'jr_type' : jr_type,
+                'is_have_wk':is_have_wk,
+                'que_source' :api.pageParam.que_source,
+                'jy_subject_en_name' :api.pageParam.jy_subject_en_name,
+                'is_master' : api.pageParam.is_master,
+                'dic_type' : api.pageParam.dic_type,
+                'dic_text' : api.pageParam.dic_text,
+                'qt_name':api.pageParam.qt_name
+		    };
+		    commonOpenFrame('tibenJy_detail_frame', 'tibenJy_detail_frame.html', header_h, false, true, '#fff', pageParamJson);
+		}
+		
+		/**
+		 *author:zfz 
+		 *function:设置is_master_menu_use的值 
+		 *data:20170911
+		 */
+		function setIsMaster(is_master){
+			is_master_menu_use = is_master;
+		}
+		
+		/*
+		*author:zhaoj
+		*function:打开下拉菜单
+		*date：20160328
+		*/
+		function openMenu(){
+			api.openFrame({
+	            name: 'tibenJy_menu_frame',
+	            url: 'tibenJy_menu_frame.html',
+	            bounces: false,
+	            rect: {
+	                x: 0,
+	                y: 0,
+	                w: 'auto',
+	                h: 'auto'
+	            },
+	            bgColor : 'rgba(0,0,0,0)',
+	            pageParam : {
+					header_h : header_h,
+					is_have_wk : is_have_wk,
+					que_id : que_id,
+					que_id_char : que_id_char,
+					zy_id : zy_id,
+					select_type : 3,
+					t_id : -1,
+					z_type : 1,
+					is_public : 0,
+					is_daoxue_details : 0,
+					is_master:is_master_menu_use,
+					jr_type:jr_type
+				},
+	            reload: true
+	        });
+		}
+		
+		/**
+		 * 返回应用页面
+		 * 周枫
+		 * 2015.10.11
+		 */
+		function back() {
+			switch(back_type) {
+				case 'index':
+		            commonExecScript('tibenJy_detail_window','tibenJy_detail_frame','updataListData();',1)
+					break;
+				case 'content':
+					commonCloseFrame('weike_content_frame');
+					break;
+			}
+			reBackType('index');
+		}
+		/**
+		 * 重置window标题
+		 * 周枫
+		 * 2015.12.17
+		 */
+		function reWindowName(win_name) {
+			commonSetWindowName(win_name);
+		}
+		/**
+		 * 重置从哪个页面退出
+		 * 周枫
+		 * 2015.12.17
+		 */
+		function reBackType(type) {
+			switch(type) {
+				//如果通知列表页面退出
+				case 'index':
+					reSetNamed();
+					back_type = 'index';
+					isShowMenu(1);
+					break;
+				//如果微课内容页面退出
+				case 'content':
+					reWindowName('微课');
+					back_type = 'content';
+					isShowMenu(0);
+					break;
+			}
+		}
+		
+		
+		/**
+		 * 是否显示下拉菜单，学生显示，教师不显示
+		 * 周枫
+		 * 2016.4.25 
+		 */
+		function isShowMenu(type){
+			if(type){
+				var i_id = parseInt($api.getStorage('identity'));
+				if(i_id == 6) {
+					commonAddOrRemoveHideCss('menu',1);
+				}
+			}else{
+				commonAddOrRemoveHideCss('menu',0);
+			} 
+		}
+	</script>
+</html>

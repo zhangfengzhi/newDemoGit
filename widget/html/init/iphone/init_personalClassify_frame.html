@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>title</title>
+    <link rel="stylesheet" type="text/css" href="../../../css/module/iphone/init-screen.css" />
+    <link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+    <style>
+    	#personal_div{
+    		margin-top: 25px;
+    	}
+    	.content_div{
+    		width: 85%;
+    		border: 1px solid #CCCCCC;
+    		position: relative;
+    		margin: 10px auto;
+    		padding: 10px;
+			background-color: #ffffff;
+			display: -webkit-box;
+			display: -webkit-flex;
+			display: flex;
+			-webkit-flex-wrap: nowrap;
+			flex-wrap: nowrap;
+			-webkit-align-items: center ;
+			align-items: center ;
+			-webkit-justify-content: space-between ;
+			justify-content: space-between;
+    	}
+    	.aui-radio{
+    		margin-left: 5px;
+    		pointer-events: none;
+    		-webkit-box-flex: 1;
+    		box-flex: 1;
+    		-webkit-flex-shrink: 0 ;
+    		flex-shrink:0;
+    	}
+    	.content_div span{
+    		-webkit-box-flex: 1;
+    		box-flex: 1;
+    	}
+    </style>
+</head>
+<body>
+	<div id="personal_div">
+		<script id="personal_script" type="text/html">
+			<%for (var i = 0; i < list.length; i++){%>
+				<div class="content_div" onclick="onClickDiv(<%=i%>)">
+					<span><%=list[i].name%></span>
+					<input class="aui-radio" name="personal_classify" type="radio" onchange="selectChange(<%=i%>)"> 
+				</div>
+			<%}%>
+		</script>
+	</div>
+</body>
+<script type="text/javascript" src="../../../script/api.js"></script>
+<script type="text/javascript" src="../../../script/base_config.js" ></script>
+<script type="text/javascript" src="../../../script/plug-in/template.js" ></script>
+<script type="text/javascript" src="../../../script/common/common.js" ></script>
+<script type="text/javascript">
+	var radioList;
+	var dataList;
+	var selectIndex = 0;
+	apiready = function(){
+		dataList = $api.getStorage('allClassifyData').personalList;
+		commonAddOnceHtml('personal_div',"personal_script",dataList);
+		radioList = $api.domAll($api.byId('personal_div'), 'input');
+		for (var i = 0; i < dataList.list.length; i++){
+			if (dataList.list[i].id == $api.getStorage('personalClassifyId')){
+				radioList[i].checked = true;
+				selectIndex = i;
+				break;
+			}
+		}
+	};
+	
+	function onClickDiv(index){
+		selectChange(index);
+		for (var i = 0; i < radioList.length; i++){
+			if (i == index){
+				radioList[i].checked = true;
+			}
+			else{
+				radioList[i].checked = false;
+			}
+		}
+	}
+	
+	function selectChange(index){
+		selectIndex = index;
+	}
+	
+    function saveData(){
+    	$api.setStorage('personalClassifyContent',dataList.list[selectIndex].name);
+    	$api.setStorage('personalClassifyId',dataList.list[selectIndex].id);
+    	commonExecScript("init_add_window","init_xxadd_frame","setPublishRangeContent()",1);
+    	commonExecScript("publisRange_window","","back()",0);
+    }
+</script>
+</html>

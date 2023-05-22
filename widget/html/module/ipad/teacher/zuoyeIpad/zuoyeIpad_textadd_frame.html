@@ -1,0 +1,825 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <title>评论页面</title>
+    <link rel="stylesheet" type="text/css" href="../../../../../css/aui/aui.css"></link>
+    <link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+    <style>
+    	body{background:#F5F5F5;padding:10px;}
+    	textarea{margin-bottom:3px;}
+    	.tip{width:100%;font-size:13px;color:#bbbbbb;text-align:right;}
+    	.zuoye-title{
+    	    color:#9F9F9F;
+    	    margin:5px;
+    	    margin-left:0;
+    	    font-size:16px;
+    	}
+    	.save-all{
+    	    width:60%;
+            margin:0 auto;
+            color:#fff;
+            border-radius:20px;
+            height:40px;
+            line-height:40px;
+            margin-top:100px;
+            margin-bottom:20px;
+            text-align: center
+    	}
+    	.text-zuoye-div{
+    	   width:100%;
+    	   margin-top:40px;
+    	}
+    	.text-zuoye-div div{
+    	   width:30%;
+    	   border-radius:10px;
+    	   color:#fff;
+    	   background:rgba(255, 153, 0, 1);
+    	   text-align:center;
+    	   height:40px;
+    	   line-height:40px;
+    	}
+    	.text-picture{
+    	   float:left;
+    	   margin-left:10%;
+    	}
+    	.text-audio{
+    	   float:right;
+           margin-right:10%;
+    	}
+    	.voice-text{
+    	   width:100%;
+    	   margin-top:20px;
+    	}
+    	.picture-text{
+    	   width:100%;
+    	}
+    	.picture-text li{
+    	   position:relative;
+    	   width:32%;
+    	   padding-left:2%;
+    	   margin-bottom:2px;
+    	}
+    	.delete{
+    	   position:absolute;
+    	   right:-5px;
+    	   top:-2px;
+    	   width:32px;
+    	   height:32px;
+    	   background: url(../../../../../image/fun-module/iphone/zuoye/delete.png) 3px 3px no-repeat;
+    	   background-size:24px auto;
+    	}
+    	.voice-text li{   
+    	   position:relative;
+           width:100%;
+           padding-left:2%;
+           margin-bottom:2px;
+    	}
+    	.delete_voice{
+    	   position:absolute;
+           left:158px;
+           top:-3px;
+           width:32px;
+           height:32px;
+           background: url(../../../../../image/fun-module/iphone/zuoye/delete.png) 3px 3px no-repeat;
+           background-size:24px auto;
+    	}
+    	.text-zuoye-score-btn{
+    	   float:right;
+    	   width:30px;
+    	   height:30px;
+    	   text-align:center;
+           margin-top:12px;
+           line-height:30px;
+           border-radius:5px;
+    	}
+    	.score-div{
+    	   height:60px;
+    	   line-height: 60px;
+    	}
+    	.fl{
+    	   float:left;
+    	}
+    	.fr{
+           float:right;
+           margin-right:30px;
+        }
+    	.score-div input{
+    	   width:50px;
+    	   height:50px;
+    	   margin-top:2px;
+    	   line-height:50px;
+    	   text-align: center;
+    	   float:right;
+    	   margin-left:20px;
+    	   margin-right:20px;
+    	}
+    </style>
+</head>
+<body class="common-iphone-zuoye-tea">
+<!--    <div class="zuoye-title">检测内容</div>-->
+    <textarea id="zy_title" rows="1" placeholder="检测名称（最多100字）" onscroll="this.rows++;" maxlength ='100'></textarea>
+    <div class="score-div">
+        <div id="text_zuoye_score_btn_jia" class="text-zuoye-score-btn" onclick="changeScore(2);">+</div>                 
+        <input id="score_input" rows="1" onkeyup="this.value=this.value.replace(/[^\d]/g,'') " value="0"/>
+        <div id="text_zuoye_score_btn_jian" class="text-zuoye-score-btn" onclick="changeScore(1);">-</div>
+        <div class="fr">检测总分</div>
+    </div>
+	<textarea id="comt_content" rows="8" placeholder="检测内容（最多500字）" onscroll="this.rows++;" maxlength ='500'></textarea>
+	<ul id="picture_text" class="picture-text"> 
+    </ul>
+	<ul id="voice_text" class="voice-text">
+	</ul>
+	<div class="text-zuoye-div ellipsis">
+	    <div class="text-picture" onclick="uploadAnswers();">添加图片</div>
+        <div class="text-audio" onclick="openAudioWindow();">添加语音</div>
+	</div>
+	<div class="save-all" onclick="saveAll(1);">保存</div>
+	<div class="save-all" style="margin-top:20px;" onclick="saveAll(2);">保存并发布</div>
+	<div style="height:20px">&nbsp;</div>
+</body>
+<script type="text/javascript" src="../../../../../script/api.js"></script>
+<script type="text/javascript" src="../../../../../script/base_config.js" ></script>
+<script type="text/javascript" src="../../../../../script/common/common.js" ></script>
+<script type="text/javascript" src="../../../../../script/plug-in/echo.min.js"></script>
+<script type="text/javascript" src="../../../../../script/assembly/executeApp.js" ></script>
+<script type="text/javascript" src="../../../../../script/assembly/openResource.js" ></script>
+<script type="text/javascript" src="../../../../../script/assembly/photoBrowser.js"></script>
+<script type="text/javascript" src="../../../../../script/assembly/UIMediaScanner.js"></script>
+<script type="text/javascript" src="../../../../../script/assembly/getPicture.js"></script>
+<script type="text/javascript" src="../../../../../script/plug-in/base64.js" ></script>
+<script type="text/javascript">
+	var header_h;
+	var netAudio;//播放录音对象
+	var tj_fj_json = [];
+	var xq_id = 8;//当前学期
+	apiready = function(){
+		commonSetTheme({"level":5,"type":0});
+		netAudio = api.require('netAudio');
+		header_h = api.pageParam.header_h;
+		if(api.systemType == 'ios'){
+            $api.css($api.byId('text_zuoye_score_btn_jian'),'line-height:28px;');
+            $api.css($api.byId('text_zuoye_score_btn_jia'),'line-height:28px;');
+        }
+		getCurrentTerm(function(data){
+		  xq_id = data;
+		});
+	};
+	
+	/*
+     * author:zfz
+     * function:获取当前学期id及名称
+     * data:2016.4.26
+     */
+    function getCurrentTerm(callback){
+        api.ajax({
+            url : BASE_URL_ACTION + '/xx/getCurrentTerm',
+            method : 'post',
+            timeout : 30,
+            dataType : 'json',
+            headers : {
+    'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+}
+        }, function(ret, err) {
+            if (err) {
+                popToast('对不起，获取学期信息失败');
+            } else {
+                if(ret.success){
+                    callback(ret.XQ_ID);
+                }else{
+                    popToast('对不起，获取学期信息失败');
+                }
+            }
+        });
+    }
+	
+	/*
+     *功能：上传照片检测
+     *作者：张自强
+     *时间：20180531
+     */
+    function uploadAnswers(){
+        api.actionSheet({
+            cancelTitle: '取消',
+            buttons: ['图片','拍照'],
+            style:{
+                titleFontColor:'#ff0000'
+            }
+        },function( ret, err ){
+            if( ret ){
+                 if(ret.buttonIndex == 1){
+                    //相册
+                    getAlbum();
+                 }else if(ret.buttonIndex == 2){
+                    //拍照
+                    getpicture();
+                 }
+            }else{
+                popToast('网络繁忙，请稍候上传答案。');
+            }
+        });
+    }
+    
+    
+    /*
+     *author:zhaoj
+     *function:选择图片
+     *date：20160225
+     */
+    function getAlbum() {
+//      var num = 10-answers_count;
+//      if(num != 0){
+            UIMediaScanner.open(10,function(data){
+                //递归上传图片
+                commonUiUploadFiles({"data":data,"is_trans":1}, function(ret_data) {
+                    for(var i = 0; i < ret_data.length; i++){
+                        var json_data = JSON.parse(ret_data[i]);
+                        var file_id = json_data.file_id;
+                        var ext = json_data.ext;
+                        var param_json = getParamJson({"file_id" : file_id,"resource_format" : ext, "is_show_tip":0,"type":0,"voice_duration":0});
+                            //上传到资源库中
+                        insertResourceBaseInfo(param_json);
+                    }
+                });
+            });
+//      }else{
+//          popToast('最多上传10张图片');
+//      }
+    }
+    
+    /**
+     * 功能：拍照上传检测
+     * 作者：张自强
+     * 时间：20180531
+     */
+    function getpicture() {
+        getPicture.open({"type":1},function(data){
+            //递归上传图片
+            commonUiUploadFiles({"data":data,"is_trans":0}, function(ret_data) {
+                for(var i = 0; i < ret_data.length; i++){
+                    var json_data = JSON.parse(ret_data[i]);
+                    var file_id = json_data.file_id;
+                    var ext = json_data.ext;
+                    var param_json = getParamJson({"file_id" : file_id,"resource_format" : ext, "is_show_tip":0,"type":0,"voice_duration":0});
+                    //上传到资源库中
+                    insertResourceBaseInfo(param_json);
+                }
+            });
+        });
+    }
+    
+   /*
+    *author:zhaoj
+    *function:打开录音频页面
+    *date：20170831
+    */
+    function openAudioWindow(){
+        var params = {
+            winName:'zuoyeIpad_index_window',
+            frameName:'zuoyeIpad_textadd_frame',
+            backFun:'uploadAmr',
+            name:'common_audio_window'
+        };
+        commonOpenAssembly(params);
+    }
+    
+   /*
+    *author:zhaoj
+    *function:上传音频
+    *date：20170901
+    */
+    function uploadAmr(path,voice_duration){
+        uploadFile(path,1,voice_duration, function(is_true){
+            if (is_true) {
+                api.hideProgress();
+            } else {
+                popToast("服务器繁忙，请稍候再试");
+            }
+        });
+    }
+    
+   /*
+    *author:zhaoj
+    *function:音频和拍照的文件上传
+    *date：20160407
+    */
+    function uploadFile(file_url,type,voice_duration, callback){
+        commonUploadFiles(file_url, function(is_true, a_file_id, a_ext) {
+            if (is_true) {
+                if(type == 1){
+                    addAppAnnex(a_file_id,voice_duration);
+                }else{
+                    var param_json = getParamJson({"file_id" : a_file_id,"resource_format" : a_ext, "is_show_tip":0,"type":type,"voice_duration":voice_duration});
+                    //上传到资源库中
+                    insertResourceBaseInfo(param_json);
+                    callback(true);
+                }
+            } else {
+                return uploadFile(file_url,type,voice_duration, callback);
+            }
+        });
+    }
+    
+   /*
+    *author:zhaoj
+    *function:将音频文件转换成mp3格式
+    *date：20170901
+    */
+    function addAppAnnex(file_id,voice_duration){
+        api.ajax({
+            url : BASE_URL_ACTION+'/dsjxt/addAppAnnex',
+            method : 'post',
+            dataType : 'json',
+            data : {
+                values : {
+                    "file_id" : file_id,
+                    "extension" : 'amr',
+                    "person_id" : $api.getStorage("person_id"),
+                    "identity_id" : $api.getStorage('identity'),
+                    "duration" : voice_duration
+                }
+            }
+        }, function(ret, err) {
+            api.hideProgress();
+            if(err){
+                popToast('上传音频答案失败，请重新上传');
+            }else{
+                if(ret.success){
+                    var param_json = getParamJson({"file_id" : file_id,"resource_format" : 'mp3', "is_show_tip":0,"type":1,"voice_duration":voice_duration});
+                    //上传到资源库中
+                    insertResourceBaseInfo(param_json);
+                }else{
+                    popToast('上传音频答案失败，请重新上传');
+                }
+            }
+        });
+    }
+    
+    /*
+    *author:zhaoj
+    *function:上传到资源库中
+    *date：20170904
+    */
+    function insertResourceBaseInfo(param_json){
+        commonInsertResourceBaseInfo(param_json,function(flag,ret){
+            if(flag){
+                if(param_json.type != 0){popToast('保存成功')};
+                param_json.resource_id_int=ret.resource_id_int;
+                param_json.resource_info_id=ret.resource_info_id;
+                param_json.resource_title=ret.resource_title;
+                param_json.resource_type=ret.resource_detail.resource_type;
+                param_json.resource_myinfo_id = ret.resource_myinfo_id;
+                getResourceByIDInt(param_json,function(){
+                    showImg(param_json);//显示缩略图
+                })
+                if(param_json.type == 1){
+                    commonExecScript('common_audio_window','','back();',0);
+                }else if(param_json.type == 2){
+                    commonExecScript('common_record_window','','back();',0);
+                }
+            }else{
+                api.hideProgress();
+                popToast('上传答案失败，请重新上传');
+            }
+        });
+    }
+    
+    /*
+     * 功能：获取附件信息
+     * 作者；张自强
+     * 时间：20180606
+     */
+    function getResourceByIDInt(param_json,callback){
+        api.ajax({
+	        url:BASE_URL_ACTION + '/resource/getResourceByIDInt?resource_id_int='+param_json.resource_id_int+'&random_num='+creatRandomNum(),
+	        method:'get',
+	        dataType:'json',
+	        timeout:30,
+	        headers : {
+                'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+                        }
+        },function(ret,err){
+            if(err){
+                callback(false);
+            }else{
+                if(ret.success){
+                    var param = new Object();
+                    param.issue_id = null;
+                    param.is_yun = 0;
+                    param.id = param_json.resource_myinfo_id;
+                    param.resource_id_int = param_json.resource_id_int;
+                    param.resource_title = param_json.resource_title;
+                    param.appType = '';
+                    param.mediaType = '素材';
+                    param.selectType = 1;
+                    param.resource_info = {
+                        'resource_format' : ret.resource_format,
+                        'file_id' : ret.file_id,
+                        'preview_status' : ret.preview_status,
+                        'resource_page' : ret.resource_page,
+                        'resource_title' : ret.resource_title,
+                        'width' : ret.width,
+                        'height' : ret.height,
+                        'm3u8_status' : ret.m3u8_status,
+                        'for_urlencoder_url' : ret.for_urlencoder_url,
+                        'for_iso_url' : ret.for_iso_url,
+                        'url_code' : ret.url_code,
+                    };
+                    tj_fj_json.push(param);
+                    callback(true);
+                }else{
+                    callback(false);
+                }
+            }
+        });
+    }
+    
+   /*
+    *author:zhaoj
+    *function:上传音频、视频、图片的缩略图
+    *date：20170901
+    */
+    function showImg(img_json){
+        var img_url;//缩略图路径
+        var telmte_id = 'picture_text';
+        if(img_json.type == 0|| img_json.type == 5){
+            //图片
+            if (BASE_APP_TYPE == 1) { 
+                img_url = BASE_IMAGE_PRE + url_path_suffix + img_json.file_id.substring(0, 2) + '\/' + img_json.file_id + '.' + img_json.resource_format + '@' + api.winWidth + 'w_' + api.winHeight + 'h_100Q_1x.png';
+            } else {
+                img_url = BASE_URL_ACTION + BASE_IMAGE_BEGIN + img_json.file_id.substring(0, 2) + '/' + img_json.file_id + '.' + img_json.resource_format + '@' + api.winWidth + 'w_' + api.winHeight + 'h_100Q_1x.png';
+            }
+        }else if(img_json.type == 1){
+            //音频
+            img_url = "../../../../../image/fun-module/ipad/zthd/voice-bg.png";
+        }else if(img_json.type == 2){
+            //视频
+            img_url = "../../../../../image/fun-module/iphone/zuoye/player.png";
+        }else if(img_json.type == 3){
+            //资源库中的缩略图
+            if (BASE_APP_TYPE == 1) {
+                img_url = url_path_down + BASE_THUMB_BEGIN + img_json.thumb_id.substring(0, 2) + '\/' + img_json.thumb_id + BASE_THUMB_END;
+            } else {
+                img_url = BASE_URL_ACTION + BASE_THUMB_BEGIN + img_json.thumb_id.substring(0, 2) + '/' + img_json.thumb_id + BASE_THUMB_END;
+            }
+        }else{
+            //之前上传的答案图片
+             if (BASE_APP_TYPE == 1) {
+                img_url = BASE_IMAGE_PRE+"down/App/"+ img_json.file_id.substring(0, 2) + "/" + img_json.file_id + '.' + img_json.resource_format + '@' + api.winWidth + 'w_' + api.winHeight + 'h_100Q_1x.png';
+            } else {
+                img_url = BASE_URL_ACTION + "/html/thumb/App/" + img_json.file_id.substring(0, 2) + "/" + img_json.file_id + '.' + img_json.resource_format + '@' + api.winWidth + 'w_' + api.winHeight + 'h_100Q_1x.png';
+            }
+        }
+        //
+        var deleteHtml = "deleteImg(event,this.parentNode,this.parentNode.parentNode)";
+         var openHtml = '';
+        if(img_json.type == 1){
+            openHtml = "openAttachment('"+img_json.resource_id_int+"','"+img_json.resource_format+"',this,event)"
+        }else{
+            openHtml = "openAnswer('"+img_json.resource_id_int+"','"+img_url+"','"+ img_json.resource_info_id+"')";
+        }
+       
+        var mr_picture = "this.src='../../../../../image/fun-module/common/wk_default_square.png'";
+        var li_html = '<li class="fl" onclick="'+openHtml+'">';
+            if(img_json.type == 2){
+                //视频默认图片
+                li_html +='<div style="background:#141414 url('+img_url+') center center no-repeat;background-size:35% auto;"></div>';
+                li_html +='<div class="delete" onclick="'+deleteHtml+'">&nbsp;</div>';
+            }else if(img_json.type == 1){//音频
+                li_html +='<img style="width:160px;height:40px"  src="'+img_url+'" onerror="'+mr_picture+'" />';
+                telmte_id = 'voice_text';
+                li_html +='<div class="delete_voice" onclick="'+deleteHtml+'">&nbsp;</div>';
+            }else{
+                li_html +='<img style="width:100%;height:'+(parseInt(api.winWidth/10)*3/4*3)+'px"  src="'+img_url+'" onerror="'+mr_picture+'" />';
+                li_html +='<div class="delete" onclick="'+deleteHtml+'">&nbsp;</div>';
+            }
+            li_html +='</li>';
+        $api.append($api.byId(telmte_id), li_html);
+    }
+    
+   /*
+    *author:zhaoj
+    *function:打开主观题答案
+    *date：20170904
+    */
+    function openAnswer(resource_id_int,img_url,resource_info_id){
+        if(resource_id_int < 0){
+            common_openPicture.open(img_url,api.winName);
+        }else{
+            var param_json = {"is_show_tip":1,"resource_id_int":resource_id_int,"resource_info_id":resource_info_id};
+            commonGetResInfo(param_json,function(flag,ret){
+                api.hideProgress();
+                if(flag){
+common_openResource.open(ret.resource_format,ret.file_id,ret.resource_title,ret.m3u8_status,api.winName,'reBackType("voice");','back();',ret.resource_id_int);
+                }else{
+                    popToast('打开失败，请稍候重试');
+                }
+            });
+        }
+    }
+    
+   /*
+    *author:zhaoj
+    *function:打开附件
+    *date：20171023
+    */
+    function openAttachment(resource_id_int,resource_format,self,e){
+        var param_json = {"is_show_tip":1,"resource_id_int":resource_id_int};
+        var voice_dom = document.getElementById('voice_text');
+        var img_dom_arry = $api.domAll(voice_dom, 'li');
+        for(var i=0;i<img_dom_arry.length;i++){
+            if($api.hasCls(img_dom_arry[i],'is_play') && img_dom_arry[i] != self){
+                var img_dom_voice = $api.dom(img_dom_arry[i], 'img');
+                $api.removeCls(img_dom_arry[i], 'is_play');
+                $api.attr(img_dom_voice, 'src','../../../../../image/fun-module/ipad/zthd/voice-bg.png');
+            }
+            if(i == img_dom_arry.length-1){
+                commonGetResInfo(param_json,function(flag,ret){
+                    api.hideProgress();
+                    if(flag){
+                        var res_url='';
+                        if (BASE_APP_TYPE == 1) {
+                            res_url = BASE_IMAGE_PRE+"down/Material/" + ret.file_id.substring(0, 2) + "/" + ret.file_id+'.'+ret.resource_format;        
+                        } else {
+                            res_url = BASE_URL_ACTION + "/html/thumb/Material/" + ret.file_id.substring(0, 2) + "/" + ret.file_id+'.'+ret.resource_format;
+                        }
+                        if($api.hasCls(self, 'is_play')){
+                            //停止播放
+                            $api.removeCls(self, 'is_play');
+                            var img_dom = $api.dom(self, 'img');
+                            $api.attr(img_dom, 'src','../../../../../image/fun-module/ipad/zthd/voice-bg.png');
+                            stopVoice(self);
+                        }else{
+                            //正在播放
+                            $api.addCls(self, 'is_play');
+                            openAudio(res_url,self);
+                        }
+                    }else{
+                        popToast('打开失败，请稍候重试');
+                    }
+                });       
+            }
+        }
+        e.stopPropagation();
+    }
+    
+   /*
+    *author:zhaoj
+    *function:播放音频
+    *date：20171024
+    */
+    function openAudio(voice_url,self){
+        commonShowProgress('加载中...',false);
+        var img_dom = $api.dom(self, 'img');
+        netAudio.play({
+            path: voice_url
+        },function( ret, err ){    
+            if( ret ){
+                if(ret.current == 0){
+                    api.hideProgress();
+                    $api.attr(img_dom, 'src','../../../../../image/fun-module/ipad/zthd/voice-bg.gif');
+                }
+                if(ret.complete==true){
+                    popToast('播放完毕');
+                    $api.removeCls(self, 'is_play');
+                    $api.attr(img_dom, 'src','../../../../../image/fun-module/ipad/zthd/voice-bg.png');        
+                }
+            }else{
+                api.hideProgress();
+                popToast('加载失败');
+            }
+        });
+    }
+    
+   /*
+    *author:zhaoj
+    *function:停止录音
+    *date：20171024
+    */
+    function stopVoice(self){
+        api.hideProgress();
+        netAudio.stop();
+    }
+    
+    /*
+     *author:zhaoj
+     *function:删除上传图片
+     *date：20160325
+     */
+    function deleteImg(e, parent, grandpa) {
+        grandpa.removeChild(parent);
+        e.stopPropagation();
+    }
+    
+   /*
+    *author:zhaoj
+    *function:获取到上传资源库中的参数
+    *date：20170904
+    */
+    function getParamJson(param){
+        var resource_format =param.resource_format;
+        resource_format = resource_format.toLowerCase();
+        var check_ext = support_extension.indexOf(resource_format);
+        var m3u8_status;
+        check_ext != "-1" ? m3u8_status = 1:m3u8_status=0;
+        var param_json={
+            "app_type_id" : 17,
+            "beike_type" : 100,
+            "bk_type_name" : -1,
+            "file_id" : param.file_id,
+            "group_id" : 2,
+            "identity_id" : $api.getStorage('identity'),
+            "m3u8_status" : m3u8_status,
+            "person_id" : $api.getStorage("person_id"),
+            "person_name" : Base64.encode($api.getStorage("person_name")),
+            "res_type" : 35,
+            "resource_format" : resource_format,
+            "resource_title" : Base64.encode(param.file_id),
+            "structure_id" : -1,
+            "is_show_tip":param.is_show_tip,
+            "type":param.type,//1:代表视频
+            "voice_duration":param.voice_duration
+        }
+        return param_json;
+    }
+    
+    /*
+     * 功能：保存检测
+     * 作者：张自强
+     * 时间：20180604
+     * 接口：陈续刚
+     */
+    function saveAll(type){
+        showSelfProgress('保存中...');
+        var zy_title = $api.trimAll($api.val($api.byId('zy_title')));
+        var comt_content = $api.trimAll($api.val($api.byId('comt_content')));
+        var score_input = $api.trimAll($api.val($api.byId('score_input')))*1;
+        if(zy_title.length == 0){
+            api.hideProgress();
+            popAlert("请填写检测名称！");
+            return;
+        }
+        if(score_input == null || score_input == '' || typeof(score_input) == undefined || score_input<0){
+             api.hideProgress();
+            popAlert("请填写分数！");
+            return;
+        }
+        api.ajax({
+	        url : BASE_URL_ACTION + '/ypt/xx/saveZy',
+	        method : 'post',
+	        dataType : 'json',
+	        timeout : 30,
+	        data : {
+	           values : {
+	               'is_convert':2,
+                   'random_num':creatRandomNum(),
+                   'scheme_id':api.pageParam.scheme_id,
+                   'stage_id':api.pageParam.stage_id, 
+                   'structure_id':api.pageParam.structure_id,
+                   'subject_id':api.pageParam.subject_id,
+                   'teacher_id':$api.getStorage('person_id'),
+                   'ti_count':tj_fj_json.length,    
+                   'ti_fujian_json':'',   
+                   'total_scores':$api.trimAll($api.val($api.byId('score_input'))),    
+                   'xq_id':xq_id,
+                   'zg_ti_count':0,
+                   'zy_desc':comt_content,
+                   'zy_name':zy_title,
+                   'zy_type':1,
+                   'zy_fujian_json':tj_fj_json
+	           }
+	        },
+	        headers : {
+                            'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+                        }
+        },function(ret,err){
+            if(err){
+                api.hideProgress();
+                popToast('保存失败，请稍后重试！');
+            }else{
+                if(ret.success){
+                    setCoursepackage(ret.zy_id,type);
+                }else{
+                    api.hideProgress();
+                    popToast('保存失败，请稍后重试！');
+                }
+            }
+        });
+    }
+    
+    /*
+     * 功能：添加课程包
+     * 作者：张自强
+     * 时间：20180606
+     * 接口：张海
+     */
+    function setCoursepackage(new_zy_id,type){
+        api.ajax({
+	        url:BASE_URL_ACTION+'/ypt/space/course_package/save_resource',
+	        method:'post',
+	        timeout:30,
+	        dataType:'json',
+	        data:{
+	           values : {
+	                'random_num':creatRandomNum(),
+                    'person_id':$api.getStorage('person_id'),
+                    'identity_id':$api.getStorage('identity'),
+                    'scheme_id':api.pageParam.scheme_id,
+                    'volume_id':api.pageParam.volume_id,
+                    'subject_id':api.pageParam.subject_id,
+                    'stage_id':api.pageParam.stage_id,
+                    'res_type_id':api.pageParam.res_type_id,
+                    'structure_id':api.pageParam.structure_id,
+                    'res_ids':[
+                            {
+                                "res_id":new_zy_id,
+                                "is_cloud":0,
+                                "issue_id":xq_id+""
+                            }
+                        ],
+                    'issue_id':xq_id,
+                    'add_res_m':1,
+                    'package_id':api.pageParam.package_id,
+                    'material_type':11
+	           }
+	        },
+	        headers : {
+	'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+}
+        },function(ret,err){
+        	if(err){
+        	   popToast('保存失败，请稍后重试！');
+        	}else{
+        	   if(ret.success){
+        	       switch(type){
+        	           case 1://保存检测
+        	               popToast('保存成功！');
+                           commonExecScript('zuoyeIpad_index_window','zuoyeIpad_index_frame','initData(1);',1);
+                           setTimeout(function(){
+                               commonExecScript('zuoyeIpad_index_window','','back();',0);
+                           },1000);
+        	               break;
+        	           case 2://保存并发布检测
+        	               api.openWin({
+                                name : 'zuoyeIpad_publish_window',
+                                url : 'zuoyeIpad_publish_window.html',
+                                pageParam : {
+                                    'header_h' : header_h,
+                                    'zy_id' : new_zy_id,
+                                    'zy_name_base64' : '',
+                                    'subject_id' : api.pageParam.subject_id,
+                                    'currentPage' : 0,
+                                    'is_convert:':2
+                                },
+                                bounces : false,
+                                opaque : false,
+                                showProgress : false,
+                                vScrollBarEnabled : false,
+                                hScrollBarEnabled : false,
+                                slidBackEnabled : false,
+                                delay : 0,
+                                animation : {
+                                    type : "reveal", //动画类型（详见动画类型常量）
+                                    subType : "from_right", //动画子类型（详见动画子类型常量）
+                                    duration : 300
+                                },
+                            });
+                            setTimeout(function(){
+                                commonExecScript('zuoyeIpad_index_window','','back();',1);
+                            },500);
+        	               break;
+        	       }
+        	   }else{
+        	       popToast('保存失败，请稍后重试！');
+        	   }
+        	}
+        	api.hideProgress();
+        });
+    }
+    
+    /*
+     * 功能：修改分数
+     * 作者：张自强
+     * 时间：20180604
+     */
+    function changeScore(type){
+        var score = $api.trimAll($api.val($api.byId('score_input')));
+        if(score == '' || typeof(score) == undefined || score == null){
+            score = 0;
+        }
+        score = score*1;
+        switch(type){
+            case 1://减0.5
+                if(score != 0){
+                    score -= 0.5;
+                }
+                break;
+            case 2://加0.5
+                score += 0.5;
+                break;
+        }
+        $api.val($api.byId('score_input'),score);
+    }
+</script>
+</html>

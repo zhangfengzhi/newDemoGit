@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+		<title>title</title>
+		<link rel="stylesheet" type="text/css" href="../../../../../css/aui/aui.css" />
+		<link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+		<style>
+			body {
+			}
+		</style>
+	</head>
+	<body>
+		<div id="wrap">
+			<header class="aui-bar aui-bar-nav aui-bar-primary" id="aui-header">
+				<div id="cloud" class="topbar activebar">
+					<div id="back" class="back" onclick="back();" tapmode="">
+						<i class="aui-iconfont aui-icon-left"></i>返回
+					</div>
+					<div class="mTitle" id="mTitle">
+						出勤详情页
+					</div>
+				</div>
+			</header>
+		</div>
+	</body>
+	<script type="text/javascript" src="../../../../../script/api.js"></script>
+	<script type="text/javascript">
+		apiready = function() {
+		    commonSetTheme({"level":5,"type":0});
+			var header = $api.byId('aui-header');
+			$api.fixStatusBar(header);
+			header_h = api.pageParam.header_h;
+			//打开详情页面
+			openDetailFrame();
+		};
+		function openDetailFrame() {
+			api.openFrame({
+				name : 'sxgi_dm_detail_frame',
+				url : 'sxgi_dm_detail_frame.html',
+				rect : {
+					x : 0,
+					y : header_h,
+					w : 'auto',
+					h : api.winHeight,
+				},
+				bgColor : '#f0f0f0',
+				vScrollBarEnabled : true,
+				hScrollBarEnabled : false,
+				//页面是否弹动 为了下拉刷新使用
+				bounces : true
+			});
+		}
+
+		function back() {
+			api.closeWin({
+			});
+		}
+	</script>
+</html>

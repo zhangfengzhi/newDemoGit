@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<title>答题页面</title>
+		<link rel="stylesheet" type="text/css" href="../../../../../css/aui/aui.css" />
+		 <link id="j_theme_base" rel="stylesheet" type="text/css" href="" /><style>
+			body {
+				margin: 0;
+				background: rgba(0,0,0,0);
+			}
+			.zuoye-name {	
+				line-height: 55px;
+				width: 100%;
+			}
+			.answer-title {
+				border-top: 1px solid #f1f1f1;
+				height: 55px;
+				width: 100%;
+				margin-bottom: 20px;
+			}
+			.title {
+				width: 50%;
+				float: left;
+			}
+			.answer-title div {
+				height: 35px;
+				display: inline-block;				
+				line-height: 35px;
+				margin-top: 13px;
+				padding: 0 15px;
+				color: #ffffff;
+			}
+			.seleted {
+				width: 20%;
+				float: right;
+				text-align: right;
+			}
+			.seleted .num {
+				font-size: 22px;				
+			}
+			.stem {
+				padding: 20px 5%;
+				max-width:100%;
+				word-wrap: break-word;
+				word-break:break-all;
+			}
+			.option dl {
+				position:relative;
+				border-radius: 5px;
+				min-height: 55px;
+				border: 2px solid #EFF1F1;
+				margin-bottom: 20px;
+			}
+			.option dl dt {
+				position:absolute;
+				top:0px;
+				bottom:-1px;
+				display:block;
+				font-size: 22px;
+				font-weight: 600;
+				width: 12%;
+				height:100%;
+				float: left;
+				background: #EFF1F1;
+		/*		line-height: 53px;*/
+				border-radius: 1px 0 0 1px;
+				text-align: center;
+				color: #666;
+			}
+			.option dl dt div{
+				position:absolute;
+				top:50%;
+				left:50%;
+				margin-top:-10px;
+				margin-left:-8px;
+				height:20px
+			}
+			.option dl dd {
+				width: 75%;
+				float: right;
+				margin-right:30px;
+				min-height: 55px;
+				line-height: 25px;
+				padding:15px 0;
+				color:#98979D;
+				word-wrap: break-word;
+				word-break: normal; 
+			}
+			.option dl dd div p img{
+				vertical-align: middle;
+				margin:10px 0;
+			}
+			.option dl dd img {
+				max-width: 85%;
+			}
+			.option dl dd .judge{position:absolute;right:4%;top:50%;margin-top:-9px;width:18px;height:15px;display:inline-block;border:none !important;}			
+			.option .active dt {				
+				color: #ffffff !important;
+			}
+	
+			.next {
+				line-height: 55px;
+				text-align: right;
+			}
+			.plr15 {
+				padding: 0 15px;
+			}
+			.footer-div{
+				position:fixed;
+				height:55px;
+				background:#ffffff;
+				display: block;
+				bottom: 0px;
+				width:100%;
+				box-shadow:3px 0 4px #aaaaaa;
+				z-index: 9999;
+			}
+			.footer-div .prevQ,.footer-div .nextQ{display: inline-block;width:50%;float: left;}
+			.footer-div .prevQ{text-align: left;}
+			.footer-div .nextQ{text-align: right;}
+			.footer_div{height:70px;}
+			.no-question-data{text-align:center;color:#666;height:50px;line-height:50px;}
+			.right-answer span{z-index: 0 !important;}
+			textarea{border:1px solid #e0e0e0;border-radius:5px;}
+		</style>
+	</head>
+	<body class="common-ipad-dcwjIpadstu">
+		<div class="q_div" id="q_div">
+		</div>
+		<script type="text/html" id="q_script">
+			<%if(q_typeid == 1){%>
+				<!--单选题-->
+				<div class="zuoye-name plr15 clearfix">
+					<div class="title">单选题</div>              
+					<div class="seleted" onclick="enterDtkWin();"><font class="num"><%=sort%></font>/<%=length%></div>
+				</div>
+				<div id="j_title" class="stem clearfix">
+					<%=title%>
+				</div>
+				<%if(option.length > 0){%>
+					<div id="j_option" class="option plr15 clearfix">
+						<%for(var i = 0; i < option.length; i++){%>
+							<dl class="clearfix <%=option[i].class_name%>"  optiontitle="<%=option[i].title%>" onclick="singleTopicSelection(this,<%=sort%>,'',<%=option[i].id%>,'<%=option[i].description%>',<%=option[i].http_action%>)">
+								<dt><div><%=i+1%></div></dt>
+								<%if(option[i].http_action == 0){%>
+									<dd>
+										<%=option[i].title%>
+									</dd>
+								<%}else{%>
+									<dd>
+										<a href="javascript:openHref('<%=option[i].href%>');"><%=option[i].description%>(点击查看)</a>
+									</dd>
+								<%}%>
+							</dl>
+						<%}%>
+					</div>
+				<%}%>
+			<%}else if(q_typeid == 2){%>
+				<!--多选题-->
+				<div class="zuoye-name plr15 clearfix">
+					<div class="title">多选题</div>              
+					<div class="seleted" onclick="enterDtkWin();"><font class="num"><%=sort%></font>/<%=length%></div>
+				</div>
+				<div id="j_title" class="stem clearfix">
+					<%=title%>
+				</div>
+				<%if(option.length > 0){%>
+					<div id="j_option" class="option plr15 clearfix" MINO="<%=min_o%>" MAXO="<%=max_o%>">
+						<%for(var i = 0; i < option.length; i++){%>
+							<dl class="clearfix <%=option[i].class_name%>"  optiontitle="<%=option[i].title%>" onclick="multipleChoiceAnswer(this,<%=sort%>,'',<%=option[i].id%>,'<%=option[i].description%>',<%=option[i].http_action%>)">
+								<dt><div><%=i+1%></div></dt>
+								<%if(option[i].http_action == 0){%>
+									<dd>
+										<%=option[i].title%>
+									</dd>
+								<%}else{%>
+									<dd>
+										<a href="javascript:openHref('<%=option[i].href%>');"><%=option[i].description%>(点击查看)</a>
+									</dd>
+								<%}%>
+								
+							</dl>
+						<%}%>
+					</div>
+				<%}%>
+			<%}else{%>
+				<!--简答题-->
+				<div class="zuoye-name plr15 clearfix">
+					<div class="title">简答题</div>              
+					<div class="seleted" onclick="enterDtkWin();"><font class="num"><%=sort%></font>/<%=length%></div>
+				</div>
+				<div id="j_title" class="stem clearfix">
+					<%=title%>
+				</div>
+				<div class="answer-title clearfix">
+					<div>
+						我的作答
+					</div>
+				</div>
+				<div class="plr15">
+					<textarea id="j_textarea" onscroll="this.rows++;" oninput="commonRemoveExpression(this)" rows="7" placeholder="请输入答案......"></textarea>
+				</div>
+			<%}%>
+			<!--下一题-->
+			<div id="j_footer" class="footer-div next clearfix">
+				<div class="prevQ" onclick="enterPreQuestion();"><span class="aui-iconfont aui-icon-left"></span>上一题</div>
+				<div class="nextQ" onclick="goNextQuestion();">下一题<span class="aui-iconfont aui-icon-right"></span></div>
+			</div>
+		</script>
+		<div id="footer_div" class="footer_div">
+			&nbsp;
+		</div>
+	</body>
+	<script type="text/javascript" src="../../../../../script/api.js"></script>
+	<script type="text/javascript" src="../../../../../script/base_config.js" ></script>
+	<script type="text/javascript" src="../../../../../script/plug-in/template.js" ></script>
+	<script type="text/javascript" src="../../../../../script/plug-in/base64.js" ></script>
+	<script type="text/javascript" src="../../../../../script/common/common.js" ></script>
+	<script type="text/javascript" src="../../../../../script/common/ipad/dcwjIpad_common.js" ></script>
+	<script type="text/javascript">
+		var header_h;
+		var BASE_URL_ACTION;
+		var id;//调查问卷id
+		var q_cur_num = 0;//当前试题
+		var q_sum = 0;//试题总数
+		var q_json;//试题json
+		var answer_json;//答案的json对象
+		apiready = function() {
+			commonSetTheme({"level":5,"type":0});
+			header_h = api.pageParam.header_h;
+			BASE_URL_ACTION = $api.getStorage('BASE_URL_ACTION');
+			id = api.pageParam.id;
+			answer_json={"s_id": id,"items":[]};
+			showSelfProgress('加载中...');
+			getSurveyById(id,function(flag,ret){
+				if(flag){
+					q_sum = ret.item.length;
+					q_json = ret;
+					for(var i = 0; i < ret.item.length; i++){
+						var oparam = new Object();
+						oparam.title=ret.item[i].title;
+						oparam.item_id=ret.item[i].id;
+						oparam.q_type=ret.item[i].q_type;
+						oparam.q_typeid=ret.item[i].q_typeid;
+						if(ret.item[i].q_typeid == 1 || ret.item[i].q_typeid == 2){
+							oparam.option=[];
+						}else{
+							oparam.content="";
+						}
+						answer_json.items.push(oparam);
+					}
+					answer_json.remarks=ret.remarks;
+					reWriteQuestion(0);
+				}else{
+					api.hideProgress();
+					popToast('获取试题失败，请稍候再试！');
+				}
+			});
+			//下一题
+			nextQuestion();
+			//上一题
+			preQuestion();
+		};
+		/*
+		*作者:zhaoj
+		*功能:进入下一道题
+		*日期：20161101
+		*/
+		function goNextQuestion(){
+			jdtAnswer(q_cur_num);
+			if (q_cur_num < q_sum-1) {
+				q_cur_num++;
+				reWriteQuestion(q_cur_num);
+			} else {
+				q_cur_num = q_cur_num;
+				enterDtkWin();
+			}
+		}
+		/*
+		*作者:zhaoj
+		*功能:进入上一道题
+		*日期：20161101
+		*/
+		function enterPreQuestion(){
+			if (q_cur_num > 0) {
+				jdtAnswer(q_cur_num);
+				q_cur_num--;
+			} else {
+				popToast('已经到第一题');
+				q_cur_num = 0;
+			}
+			reWriteQuestion(q_cur_num);
+		}
+		/*
+		*作者:zhaoj
+		*功能:重写问题题目
+		*日期：20161102
+		*/
+		function reWriteQuestion(q_cur) {
+			q_cur_num = q_cur;
+			api.hideProgress();
+			var length = q_json.item.length;
+			if(length > 0){
+				//增加题目json数据
+				q_json.item[q_cur].sort=q_cur+1;
+				q_json.item[q_cur].length = length;
+				//给已经答过的选择题，把已答答案显示到试题中
+				if(q_json.item[q_cur].q_typeid == 1 ||q_json.item[q_cur].q_typeid ==2){
+					showSelectedAnswer(q_json.item[q_cur].q_typeid,q_cur);
+				}
+				var q_type = q_json.item[q_cur].q_typeid;
+				//如果是单选和多选题，需要判断是否有外部链接页面，需要跳转
+				if(q_type == 1 || q_type == 2) {
+					var option_attr =  q_json.item[q_cur].option;
+					var o_l = option_attr.length;
+					for(var i=0; i<o_l; i++){
+						var q_title = option_attr[i].title;
+						//http打开
+						var option = q_title;//选项内容
+						var flagE = option.charAt(option.length-1)==")";
+						var flagC = option.charAt(option.length-1)=="）";
+						var pECenter = option.lastIndexOf('](');
+						var pCCenter = option.lastIndexOf('】（');
+						var pELeft = option.lastIndexOf('[');
+						var pCLeft = option.lastIndexOf('【');
+						//是否存在http链接,1:有链接，0:无链接
+						var http_action = 0;
+						//教师名
+						var description='';
+						//http地址
+						var href =''
+						//没有http的内容
+						var title =''
+						if(flagE && pECenter>=0 && pELeft>=0){
+							title = option.substring(0,pELeft);   //去除超链接后显示的选项内容
+							description = title + "[" + option.substring(pELeft+1,pECenter) + "]";  //超链接内容
+							href = option.substring(pECenter+2,option.length-1);  //超链接路径
+							http_action = 1;
+						}else if(flagC && pCCenter>=0 && pCLeft>=0){
+							title = option.substring(0,pCLeft);
+							description = title + "【" + option.substring(pCLeft+1,pCCenter)+ "】";
+							href = option.substring(pCCenter+2,option.length-1);
+							http_action = 1;
+						}else{
+							title = q_title;
+							http_action = 0;
+						}
+						option_attr[i]["title"] = q_title;
+						option_attr[i]["http_action"] = http_action;
+						option_attr[i]["description"] = description;
+						option_attr[i]["href"] = href;
+					}
+				}
+				addSingleTemplateHtml('q_div', 'q_script', q_json.item[q_cur]);
+				//给已经答过的简答题，把已答答案显示到试题中
+				if(q_json.item[q_cur].q_typeid == 3){
+					showSelectedAnswer(q_json.item[q_cur].q_typeid,q_cur);
+				}
+				//判断是最后一题还是第一题
+				judgeLastOrFirst(q_cur+1,length);
+			}else{
+				//没有题目
+				$api.html($api.byId('q_div'), '<div class="no-data">暂无题目</div>');
+			}
+		}
+		/*
+		*作者:zhaoj
+		*功能:判断是第一题还是最后一题
+		*日期：20161102
+		*/
+		function judgeLastOrFirst(q_cur,length){
+			if(q_cur == 1 && length != 1){
+				$api.css($api.dom('.prevQ'),'display:none;');
+				$api.css($api.dom('.nextQ'),'float:right;');
+			}else if(q_cur == length && length != 1){
+				$api.css($api.dom('.prevQ'),'float:left;');
+				$api.html($api.dom('.nextQ'),'进入答题卡<span class="aui-iconfont aui-icon-right"></span>');
+			}else if(q_cur == 1 && length == 1){
+				$api.css($api.dom('.prevQ'),'display:none;');
+				$api.css($api.dom('.nextQ'),'float:right;');
+				$api.html($api.dom('.nextQ'),'进入答题卡<span class="aui-iconfont aui-icon-right"></span>');
+			}
+		}
+		/*
+		*作者:zhaoj
+		*功能:单选题作答
+		*日期：20161102
+		*/
+		function singleTopicSelection(self,sort,title,id){
+			title = $api.attr(self,'optiontitle');
+			var option = answer_json.items[sort-1].option;
+			if($api.hasCls(self, 'active')){
+				//已选择的选项，去掉选择
+				$api.removeCls(self, 'active');
+				for(var i = 0; i < option.length; i++){
+					if(option[i].option_id == id){
+						option.splice(i,1);
+					}
+				}
+			}else{
+				//去掉已选择的选项
+				var dl_array = $api.domAll($api.byId('j_option'), 'dl');
+				for(var i = 0; i < dl_array.length; i++){
+					if($api.hasCls(dl_array[i], 'active')){
+						$api.removeCls(dl_array[i], 'active');
+					}
+				}
+				//添加选择
+				option.splice(0,option.length);
+				$api.addCls(self, 'active');
+				var oparam = new Object();
+				oparam.title = returnOptionNoUrl(title);
+				oparam.option_id = id;
+				option.push(oparam);
+				//下一题
+				setTimeout(function(){
+					goNextQuestion();
+				},300);
+			}
+		}
+		/*
+		*作者:zhaoj
+		*功能:多选题作答
+		*日期：20161102
+		*/
+		function multipleChoiceAnswer(self,sort,title,id){
+		    var min_num = $api.attr($api.byId('j_option'), 'MINO');
+            var max_num = $api.attr($api.byId('j_option'), 'MAXO');
+			title = $api.attr(self,'optiontitle');
+			var option = answer_json.items[sort-1].option;
+			if($api.hasCls(self, 'active')){
+				//已选择的选项，去掉选择
+				$api.removeCls(self, 'active');
+				for(var i = 0; i < option.length; i++){
+					if(option[i].option_id == id){
+						option.splice(i,1);
+					}
+				}
+			}else{
+				$api.addCls(self, 'active');
+				var oparam = new Object();
+				oparam.title = returnOptionNoUrl(title);
+				oparam.option_id = id;
+				option.push(oparam);
+			}
+			if(option.length >= min_num && option.length <= max_num){
+                answer_json.items[sort-1].muchSelected = true;
+            }else{
+                answer_json.items[sort-1].muchSelected = false;
+            }
+		}
+		/*
+		*作者:zhaoj
+		*功能:简答题作答
+		*日期：20161102
+		*/
+		function jdtAnswer(q_cur){
+			var answer_content = $api.val($api.byId('j_textarea'));
+			answer_json.items[q_cur].content=answer_content;
+		}
+		/*
+		*作者:zhaoj
+		*功能:显示单选题和多选题答案
+		*日期：20161102
+		*/
+		function showSelectedAnswer(q_typeid,q_cur){
+			if(q_typeid == 1 || q_typeid == 2){
+				//选择题
+				var q_option = q_json.item[q_cur].option;
+				var answer_option = answer_json.items[q_cur].option;
+				for(var i = 0; i < q_option.length; i++){
+					q_option[i].class_name="";
+					for(var j = 0; j < answer_option.length; j++){
+						if(q_option[i].id == answer_option[j].option_id){
+							q_option[i].class_name="active";
+						}else{
+							if(q_option[i].class_name !="active"){
+								q_option[i].class_name="";
+							}
+						}
+					}
+				}
+			}else{
+				$api.val($api.byId('j_textarea'),answer_json.items[q_cur].content);
+			}
+		}
+		/*
+		*作者:zhaoj
+		*功能:进入到答题卡
+		*日期：20161102
+		*/
+		function enterDtkWin(){
+			commonOpenWin('dcwjIpad_dtk_window', 'dcwjIpad_dtk_window.html', false, false, {'header_h':header_h,'id':id,'answer_json':answer_json,"type":api.pageParam.type})
+		}
+		
+		
+	</script>
+</html>

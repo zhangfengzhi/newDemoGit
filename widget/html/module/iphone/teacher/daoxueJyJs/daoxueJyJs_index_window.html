@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<!-- html5：在创建html时为了防止页面缩放等不兼容效果，要创建个viewport  -->
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<!-- 在IOS设备上，有时会将数字转为手机号，这里也要禁止下 -->
+		<meta name="format-detection" content="telephone=no"/>
+		<title>教师端导学</title>
+		<link rel="stylesheet" type="text/css" href="../../../../../css/aui/aui.css" />
+		<link rel="stylesheet" type="text/css" href="../../../../../css/module/common/daoxueJyJs.css" />
+		 <link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+	</head>
+	<body class="common-iphone-daojueJyJs">
+		<div id="wrap">
+			<header class="aui-bar aui-bar-nav aui-bar-primary" id="aui-header">
+				<div id="cloud" class="topbar activebar">
+					<div id="back" class="back" onclick="back();" tapmode="">
+						<i class="aui-iconfont aui-icon-left"></i>返回
+					</div>
+					<div  class="mTitle" id="mTitle">
+						
+					</div>
+					<div class="win-menu">
+						<a id='j_add' class="aui-iconfont aui-icon-add plr5" onclick="openAddWin(event)"></a>
+						<a id='j_menu' class="aui-iconfont aui-icon-menu pl5" onclick="openSzJcFrame(0);"></a>
+					</div>
+				</div>
+			</header>
+			<div  class="aui-content aui-content-padded" id="message-content">
+				<p class="aui-text-center history-date"></p>
+			</div>
+		</div>
+		<div id="j_footer" class="footer-div" class="p-none">
+			<div class="wid" onclick="openStuGroupWin();">学生分组</div>
+		</div>
+	</body>
+	<script type="text/javascript" src="../../../../../script/api.js"></script>
+	<script type="text/javascript" src="../../../../../script/common/common.js"></script>
+	<script type="text/javascript" src="../../../../../script/assembly/tongjiData.js"></script>
+	<script type="text/javascript">
+		var mode_type=0;//0代表我的导学案,1代表精品导学案
+		var back_type = 'index';
+		apiready = function() {commonSetTheme({"level":5,"type":0});
+			var header_h = api.pageParam.header_h;
+			resetWinName();
+			var pageParamJson={"header_h":header_h};//打开frame页面所需参数
+			commonOpenFrame('daoxueJyJs_index_frame', 'daoxueJyJs_index_frame.html',header_h, false, false,"#ffffff",pageParamJson);	//打开index页面
+			isShowFooterBtn(1);
+			commonBackForAndroid();//安卓关闭
+			commonIosAuiHeader();//定位header位置，留出上面电池等空隙，苹果需要
+			commonOpenTjData($api.getStorage("identity")+'_'+api.winName);//记录统计
+		};
+		/*
+		*author:zhaoj
+		*function:设置我的教案和精品教案按钮
+		*date：20170329
+		*/
+		function resetWinName(){ 
+			if(mode_type){
+				var btn_html = '<div class="btn-title"><div id="j_btn_0" class="btn-l btn-top" onclick="changeBtnTitle(0);">我的导学</div><div id="j_btn_1" class="btn-r btn-top-active btn-top" onclick="changeBtnTitle(1);">精品导学</div></div>';
+			}else{
+				var btn_html = '<div class="btn-title"><div id="j_btn_0" class="btn-l btn-top-active btn-top" onclick="changeBtnTitle(0);">我的导学</div><div id="j_btn_1" class="btn-r btn-top" onclick="changeBtnTitle(1);">精品导学</div></div>';
+			}
+			$api.html($api.byId('mTitle'), btn_html);
+		}
+		/*
+		*author:zhaoj
+		*function:切换我的教案和精品教案按钮
+		*date：20170329
+		*/
+		function changeBtnTitle(type){
+			if(mode_type != type){
+				mode_type = type;//改变全局变量
+				//去掉按钮active样式
+				var el = $api.byId('j_btn_'+type);
+				var child_array = el.parentNode.children;
+				for(var i = 0; i < child_array.length; i++){
+					$api.removeCls(child_array[i], 'btn-top-active');
+				}
+				//给点击按钮加上active样式
+				$api.addCls(el,'btn-top-active');
+				changeModeType();//切换列表数据显示
+			}
+		}
+		/*
+		*author:zhaoj
+		*function:切换列表数据显示
+		*date：20170329
+		*/
+		function changeModeType(){
+			api.execScript({
+				name : 'daoxueJyJs_index_window',
+				frameName:'daoxueJyJs_index_frame',
+				script : 'changeModeType('+mode_type+');'
+			});
+		}
+		/*
+		*author:zhaoj
+		*function:返回页面
+		*date：20170118
+		*/
+		function back() {
+			switch(back_type) {
+				case 'index':
+				    commonCloseTjData($api.getStorage("identity")+'_'+api.winName);
+					api.closeWin();
+					break;
+				case 'zsd':
+					commonCloseFrame("daoxueJyJs_zsd_frame");
+					reBackType('index');
+					break;
+				case 'apply':
+					commonCloseFrame("daoxueJyJs_apply_frame");
+					reBackType('index');
+					break;
+			}
+		}
+		/**
+		 * 重置从哪个页面退出
+		 * 周枫
+		 * 2015.12.17
+		 */
+		function reBackType(type) {
+			switch(type) {
+				//如果列表页面退出
+				case 'index':
+					back_type = "index";
+					resetWinName();
+					$api.removeCls($api.byId('j_menu'),'display-none');
+					$api.removeCls($api.byId('j_add'),'display-none');
+					break;
+				//如果知识点页面退出
+				case 'zsd':
+					back_type = "zsd";
+					$api.html($api.byId('mTitle'), '选择章节');
+					$api.addCls($api.byId('j_menu'),'display-none');
+					$api.addCls($api.byId('j_add'),'display-none');
+					break;
+				//如果选用页面退出
+				case 'apply':
+					back_type = "apply";
+					break;
+			}
+		}
+		/*
+		*author:zhaoj
+		*function:打开知识点页面
+		*date：20170329
+		*/
+		function openSzJcFrame(type){
+			commonExecScript('daoxueJyJs_index_window','daoxueJyJs_index_frame','openSzJcFrame('+type+');',1);
+		}
+
+		/*
+		*author:zhaoj
+		*function:打开添加导学页面
+		*date：20170329
+		*/
+		function openAddWin(e){
+			api.execScript({
+				name : 'daoxueJyJs_index_window',
+				frameName : 'daoxueJyJs_index_frame',
+				script : 'openAddWin();'
+			});
+			e.stopPropagation()
+		}
+		/*
+		*author:zhaoj
+		*function:打开学生分组window页面
+		*date：20161205
+		*/
+		function openStuGroupWin(){
+			var pageParamJson={"header_h":api.pageParam.header_h};
+			commonOpenWin('stuGroup_index_window', 'widget://html/common/stuGroup/stuGroup_index_window.html', false, false, pageParamJson);
+		}
+		/*
+		*author:zhaoj
+		*function:显示隐藏学生分组按钮
+		*date：20161203
+		*/
+		function isShowFooterBtn(type){
+			isShowWinFooterBtn(type);
+			var header_h = api.pageParam.header_h;
+			if(type){
+				var height = header_h+55;
+			}else{
+				var height = header_h;
+			}
+			api.setFrameAttr({
+			    name: 'daoxueJyJs_index_frame',
+			    rect: {
+			        x: 0,
+			        y: header_h,
+			        w: 'auto',
+			        h: api.winHeight -height
+			    },
+			    bounces: true,
+			    vScrollBarEnabled: true,
+			    hScrollBarEnabled: true
+			});
+		}
+		/*
+		*author:zhaoj
+		*function:显示隐藏学生分组按钮
+		*date：20161203
+		*/
+		function isShowWinFooterBtn(type){
+			if(type){
+				$api.removeCls($api.byId('j_footer'),'p-none');
+			}else{
+				$api.addCls($api.byId('j_footer'),'p-none');
+			}
+		}
+	</script>
+</html>

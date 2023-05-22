@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<!-- html5：在创建html时为了防止页面缩放等不兼容效果，要创建个viewport  -->
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<!-- 在IOS设备上，有时会将数字转为手机号，这里也要禁止下 -->
+		<meta name="format-detection" content="telephone=no"/>
+		<title>检测审批滑动条页面</title>
+		<link rel="stylesheet" type="text/css" href="../../../../../css/aui/aui.css" />
+		<link id="j_theme_base" rel="stylesheet" type="text/css" href="" /><style>
+			.nav{display:block;position:absolute;left:0;}
+			.nav li{display:inline-block;float:left;}
+			.nav li span{display:inline-block;}
+			.plr15{padding:0 15px;}
+			.question-item li{float:left;margin-left:10px;}
+	    	.question-item li div{margin:0 auto;text-align:center;background:#ffffff;color:#333333;}
+	    	.question-item li div.active{color:#ffffff;background-clip:padding-box;}
+		</style>
+	</head>
+	<body class="common-ipad-zuoyeIpad-tea">
+		<ul id="j_nav" class="nav"></ul>
+		<script type="text/html" id="div_script">
+			<div class="question-item">
+				<%for(var i=0;i< question_list.length;i++){%>
+						<!--当没有未批阅的题时，默认定位到第一道题-->
+					<%if(fir_question_id_char == false && i == 0){%>
+						<li style="width:60px;height:52px;margin-top:8px"  onclick="checkQuestion(<%=i%>,<%=question_list[i].sort%>,'<%=question_list[i].question_id_char%>','<%=question_list[i].jy_subject_en_name%>',<%=question_list[i].que_source%>);">
+							<div id="tihao_<%=i%>" class="active tihao" style="width:48px;height:48px;border-radius:24px !important;line-height:47px;max-width:48px;max-height:48px;">
+								<%=question_list[i].sort%>
+							</div>
+						</li>
+					<!--当有未批阅的题时，默认定位到未批阅的题上-->
+					<%}else if(fir_question_id_char != false && question_list[i].question_id_char == fir_question_id_char){%>
+						<li style="width:60px;height:52px;margin-top:8px"  onclick="checkQuestion(<%=i%>,<%=question_list[i].sort%>,'<%=question_list[i].question_id_char%>','<%=question_list[i].jy_subject_en_name%>',<%=question_list[i].que_source%>);">
+							<div id="tihao_<%=i%>" class="active tihao" style="width:48px;height:48px;border-radius:24px !important;line-height:47px;max-width:48px;max-height:48px;">
+								<%=question_list[i].sort%>
+							</div>
+						</li>
+					<%}else if(fir_question_id_char != false){%>
+						<li style="width:60px;height:52px;margin-top:8px"  onclick="checkQuestion(<%=i%>,<%=question_list[i].sort%>,'<%=question_list[i].question_id_char%>','<%=question_list[i].jy_subject_en_name%>',<%=question_list[i].que_source%>);">
+							<div id="tihao_<%=i%>" class="tihao" style="width:48px;height:48px;border-radius:24px !important;line-height:47px;max-width:48px;max-height:48px;">
+								<%=question_list[i].sort%>
+							</div>
+						</li>
+					<%}else{%>
+						<li style="width:60px;height:52px;margin-top:8px"  onclick="checkQuestion(<%=i%>,<%=question_list[i].sort%>,'<%=question_list[i].question_id_char%>','<%=question_list[i].jy_subject_en_name%>',<%=question_list[i].que_source%>);">
+							<div id="tihao_<%=i%>" class="tihao" style="width:48px;height:48px;border-radius:24px !important;line-height:47px;max-width:48px;max-height:48px;">
+								<%=question_list[i].sort%>
+							</div>
+						</li>
+					<%}%>
+				<%}%>
+			</div>					
+		</script>
+	</body>
+	<script type="text/javascript" src="../../../../../script/api.js" ></script>
+	<script type="text/javascript" src="../../../../../script/plug-in/template.js" ></script>
+	<script type="text/javascript" src="../../../../../script/common/common.js" ></script>
+	<script type="text/javascript">
+		var params;
+		var flag=true;
+		var left=0;
+		var page_num = -1;//当前题号的顺序
+		apiready = function() {
+			commonSetTheme({"level":5,"type":0});
+			header_h = api.pageParam.header_h;
+			params = api.pageParam.params;
+			initParams(function(is_true){
+				initData(function(flag){
+					//设置初始化样式
+					initStyle();
+				});
+			})
+		};
+		/*
+		*作者:zhaoj
+		*功能:初始化参数
+		*日期：20161027
+		*/
+		function initParams(callback){
+			if(isEmptyString(params.itemSize)){
+				params.itemSize={"w":''};
+			}
+			if(isEmptyString(params.backFun)){
+				params.backFun='callBackNew';
+			}
+			if(isEmptyString(params.selectedIndex)||params.selectedIndex >= params.items.length){
+				params.selectedIndex=0;
+			}
+			if(isEmptyString(params.font)){
+				params.font={"size":16,"color":"#262626","colorSelected":"#ff0000"};
+			}else{
+				if(isEmptyString(params.font.size)){
+					params.font.size = 16;
+				}
+				if(isEmptyString(params.font.color)){
+					params.font.color = "#262626";
+				}
+				if(isEmptyString(params.font.colorSelected)){
+					params.font.colorSelected = "#ff0000";
+				}
+			}
+			if(isEmptyString(params.bgColor)){
+				params.bgColor = "#ffffff";
+			}
+			if(isEmptyString(params.border)){
+				params.border = "";
+			}
+			callback(true);
+		}
+		/*
+		*作者:zhaoj
+		*功能:初始化数据
+		*日期：20161024
+		*/
+		function initData(callback){
+			var html_type = template.render('div_script', params.items);
+			document.getElementById('j_nav').innerHTML = html_type;
+			callback(true);
+		}
+		/*
+		*作者:zhaoj
+		*功能:初始化滑动条样式
+		*日期：20161024
+		*/
+		function initStyle(){
+			//获取选项数组
+			var ul = document.getElementById("j_nav");
+			var liList = ul.getElementsByTagName("li");
+			//宽度为空的相应处理
+			var width=0;
+			if(params.itemSize.w != ''){
+				//宽度不为空的相应处理
+				for(var i = 0; i < liList.length; i++){
+					$api.css(liList[i],'height:'+(params.h-1)+'px;text-align:center;font-size:'+params.font.size+'px;color:'+params.font.color+';');
+					$api.css(liList[i],'line-height:'+(params.h-1)+'px;');
+					$api.css(liList[i],'width:'+params.itemSize.w+'px;');
+					$api.removeCls(liList[i],'plr15');
+					width = width + params.itemSize.w;
+				}
+			}else{
+				for(var i = 0; i < liList.length; i++){
+					$api.css(liList[i],'height:'+(params.h-1)+'px;font-size:'+params.font.size+'px;color:'+params.font.color+';');
+					$api.css(liList[i],'line-height:'+(params.h-1)+'px;');
+					var liWidth=$api.cssVal(liList[i],'width');
+					liWidth = liWidth.substring(0,liWidth.length-2);
+					liWidth = liWidth * 1;
+					width = width + liWidth + 10;
+				}
+			}
+			if(width < params.w){
+				width = params.w;
+			}
+			width = width+1;
+			$api.css($api.byId('j_nav'),'width:'+width+'px;background:'+params.bgColor+';border-bottom:'+params.border+';');
+			//给默认选中的选项添加样式
+			$api.css(liList[params.selectedIndex],'color:'+params.font.colorSelected+';');
+			var span_dom = $api.dom(liList[params.selectedIndex],'span');
+			$api.css(span_dom,'height:'+(params.h-1)+'px;border-bottom:2px solid '+params.font.colorSelected+';');
+		}
+
+
+	/*
+	 * 功能：修改题号点击状态
+	 * 作者：张自强
+	 * 时间：20170823
+	 */
+	function checkQuestion(num,sort,question_id,question_name,question_source){
+		var domList = $api.domAll($api.byId('j_nav'),'.tihao');
+		for(var i=0;i<=domList.length;i++){
+			if(num == i){
+				page_num = i;
+				$api.addCls($api.byId('tihao_'+i),'active');
+			}else{
+				$api.removeCls(domList[i], 'active');
+			}
+		}
+			api.execScript({
+	            frameName : 'zuoyeIpad_tjtj_frame',
+	            script: 'changeTi('+question_source+',"'+question_id+'","'+question_name+'",'+sort+');'
+            });
+			api.execScript({
+		        name : 'zuoyeIpad_piyue_window',
+		        frameName:'zuoyeIpad_piyue_frame',
+		        script: 'changeQuestionId("'+question_id+'",'+sort+','+page_num+');'
+        	});	
+	}
+	</script>
+</html>

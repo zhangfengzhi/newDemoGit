@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <title>评论页面</title>
+    <link rel="stylesheet" type="text/css" href="../../../../../css/aui/aui.css" />
+    <link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+    <style>
+    	body{background:#F5F5F5;padding:10px;}
+    	textarea{margin-bottom:3px;}
+    	.tip{width:100%;font-size:13px;color:#bbbbbb;text-align:right;}
+    </style>
+</head>
+<body class="common-Iphone-zthdIphone-par">
+	<textarea id="comt_content" rows="8" placeholder="鼓励、吐槽、表扬......想说啥就说啥！（最多500字）" maxlength ='500'></textarea>
+</body>
+<script type="text/javascript" src="../../../../../script/api.js"></script>
+<script type="text/javascript" src="../../../../../script/base_config.js" ></script>
+<script type="text/javascript" src="../../../../../script/common/common.js" ></script>
+<script type="text/javascript">
+	var header_h;
+	apiready = function(){
+		commonSetTheme({"level":5,"type":0});
+		header_h = api.pageParam.header_h;
+	};
+
+	/*
+	 * 功能：发送评论
+	 * 作者：张自强
+	 * 时间：20171025
+	 */
+	function messageBoard_addDialog(){
+		//评论内容
+		var comt_content = $api.val($api.byId('comt_content'));
+		//验证评论内容
+		var comt_content_vad = $api.trimAll(comt_content);
+		if(comt_content_vad.length == 0){
+			popAlert("请填写评论内容！");
+			return;
+		}
+		api.showProgress({
+			title : '发布中...',
+			text : '请稍候...',
+			modal : true
+		});
+		if(api.pageParam.type == 'hd_1'){//发布主题评论
+			api.ajax({
+				url : BASE_URL_ACTION + '/ypt/bbs/message/save',
+				method : 'post',
+				timeout : 0,
+				dataType : 'json',
+				data : {
+					values : {
+							'context':comt_content,
+							'identity_id':$api.getStorage('identity'),	
+							'message_type':	2,	
+							'parent_id' : api.pageParam.parent_id,
+							'person_id':$api.getStorage('person_id'),
+							'person_name' : $api.getStorage('person_name'),	
+							'type_id':'space_topic_'+api.pageParam.id
+					}
+				},
+				headers : {
+		'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+		}
+				}, function(ret, err) {
+					if(err){
+						api.hideProgress();
+						popToast('发表失败，请稍候重试');
+					}else{
+						if(ret.success){
+							setTimeout(function(){
+	        					popToast('发表成功');
+	        					commonExecScript('zthd_hd_window','zthd_hdjs_frame','initData(1);',1);
+	        					api.execScript({
+									name : 'zthd_comment_window',
+					                script: 'back("'+true+'");'
+				                });
+		        				api.hideProgress();
+		        			},2000);
+						}else{
+							api.hideProgress();
+							popToast('发表失败，请稍候重试');
+						}
+					}
+				});		
+		}else{//发布作品评论
+			api.ajax({
+				url : BASE_URL_ACTION + '/ypt/bbs/message/save',
+				method : 'post',
+				timeout : 0,
+				dataType : 'json',
+				data : {
+					values : {
+						"context":comt_content,
+			            "person_id": $api.getStorage("person_id"),
+			            "parent_id":api.pageParam.parent_id,
+			            "person_name":$api.getStorage('person_name'),
+			            "identity_id":$api.getStorage("identity"),
+			            "message_type": 2,
+			            "type_id": 'space_topic_works_'+api.pageParam.id
+					}
+				},
+				headers : {
+		'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+		}
+				}, function(ret, err) {
+					if(err){
+						api.hideProgress();
+						popToast('发表失败，请稍候重试');
+					}else{
+						if(ret.success){
+							addCommentNum(api.pageParam.id)
+							setTimeout(function(){
+	        					popToast('发表成功');
+	        					commonExecScript('zthd_hd_window','zthd_content_frame','getCommentInfo(1);',1);
+		        				api.hideProgress();
+		        			},2900);
+		        			setTimeout(function(){
+		        				api.execScript({
+									name : 'zthd_comment_window',
+					                script: 'back("'+true+'");'
+				                });
+		        			},3000);
+						}else{
+							api.hideProgress();
+							popToast('发表失败，请稍候重试');
+						}
+					}
+				});
+			}
+   		}
+    /*
+	*author:zhaoj
+	*function:个人评论数加1
+	*date：20160319
+	*/
+    function addCommentNum(works_id){
+    	api.ajax({
+			url : BASE_URL_ACTION + '/ypt/space/topic/add_comment_num',
+			method : 'post',
+			dataType : 'json',
+			cache : false,
+			timeout : 30,
+			data : {
+				values : {
+                    "works_id": works_id,
+				}
+			},
+			headers : {
+				'Cookie' : 'person_id='+$api.getStorage("person_id")+';identity_id='+$api.getStorage("identity")+'; token='+$api.getStorage("token_ypt")+';'
+			}
+		}, function(ret, err) {
+			
+		});
+    }
+    
+	/*
+	*author:zhaoj
+	*function:提示评论还剩多少个字
+	*date：20160318
+	*/
+	function showTip(length,self){
+        var count = 500 - length;
+        $api.text($api.byId('tip'),count);
+        commonRemoveExpression(self);
+    }
+</script>
+</html>

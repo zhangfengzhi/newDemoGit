@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<!-- html5：在创建html时为了防止页面缩放等不兼容效果，要创建个viewport  -->
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<!-- 在IOS设备上，有时会将数字转为手机号，这里也要禁止下 -->
+		<meta name="format-detection" content="telephone=no"/>
+		<title>学习微课列表页面</title>
+		<link rel="stylesheet" type="text/css" href="../../../../../../css/aui/aui.css" />
+		<link rel="stylesheet" type="text/css" href="../../../../../../css/module/common/list_frame.css" />
+		<link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+		<style>
+			.section3 .itemshelf .shelfinfo01{margin-top:10px;}
+			.section3 .itemshelf .shelfinfo06{padding:0;}
+			.section3 .itemshelf .shelfinfo04{padding:3px 0 0 0;}
+		</style>
+	</head>
+	<body class="common-iphone-cjfxXs">
+		<div id="vedio_body">
+		</div>
+		<script type="text/html" id="vedio_script">
+		<% if(data.length == 0){ %>
+			<div class="no-data"><span>暂无视频</span></div>
+		<% }else{ %>
+			<% if(data[0].wklist.length == 0){ %>
+				<div class="no-data"><span>暂无视频</span></div>
+			<% }else{ %>
+				<%for(var i=0; i<data[0].wklist.length; i++) {%>
+					<div class="section3">
+						<div class="item style1" tapmode="itemhover" onclick="openWeikeContent('<%=data[0].wklist[i].wk_name%>','<%=data[0].wklist[i].wkid%>','<%=data[0].wklist[i].wk_id_int%>');">
+							<div class="itemlogo userlogo"><img onerror="this.src='../../../../../../image/yingyong/weike/wk_default.png'" src="<%=data[0].wklist[i].img_url%>" alt="">
+							</div>
+							<div class="itemshelf">
+								<div class="shelfinfo01">
+									<%=data[0].wklist[i].wk_name%>
+								</div>
+								<div class="shelfinfo04 ellipsis">
+									教师：<%=data[0].wklist[i].teacher_name%>
+								</div>
+								<div class="shelfinfo06 ellipsis">
+									学校 ：<%=data[0].wklist[i].orgName%>
+								</div>
+								<div class="shelfinfo06">
+									播放次数 ：<%=data[0].wklist[i].play_count%>次
+								</div>
+							</div>
+						</div>
+					</div>
+				<% } %>
+			<% } %>
+		<% } %>
+	</script>
+	</body>
+	<script type="text/javascript" src="../../../../../../script/api.js" ></script>
+	<script type="text/javascript" src="../../../../../../script/base_config.js" ></script>
+	<script type="text/javascript" src="../../../../../../script/common/common.js"></script>
+	<script type="text/javascript" src="../../../../../../script/plug-in/template.js" ></script>
+	<script type="text/javascript" src="../../../../../../script/module/common/cjfxXs.js"></script>
+	<script type="text/javascript">
+		var nid='';//知识点id
+		apiready = function() {
+			commonSetTheme({"level":6,"type":0});
+			//nid = 56022;
+			nid = api.pageParam.zsd_id;
+			getKnowledgeWiki_noVad();
+		};
+		/*
+		*author:zhaoj
+		*function:打开微课的详情页面
+		*date：20170722
+		*/
+		function openWeikeContent(wk_name,wkid,wk_id_int){
+			commonOpenWin('cjfxXs_wkContent_window', 'cjfxXs_wkContent_window.html', false, false, {'header_h':api.pageParam.header_h,'wk_name':wk_name,'wkid':wkid,'wk_id_int':wk_id_int})
+		}
+		/*
+		*author:zhaoj
+		*function:获取列表数据
+		*王卓岩
+		*date：20170725
+		*/
+		function getKnowledgeWiki_noVad(){
+			showSelfProgress('加载中...');
+			api.ajax({
+				url :ip_url+'sys/knowledgeExplain/getKnowledgeWiki_noVad.jhtml?stage_id='+api.pageParam.stageId+'&subject_id='+api.pageParam.subjectId+'&nid='+nid,
+				method : 'get',
+				timeout : 30,
+				dataType : 'json',
+				returnAll : false,
+				}, function(ret,err) {
+					api.hideProgress();
+					var data = getJsonData(err);
+					if (data.rencode == 0) {
+						if(data.data.length>0){
+							for (var i = 0; i < data.data[0].wklist.length; i++) {
+								var wk_thumb_id = data.data[0].wklist[i].thumb_id;
+								var wk_thumb_url = '';
+								if (BASE_APP_TYPE == 1) {
+									wk_thumb_url = url_path + BASE_THUMB_BEGIN + wk_thumb_id.substring(0, 2) + '\/' + wk_thumb_id + BASE_THUMB_END;
+								} else {
+									wk_thumb_url = ip_url_data + BASE_THUMB_BEGIN + wk_thumb_id.substring(0, 2) + '/' + wk_thumb_id + BASE_THUMB_END;
+								}
+								data.data[0].wklist[i]["img_url"] = wk_thumb_url;
+							}
+						}
+						commonAddOnceHtml('vedio_body', 'vedio_script', data)
+					}else{
+						popToast('获取列表失败，请稍候重试');
+					}
+				});
+		}
+	</script>
+</html>

@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+		<title>家长学校</title>
+		<link rel="stylesheet" type="text/css" href="../../../../../css/aui/aui.css" />
+		<link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+		<style>
+			.content{padding:20px 15px 0 15px;}
+			.main{border-radius:10px 10px 8px 8px;overflow:hidden;}
+			.main .top{height:40px;position:relative;border-radius:9px 9px 0 0;}
+			.main .top .more{color:#fff;position:absolute;right:15px;line-height:40px;top:0;font-size:13px;}
+			.main .top .name{color:#fff;padding-right:50px;line-height:40px;}
+			.main .bottom{padding:20px 15px;min-height:100px;}
+			.main .bottom img{width:80px;height:60px;}
+			.main .bottom .text{font-size:14px;color:#333;}
+			.bjkx{border:1px solid #A5C94B;}
+			.bjkx .top{background:#A5C94B;}
+			.bjkx .top font{color:#67900F;}
+			.xyzx{border:1px solid #EF758A;}
+			.xyzx .top{background:#EF758A;}
+			.xyzx .top font{color:#AC2B42;}
+			.jzjt{border:1px solid #C08DC5;}
+			.jzjt .top{background:#C08DC5;}
+			.jzjt .top font{color:#904998;}
+			.shelfinfo04,.shelfinfo06{font-size:12px;color:#999;}
+		</style>
+	</head>
+	<body class="common-iphone-jzxx-par">	
+	   <div id="dbsx_div">
+	       <!--<div class="content">
+                <div class="main xyzx">
+                    <div class="top">
+                        <div class="name pl15">校园资讯<font>【新闻资讯】</font></div>
+                        <div class="more">更多>></div>
+                    </div>
+                    <div class="bottom">
+                        <img class="fl mr10" src="../../../../../image/fun-module/iphone/parent/jzxx/xyzx.png" />
+                        <div class="text">在这里，我们可以查看到班级管理员发布的新闻快讯，目前系统还未发布最新消息动态哦，敬请期待......</div>
+                    </div>
+                </div>
+            </div>
+            <div class="content">
+                <div class="main jzjt mb20">
+                    <div class="top">
+                        <div class="name pl15">家长讲堂<font>【静态数据、后台维护】</font></div>
+                        <div class="more">更多>></div>
+                    </div>
+                    <div class="bottom">
+                        <img class="fl mr10" src="../../../../../image/fun-module/iphone/parent/jzxx/jzjt.png" />
+                        <div class="text">在这里，我们可以查看到班级管理员发布的新闻快讯，目前系统还未发布最新消息动态哦，敬请期待......</div>
+                    </div>
+                </div>
+            </div>-->
+	   </div>
+		<script id="dbsx_script" type="text/html">
+            <%for(var i=0;i<list.length;i++){%>
+                <%if(list.length != 0){%>
+                    <%if(list[i].business =="class_xwzx"){%>
+                        <div class="content">
+                            <div class="main bjkx">
+                                <div class="top">
+                                    <div class="name pl15">班级快讯</div>
+                                    <%if(list[i].data.list.length != 0){%>
+                                        <div class="more" onclick="openListWindow(1)">更多>></div>
+                                    <%}%>
+                                </div>
+                                <%if(list[i].data.list.length == 0){%>
+                                     <div class="bottom">
+                                        <img class="fl mr10" src="../../../../../image/fun-module/iphone/parent/jzxx/bjkx.png" />
+                                        <div class="text">在这里，我们可以查看到班级管理员发布的班级快讯，目前系统还未发布最新消息动态哦，敬请期待......</div>
+                                    </div>
+                                <%}else{%>
+                                     <div class="bottom" onclick="openContentWindow('<%=list[i].data.list[0].notice_id%>','','<%=list[i].data.list[0].title%>',1)">
+                                        <img class="fl mr10"  onerror="this.src='../../../../../image/fun-module/iphone/parent/jzxx/bjkx.png'" src="<%=list[i].data.list[0].thumbnail%>" />
+                                        <div class="text ellipsis"><%=#list[i].data.list[0].title%></div>
+                                        <div class="shelfinfo04">
+                                            作者：<%=list[i].data.list[0].person_name %>
+                                        </div>
+                                        <div  class="shelfinfo06">
+                                                                                                     发布：<%=list[i].data.list[0].create_time.substring(0,10) %>
+                                        </div>
+                                    </div>
+                                <%}%>
+                            </div>
+                        </div>
+                    <%}else if(list[i].business =="school_xwzx"){%>
+                         <div class="content">
+                            <div class="main xyzx">
+                                 <div class="top">
+                                    <div class="name pl15">校园资讯</div>
+                                    <%if(list[i].data.list.length != 0){%>
+                                        <div class="more" onclick="openListWindow(2)">更多>></div>
+                                    <%}%>
+                                </div>
+                                <%if(list[i].data.list.length == 0){%>
+                                     <div class="bottom">
+                                        <img class="fl mr10" src="../../../../../image/fun-module/iphone/parent/jzxx/xyzx.png" />
+                                        <div class="text">在这里，我们可以查看到学校管理员发布的校园资讯，目前系统还未发布最新消息动态哦，敬请期待......</div>
+                                    </div>
+                                <%}else{%>
+                                     <div class="bottom" onclick="openContentWindow('<%=list[i].data.list[0].notice_id%>','','<%=list[i].data.list[0].title%>',2)">
+                                        <img class="fl mr10"  onerror="this.src='../../../../../image/fun-module/iphone/parent/jzxx/xyzx.png'" src="<%=list[i].data.list[0].thumbnail%>" />
+                                        <div class="text ellipsis"><%=#list[i].data.list[0].title%></div>
+                                                                                <div class="shelfinfo04">
+                                            作者：<%=list[i].data.list[0].person_name %>
+                                        </div>
+                                        <div  class="shelfinfo06">
+                                                                                                     发布：<%=list[i].data.list[0].create_time.substring(0,10) %>
+                                        </div>
+                                    </div>
+                                <%}%>
+                            </div>
+                        </div>
+                    <%}else if(list[i].business =="jzjt"){%>
+                        <div class="content">
+                            <div class="main jzjt mb20">
+                                <div class="top">
+                                    <div class="name pl15">家长讲堂</div>
+                                    <%if(list[i].data.list.length != 0){%>
+                                        <div class="more" onclick="openListWindow(3)">更多>></div>
+                                    <%}%>
+                                </div>
+                                <%if(list[i].data.list.length == 0){%>
+                                     <div class="bottom">
+                                        <img class="fl mr10" src="../../../../../image/fun-module/iphone/parent/jzxx/jzjt.png" />
+                                        <div class="text">在这里，我们可以查看到班级管理员发布的新闻快讯，目前系统还未发布最新消息动态哦，敬请期待......</div>
+                                    </div>
+                                <%}else{%>
+                                     <div class="bottom" onclick="openContentWindow('<%=list[i].data.list[0].id%>','<%=list[i].data.list[0].expand_id%>','<%=list[i].data.list[0].title%>',3)">
+                                        <img class="fl mr10"  onerror="this.src='../../../../../image/fun-module/iphone/parent/jzxx/jzjt.png'" src="<%=list[i].data.list[0].thumb_id%>" />
+                                        <div class="text ellipsis"><%=#list[i].data.list[0].title%></div>
+                                                                                <div class="shelfinfo04">
+                                            发布：<%=list[i].data.list[0].create_time.substring(0,10) %>
+                                        </div>
+                                        <div  class="shelfinfo06">
+                                                                                                    浏览&nbsp;<%=list[i].data.list[0].browse_num %>
+                                        </div>
+                                    </div>
+                                <%}%>
+                            </div>
+                        </div>
+                    <%}%>
+                <%}%>
+            <%}%>
+        </script>
+	</body>
+	<script type="text/javascript" src="../../../../../script/api.js"></script>
+	<script type="text/javascript" src="../../../../../script/base_config.js"></script>
+	<script type="text/javascript" src="../../../../../script/common/common.js"></script>
+	<script type="text/javascript" src="../../../../../script/plug-in/template.js"></script>
+	<script type="text/javascript" src="../../../../../script/tongxunlu/txl_addfriendsgo_frame.js"></script>
+	<script type="text/javascript" src="../../../../../script/init/init_config.js"></script>
+	<script type="text/javascript" src="../../../../../script/init/init_config_new.js"></script>
+	<script type="text/javascript" src="../../../../../script/common/iphone/dcwj_common.js" ></script>
+	<script type="text/javascript" src="../../../../../script/assembly/tongjiData.js"></script>
+	<script type="text/javascript" src="../../../../../script/assembly/executeApp.js" ></script>
+	<script type="text/javascript" src="../../../../../script/plug-in/base64.js" ></script>
+	<script type="text/javascript">
+	      var param_json={};//全局变量
+		  apiready = function() {
+		  	  commonSetTheme({"level":5,"type":0});
+		      initData(1);
+			  commonRefreshHeaderInfo();
+		  };
+		  function initData(page){
+		      getNewsRegisterId($api.getStorage('class_id'), 105, function(c_flag,c_id){
+                 //获取班级通知码
+                 if(c_flag){
+                     if(c_id == -1){
+                         param_json.c_register_id = -1;
+                     }else{
+                         param_json.c_register_id = c_id;
+                     }
+                     getNewsRegisterId($api.getStorage('school_id'), 104, function(s_flag,s_id){
+                         //获取学校通知码
+                         if(s_flag){
+                             if(s_id == -1){
+                                param_json.s_register_id = -1;
+                             }else{
+                                 param_json.s_register_id = s_id;
+                             }
+                             get_waithandle_list();//根据待办事项接口，获取数据
+                         }else{
+                             popToast('获取班级快讯失败，请稍候重试');
+                         }
+                      });
+                 }else{
+                     popToast('获取班级快讯失败，请稍候重试');
+                 }
+              });
+		  }
+		/**
+         * 获取通知码
+         * 周枫
+         * 2016.4.25
+         */
+        function getNewsRegisterId(orgs_id, level_type, callback) {
+            api.ajax({
+                url : BASE_URL_ACTION + '/space/getNewsRegisterId?a_id=' + orgs_id + '&a_identity_id=' + level_type,
+                method : 'get',
+                timeout : 30,
+                dataType : 'json',
+                cache : false
+            }, function(ret, err) {
+                if (err) {
+                    callback(false, '对不起，获取新闻资讯失败');
+                    commonControlRefresh();
+                    api.hideProgress();
+                } else {
+                    if (ret.success) {
+                        var flag = parseInt(ret.flag);
+                        //没注册过通知码
+                        if (flag == 0) {
+                            callback(true, -1);
+                        } else {
+                            callback(true, ret.regist_id);
+                        }
+                    } else {
+                        callback(false, '对不起，获取新闻资讯失败');
+                        commonControlRefresh();
+                        api.hideProgress();
+                    }
+                }
+            });
+        }
+        /*
+        *author:zhaoj
+        *function:根据待办事项的接口，获取数据
+        *interface:张海
+        *date：201710231
+        */
+        function get_waithandle_list(){
+            var data = {"list":[]};
+            if(param_json.c_register_id==-1 && param_json.s_register_id == -1){
+                data ={"list":[{"data":{"list":[]},"business":'class_xwzx'},{"data":{"list":[]},"business":'school_xwzx'}]};
+                search(data);
+            }else{
+                if(param_json.c_register_id==-1){
+                    var request_urls={
+                           "request_urls": [
+                           {
+                                "url":'/dsideal_yy/notice/getNoticeList?page_number=1&page_size=1&register_id=' + param_json.s_register_id,
+                                "business":"school_xwzx"
+                            }
+                        ]
+                    }
+                }else if(param_json.s_register_id == -1){
+                    var request_urls={
+                           "request_urls": [
+                           {
+                                "url":'/dsideal_yy/notice/getNoticeList?page_number=1&page_size=1&register_id=' + param_json.c_register_id,
+                                "business":"class_xwzx"
+                            }
+                        ]
+                    }
+                }else{
+                    var request_urls={
+                           "request_urls": [
+                           {
+                                "url":'/dsideal_yy/notice/getNoticeList?page_number=1&page_size=1&register_id=' + param_json.c_register_id,
+                                "business":"class_xwzx"
+                            },{
+                                "url":'/dsideal_yy/notice/getNoticeList?page_number=1&page_size=1&register_id=' + param_json.s_register_id,
+                                "business":"school_xwzx"
+                            }
+                        ]
+                    }
+                }
+                var _url = BASE_URL_ACTION+'/ypt/space/waithandle/get_waithandle_list?param='+ encodeURIComponent(JSON.stringify(request_urls));
+                BASE_APP_TYPE = $api.getStorage('BASE_APP_TYPE');
+                api.ajax({
+                    url : _url,
+                    method : 'get',
+                    timeout : 0,
+                    dataType : 'json',
+                    headers : {
+                    'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+                }
+                    }, function(ret, err) {
+                        if(err){
+                            popToast('获取班级快讯失败，请稍候重试');
+                            commonControlRefresh();
+                            api.hideProgress();
+                        }else{
+                            if(ret){
+                                for(var i = 0; i < ret.length; i++){
+                                    if(ret[i].data.list.length > 0){
+                                        var thumb_url = ret[i].data.list[0].thumbnail;
+                                        var index = thumb_url.indexOf('/Material');
+                                        if(!isEmptyString(thumb_url)){
+                                            if (index != -1) {
+                                                var thumb_id=thumb_url.substring(index+10,thumb_url.length);
+                                                if(BASE_APP_TYPE == 1){
+                                                    ret[i].data.list[0].thumbnail = BASE_IMAGE_PRE + BASE_MATERIAL_BEGIN+ thumb_id+commonReturnPhotoCutSize(0);
+                                                }else{
+                                                    ret[i].data.list[0].thumbnail = BASE_URL_ACTION + BASE_IMAGE_BEGIN+ thumb_id+commonReturnPhotoCutSize(0);
+                                                }
+                                            }else{
+                                                ret[i].data.list[0].thumbnail = ret[i].data.list[0].thumbnail;
+                                            }
+                                        }else{
+                                            if(ret[i].business =="class_xwzx"){
+                                                ret[i].data.list[0].thumbnail = "../../../../../image/fun-module/iphone/parent/jzxx/bjkx.png";
+                                            }else{
+                                                ret[i].data.list[0].thumbnail = "../../../../../image/fun-module/iphone/parent/jzxx/xyzx.png";
+                                            }
+                                        }
+                                    }
+                                }
+                                data = {"list":ret};
+                                if(param_json.c_register_id==-1){
+                                    data.list.splice(0,0,{"data":{"list":[]},"business":'class_xwzx'});
+                                }else if(param_json.s_register_id == -1){
+                                    data.list.push({"data":{"list":[]},"business":'school_xwzx'});
+                                }
+                            }else{
+                                popToast('获取班级快讯失败，请稍候重试');
+                                commonControlRefresh();
+                                api.hideProgress();
+                            }
+                        }
+                        search(data);
+                    });
+            }
+        }
+        /*
+        *author:zhaoj
+        *function:获取王晶莹的写的文章
+        *date：201710231
+        */
+        function search(data){
+            api.ajax({
+                url : 'http://www.edusoa.com/dsideal_yy/blog/search?random_num=26797305&search_type=title&search_key=&identity_id=5&person_id=284494&pagenum=1&pagesize=1&business_type=1&category_id=16561&l_person_id=284494&l_identity_id=5',
+                method : 'get',
+                timeout : 0,
+                dataType : 'json',
+                headers : {
+                'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+            }
+                }, function(ret, err) {
+                    var oparam = new Object();
+                    oparam.data={};
+                    oparam.data.list=[];
+                    oparam.business='jzjt';
+                    if(err){
+                        popToast('获取家长讲堂失败，请稍候重试');
+                    }else{
+                        if(ret){
+                            if(ret.list.length != 0){
+                                for (var i = 0; i < ret.list.length; i++) {
+                                    var wz_thumb_id = ret.list[i].thumb_id;
+                                    var wz_thumb_url = '';
+                                    BASE_APP_TYPE =1;
+                                    if (BASE_APP_TYPE == 1) {
+                                        url_path_down = "https://dsideal.obs.cn-north-1.myhuaweicloud.com/";
+                                        if (wz_thumb_id.indexOf(url_path_down) != -1) {
+                                            url_path_suffix = "down/Material/";
+                                            BASE_IMAGE_PRE = "http://image.edusoa.com/";
+                                            url_path_suffix = "down/Material/";
+                                            var key = url_path_down+url_path_suffix;
+                                            var key_re = BASE_IMAGE_PRE+url_path_suffix;
+                                            wz_thumb_url = wz_thumb_id.replaceAll(key, key_re);
+                                            wz_thumb_url = wz_thumb_url+commonReturnPhotoCutSize(0);
+                                        }else{
+                                            wz_thumb_url = wz_thumb_id;
+                                        }
+                                    }else{
+                                        var key = '/dsideal_yy';
+                                        if (wz_thumb_id.indexOf(url_path_suffix) != -1) {
+                                            wz_thumb_id = wz_thumb_id.replaceAll(url_path_suffix, BASE_IMAGE_PRE);
+                                        }
+                                        if (wz_thumb_id.indexOf(key) != -1) {
+                                            var key_re = BASE_URL_ACTION;
+                                            var wz_thumb_file = wz_thumb_id.replaceAll(key, key_re);
+                                            wz_thumb_url = wz_thumb_file+commonReturnPhotoCutSize(0);
+                                        }else{
+                                            wz_thumb_url = wz_thumb_id
+                                        }
+                                    }
+                                    ret.list[i]["thumb_id"] = wz_thumb_url;
+                                }
+                            }
+                            oparam.data.list.push(ret.list[0]);
+                        }else{
+                            popToast('获取家长讲堂失败，请稍候重试');
+                        }
+                    }
+                    data.list.push(oparam);
+                    commonAddOnceHtml('dbsx_div',"dbsx_script",data);
+                    commonControlRefresh();
+                    api.hideProgress();
+            });
+        }
+        /*
+        *author:zhaoj
+        *function:打开列表页面
+        *date：201710231
+        */
+        function openListWindow(type){
+            var header_h = api.pageParam.header_h;
+            var register_id ='';
+            if(type == 1){
+                register_id = param_json.c_register_id
+            }else if(type == 2){
+                register_id = param_json.s_register_id
+            }
+            var pageParamJson={"header_h":header_h,"type":type,"register_id":register_id};//打开frame页面所需参数
+            commonOpenWin('jzxx_list_window', 'jzxx_list_window.html', false, false, pageParamJson);
+        }
+        /*
+        *author:zhaoj
+        *function:打开列表页面
+        *date：201710231
+        */
+        function openContentWindow(id,expand_id,name,type){
+            var header_h = api.pageParam.header_h;
+            var pageParamJson={"header_h":header_h,"type":type,"id":id,"name":name,"expand_id":expand_id};//打开frame页面所需参数
+            commonOpenWin('jzxx_content_window', 'jzxx_content_window.html', false, false, pageParamJson);
+        }
+	</script>
+</html>

@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<!-- html5：在创建html时为了防止页面缩放等不兼容效果，要创建个viewport  -->
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<!-- 在IOS设备上，有时会将数字转为手机号，这里也要禁止下 -->
+		<meta name="format-detection" content="telephone=no"/>
+		<title>群组内容设置frame</title>
+		<link rel="stylesheet" type="text/css" href="../../css/aui/aui.css" />
+		<link rel="stylesheet" type="text/css" href="../../css/aui_css_new/aui-indexed-list.css" />
+		<link rel="stylesheet" type="text/css" href="../../css/module/common/aui-list-swipe.css" />
+		<link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+		<style>
+			body {
+			}
+			.firstblock, .secondblock, .thirdblock {
+				background-color: #fff;
+			}
+			.h10 {
+				height: 10px;
+				background: #f0f0f0;
+			}
+			.h1 {
+				height: 1px;
+				margin-left: 15px;
+				background: #f0f0f0;
+			}
+			/* 设置条目 */
+			.item {
+				height: 50px;
+				line-height: 50px;
+				padding-left: 15px;
+				background-color: #fff;
+			}
+			.item_ico {
+				float: left;
+				width: 30px;
+				padding: 10px 10px 10px 0;
+			}
+			.item_arrow {
+				float: right;
+				width: 16px;
+				padding: 17px 15px 15px 0;
+			}
+			.aui-col-img {
+				height: 48px;
+				width: 48px;
+				border-radius: 20%;
+			}
+			.span_name {
+				width: 46px;
+				/*font-size: 18px;*/
+				/*text-align: center;*/
+				display: inline-block;
+				/*word-break: keep-all;*/
+				white-space: nowrap;
+				overflow: hidden;
+				text-overflow: ellipsis;
+			}
+			.txl-list-person-img {
+				width: 36px;
+				height: 36px;
+				margin-right: 10px;
+				margin-top: -5px;
+				margin-bottom: -8px;
+			}
+			.footer-div {
+				position: fixed;
+				height: 55px;
+				background: #F6F6F6;
+				display: block;
+				bottom: 0px;
+				width: 100%;
+				border-top: 1px solid #E2E2E2;
+				font-size: 14px;
+			}
+			.footer-div .wid {
+				width: 92%;
+				line-height: 36px;
+				text-align: center;
+				color: #ffffff;
+				margin-top: 9px;
+				border-radius: 2px;
+				margin-left: 4%;
+			}
+		</style>
+	</head>
+	<body class="huihua-commont">
+		<div class="aui-content">
+			<div class="h10"></div>
+			<div class="firstblock">
+				<div class="item" tapmode="presshover">
+					<span>群组名称</span><span id="group_name" style="color:#696969; font-size:13px;  padding-right:15px;" class="aui-pull-right"></span>
+				</div>
+			</div>
+			<div class="h10"></div>
+			<div class="firstblock">
+				<div class="item" tapmode="presshover">
+					<span>消息免打扰</span>
+					<input id="check_voice" type="checkbox" onclick="isVoice(this);" class="aui-switch aui-switch-success aui-pull-right" style="margin-right: 15px; margin-top: 13px;">
+				</div>
+			</div>
+			<div class="h10"></div>
+		</div>
+		<div class="footer-div" id = "groupDelete" style = "display:none">
+			<div  id = "groupTitle" class="wid" onclick="deleteGroup();"></div>
+		</div>
+	</body>
+	<script type="text/javascript" src="../../script/api.js"></script>
+	<script type="text/javascript" src="../../script/plug-in/zepto.min.js"></script>
+	<script type="text/javascript" src="../../script/base_config.js"></script>
+	<script type="text/javascript" src="../../script/plug-in/template.js"></script>
+	<script type="text/javascript" src="../../script/huihua/sqlite_db.js"></script>
+	<script type="text/javascript" src="../../script/huihua/sdk_cache.js"></script>
+	<script type="text/javascript" src="../../script/huihua/hh_db.js"></script>
+	<script type="text/javascript" src="../../script/common/common.js" ></script>
+	<!--<script type="text/javascript" src="../../script/huihua/hh_group_frame.js"></script>-->
+	<script type="text/javascript">
+		var avatar_url;
+		var group_id;
+		var group_name;
+		var h_from;
+		var header_h;
+		var BASE_URL_ACTION;
+		//0群主1管理员2普通成员
+		var memberTypeForApp;
+		//成员id
+		var memberIdForApp;
+		apiready = function() {
+			commonSetTheme({"level":2,"type":0});
+			group_name = api.pageParam.group_name;
+			group_id = api.pageParam.target_id;
+			memberTypeForApp = api.pageParam.memberTypeForApp;
+			memberIdForApp = api.pageParam.memberIdForApp;
+			if (group_id.indexOf("school") == 0 || group_id.indexOf("class") == 0 || group_id.indexOf("plass") == 0) {
+				$api.css($api.byId('groupDelete'), 'display:none;');
+			} else {
+				if (memberTypeForApp == 0) {
+					$api.html($api.byId('groupTitle'), "解散群组");
+				} else {
+					$api.html($api.byId('groupTitle'), "退出群组");
+				}
+				$api.css($api.byId('groupDelete'), 'display:block;');
+			}
+			h_from = api.pageParam.h_from;
+			header_h = api.pageParam.header_h;
+			BASE_URL_ACTION = $api.getStorage('BASE_URL_ACTION');
+			reGroupPeopleNum();
+			getIsVoice();
+		};
+		/**
+		 * 重写群组名称及人数
+		 * 周枫
+		 * 2017.02.09
+		 */
+		function reGroupPeopleNum() {
+			var p_list = $api.getStorage('group_list_data');
+			var p_list_l = getJsonObjLength(p_list.list);
+			$api.html($api.byId('group_name'), group_name + "(" + p_list_l + ")");
+		}
+
+		/**
+		 * 获取是否允许有声音提示
+		 * 周枫
+		 * 2016.03.17
+		 * @param {Object} e
+		 */
+		function getIsVoice() {
+			api.execScript({
+				name : 'root',
+				frameName : 'hh_index',
+				script : 'getConversationNotificationStatus("' + group_id + '", "GROUP");'
+			});
+		}
+
+		/**
+		 * 是否允许有声音提示
+		 * 周枫
+		 * 2016.03.17
+		 * @param {Object} e
+		 */
+		function isVoice(e) {
+			if (e.checked) {
+				api.execScript({
+					name : 'root',
+					frameName : 'hh_index',
+					script : 'setConversationNotificationStatus("' + group_id + '", "GROUP", "DO_NOT_DISTURB");'
+				});
+			} else {
+				api.execScript({
+					name : 'root',
+					frameName : 'hh_index',
+					script : 'setConversationNotificationStatus("' + group_id + '", "GROUP", "NOTIFY");'
+				});
+			}
+		}
+
+		function setVoiceIsChecked(is_checked) {
+			if (is_checked) {
+				$api.byId("check_voice").checked = true;
+			} else {
+				$api.byId("check_voice").checked = false;
+			}
+		}
+
+		/*
+		 *author:ws
+		 *function:解散群组
+		 *date：20170113
+		 */
+		function deleteGroup() {
+			//0群主1管理员2普通成员
+			if (memberTypeForApp == 0) {
+				popTwoBtnConfirm('提示', '确定将该群组解散吗？', 'deletePersonGroup();');
+			} else if (memberTypeForApp == 1 || memberTypeForApp == 2) {
+				popTwoBtnConfirm('提示', '确定退出该群组吗？', 'quitGroup();');
+			}
+		}
+
+		/*
+		 *author:ws
+		 *function:确定退出群组
+		 *date：20170210
+		 */
+		function quitGroup() {
+			showSelfProgress('加载中...');
+			var idGroup = group_id.split("_");
+			api.ajax({
+				url : BASE_URL_ACTION + '/ypt/group/quitGroup',
+				method : 'get',
+				dataType : 'json',
+				timeout : 30,
+				data : {
+					values : {
+						"random_num" : creatRandomNum(),
+						"groupId" : idGroup[0],
+						"memberId" : memberIdForApp,
+						"memberType" : memberTypeForApp//1管理员退出2普通成员退出
+					}
+				},
+				headers : {
+					'Cookie' : 'person_id=' + $api.getStorage("person_id") + ';identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+				}
+			}, function(ret, err) {
+				if (ret) {
+					if (ret.success) {
+						setTimeout(function() {
+							api.execScript({
+								name : 'root',
+								frameName : 'txl_index',
+								script : 'loadData();'
+							});
+							api.closeWin({
+								name : 'hh_chat_window'
+							});
+						}, 600);
+						setTimeout(function() {
+							api.hideProgress();
+							api.closeWin({
+								name : 'hh_group_window'
+							});
+							api.closeFrame({});
+						}, 1200);
+					} else {
+						popBottomToast("退出失败，请稍候重试");
+					}
+				} else {
+					popBottomToast("退出失败，请稍候重试");
+				}
+			});
+		}
+
+		/*
+		 *author:ws
+		 *function:确定解散群组回调函数
+		 *date：20170113
+		 */
+		function deletePersonGroup() {
+			var idGroup = group_id.split("_");
+			showSelfProgress('解散中...');
+			api.ajax({
+				url : BASE_URL_ACTION + '/ypt/group/disbandGroup',
+				method : 'post',
+				dataType : 'json',
+				timeout : 30,
+				data : {
+					values : {
+						"random_num" : creatRandomNum(),
+						"groupId" : idGroup[0]
+					}
+				},
+				headers : {
+					'Cookie' : 'person_id=' + $api.getStorage("person_id") + ';identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+				}
+			}, function(ret, err) {
+				if (ret.success) {
+					setTimeout(function() {
+						api.execScript({
+							name : 'root',
+							frameName : 'txl_index',
+							script : 'loadData();'
+						});
+						api.closeWin({
+							name : 'hh_chat_window'
+						});
+					}, 600);
+					setTimeout(function() {
+						api.hideProgress();
+						api.closeWin({
+							name : 'hh_group_window'
+						});
+					}, 1200);
+				} else {
+					api.hideProgress();
+					popBottomToast("网络繁忙，请稍候重试");
+				}
+			});
+		}
+	</script>
+</html>

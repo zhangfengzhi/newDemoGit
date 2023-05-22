@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<!-- html5：在创建html时为了防止页面缩放等不兼容效果，要创建个viewport  -->
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<!-- 在IOS设备上，有时会将数字转为手机号，这里也要禁止下 -->
+		<meta name="format-detection" content="telephone=no"/>
+		<title>课程表数据页面</title>
+		<link rel="stylesheet" type="text/css" href="../../../../css/aui/aui.css" />
+		<link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+		<style>
+			.list-group-item {
+				border: 0px;
+			}
+			.list-group-item li .box {
+				height: 45px;
+			}
+			.list-group-item .dropdown-menu {
+				padding: 10px 8px 10px 13px;
+				position: absolute;
+				top: 35px;
+				width: 230px;
+			}
+			.list-group-item ul {
+				margin: 0px;
+				padding: 0px;
+			}
+			.list-group-item div.checkbox {
+				margin: 0px;
+			}
+			.list-group-item li {
+				margin: 0px;
+				float: left;
+				border: 0px;
+			}
+			.cz_table {
+				background-color: #dcdcdc;
+				border-collapse: collapse;
+				height: 100%;
+				margin: 0 auto;
+				table-layout: fixed;
+				width: 100%;
+			}
+			.cz_table th, .cz_table td {
+				background-color: #dcdcdc;
+				border: 1px solid #dcdcdc;
+				font-family: Microsoft YaHei;
+				font-size: 12px;
+				font-weight: 500;
+				line-height: 30px;
+				text-align: center;
+			}
+			.cz_table td {
+				background-color: #fff;
+				color: #333;
+				line-height: 22px;
+				overflow: hidden;
+				padding: 4px 0;
+				text-overflow: ellipsis;
+				white-space: nowrap;
+			}
+			.cz_table th {
+				background: none repeat scroll 0 0 #ededed;
+				color: rgb(51, 51, 51);
+			}
+			.cz_out {
+				border-left: 32px solid #7e7e7e;
+				border-top: 37px solid #909090;
+				color: #e3e3e3;
+				height: 0;
+				position: relative;
+				width: 0;
+			}
+			.cz_b {
+				display: block;
+				font-style: normal;
+				left: -26px;
+				position: absolute;
+				top: -42px;
+				width: 35px;
+			}
+			.cz_em {
+				display: block;
+				font-style: normal;
+				left: -30px;
+				position: absolute;
+				top: -26px;
+			}
+			.timetableinput {
+				width: 100%;
+				height: 100%;
+				border: none;
+			}
+			.kcb_div {
+				width: 100%;
+				height: 100%;
+				margin: 0 auto;
+			}
+			.no-data{text-align:center;color:#666;padding-top:15px;}
+		</style>
+	</head>
+	<body class="common-kcb">
+		<div class="kcb_div" id="kcb_div"></div>
+		<script type="text/html" id="kcb_script">
+			<table class="cz_table" style="table-layout: fixed; width: 100%;">
+			<tbody>
+				<% if(length == 0){ %>
+					<div class="no-data">暂无课程安排</div>
+				<% }else{ %>
+					<tr>
+						<th width="33px;" height="37px;">
+						<div class="cz_out">
+							<b class="cz_b">周</b>
+							<em class="cz_em">节</em>
+						</div></th>
+						<% for(var i=0;i<day.length;i++){ %>
+							<th><%=day[i]%></th>
+							<% } %>
+					</tr>
+					<% for(var i=0;i<row;i++){ %>
+						<tr class="timetabletr">
+							<td><%=i+1 %></td>
+							<% for(var j=0;j<day.length;j++){ %>
+								<td onclick="openKc('<%=titlelist[i][j] %>');" class="timetabletd"><%=list[i][j] %></td>
+							<% } %>
+						</tr>
+						<% if(i == 3){ %>
+							<tr style="height:14px;">
+								<td colspan="<%=day.length+1 %>"></td>
+							</tr>
+						<%}%>
+					<% } %>
+				<% } %>
+			</tbody>
+		</table>
+		</script>
+	</body>
+	<script type="text/javascript" src="../../../../script/api.js" ></script>
+	<script type="text/javascript" src="../../../../script/base_config.js" ></script>
+	<script type="text/javascript" src="../../../../script/plug-in/template.js" ></script>
+	<script type="text/javascript" src="../../../../script/common/common.js"></script>
+	<script type="text/javascript">
+		var BASE_URL_ACTION;
+		//人person_id
+		var p_id = 0;
+		//身份id
+		var i_id = 0;
+		apiready = function() {
+			commonSetTheme({"level":4,"type":0});
+			BASE_URL_ACTION = $api.getStorage('BASE_URL_ACTION');
+			p_id = $api.getStorage('person_id');
+			i_id = $api.getStorage('identity');
+			loadTimeTable();
+			//绑定下拉刷新历史会话事件
+			api.setRefreshHeaderInfo({
+				visible : true,
+				loadingImg : 'widget://image/local_icon_refresh.png',
+				bgColor : '#F5F5F5',
+				textColor : '#8E8E8E',
+				textDown : '下拉刷新课程表...',
+				textUp : '松开更新...',
+				showTime : true
+			}, function(ret, err) {
+				//从服务器加载数据，完成后调用commonControlRefresh()方法恢复组件到默认状态
+				//调用获取历史会话监听
+				loadTimeTable();
+			});
+		};
+		function loadTimeTable() {
+			api.showProgress({
+				title : '加载中...',
+				text : '请稍候...',
+				modal : false
+			});
+			if (i_id == 5) {
+				//班级id；课程表串；拼接后串；课程表数据来源，1：任课计划  2：自定义
+				var bj_id, kcb_list, timetable, point_count;
+				var kcb_type = '';
+				api.ajax({
+					url : BASE_URL_ACTION + '/space/timetable/getTimeTable?person_id=' + p_id + '&identity_id=' + i_id + '&type=1' ,
+					method : 'get',
+					timeout : 30,
+					dataType : 'json'
+				}, function(ret, err) {
+					api.hideProgress();
+					if (ret.success) {
+						kcb_list = ret.list;
+						kcb_type = '1';
+						point_count = ret.point_count;
+						timetable = {
+							"day" : ["一", "二", "三", "四", "五", "六", "日"],
+							"list" : [],
+							"titlelist" : [],
+						};
+						timetable.row = point_count;
+						timetable.length = ret.list.length;
+						switch(kcb_type) {
+							case '1':
+								switch(i_id*1) {
+									case 5:
+										for (var i = 0; i < 8; i++) {
+											timetable.list.push(["", "", "", "", "", "", ""]);
+											timetable.titlelist.push(["", "", "", "", "", "", ""]);
+										}
+										for (var i = 0; i < kcb_list.length; i++) {
+											timetable['titlelist'][kcb_list[i].pointname-1][kcb_list[i].weekday - 1] = kcb_list[i].class_name+' '+kcb_list[i].subject_name;
+											timetable['list'][kcb_list[i].pointname-1][kcb_list[i].weekday - 1] = kcb_list[i].class_name.substr(kcb_list[i].class_name.indexOf("级") + 1);
+										}
+										break;
+									case 6:
+										for (var i = 0; i < 8; i++) {
+											timetable.list.push(["", "", "", "", "", "", ""]);
+										}
+										for (var i = 0; i < kcb_list.length; i++) {
+											timetable['list'][kcb_list[i].pointname-1][kcb_list[i].weekday - 1] = kcb_list[i].subject_name;
+										}
+										break;
+								}
+								break;
+							case '2':
+								for (var i = 0; i < 8; i++) {
+									timetable.list.push(["", "", "", "", "", "", ""]);
+								}
+								for (var i = 0; i < kcb_list.length; i++) {
+									timetable['list'][kcb_list[i].pointname-1][kcb_list[i].weekday - 1] = kcb_list[i].subject_name;
+								}
+								break;
+						}
+						//						api.alert({
+						//							msg : timetable
+						//                      },function(ret,err){
+						//                      	//coding...
+						//                      });
+						//通知顶部下拉刷新数据加载完毕，组件会恢复到默认状态
+						commonControlRefresh();
+						var html_type = template.render('kcb_script', timetable);
+						$api.html($api.byId('kcb_div'), html_type);
+					} else {
+						api.alert({
+							msg : '对不起，获取课程表失败'
+						}, function(ret, err) {
+							//coding...
+						});
+					}
+				});
+			} else {
+				commonGetStudentInfoByParentId(p_id, i_id, function(is_true, stu_info_json) {
+					if (is_true) {
+						var stu_id = stu_info_json.student_id;
+						var p_identity = parseInt($api.getStorage('identity'));
+						if (p_identity == 7) {
+							p_identity = 6;
+						}
+						var p_person_id = parseInt($api.getStorage('person_id'));
+						//班级id；课程表串；拼接后串；课程表数据来源，1：任课计划  2：自定义
+						var bj_id, kcb_list, timetable, point_count;
+						var kcb_type = '';
+						api.ajax({
+							url : BASE_URL_ACTION + '/space/timetable/getTimeTable?person_id=' + stu_id + '&identity_id=' + p_identity + '&type=1',
+							method : 'get',
+							timeout : 30,
+							dataType : 'json'
+						}, function(ret, err) {
+							api.hideProgress();
+							if (ret.success) {
+								kcb_list = ret.list;
+								kcb_type = '1';
+								point_count = ret.point_count;
+								timetable = {
+									"day" : ["一", "二", "三", "四", "五", "六", "日"],
+									"list" : [],
+									"titlelist" : []
+								};
+								timetable.row = point_count;
+								timetable.length = ret.list.length;
+								switch(kcb_type) {
+									case '1':
+										switch(p_identity) {
+											case 5:
+												for (var i = 0; i < 8; i++) {
+													timetable.list.push(["", "", "", "", "", "", ""]);
+													timetable.titlelist.push(["", "", "", "", "", "", ""]);
+												}
+												for (var i = 0; i < kcb_list.length; i++) {
+													timetable['titlelist'][kcb_list[i].pointname-1][kcb_list[i].weekday - 1] = kcb_list[i].class_name;
+													timetable['list'][kcb_list[i].pointname-1][kcb_list[i].weekday - 1] = kcb_list[i].class_name.substr(kcb_list[i].class_name.indexOf("级") + 1);
+												}
+												break;
+											case 6:
+												for (var i = 0; i < 8; i++) {
+													timetable.list.push(["", "", "", "", "", "", ""]);
+													timetable.titlelist.push(["", "", "", "", "", "", ""]);
+												}
+												for (var i = 0; i < kcb_list.length; i++) {
+													timetable['list'][kcb_list[i].pointname-1][kcb_list[i].weekday - 1] = kcb_list[i].subject_name;
+													timetable['titlelist'][kcb_list[i].pointname-1][kcb_list[i].weekday - 1] = kcb_list[i].subject_name;
+												}
+												break;
+										}
+										break;
+									case '2':
+										for (var i = 0; i < 8; i++) {
+											timetable.list.push(["", "", "", "", "", "", ""]);
+											timetable.titlelist.push(["", "", "", "", "", "", ""]);
+										}
+										for (var i = 0; i < kcb_list.length; i++) {
+											timetable['list'][kcb_list[i].pointname-1][kcb_list[i].weekday - 1] = kcb_list[i].subject_name;
+											timetable['titlelist'][kcb_list[i].pointname-1][kcb_list[i].weekday - 1] = kcb_list[i].subject_name;
+										}
+										break;
+								}
+								//						api.alert({
+								//							msg : timetable
+								//                      },function(ret,err){
+								//                      	//coding...
+								//                      });
+								//通知顶部下拉刷新数据加载完毕，组件会恢复到默认状态
+								commonControlRefresh();
+								var html_type = template.render('kcb_script', timetable);
+								$api.html($api.byId('kcb_div'), html_type);
+							} else {
+								api.alert({
+									msg : '对不起，获取课程表失败'
+								}, function(ret, err) {
+									//coding...
+								});
+							}
+						});
+					} else {
+						api.toast({
+							msg : stu_info_json
+						});
+					}
+				});
+			}
+		}
+
+		/**
+		 * 提示课程名
+		 * 周枫
+		 * 2015.12.10
+		 */
+		function openKc(kc_name) {
+			if ($api.trimAll(kc_name) != '') {
+				api.alert({
+					msg : '您本节的课程名称是：' + kc_name
+				}, function(ret, err) {
+					//coding...
+				});
+			}
+		}
+	</script>
+</html>

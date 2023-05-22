@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <title>另存为</title>
+    <link rel="stylesheet" type="text/css" href="../../../../../css/aui/aui.css" />
+    <link rel="stylesheet" type="text/css" href="../../../../../css/module/common/jszy_new_common.css" />
+    <link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+    <style>
+    </style>
+</head>
+<body class="common-ipad-kejianIpad common-ipad-kejianIpad-jczy">	
+	<div id="j_shadow" class="shadow" tapmode></div>
+	<div class="main bdr-rdu">
+		<div id="title" class="title bdr-rdu-top"></div>
+		<div class="content">
+			<div class="group-name">分组名称</div>
+			<div class="input-div">
+				<input id="fl_val" type="text" oninput='showTip(this.value.length,this);' maxlength="8" />
+				<div id="tip" class="tip">最多支持输入8个字符</div>
+			</div>
+		</div>
+		<div class="button bdr-rdu-bottom">
+			<button class="smt-btn bdr-rdu-bottom-left" tapmode="btn-click" onclick="commonCloseFrame('kejianIpad_group_name_frame');">取消</button>
+			<button class="cnl-btn bdr-rdu-bottom-right" tapmode="btn-click" onclick="saveGroupName();">确定</button>
+		<div>
+	</div>
+</body>
+<script type="text/javascript" src="../../../../../script/api.js"></script>
+<script type="text/javascript" src="../../../../../script/plug-in/base64.js" ></script>
+<script type="text/javascript" src="../../../../../script/base_config.js" ></script>
+<script type="text/javascript" src="../../../../../script/common/common.js" ></script>
+<script type="text/javascript" src="../../../../../script/module/common/kejianJs.js" ></script>
+<script type="text/javascript">
+	var BASE_URL_ACTION;
+	var type;//判断是添加分组还是编辑分组，1添加，0编辑
+	apiready = function(){
+		commonSetTheme({"level":5,"type":0});
+		BASE_URL_ACTION = $api.getStorage('BASE_URL_ACTION');	
+		type = api.pageParam.type;
+		if(type){
+			$api.text($api.byId('title'), '添加分组');
+		}else{
+			$api.val($api.byId('fl_val'), Base64.decode(api.pageParam.name_base64));
+			showTip(Base64.decode(api.pageParam.name_base64).length,"");
+			$api.text($api.byId('title'), '编辑分组');
+		}
+	};
+	/*
+	*author:zhaoj
+	*function:分组名称最多字数
+	*date：20161205
+	*/
+	function showTip(length,self){
+        var count = 8 - length;
+        if(count == 8){
+        	$api.text($api.byId('tip'),'最多支持输入8个字符');
+        }else{
+        	$api.text($api.byId('tip'),'剩余'+count+'个字符');
+        }
+         if(self !=""){
+            commonRemoveExpression(self);
+        }
+    }
+    /*
+	*author:zhaoj
+	*function:添加或编辑学生分组
+	*date：20161206
+	*/
+    function saveGroupName(){
+    	if(type){
+    		showSelfProgress('添加中...');
+    		saveGroup();
+    	}else{
+    		showSelfProgress('保存中...');
+    		updateGroup();
+    	}
+    }
+</script>
+</html>

@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+        <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+        <title>家长学校</title>
+        <link rel="stylesheet" type="text/css" href="../../../../../css/aui/aui.css" />
+        <link rel="stylesheet" type="text/css" href="../../../../../css/module/common/list_frame.css" />
+        <link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+        <style>
+        </style>
+    </head>
+    <body class="common-iphone-jzxx-par">  
+        <div id="zx_list_div"></div>
+        <script type="text/html" id="zx_list_script">
+            <% if(list.length == 0){ %>
+                <%if(type==1){%>
+                    <div class="no-data"><span>暂无班级快讯</span></div>
+                <%}else{%>
+                    <div class="no-data"><span>暂无校园资讯</span></div>
+                <%}%>
+            <% }else{ %>
+                <%for(var i=0; i<list.length; i++) {%>
+                    <div class="section3"  onclick="openContentWindow('<%=list[i].notice_id %>','','<%=list[i].title %>');">
+                        <div class="item style1" tapmode="itemhover">
+                            <%if(type==1){%>
+                                <div class="itemlogo userlogo"><img onerror="this.src='../../../../../image/fun-module/iphone/parent/jzxx/bjkx.png'"  src="../../../../../image/fun-module/iphone/parent/jzxx/bjkx.png" alt="" data-echo="<%=list[i].thumb_id %>">
+                            <%}else{%>
+                                <div class="itemlogo userlogo"><img onerror="this.src='../../../../../image/fun-module/iphone/parent/jzxx/xyzx.png'"  src="../../../../../image/fun-module/iphone/parent/jzxx/xyzx.png" alt="" data-echo="<%=list[i].thumb_id %>">
+                            <%}%>
+                            </div>
+                            
+                            <div class="itemshelf">
+                                <div class="shelfinfo01">
+                                    <%=list[i].title %>
+                                </div>
+                                <div class="shelfinfo04">
+                                    作者：<%=list[i].person_name %>&nbsp;&nbsp;&nbsp;
+                                </div>
+                                <div  class="shelfinfo06">
+                                                                                            发布：<%=list[i].create_time.substring(0,10) %>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                <% } %>
+            <% } %>
+        </script>
+       <!--家长讲堂列表-->
+        <div id="jz_list_div"></div>
+        <script type="text/html" id="jz_list_script">
+            <% if(list.length == 0){ %>
+                <div class="no-data"><span>暂无家长讲堂</span></div>
+            <% }else{ %>
+                <%for(var i=0; i<list.length; i++) {%>
+                    <div class="section3"  onclick="openContentWindow('<%=list[i].id %>','<%=list[i].expand_id %>','<%=list[i].title%>');">
+                        <div class="item style1" tapmode="itemhover">
+                            <div class="itemlogo userlogo"><img onerror="this.src='../../../../../image/fun-module/iphone/parent/jzxx/bjkx.png'"  src="<%=list[i].wz_thumb_url %>" alt="" />
+                            </div>
+                            
+                            <div class="itemshelf">
+                                <div class="shelfinfo01">
+                                    <%=list[i].title %>
+                                </div>
+                                <div class="shelfinfo04">
+                                    发布：<%=list[i].create_time.substring(0,10) %>
+                                </div>
+                                <div  class="shelfinfo06">
+                                                                                            浏览&nbsp;<%=list[i].browse_num %>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                <% } %>
+            <% } %>
+        </script>
+    </body>
+    <script type="text/javascript" src="../../../../../script/api.js"></script>
+    <script type="text/javascript" src="../../../../../script/base_config.js"></script>
+    <script type="text/javascript" src="../../../../../script/common/common.js"></script>
+    <script type="text/javascript" src="../../../../../script/plug-in/template.js"></script>
+    <script type="text/javascript" src="../../../../../script/plug-in/echo.min.js"></script>
+    <script type="text/javascript">
+        var param_json={};//全局变量
+        var currentPage = 1;//当前分页数
+        var totalPages = 0;//总页数
+        apiready = function() {
+        	commonSetTheme({"level":5,"type":0});
+            param_json.type=api.pageParam.type;
+            param_json.register_id=api.pageParam.register_id;
+            initData(1);
+            commonRefreshHeaderInfo();//上拉刷新
+            commonScrollBottomReload();//下拉加载
+        };
+         /*
+        *author:zhaoj
+        *function:初始换数据
+        *date：201710231
+        */
+        function initData(page){
+            showSelfProgress('加载中...');
+            currentPage = page;
+            if(param_json.type == 1){
+                getNoticeList();
+            }else if(param_json.type == 2){
+                getNoticeList();
+            }else{
+                search();
+            }
+        }
+        /*
+        *author:zhaoj
+        *function:根据待办事项的接口，获取数据
+        *date：201710231
+        */
+        function getNoticeList(){
+            var _url = BASE_URL_ACTION+'/notice/getNoticeList?page_number='+currentPage+'&page_size='+BASE_PAGE_SIZE+'&register_id=' + param_json.register_id;
+            api.ajax({
+                url : _url,
+                method : 'get',
+                timeout : 0,
+                dataType : 'json',
+                headers : {
+                'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+            }
+                }, function(ret, err) {
+                    api.hideProgress();
+                    if(err){
+                        popToast('获取班级快讯失败，请稍候重试');
+                    }else{
+                        if(ret){   
+                            totalPages = ret.total_page;
+                            ret.type = param_json.type;
+                            //得到缩略图路径
+                            var BASE_APP_TYPE = $api.getStorage('BASE_APP_TYPE');
+                            for (var i = 0; i < ret.list.length; i++) {
+                                if(!ret.list[i].thumbnail){
+                                    if(param_json.type ==1){
+                                        ret.list[i].thumb_id='../../../../../image/fun-module/iphone/parent/jzxx/bjkx.png';
+                                    }else{
+                                        ret.list[i].thumb_id='../../../../../image/fun-module/iphone/parent/jzxx/xyzx.png';
+                                    }
+                                }else{
+                                    var thumb_url = ret.list[i].thumbnail;
+                                    var index = thumb_url.indexOf('/Material');
+                                    if (index != -1) {
+                                        var thumb_id=thumb_url.substring(index+10,thumb_url.length);
+                                        if(BASE_APP_TYPE == 1){
+                                            ret.list[i].thumb_id = BASE_IMAGE_PRE + BASE_MATERIAL_BEGIN+ thumb_id+commonReturnPhotoCutSize(0);
+                                        }else{
+                                            ret.list[i].thumb_id = BASE_URL_ACTION + BASE_IMAGE_BEGIN+ thumb_id+commonReturnPhotoCutSize(0);
+                                        }
+                                    }else{
+                                        ret.list[i].thumb_id = ret.list[i].thumbnail;
+                                    }
+                                }
+                            }
+                            commonAddManyHtml('zx_list_div',"zx_list_script",ret);
+                            //延迟加载图片
+                            setTimeout(function() {
+                                echoInit();
+                            }, 300);
+                        }else{
+                            popToast('获取班级快讯失败，请稍候重试');
+                        }
+                    }
+                    //通知顶部下拉刷新数据加载完毕，组件会恢复到默认状态
+                        commonControlRefresh();
+            });
+        }
+        /*
+        *author:zhaoj
+        *function:获取王晶莹的写的文章
+        *date：201710231
+        */
+        function search(){
+            api.ajax({
+                url : 'http://www.edusoa.com/dsideal_yy/blog/search?random_num=26797305&search_type=title&search_key=&identity_id=5&person_id=284494&pagenum='+currentPage+'&pagesize='+BASE_PAGE_SIZE+'&business_type=1&category_id=16561&l_person_id=284494&l_identity_id=5',
+                method : 'get',
+                timeout : 0,
+                dataType : 'json',
+                headers : {
+                'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+            }
+                }, function(ret, err) {
+                    api.hideProgress();
+                    if(err){
+                        popToast('获取家长讲堂失败，请稍候重试');
+                    }else{
+                        if(ret){
+                            totalPages = ret.total_page;
+                            var wz_list = ret.list;
+                            var wz_list_l = getJsonObjLength(wz_list);
+                            BASE_APP_TYPE =1;
+                            if (wz_list_l > 0) {
+                                for (var i = 0; i < wz_list_l; i++) {
+                                    var wz_thumb_id = wz_list[i].thumb_id;
+                                    var wz_thumb_url = '';
+                                    if (BASE_APP_TYPE == 1) {
+                                        url_path_down = "https://dsideal.obs.cn-north-1.myhuaweicloud.com/";
+                                        if (wz_thumb_id.indexOf(url_path_down) != -1) {
+                                            url_path_suffix = "down/Material/";
+                                            BASE_IMAGE_PRE = "http://image.edusoa.com/";
+                                            url_path_suffix = "down/Material/";
+                                            var key = url_path_down+url_path_suffix;
+                                            var key_re = BASE_IMAGE_PRE+url_path_suffix;
+                                            wz_thumb_url = wz_thumb_id.replaceAll(key, key_re);
+                                            wz_thumb_url = wz_thumb_url+commonReturnPhotoCutSize(0);
+                                        }else{
+                                            wz_thumb_url = wz_thumb_id;
+                                        }
+                                    }else{
+                                        var key = '/dsideal_yy';
+                                        if (wz_thumb_id.indexOf(url_path_suffix) != -1) {
+                                            wz_thumb_id = wz_thumb_id.replaceAll(url_path_suffix, BASE_IMAGE_PRE);
+                                        }
+                                        if (wz_thumb_id.indexOf(key) != -1) {
+                                            var key_re = BASE_URL_ACTION;
+                                            var wz_thumb_file = wz_thumb_id.replaceAll(key, key_re);
+                                            wz_thumb_url = wz_thumb_file+commonReturnPhotoCutSize(0);
+                                        }else{
+                                            wz_thumb_url = wz_thumb_id
+                                        }
+                                    }
+                                    wz_list[i]["wz_thumb_url"] = wz_thumb_url;
+//                                  wz_list[i]["title_base64"] = Base64.encode(wz_list[i].title);
+                                }
+                            }
+                            commonAddManyHtml('jz_list_div',"jz_list_script",ret);
+                        }else{
+                            popToast('获取家长讲堂失败，请稍候重试');
+                        }
+                    }
+                    //通知顶部下拉刷新数据加载完毕，组件会恢复到默认状态
+                    commonControlRefresh();
+            });
+        }
+        /*
+        *author:zhaoj
+        *function:打开列表页面
+        *date：201710231
+        */
+        function openContentWindow(id,expand_id,name){
+            var header_h = api.pageParam.header_h;
+            var pageParamJson={"header_h":header_h,"type":param_json.type,"id":id,"name":name,"expand_id":expand_id};//打开frame页面所需参数
+            commonOpenWin('jzxx_content_window', 'jzxx_content_window.html', false, false, pageParamJson);
+        }
+    </script>
+</html>

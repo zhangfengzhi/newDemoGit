@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<!-- html5：在创建html时为了防止页面缩放等不兼容效果，要创建个viewport  -->
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<!-- 在IOS设备上，有时会将数字转为手机号，这里也要禁止下 -->
+		<meta name="format-detection" content="telephone=no"/>
+		<title>通知</title>
+		<link rel="stylesheet" type="text/css" href="../../../../../css/aui/aui.css" />
+		<link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+		<style>
+			.history-date {
+				font-size: 12px;
+			}
+			#message-content {
+				overflow-y: auto;
+				display: none;
+			}
+			.save {
+				position: absolute;
+				right: 3px;
+				top: 0;
+				font-size: 16px !important;
+				height: 50px;
+				line-height: 50px;
+			}
+			.tag-title{height:45px; line-height:43px;background:#ffffff ;border-bottom:2px solid #E6E6E6;width:100%;}
+			.tag-title div{position: relative; z-index: 999;}
+			.fl{width:25%;color: #000000;float:left;text-align:center;color:#686868;}
+			.tag-title div.active{border-bottom:2px solid red;color:red;}
+			.tag-title .fl-last .hot{color:#686868;}
+			.tag-title .fl-last .new{color:#686868;}
+		</style>
+	</head>
+	<body class="common-iphone-notice">
+		<div id="wrap">
+			<header class="aui-bar aui-bar-nav aui-bar-primary" id="aui-header">
+				<div id="cloud" class="topbar activebar">
+					<div id="back" class="back" onclick="back();" tapmode="">
+						<i class="aui-iconfont aui-icon-left"></i>返回
+					</div>
+					<div class="mTitle" id="mTitle">
+						<!--<div id="btn_title" class="btn-title" style="display:none;">
+							<div id="j_btn_1" class="btn-l btn-top-active btn-top" onclick="changeBtnTitle(1);">
+								公开
+							</div>
+							<div id="j_btn_2" class="btn-r btn-top" onclick="changeBtnTitle(2);">
+								内部
+							</div>
+						</div>-->
+						通知公告
+						<span id="name" style="display:none;"></span>
+					</div>
+					<div class="win-menu">
+						<!--通知——菜单-->
+						<!--	<a id='menu' class="menu fr" tapmode="tap-active" onclick="openWindow('kaoqin_myKqtj_window');"></a>-->
+						<!--通知——发布通知-->
+						<!--<a id='add' class="aui-iconfont aui-icon-add back" style="display:none;" onclick="openWindow();"></a>-->
+					</div>
+				</div>
+				<div class="tag-title">
+					<div class="fl active" id="first_div" onclick="changeGgType(this,0);">全部</div>
+					<div class="fl" onclick="changeGgType(this,1);">日常</div>
+					<div class="fl" onclick="changeGgType(this,2);">紧急</div>
+					<div class="fl" onclick="changeGgType(this,3);">重要</div>
+				</div>
+			</header>
+			<div  class="aui-content aui-content-padded" id="message-content">
+				<p class="aui-text-center history-date"></p>
+			</div>
+		</div>
+	</body>
+	<script type="text/javascript" src="../../../../../script/api.js"></script>
+	<script type="text/javascript" src="../../../../../script/common/common.js"></script>
+	<script type="text/javascript" src="../../../../../script/assembly/tongjiData.js"></script>
+	<script type="text/javascript" src="../../../../../script/base_config.js" ></script>
+	<script type="text/javascript">
+		//顶部header高度
+		var header_h;
+		var is_xxgly = 0;
+		//是否为学校管理员，0代表不是，1代表是
+		var type = 1;
+		//1公开，2内部
+		var back_type = 'select';
+		//返回参数
+		apiready = function() {
+			commonSetTheme({"level":5,"type":0});
+			$api.setStorage('now_select_all',{});
+			$api.setStorage('now_all_selected',{});
+			header_h = api.pageParam.header_h;
+			judgeRoles(function(flag) {
+				if (flag) {
+					reBackType('select');
+					openSelectFrame();
+				} else {
+					reBackType('select');
+					openNoticeIndexFrame();
+				}
+			});
+			if ($api.getStorage('BASE_SERVER_NAME') == 'jntq') {
+				$api.text($api.byId('name'), '站内信');
+			} else {
+				$api.text($api.byId('name'), '通知公告');
+			}
+			commonIosAuiHeader();//定位header位置，留出上面电池等空隙，苹果需要
+			commonBackForAndroid();//安卓关闭
+			commonOpenTjData($api.getStorage("identity")+'_'+api.winName);//记录统计
+		};
+		/*
+		 *author:zhaoj
+		 *function:判断角色，如果存在role_id = 2，说明是学校管理员
+		 *date：20160627
+		 */
+		function judgeRoles(callback) {
+			setNoticeTs(function(is_true) {
+				var rolesArray = $api.getStorage('roles');
+				for (var i = 0; i < rolesArray.length; i++) {
+					if (rolesArray[i].role_id * 1 == 2 || rolesArray[i].role_id * 1 == 61 || rolesArray[i].role_id * 1 == 62 || rolesArray[i].role_id * 1 == 63 || rolesArray[i].role_id * 1 == 64) {
+						is_xxgly = 1;
+						callback(true);
+					}
+				}
+				if (is_xxgly == 0) {
+					callback(false);
+				}
+			});
+		}
+
+		/*
+		 *author:zhaoj
+		 *function:打开通知列表frame页面
+		 *date：20160625
+		 */
+		function openNoticeIndexFrame() {
+			var header_h = api.pageParam.header_h;
+			var pageParamJson={"header_h":header_h,is_xxgly : is_xxgly};//打开frame页面所需参数
+			commonOpenFrame('notice_index_frame', 'notice_index_frame.html',header_h + 45, false, false,"#ffffff",pageParamJson);	//打开index页面
+		}
+
+		/*
+		 *author:zhaoj
+		 *function:打开通知列表frame页面
+		 *date：20160625
+		 */
+		function openSelectFrame() {
+			var header_h = api.pageParam.header_h;
+			var pageParamJson={"header_h":header_h};//打开frame页面所需参数
+			commonOpenFrame('notice_select_frame', 'notice_select_frame.html',header_h, false, false,"#ffffff",pageParamJson);	//打开index页面
+		}
+
+		function changeBtnTitle(cs_type) {
+			type = cs_type;
+			if (cs_type == 1) {
+				$api.removeCls($api.byId('j_btn_2'), 'btn-top-active');
+				$api.addCls($api.byId('j_btn_1'), 'btn-top-active');
+			} else {
+				$api.removeCls($api.byId('j_btn_1'), 'btn-top-active');
+				$api.addCls($api.byId('j_btn_2'), 'btn-top-active');
+			}
+			commonExecScript('notice_index_window','notice_index_frame','changeType(' + cs_type + ');',1);
+		}
+
+		/**
+		 * 返回应用页面
+		 * 周枫
+		 * 2015.10.11
+		 */
+		function back() {
+			api.setFrameAttr({// 显示内容层
+				name : 'notice_select_frame',
+				hidden : false,
+			});
+			commonRefreshYingyong();//刷新应用页面的消息提醒数量
+			switch(back_type) {
+				case 'index':
+					commonCloseTjData($api.getStorage("identity")+'_'+api.winName);
+					commonExecScript('notice_index_window','notice_index_frame','closeNav();',1);
+					setTimeout(function() {
+						commonCloseFrame('notice_index_frame');
+						commonCloseFrame('notice_text_frame');
+					}, 50);
+					reBackType('select');
+					break;
+				case 'select':
+					api.closeWin();
+					break;
+			}
+		}
+
+		/*
+		 *作者:zhaoj
+		 *功能:加号按钮是否显示
+		 *日期：20160930
+		 */
+		function addShow(type) {
+			var domArray = document.getElementsByClassName('fl');
+			for(var i=0;i<domArray.length;i++){
+				$api.removeCls(domArray[i], 'active');
+			}
+			$api.addCls($api.byId('first_div'), 'active');
+			if (type) {
+				$api.css($api.byId('add'), 'display:block;');
+				$api.css($api.byId('name'), 'display:none;');
+				$api.css($api.byId('btn_title'), 'display:block;');
+				$api.removeCls($api.byId('j_btn_2'), 'btn-top-active');
+				$api.addCls($api.byId('j_btn_1'), 'btn-top-active');
+			} else {
+				$api.css($api.byId('add'), 'display:none;');
+				$api.css($api.byId('btn_title'), 'display:none;');
+				$api.css($api.byId('name'), 'display:block;');
+			}
+		}
+		/**
+		 * 重置从哪个页面退出
+		 * 周枫
+		 * 2015.12.17
+		 */
+		function reBackType(type) {
+			switch(type) {
+				//如果通知公告列表页面退出
+				case 'index':
+					commonCloseTjData(api.winName);//记录统计
+					back_type = 'index';
+					break;
+				//如果从选择页面退出
+				case 'select':
+					addShow(0);
+					back_type = 'select';
+					break;
+			}
+		}
+
+		/**
+		 * 设置通知未读消息
+		 * 周枫
+		 * 2016.10.15
+		 */
+		function setNoticeTs(callback) {
+			api.ajax({
+				url : BASE_URL_ACTION + '/new_notice/setNoticeTs',
+				method : 'get',
+				timeout : 0,
+				dataType : 'json',
+				data : {
+					values : {
+						"person_id" : $api.getStorage("person_id"),
+						"identity_id" : $api.getStorage("identity")
+					}
+				}
+			}, function(ret, err) {
+				callback(true);
+			});
+		}
+		
+		/*
+		 * 功能：修改类型
+		 * 作者：张自强
+		 * 时间：20171123
+		 */
+		function changeGgType(e,type){
+			var domArray = document.getElementsByClassName('fl');
+			for(var i=0;i<domArray.length;i++){
+				$api.removeCls(domArray[i], 'active');
+			}
+			$api.addCls(e, 'active');
+			commonExecScript(api.winName,'notice_index_frame','changeGgType('+type+');',1);
+		}
+	</script>
+</html>

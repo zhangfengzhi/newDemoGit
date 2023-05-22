@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<!-- html5：在创建html时为了防止页面缩放等不兼容效果，要创建个viewport  -->
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<!-- 在IOS设备上，有时会将数字转为手机号，这里也要禁止下 -->
+		<meta name="format-detection" content="telephone=no"/>
+		<title>考勤统计</title>
+		<link rel="stylesheet" type="text/css" href="../../../../../css/aui/aui.css" />
+		<link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+		<style>
+			.history-date {
+				font-size: 12px;
+			}
+			#message-content {
+				overflow-y: auto;
+				display: none;
+			}
+			
+			
+			.t_display_n {
+				display: none;
+			}
+			.t_display_b {
+				display: block;
+			}
+		</style>
+	</head>
+	<body class="common-iphone-kaoqin">
+		<div id="wrap">
+			<header class="aui-bar aui-bar-nav aui-bar-primary" id="aui-header">
+				<div id="cloud" class="topbar activebar">
+					<div id="back" class="back" onclick="back();" tapmode="">
+						<i class="aui-iconfont aui-icon-left"></i>返回
+					</div>
+					<div  class="mTitle" id="mTitle">
+						
+					</div>
+					<div class="win-menu">
+					</div>
+				</div>
+				<div class="tag-title">
+				</div>
+			</header>
+			<div  class="aui-content aui-content-padded" id="message-content">
+				<p class="aui-text-center history-date"></p>
+			</div>
+		</div>
+	</body>
+	<script type="text/javascript" src="../../../../../script/api.js"></script>
+	<script type="text/javascript" src="../../../../../script/base_config.js" ></script>
+	<script type="text/javascript" src="../../../../../script/common/common.js"></script>
+	<script type="text/javascript">
+		//顶部header高度
+		var header_h;
+		apiready = function() {
+			commonSetTheme({"level":5,"type":0});
+			header_h = api.pageParam.header_h;
+			//区分是请假还是公出
+			diffrentType();
+			//打开我的考勤详情页面
+			opencxKqxqFrame();
+			commonBackForAndroid();//安卓关闭
+			commonIosAuiHeader();//定位header位置，留出上面电池等空隙，苹果需要
+		};
+		/*
+		*author:zhaoj
+		*function:打开我的考勤详情页面
+		*date：20160620
+		*/
+		function opencxKqxqFrame(){
+			var header_h = api.pageParam.header_h;
+			commonOpenFrame('kaoqin_cxKqxq_frame', 'kaoqin_cxKqxq_frame.html',header_h, false, false,"#ffffff",{header_h : header_h,type : api.pageParam.type,leave_id : api.pageParam.leave_id,check_status : api.pageParam.check_status});	//打开index页面
+		}
+		/*
+		*author:zhaoj
+		*function:根据type判断是请假还是公出
+		*date：20160620
+		*/
+		function diffrentType(){
+			if(api.pageParam.type){
+				$api.text($api.byId('mTitle'), '公出详情');
+			}else{
+				$api.text($api.byId('mTitle'), '请假详情');
+			}
+		}
+		/*
+		*author:zhaoj
+		*function:返回页面
+		*date：20160307
+		*/
+		function back() {
+			api.closeWin();
+		}
+	</script>
+</html>

@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+		<title>题本</title>
+		<link rel="stylesheet" type="text/css" href="../../../../../css/aui/aui.css"/>
+		<link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+	</head>
+	<body id="j_body" class="left-layout-body common-ipad-tibenIpad-tea">
+		<div id="wrap">
+			<header class="aui-bar aui-bar-nav aui-bar-primary" id="aui-header">
+				<div id="cloud" class="topbar activebar">
+					<div id="back" class="back" onclick="back();" tapmode="">
+						<i class="aui-iconfont aui-icon-left"></i>返回
+					</div>
+					<div  class="mTitle" id="mTitle">
+						题目详情
+					</div>
+					<div class="win-menu">
+					</div>
+				</div>
+			</header>
+		</div
+	</body>
+	<script type="text/javascript" src="../../../../../script/api.js"></script>
+	<script type="text/javascript" src="../../../../../script/base_config.js" ></script>
+	<script type="text/javascript" src="../../../../../script/common/common.js"></script>
+	<script type="text/javascript">
+		var back_type ="index";//返回参数
+		apiready = function(){
+			commonSetTheme({"level":5,"type":0});
+			commonIosAuiHeader();//定位header位置，留出上面电池等空隙，苹果需要
+			commonBackForAndroid();//安卓关闭
+			openDetailFrame();
+		};
+		/*
+		*author:zhaoj
+		*function:返回页面
+		*date：20161220
+		*/
+		function back() {
+			switch(back_type) {
+				case 'index':
+					api.closeWin();
+					break;
+				case 'stu_list':
+				  	commonCloseFrame('tibenIpad_stu_list_frame');
+				  	reBackType('index');
+					break;
+				//关闭照片
+				case 'picture':
+					
+					reBackType('stu_list');
+					break;
+				case 'voice':
+					commonCloseFrame('common_playaudio_frame');
+					reBackType('stu_list');
+					break;
+			}
+		}
+		/**
+		 * 重置从哪个页面退出
+		 * 周枫
+		 * 2015.12.17
+		 */
+		function reBackType(type) {
+			switch(type) {
+				//如果列表页面退出
+				case 'index':
+					back_type = 'index';
+					break;
+				//如果下拉菜单页面退出
+				case 'stu_list':
+					back_type = 'stu_list';
+					break;
+				//打开照片
+				case 'picture':
+					back_type = 'picture';
+					break;
+				//如果音频页面退出
+				case 'voice':
+					back_type = 'voice';
+					break;
+			}
+		}
+		/*
+		*author:zhaoj
+		*function:打开列表页面
+		*date：20170912
+		*/
+		function openDetailFrame(){
+			var header_h = api.pageParam.header_h;//顶部高度
+			pageParamJson={"header_h":header_h,"q_base64":api.pageParam.q_base64};//打开frame页面json数据
+			//打开frame页面
+			commonOpenFrame("tibenIpad_detail_frame","tibenIpad_detail_frame.html",header_h,false,false,"rgba(0,0,0,0)",pageParamJson);
+		}
+	</script>
+</html>

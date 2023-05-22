@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>检测下拉菜单</title>
+    <link rel="stylesheet" type="text/css" href="../../../../../css/aui/aui.css" />
+    <link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+    <style>
+    	html, body {
+        	background-color: transparent;
+        	background:rgba(0,0,0,0);
+   		 }
+    	body{padding:0;margin:0;}
+    	.shadow{position:absolute;left:0;top:0;width:100%;height:100%;z-index: 1;}
+    	.header{width:100%;height:45px;}
+    	.main{width:100%;}
+    	.menu-list{
+    		list-style:none;
+    		background-color: #ffffff;
+			box-shadow: 0px 0px 5px #cccccc;
+			position: relative;
+			width: 186px;
+			float: right;
+			z-index: 2;
+			padding: 0;
+			margin:0;
+		}
+		.menu-list li {
+			height: 48px;
+			line-height:48px;
+			display: block;
+			border-bottom: 1px solid #eeeeee;
+			color: #333;
+			font-family: sans-serif;
+		}
+		.menu-list li .icon-box{width:60px;height:48px;display:inline-block;float:left;}
+		.menu-list li span{display:inline-block;height:48px;line-height:48px;float:left;}
+		.menu-list li .tiwen{background: url(../../../../../image/fun-module/iphone/zuoye/talk.png) 15px center no-repeat; background-size: 31px 28px;}
+		.menu-list li .chouqu{background: url(../../../../../image/fun-module/iphone/zuoye/weike.png) 15px center no-repeat; background-size: 31px 27px;}
+		.menu-list li .zuowei{background: url(../../../../../image/fun-module/iphone/zuoye/look.png) 15px center no-repeat; background-size: 31px 31px;}
+    </style>
+</head>
+<body class="common-ipad-zuoyeIpadstu">
+	<div class="shadow" tapmode onclick="api.closeFrame({name:'zuoyeIpad_menu_frame'});"></div>
+	<div id="header" class="header"></div>
+	<div id="main" class="main">
+		<ul class="menu-list">
+			<li onclick="openHhChat();">
+				<div class="icon-box tiwen"></div>
+				<span>交流讨论</span>
+			</li>
+			<li id="j_look_wk" onclick="openWkList();" style="display:none;">
+				<div class="icon-box chouqu"></div>
+				<span>查看微课</span>
+			</li>
+			<li id="j_each_other" style="display:none;" onclick="openHxckWin();">
+				<div class="icon-box zuowei"></div>
+				<span>互相查看</span>
+			</li>
+		</ul>
+	</div>
+</body>
+<script type="text/javascript" src="../../../../../script/api.js"></script>
+<script type="text/javascript" src="../../../../../script/base_config.js" ></script>
+<script type="text/javascript">
+	var header_h;
+	//获取最后一条id
+	var old_msg_id;
+	var BASE_URL_ACTION;
+	var BASE_APP_TYPE;
+	//试题id
+	var que_id;
+	//试题idchar
+	var que_id_char;
+	var que_source;
+	//检测id
+	var zy_id;
+	//打开类型，1：资源，3：试题，5：微课
+	var select_type;
+	apiready = function(){
+		commonSetTheme({"level":5,"type":0});
+		header_h = api.pageParam.header_h;
+		BASE_URL_ACTION = $api.getStorage('BASE_URL_ACTION');
+		BASE_APP_TYPE = $api.getStorage('BASE_APP_TYPE');
+		$api.css($api.byId('header'),'height:'+header_h+'px;');
+		$api.css($api.byId('main'),'height:'+(api.winHeight - header_h)+'px;');
+		que_id = $api.getStorage('question_id');
+		que_id_char = $api.getStorage('question_id_char');
+		que_source = $api.getStorage('que_source');
+		zy_id = api.pageParam.zy_id;
+		select_type = 3;
+		t_id = -1;
+		isShowWk()
+		if(api.pageParam.is_public){
+			$api.css($api.byId('j_each_other'),'display:block;');
+		}
+		//获取最后一条id的监听
+		api.addEventListener({
+			name : 'setOldMessageId'
+		}, function(ret) {
+			if (ret && ret.value) {
+				var value = ret.value;
+				old_msg_id = value.old_msg_id;
+			}
+		});
+	};
+	/*
+	*author:zhaoj
+	*function:打开互相查看页面
+	*date：20160411
+	*/
+	function openHxckWin(){
+		api.openWin({
+			name : 'zuoyeIpad_hxck_window',
+			url : 'zuoyeIpad_hxck_window.html',
+			pageParam : {
+				header_h : header_h,
+				zy_id :api.pageParam.zy_id,
+				zy_name : api.pageParam.zy_name
+			},
+			bounces : false,
+			opaque : false,
+			showProgress : false,
+			vScrollBarEnabled : false,
+			hScrollBarEnabled : false,
+			slidBackEnabled : false,
+			delay : 0,
+			animation : {
+				type : "reveal", //动画类型（详见动画类型常量）
+				subType : "from_right", //动画子类型（详见动画子类型常量）
+				duration : 300
+			},
+		});
+		api.closeFrame({name:'zuoyeIpad_menu_frame'});
+	}
+	/*
+	*author:zhaoj
+	*function:查看微课
+	*date：20160412
+	*/
+	function isShowWk(){
+		api.ajax({
+			url : BASE_URL_ACTION + '/xx/checkQuestionWeike',
+			method : 'post',
+			timeout : 30,
+			dataType : 'json',
+			returnAll : false,
+			data : {
+				values : {
+					"random_num" : creatRandomNum(),
+					"question_id_char":que_id_char,
+					"que_source":que_source,
+					"zy_id" :api.pageParam.zy_id
+				}
+			}
+		}, function(ret, err) {
+			if (err) {
+			} else {
+				if(ret.success){
+					//$api.css($api.byId('j_look_wk'),'display:block;');
+				}
+			}
+		});
+	}
+	/**
+	 * 打开班级群组会话
+	 * 周枫
+	 * 2016.04.13 
+	 */
+	function openHhChat(){
+		setTimeout(function(){
+			var identity_id = parseInt($api.getStorage('identity'));
+			var target_id = '';
+			switch(identity_id){
+				case 5:
+					target_id = 'school_' + $api.getStorage('class_id') + '_' + $api.getStorage('BASE_SERVER_NAME');
+				break;
+				case 6:
+					target_id = 'class_' + $api.getStorage('class_id') + '_' + $api.getStorage('BASE_SERVER_NAME');
+				break;
+				case 7:
+					target_id = 'plass_' + $api.getStorage('class_id') + '_' + $api.getStorage('BASE_SERVER_NAME');
+				break;
+			}
+			var title = $api.getStorage('class_name');
+			if('undefined' == typeof(title)) {
+				title = '班级讨论';
+			}
+			api.ajax({
+                url: BASE_URL_ACTION+'/rongcloud/syncUserRongYunGroup?group_id='+target_id,
+                method:'get',
+                timeout:30,
+                dataType:'json'
+            },function(ret,err){
+                execHhList(target_id,title,"GROUP");
+            });
+		}, 100);
+	}
+	
+	/**
+		 * 打开班级群组会话
+		 * 周枫
+		 * 2016.04.13
+		 */
+		function execHhList(target_id, title, conver_type) {
+			var avatar_url = 'widget://image/person/class.png';
+			api.execScript({
+				name : 'root',
+				frameName : 'hh_index',
+				script : 'openHhList("' + target_id + '",' + old_msg_id + ',"' + title + '","' + conver_type + '","zjgb",\"' + avatar_url + '\");'
+			});
+			setTimeout(function() {
+				switch(select_type){
+					//资源
+					case 1:
+						sendText("求助：亲爱的同学们，我有一道资源不会，请大家帮助。<a href=\"javascript:openQuestionFrame('"+que_id_char+"','"+que_id+"','"+zy_id+"','"+select_type+"','"+t_id+"','1');\">点击查看</a>", "求助：亲爱的同学们，我有一道资源不会，请大家帮助。<a href=\"javascript:openQuestionFrame('"+que_id_char+"','"+que_id+"','"+zy_id+"','"+select_type+"','"+t_id+"','1');\">点击查看</a>", 'GROUP', target_id);
+					break;
+					//试题
+					case 3:
+						sendText("求助：亲爱的同学们，我有一道试题不会，请大家帮助。<a href=\"javascript:openQuestionFrame('"+que_id_char+"','"+que_id+"','"+zy_id+"','"+select_type+"','"+t_id+"','1');\">点击查看</a>", "求助：亲爱的同学们，我有一道试题不会，请大家帮助。<a href=\"javascript:openQuestionFrame('"+que_id_char+"','"+que_id+"','"+zy_id+"','"+select_type+"','"+t_id+"','1');\">点击查看</a>", 'GROUP', target_id);
+					break;
+					//微课
+					case 5:
+						sendText("求助：亲爱的同学们，我有一节微课不会，请大家帮助。<a href=\"javascript:openQuestionFrame('"+que_id_char+"','"+que_id+"','"+zy_id+"','"+select_type+"','"+t_id+"','1');\">点击查看</a>", "求助：亲爱的同学们，我有一节微课不会，请大家帮助。<a href=\"javascript:openQuestionFrame('"+que_id_char+"','"+que_id+"','"+zy_id+"','"+select_type+"','"+t_id+"','1');\">点击查看</a>", 'GROUP', target_id);
+					break;
+				}
+				
+			}, 300);
+		
+		}
+	/**
+	 * 发送文本消息
+	 * 周枫
+	 * 2015.08.08
+	 * @param {Object} sendMsg
+	 */
+	function sendText(send_msg_old, sendMsg, conver_type, target_id) {
+		//向会话列表页发送消息事件
+		api.sendEvent({
+			name : 'sendMessage',
+			extra : {
+				type : 'text',
+				targetId : '' + target_id + '',
+				content : sendMsg,
+				contentOld : send_msg_old,
+				conversationType : conver_type,
+				extra : ''
+			}
+		});
+		api.closeFrame({name:'ctb_xs_menu_frame'});
+	}
+	/**
+	 * 打开微课列表
+	 * 周枫
+	 * 2016.4.15 
+	 */
+	function openWkList(){
+		api.openWin({
+			name : 'weike_menu_list_window',
+			url : 'weike_menu_list_window.html',
+			pageParam : {
+				header_h : header_h,
+				que_id : $api.getStorage('question_id'),
+				question_id_char:$api.getStorage('question_id_char')
+			},
+			bounces : false,
+			opaque : false,
+			showProgress : false,
+			vScrollBarEnabled : false,
+			hScrollBarEnabled : false,
+			slidBackEnabled : false,
+			delay : 0,
+			animation : {
+				type : "reveal", //动画类型（详见动画类型常量）
+				subType : "from_right", //动画子类型（详见动画子类型常量）
+				duration : 300
+			},
+		});
+	}
+</script>
+</html>

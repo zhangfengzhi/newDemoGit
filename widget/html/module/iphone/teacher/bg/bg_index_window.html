@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<title>办公</title>
+		<link rel="stylesheet" type="text/css" href="../../../../../css/aui/aui.css" />
+		<link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+		<style>
+            body {
+            }
+            .close {
+                position: absolute;
+                margin: 1px 10px 0px 80px;
+                font-size: 15px;
+            }
+		</style>
+	</head>
+	<body>
+		<div id="wrap">
+			<header class="aui-bar aui-bar-nav aui-bar-primary" id="aui-header">
+				<div id="cloud" class="topbar activebar">
+					<div id="back" class="back" onclick="back();" tapmode="">
+						<i class="aui-iconfont aui-icon-left"></i>返回
+					</div>
+					<div id="close" class="close" onclick="closeWin();" tapmode="">
+						关闭
+					</div>
+					<div class="mTitle" id="mTitle">
+						办公
+					</div>
+					<!--<div class="win-menu">
+					<a id='menu' class="aui-iconfont aui-icon-add" ></a>
+					</div>-->
+				</div>
+			</header>
+			<div  class="aui-content aui-content-padded" id="message-content">
+				<p class="aui-text-center history-date"></p>
+			</div>
+		</div>
+		<script type="text/javascript" src="../../../../../script/api.js"></script>
+		<script type="text/javascript" src="../../../../../script/base_config.js"></script>
+		<script type="text/javascript" src="../../../../../script/common/common.js"></script>
+	</body>
+	<script type="text/javascript">
+        //顶部header高度
+        var header_h;
+        var w_h;
+        apiready = function() {
+            //定位header位置，留出上面电池等空隙，苹果需要
+            commonSetTheme({"level":5,"type":0});
+            var header = $api.byId('aui-header');
+            $api.fixStatusBar(header);
+            header_h = api.pageParam.header_h;
+            w_h = api.winHeight - header_h;
+            openBgFrame();
+            //          openBgReceiveNoticeListFrame();
+        };
+        function openBgFrame() {
+            var sso_token = $api.getStorage('sso_token');
+            var bg_ip =  $api.getStorage('BG_SERVER_IP');
+//          if ('undefined' == typeof (sso_token) || 'undefined' == typeof (bg_ip)) {
+                getSsoToken(function(is_true, data) {
+                    if (is_true) {
+                        goBgFrame(data);
+                    } else {
+                        api.toast({
+                            msg : data
+                        });
+                    }
+                });
+//          } else {
+//              goBgFrame(sso_token);
+//          }
+        }
+
+        function goBgFrame(sso_token) {
+            api.openFrame({
+                name : 'bg_index_frame',
+                scrollToTop : true,
+                allowEdit : true,
+                url : 'http://221.194.113.163:6611/base-server/app?sys=business_bg&path=/oa/notice/listReceiveNotice&token=' + sso_token,
+                showProgress : true,
+                rect : {
+                    x : 0,
+                    y : header_h,
+                    w : 'auto',
+                    h : api.winHeight - header_h,
+                },
+                pageParam : {
+                    header_h : header_h
+                },
+                vScrollBarEnabled : true,
+                hScrollBarEnabled : false,
+                //页面是否弹动 为了下拉刷新使用
+                bounces : false
+            });
+        }
+
+        function getSsoToken(callback) {
+            var login_name = $api.getStorage('login_name');
+            login_name = newParamToOldParam(login_name);
+            api.ajax({
+                url :'http://kpedu.edusoa.com/dsideal_yy/login/doLogin?sys_type=16&random_num=916078&login_type=1&user='+login_name+'&pwd='+$api.getStorage('login_pad'),
+                method : 'get',
+                timeout : 30,
+                dataType : 'json',
+            }, function(ret, err) {
+                if (err) {
+                    callback(false, '获取人员信息失败');
+                } else {
+                    if (ret.success) {
+                        if($api.getStorage('BASE_SERVER_NAME') == 'cckcq'){
+                            $api.setStorage('BG_SERVER_IP', '218.62.27.194:6608');
+                        }
+                        callback(true, ret.sso_token);
+                    } else {
+                        callback(false, '获取人员信息失败');
+                    }
+                }
+            });
+        }
+
+        /**
+         * 打开办公的接收通知页面
+         * 周枫
+         * 2016.2.2
+         */
+        //      function openBgReceiveNoticeListFrame() {
+        //          api.showProgress({
+        //              title : '加载中...',
+        //              modal : false
+        //          });
+        //          api.ajax({
+        //              url : BASE_URL_ACTION + '/rongcloud/loginBgService',
+        //              method : 'post',
+        //              dataType : 'json',
+        //              returnAll : false,
+        //              data : {
+        //                  values : {
+        //                      'username' : 'ds',
+        //                      'password' : '123456',
+        //                      'ip_addr' : '10.10.6.92:8031'
+        //                  }
+        //              }
+        //          }, function(ret, err) {
+        //              api.hideProgress();
+        //              if (err) {
+        //
+        //              } else {
+        //                  if (ret.success) {
+        //                      api.openFrame({
+        //                          name : 'bg_index_frame',
+        //                          scrollToTop : true,
+        //                          allowEdit : true,
+        //                          url : '../../html/yingyong/bg_index_frame.html',
+        //                          rect : {
+        //                              x : 0,
+        //                              y : header_h,
+        //                              w : 'auto',
+        //                              h : w_h,
+        //                          },
+        //                          pageParam : {
+        //                              header_h : header_h,
+        //                              h : w_h,
+        //                              bg_token : ret.bg_token
+        //                          },
+        //                          vScrollBarEnabled : true,
+        //                          hScrollBarEnabled : false,
+        //                          //页面是否弹动 为了下拉刷新使用
+        //                          bounces : true
+        //                      });
+        //                  } else {
+        //                      api.toast({
+        //                          msg:'对不起，获取办公菜单失败'
+        //                      });
+        //                  }
+        //              }
+        //          });
+        //      }
+        //      function openBgReceiveNoticeListFrame() {
+        //          api.showProgress({
+        //              title : '加载中...',
+        //              modal : false
+        //          });
+        //          api.ajax({
+        //              url : BASE_URL_ACTION + '/rongcloud/loginBgService',
+        //              method : 'post',
+        //              dataType : 'json',
+        //              returnAll : false,
+        //              data : {
+        //                  values : {
+        //                      'username' : 'ds',
+        //                      'password' : '123456',
+        //                      'ip_addr' : '10.10.6.92:8031'
+        //                  }
+        //              }
+        //          }, function(ret, err) {
+        //              api.hideProgress();
+        //              if (err) {
+        //
+        //              } else {
+        //                  if (ret.success) {
+        //                      api.openFrame({
+        //                          name : 'bg_index_frame',
+        //                          scrollToTop : true,
+        //                          allowEdit : true,
+        //                          url : '../../html/yingyong/bg_index_frame.html',
+        //                          rect : {
+        //                              x : 0,
+        //                              y : header_h,
+        //                              w : 'auto',
+        //                              h : w_h,
+        //                          },
+        //                          pageParam : {
+        //                              header_h : header_h,
+        //                              h : w_h,
+        //                              bg_token : ret.bg_token
+        //                          },
+        //                          vScrollBarEnabled : true,
+        //                          hScrollBarEnabled : false,
+        //                          //页面是否弹动 为了下拉刷新使用
+        //                          bounces : true
+        //                      });
+        //                  } else {
+        //                      api.toast({
+        //                          msg:'对不起，获取办公菜单失败'
+        //                      });
+        //                  }
+        //              }
+        //          });
+        //      }
+        /**
+         * 返回应用页面
+         * 周枫
+         * 2015.10.11
+         */
+        function back() {
+
+                        var js_fun = 'window.location.href=document.referrer;';
+                        api.execScript({
+                            frameName : 'bg_index_frame',
+                            script : js_fun
+                        });
+        }
+        
+        function closeWin(){
+                        api.closeWin();
+        }
+
+        /**
+         * 安卓点击返回的时候
+         * 周枫
+         * 2015.10.14
+         */
+        function backForAndroid() {
+            api.addEventListener({
+                name : "keyback"
+            }, function(ret, err) {
+                back();
+            });
+        }
+    </script>
+</html>

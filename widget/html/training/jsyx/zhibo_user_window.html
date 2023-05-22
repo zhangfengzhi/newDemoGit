@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+		<title>普通用户直播window</title>
+		<link rel="stylesheet" type="text/css" href="../../../css/training/jsyx/aui.css" />
+		<style>
+			body {
+			}
+		</style>
+	</head>
+	<body>
+		<div id="wrap">
+			<header class="aui-bar aui-bar-nav aui-bar-primary" id="aui-header">
+				<div id="cloud" class="topbar activebar">
+					<div id="back" class="back" onclick="back();" tapmode="">
+						<i class="aui-iconfont aui-icon-left"></i>返回
+					</div>
+					<div  class="mTitle" id="mTitle"></div>
+				</div>
+			</header>
+			<div  class="aui-content aui-content-padded" id="message-content">
+				<p class="aui-text-center history-date"></p>
+			</div>
+		</div>
+	</body>
+	<script type="text/javascript" src="../../../script/api.js"></script>
+	<script type="text/javascript" src="../../../script/training/jsyx/zbLive.js" ></script>
+	<script type="text/javascript">
+		//顶部header高度
+		var header_h;
+		var room_id;
+		var anchor_pwd;
+		var assist_pwd;
+		var user_pwd;
+		var room_name;
+		apiready = function() {
+			//定位header位置，留出上面电池等空隙，苹果需要
+			
+			client_url = api.pageParam.client_url;
+			
+			openUserFrame(client_url);
+			//安卓关闭
+			if (api.systemType == 'android') {
+				backForAndroid();
+			}
+		};
+		function openUserFrame(client_url) {
+			var browser = api.require('webBrowser');
+						browser.openView({
+						    url: client_url,
+						    rect: {
+						        x: 0,
+						        y: 0,
+						        w: 'auto',
+						        h: 'auto'
+						    }
+						}, function(ret, err) {
+						    switch (ret.state) {
+						        case 0:
+						            break;
+						        case 1:
+						            break;
+						        case 2:
+						            break;
+						        case 3:
+						            break;
+						        case 4:
+						            break;
+						        default:
+						            break;
+						    }
+						});
+		}
+
+		/**
+		 * 安卓点击返回的时候
+		 * 周枫
+		 * 2016.11.02
+		 */
+		function backForAndroid() {
+			api.addEventListener({
+				name : "keyback"
+			}, function(ret, err) {
+				back();
+			});
+		}
+
+		/**
+		 * 返回应用页面
+		 * 周枫
+		 * 2016.11.02
+		 */
+		function back() {
+			api.closeWin();
+		}
+		
+		/**
+		 * 重置window标题
+		 * 周枫
+		 * 2015.12.17
+		 */
+		function reWindowName(win_name) {
+			$api.html($api.byId('mTitle'), win_name);
+		}
+	</script>
+</html>

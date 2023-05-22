@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<!-- html5：在创建html时为了防止页面缩放等不兼容效果，要创建个viewport  -->
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<!-- 在IOS设备上，有时会将数字转为手机号，这里也要禁止下 -->
+		<meta name="format-detection" content="telephone=no"/>
+		<title>教师端主题活动</title>
+		<link rel="stylesheet" type="text/css" href="../../../../../css/aui/aui.css"/>
+        <link rel="stylesheet" type="text/css" href="../../../../../css/module/ipad/left-right-layout.css"/>
+		<link id="j_theme_base" rel="stylesheet" type="text/css" href="" /><style>
+			.tag-title{height:70px; line-height:70px;border-bottom:2px solid #E6E6E6;width:100%;background:#fff;color:#000;font-size:20px;}
+			.tag-title .time{width:30%;float:left;padding-left:10px;}
+			.tag-title input{color:#CDCDCD;border:1px solid #CDCDCD}
+			input::-webkit-input-placeholder{
+                color:#CDCDCD;
+            }
+            input::-moz-placeholder{   /* Mozilla Firefox 19+ */
+                color:#CDCDCD;
+            }
+            input:-moz-placeholder{    /* Mozilla Firefox 4 to 18 */
+                color:#CDCDCD;
+            }
+            input:-ms-input-placeholder{  /* Internet Explorer 10-11 */ 
+                color:#CDCDCD;
+            }
+            
+            table{width:90%;border:1px solid #CDCDCD;font-size:18px;height:100%;margin:0 5%;color:#858582;background:#fff}
+            tr{width:100%;}
+            th,td{border-bottom:1px solid #CDCDCD;border-right:1px solid #CDCDCD;text-align:center}
+            th{padding-top:10px;padding-bottom:10px;border-bottom:none}
+            td{padding-top:5px;padding-bottom:5px;}
+            .num{width:10%;max-width:10%}
+            .tea-name{width:30%;max-width:30%}
+            .hd-num,.cy-num,.zp-num{width:20%;max-width:20%}
+            tr .active{color:#f76736}
+            .desc{
+              float:right;
+              background:url(../../../../../image/fun-module/ipad/zthd/tj-desc.png) right center no-repeat;
+              background-size:10px 20px;
+              width:15px;
+              height:100%;
+              margin-right:20px;
+            }
+            .asc{
+              float:right;
+              background:url(../../../../../image/fun-module/ipad/zthd/tj-asc.png) right center no-repeat;
+              background-size:10px 20px;
+              width:15px;
+              height:100%;
+              margin-right:20px;
+            }
+            tr .active .desc{
+                float:right;
+                background:url(../../../../../image/fun-module/ipad/zthd/tj-desc-active.png) right center no-repeat;
+                background-size:10px 20px;
+                width:15px;
+                height:100%;
+                margin-right:20px;
+            }
+            tr .active .asc{
+                float:right;
+                background:url(../../../../../image/fun-module/ipad/zthd/tj-asc-active.png) right center no-repeat;
+                background-size:10px 20px;
+                width:15px;
+                height:100%;
+                margin-right:20px;
+            }
+		</style>
+	</head>
+	<body class="common-ipad-zthd-tea">
+		<div id="wrap">
+			<header class="aui-bar aui-bar-nav aui-bar-primary" id="aui-header">
+				<div id="cloud" class="topbar activebar">
+					<div id="back" class="back" onclick="back();" tapmode="">
+						<i class="aui-iconfont aui-icon-left"></i>返回
+					</div>
+					<div  class="mTitle" id="mTitle">
+						活动统计
+					</div>
+				</div>
+				<div class="tag-title nav">
+                    <div onclick="back(1);" class="time">开始日期：<input style="width:50%;height:auto;" id="j_time_0" type="textarea" placeholder="请选择日期" disabled="disabled"/></div>
+                    <div onclick="openTime(1);" class="time">结束日期：<input style="width:50%;height:auto;" id="j_time_1" type="textarea" placeholder="请选择日期" disabled="disabled"/></div>
+                </div>
+                <div style="height:50px;padding-top:10px;text-align: bottom;background:#fff;">
+                    <table cellspacing=0 class="table-header">
+                       <tr id="header_tr">
+                          <th class="num">序号</th>
+                          <th class="tea-name">教师</th>
+                          <th class="hd-num active" id="px_1" onclick="changeEscType(1,'desc');">
+                            <span>活动数量</span>
+                            <span id="px_1_desc" class="desc">&nbsp;</span>
+                            <span id="px_1_asc" class="asc aui-hide">&nbsp;</span>
+                          </th>
+                          <th class="cy-num" id="px_3" onclick="changeEscType(3,'desc');">
+                            <span>参与人次</span>
+                            <span id="px_3_desc" class="desc">&nbsp;</span>
+                            <span id="px_3_asc" class="asc aui-hide">&nbsp;</span>
+                          </th>
+                          <th class="zp-num" id="px_2" onclick="changeEscType(2,'desc');">
+                            <span>作品数量</span>
+                            <span id="px_2_desc" class="desc">&nbsp;</span>
+                            <span id="px_2_asc" class="asc aui-hide">&nbsp;</span>
+                          </th>
+                        </tr>
+                    </table>
+                </div>
+			</header>
+			<div  class="aui-content aui-content-padded" id="message-content">
+				<p class="aui-text-center history-date"></p>
+			</div>
+		</div>
+	</body>
+	<script type="text/javascript" src="../../../../../script/api.js"></script>
+	<script type="text/javascript" src="../../../../../script/base_config.js" ></script>
+	<script type="text/javascript" src="../../../../../script/common/common.js"></script>
+	<script type="text/javascript" src="../../../../../script/assembly/tongjiData.js"></script>
+	<script type="text/javascript" src="../../../../../script/assembly/openPicker.js"></script>
+	<script type="text/javascript" src="../../../../../script/module/iphone/common/zthd/zthd.js"></script>
+	<script type="text/javascript" src="../../../../../script/plug-in/base64.js" ></script>
+	<script type="text/javascript">
+        var start_time = '';
+        var end_time = '';
+        var first_check_time = true;//第一次选择时间
+        var now_fw_time = '';
+        var sort_column = 1;//排序类型，1：活动数量，2：参与人数，3：作品数量
+        var sort_type = 'desc';//排序方式
+        var fromType = 2;
+        var is_open_isopen = false;//开始时间组件是否已经打开
+        var is_back_isopen = false;//是否点击了返回按钮
+        var sort_column = 1;//排序类型，1：活动数量，3：参与人数，2：作品数量
+        var sort_type = 'desc';//排序方式
+		apiready = function() {
+			commonSetTheme({"level":5,"type":0});
+			var header_h = api.pageParam.header_h;
+			var pageParamJson={"header_h":header_h};//打开frame页面所需参数
+			commonOpenFrame('zthdIpad_tj_frame', 'zthdIpad_tj_frame.html',header_h+122, true, false,"#ffffff",pageParamJson);	//打开index页面
+			commonBackForAndroid();//安卓关闭
+			commonIosAuiHeader();//定位header位置，留出上面电池等空隙，苹果需要
+			commonOpenTjData($api.getStorage("identity")+'_'+api.winName);//记录统计
+		};
+		
+		/*
+		 * 功能：返回页面
+		 * 作者：张自强
+		 * 时间：20171019
+		 */
+		function back(type) {
+//		   var pageParamJson = {'header_h':api.pageParam.header_h,'fromType':1,'start_time':'','end_time':''};
+//         commonOpenWin('zthdIpad_index_window', 'zthdIpad_index_window.html', false, false,pageParamJson);
+           if(type){
+             is_open_isopen = true;
+             if(!is_back_isopen){
+                 openTime(0);
+             }
+             setTimeout(function(){
+                 is_open_isopen = false;
+             },1000);
+           }else{
+             is_back_isopen = true;
+             setTimeout(function(){
+               is_back_isopen = false;
+             },1000);
+             if(!is_open_isopen){
+                setTimeout(function(){
+                   api.closeWin();
+                },500);
+             }
+           }
+		}
+		
+		/*
+         *作者:zfz
+         *功能:开始搜索
+         *日期：20180427
+         */
+        function startSearch(type) {
+            commonSearch(type, function(data) {
+                commonExecScript(api.winName,'zthdIpad_tj_frame','setKeyword("'+data+'")',1);
+            })
+        }
+        
+        function changeEscType(index,type){
+        if(sort_column != index){
+            $api.attr($api.byId('px_'+sort_column), 'onclick', 'changeEscType('+sort_column+',"desc")');
+            commonAddOrRemoveHideCss('px_'+sort_column+'_desc',1);
+            commonAddOrRemoveHideCss('px_'+sort_column+'_asc',0);
+            var domAll = $api.domAll($api.byId('header_tr'), 'th');
+            for(var i = 0; i < domAll.length; i++){
+                if($api.hasCls(domAll[i], 'active')){
+                    $api.removeCls(domAll[i], 'active');
+                }
+            }
+            $api.addCls($api.byId('px_'+index), 'active');
+        }else{
+            commonAddOrRemoveHideCss('px_'+index+'_'+(type == 'desc'?'asc':'desc'),0);
+            commonAddOrRemoveHideCss('px_'+index+'_'+type,1);
+        }
+        $api.attr($api.byId('px_'+index), 'onclick', 'changeEscType('+index+',"'+(type == 'desc'?'asc':'desc')+'")');
+        sort_column = index;
+        sort_type = type;
+        commonExecScript(api.winName,'zthdIpad_tj_frame','changeEscType('+index+',"'+type+'")',1);
+    }
+	</script>
+</html>

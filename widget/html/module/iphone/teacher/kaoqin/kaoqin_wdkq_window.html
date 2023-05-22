@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<!-- html5：在创建html时为了防止页面缩放等不兼容效果，要创建个viewport  -->
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<!-- 在IOS设备上，有时会将数字转为手机号，这里也要禁止下 -->
+		<meta name="format-detection" content="telephone=no"/>
+		<title>我的考勤</title>
+		<link rel="stylesheet" type="text/css" href="../../../../../css/aui/aui.css" />
+		<link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+		<style>
+			.history-date {
+				font-size: 12px;
+			}
+			#message-content {
+				overflow-y: auto;
+				display: none;
+			}
+			
+			
+			.t_display_n {
+				display: none;
+			}
+			.t_display_b {
+				display: block;
+			}
+			.tag-title{height:45px; line-height:43px;background:#ffffff ;border-bottom:2px solid #E6E6E6;}
+			.tag-title div{width:50%;text-align:center;color:#62656A;}
+			.menu{display:inline-block;width:28px;height:100%;background:url(../../../../../image/fun-module/iphone/kaoqin/static.png) center center no-repeat;background-size: 16px 16px;}
+	.win-menu{height:100%;}
+			.fl{float:left;}
+			.fr{float:right;}
+		</style>
+	</head>
+	<body class="common-iphone-kaoqin">
+		<div id="wrap">
+			<header class="aui-bar aui-bar-nav aui-bar-primary" id="aui-header">
+				<div id="cloud" class="topbar activebar">
+					<div id="back" class="back" onclick="back();" tapmode="">
+						<i class="aui-iconfont aui-icon-left"></i>返回
+					</div>
+					<div  class="mTitle" id="mTitle">
+						我的考勤
+					</div>
+					<div class="win-menu">
+						<!--我的考勤——申请考勤-->
+						<a id='menu' class="menu fr" tapmode="tap-active" onclick="openWindow('kaoqin_myKqtj_window');"></a>
+						<a id='add' class="aui-iconfont aui-icon-add back fr" style="height:100%;" onclick="openWindow('kaoqin_add_window');"></a>
+						<!--我的考勤——考勤统计-->
+						<!--<a id='menu' class="aui-iconfont aui-icon-menu back" tapmode="tap-active" onclick="openWindow('kaoqin_myKqtj_window');"></a>-->
+					</div>
+				</div>
+				<div class="tag-title">
+					<div id="qingjia" class="fl active" onclick="openQjListFrame();">请假</div>
+					<div id="gongchu" class="fr" onclick="openGcListFrame();">公出</div>
+				</div>
+			</header>
+			<div  class="aui-content aui-content-padded" id="message-content">
+				<p class="aui-text-center history-date"></p>
+			</div>
+		</div>
+	</body>
+	<script type="text/javascript" src="../../../../../script/api.js"></script>
+	<script type="text/javascript" src="../../../../../script/common/common.js"></script>
+	<script type="text/javascript">
+		//顶部header高度
+		var header_h;
+		var ruleType = 0;
+		apiready = function() {
+			commonSetTheme({"level":5,"type":0});
+			//打开我的考勤请假list页面
+			openQjListFrame();
+			commonBackForAndroid();//安卓关闭
+			commonIosAuiHeader();//定位header位置，留出上面电池等空隙，苹果需要
+		};
+		/*
+		*author:zhaoj
+		*function:打开我的考勤请假list页面
+		*date：20160620
+		*/
+		function openQjListFrame(){
+			ruleType = 0;
+			$api.removeCls($api.byId('gongchu'),'active');
+			$api.addCls($api.byId('qingjia'),'active');
+			openFrame('kaoqin_qjlist_frame');
+		}
+		/*
+		*author:zhaoj
+		*function:打开我的考勤公出list页面
+		*date：20160620
+		*/
+		function openGcListFrame(){
+			ruleType = 1;
+			$api.removeCls($api.byId('qingjia'),'active');
+			$api.addCls($api.byId('gongchu'),'active');
+			openFrame('kaoqin_gclist_frame');
+		}
+		/*
+		*author:zhaoj
+		*function:打开frame页面
+		*date：20160620
+		*/
+		function openFrame(name){
+			var header_h = api.pageParam.header_h;
+			var pageParamJson={"header_h":header_h};//打开frame页面所需参数
+			commonOpenFrame(name, name+'.html',header_h+45, false, false,"#ffffff",pageParamJson);	//打开index页面
+		}
+		/*
+		*author:zhaoj
+		*function:打开考勤汇总菜单页面
+		*date：20160620
+		*/
+		function openWindow(win_name){
+			var header_h = api.pageParam.header_h;
+			commonOpenWin(win_name,  win_name + '.html', false, false,{header_h : header_h,ruleType : ruleType});
+		}
+		/*
+		*author:zhaoj
+		*function:返回页面
+		*date：20160307
+		*/
+		function back() {
+            commonRefreshYingyong();
+			api.closeWin();
+		}
+	</script>
+</html>

@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no" />
+    <title>title</title>
+    <link rel="stylesheet" type="text/css" href="../../../../../css/aui/aui.css"/>
+    <link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+    <style>
+    	body{background:#F8F7F3;color:#141414;}
+	.title{height:40px;background:#ffffff;line-height:40px;padding-left:15px;border-bottom:1px solid #F8F7F3;}
+    	.step-content{width:100%;height:145px;background:#ffffff;padding-top:20px;}
+    	.wd1{width:100%;}
+    	.wd2{width:50%;}
+    	.wd3{width:33%;}
+    	.wd4{width:25%;}
+    	.wd5{width:20%;}
+    	.step-content dl{float:left;}
+    	.step-content dl dt{position:relative;z-index:999;height:34px;line-height:34px;text-align:center;color:#ffffff;}
+    	.step-content dl dt .num{position:absolute;left:50%;top:50%;margin:-17px 0 0 -17px;width:34px;height:34px;line-height:34px;z-index:1;}
+    	.pass-bg{background: url(../../../../../image/fun-module/iphone/kaoqin/pass_bg.png) center center no-repeat;}
+    	.doing{background: url(../../../../../image/fun-module/iphone/kaoqin/doing.png) center center no-repeat;}
+    	.no-pass{background: url(../../../../../image/fun-module/iphone/kaoqin/no_pass.png) center center no-repeat;}
+    	.left-border,.right-border{position:absolute;width:50%;border-top:1px solid #bababa;border-bottom:1px solid #e0e0e0;top:50%;margin-top:-1px;z-index:0;}
+    	.step-content dl dt .border-active{border-top:1px solid #F1C40F;border-bottom:1px solid #F1C40F;}
+    	.left-border{left:0;}
+    	.right-border{right:0;}
+    	.step-content dl dd{padding-top:15px;}
+    	.step-content dl dd div{text-align:center;line-height:26px;color:#b9b9b9;}
+    	.step-content dl dd.active div{color:#F1C40F;}
+    	.step-content dl dd .btn{line-height:38px;}
+    	.step-content dl dd .btn button{color:#666666;border-radius: 0;border:1px solid #cccccc;background:#ffffff;}
+    	.hr{height:10px;}
+    	.content{padding:12px 15px;}
+    	.content div{display:inline-block;float:right;color: #666666;}
+    	.bb{border-bottom:1px solid #F8F7F3;}
+    	.bgf{background:#ffffff;}
+    	.ellipsis{white-space: nowrap;overflow: hidden;text-overflow: ellipsis;}
+    	button, .aui-btn{padding:4px 12px;}
+    	.time-detail{padding:0 15px;}
+    	.time-detail ul{width:100%;}
+    	.time-detail ul li{list-style:none;height:40px;line-height:40px;}
+    	.time-detail ul li div{float:right;color: #666666;}
+    	.word-break{word-wrap: break-word;word-break: normal;color: #666666;}
+    	.img-content img{max-width:100%;height:auto;}
+    	.reason-content{font-size:14px;text-indent:2em;padding:20px 15px;}
+    	.ima_notice{padding:0;}
+    </style>
+</head>
+<body class="common-iphone-kaoqin">
+	<div class="hr bb"></div>
+	<div id="j_step_title" class="title">审批进度</div>
+	<div id="step_body" class="step-content"></div>
+	<script type="text/html" id="step_script">
+		<%if(check_list.length == 1){%>
+			<dl class="wd<%=check_list.length%>">
+				<dt>
+					<div class="num <%=check_list[0].image_name%>"><%=1%></div>
+				</dt>
+				<dd class="<%=check_list[0].class_name%>">
+					<div class="person-name ellipsis"><%=check_list[0].person_name%> </div>
+					<%if(check_list[0].check_status*1 == 1){%>
+						<div class="static">已通过</div>
+					<%}else if(check_list[0].check_status*1 == 2){%>
+						<div class="static">待审批</div>
+					<%}else if(check_list[0].check_status*1 == 3){%>
+						<div class="static">已驳回</div>
+					<%}else{%>
+						<div class="static">不需审批</div>
+					<%}%>
+				</dd>
+			</dl>
+		<%}else{%>
+			<%for(var i=0; i<check_list.length; i++) {%>
+				<dl class="wd<%=check_list.length%>">
+					<dt>
+						<%if(i == 0){%>
+							<div class="num <%=check_list[i].image_name%>"><%=i+1%></div>
+							<div class="right-border <%if(check_list[i].check_status == 1 && check_list[i+1].check_status == 2){%>border-active<%}else if(check_list[i].check_status == 1 && check_list[i+1].check_status == 1){%>border-pass<%}%>"></div>
+						<%}else if(i == check_list.length-1){%>
+							<div class="left-border <%if(check_list[i-1].check_status == 1 && check_list[i].check_status == 2){%>border-active<%}else if(check_list[i-1].check_status == 1 && check_list[i].check_status == 1){%>border-pass<%}%>"></div>
+							<div class="num <%=check_list[i].image_name%>"><%=i+1%></div>
+						<%}else{%>
+							<div class="left-border <%if(check_list[i-1].check_status == 1 && check_list[i].check_status == 2){%>border-active<%}else if(check_list[i-1].check_status == 1 && check_list[i].check_status == 1){%>border-pass<%}%>"></div>
+							<div class="num <%=check_list[i].image_name%>"><%=i+1%></div>
+							<div class="right-border <%if(check_list[i].check_status == 1&& check_list[i+1].check_status == 2){%>border-active<%}else if(check_list[i].check_status == 1 && check_list[i+1].check_status == 1){%>border-pass<%}%>"></div>
+						<%}%>
+					</dt>
+					<dd class="<%=check_list[i].class_name%>">
+						<div class="person-name ellipsis"><%=check_list[i].person_name%> </div>
+						<%if(check_list[i].check_status*1 == 1){%>
+							<div class="static">已通过</div>
+						<%}else if(check_list[i].check_status*1 == 2){%>
+							<div class="static">待审批</div>
+						<%}else if(check_list[i].check_status*1 == 3){%>
+							<div class="static">已驳回</div>
+						<%}else{%>
+							<div class="static">不需审批</div>
+						<%}%>
+					</dd>
+				</dl>
+			<% } %>
+		<%}%>
+	</script>
+	<div class="hr"></div>
+	<div id="" class="content bb bgf">
+		姓&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;名
+		<div id="j_name"></div>
+	</div>
+	<div class="bb"></div>
+	<div id="j_type_title" class="content bgf">
+	</div>
+	<div class="hr bb"></div>
+	<div id="j_time_title" class="content bb bgf">
+		
+	</div>
+	<div class="time-detail bb bgf">
+		<ul>
+			<li class="bb">
+				开始时间
+				<div id="start_time"></div>
+			</li>
+			<li>
+				结束时间
+				<div id="end_time"></div>
+			</li>
+		</ul>
+	</div>
+	<div class="hr"></div>
+	<div id="j_reason_title" class="title"></div>
+	<div id="j_reason_content" class="content word-break bb bgf reason-content">
+	</div>
+	<div class="hr bb"></div>
+	<div id="j_file_title" class="title" style="display:none;">附件</div>
+	<div id="j_file_content" class="img-content content bb bgf" style="display:none;">
+	</div>
+	<div class="hr"></div>
+</body>
+<script type="text/javascript" src="../../../../../script/api.js"></script>
+<script type="text/javascript" src="../../../../../script/base_config.js" ></script>
+<script type="text/javascript" src="../../../../../script/plug-in/template.js" ></script>
+<script type="text/javascript" src="../../../../../script/common/common.js"></script>
+<script type="text/javascript" src="../../../../../script/plug-in/photoBrowser.js"></script>
+<script type="text/javascript" src="../../../../../script/common/kaoqin_common.js"></script>
+<script type="text/javascript">
+	var judgeNotice=false;//判断第一个待审批需要显示按钮
+	var per_id;
+	apiready = function(){
+		commonSetTheme({"level":5,"type":0});
+		getLeaveInfoById(1,api.pageParam.leave_id);
+	};
+	/*
+	*author:zhaoj
+	*function:根据type判断是请假还是公出
+	*date：20160620
+	*/
+	function diffrentType(data){
+		per_id = data.check_list.person_id;
+		if(api.pageParam.type){
+			$api.html($api.byId('j_type_title'),'公出类别<div>'+data.type_name+'</div>');
+			$api.text($api.byId('j_reason_title'),'公出事由');
+			$api.text($api.byId('cancel_btn'),'撤回公出');
+			getSinglePersonWaiChuInfo(data.type_id,data.start_time,data.end_time,function(flag,ret){
+				dealTimeData(flag,ret,data,function(time){
+					$api.html($api.byId('j_time_title'),'公出时间<div>'+time+'</div>');
+				});
+			});
+		}else{
+			$api.html($api.byId('j_type_title'),'请假类型<div>'+data.type_name+'</div>');
+			
+			$api.text($api.byId('j_reason_title'),'请假事由');
+			$api.text($api.byId('cancel_btn'),'撤回请假');
+			getSinglePersonLeaveInfo(data.type_id,data.start_time,data.end_time,function(flag,ret){
+				dealTimeData(flag,ret,data,function(time){
+					$api.html($api.byId('j_time_title'),'合计时间<div>'+time+'</div>');
+				});
+			});
+		}
+		$api.text($api.byId('j_name'),data.apply_person_name);
+		$api.html($api.byId('j_reason_content'),transferBrStr(data.content));
+		$api.text($api.byId('start_time'),data.start_time);
+		$api.text($api.byId('end_time'),data.end_time);
+	}
+	/*
+	*author:zhaoj
+	*function:处理时间的数据
+	*date：20160804
+	*/
+	function dealTimeData(flag,ret,data,callback){
+		var retData = flag == true ? ret : data;
+		var time='';
+		if(retData.days*1>0){
+			time = retData.days+'天';
+		}
+		if(retData.hours*1>0){
+			time = time + retData.hours+'小时';
+		}
+		if(retData.minutes*1>0){
+			time = time + retData.minutes+'分钟';
+		}
+		if(time){
+			time = '共'+time;
+		}
+		callback(time);
+	}
+	/*
+	*author:zhaoj
+	*function:获取我的请假或公出的详情信息
+	*date：20160622
+	*/
+	function getLeaveInfoById(show_type,leave_id){
+		if(show_type == 1){
+			showSelfProgress('加载中...');
+		}
+		api.ajax({
+			url : BASE_URL_ACTION + '/leave/getLeaveInfoById',
+			method : 'get',
+			timeout : 0,
+			dataType : 'json',
+			data : {
+				values : {
+					"random_num" : creatRandomNum(),
+					"leave_id" : leave_id
+				}
+			},
+			headers : {
+	'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+	}
+			}, function(ret, err) {
+				api.hideProgress();
+				if (err) {
+					popToast('获取详情信息失败');
+				} else {
+					if(ret.success){
+						ret.start_time = ret.start_time.substring(0,16);
+						ret.end_time = ret.end_time.substring(0,16);
+						for(var i = 0; i < ret.check_list.length; i++){
+							if(ret.check_list[i].check_status == 1){
+								ret.check_list[i].image_name = 'pass-bg';
+								ret.check_list[i].class_name = 'pass';
+								ret.check_list[i].btn_show = 0;
+							}else if(ret.check_list[i].check_status == 2){
+								if(!judgeNotice){
+									ret.check_list[i].image_name = 'doing';
+									ret.check_list[i].class_name = 'active';
+									ret.check_list[i].btn_show = 1;
+									judgeNotice = true;
+								}else{
+									ret.check_list[i].image_name = 'no-pass';
+									ret.check_list[i].class_name = '';
+									ret.check_list[i].btn_show = 0;
+								}
+							}else if(ret.check_list[i].check_status == 3){
+								ret.check_list[i].image_name = 'pass-bg';
+								ret.check_list[i].class_name = 'pass';
+								ret.check_list[i].btn_show = 0;
+							}else{
+								ret.check_list[i].image_name = 'pass-bg';
+								ret.check_list[i].class_name = 'pass';
+								ret.check_list[i].btn_show = 0;
+							}
+						}
+						diffrentType(ret);
+						if(ret.file_list.length>0){
+							$api.css($api.byId('j_file_title'),'display:block;');
+							$api.css($api.byId('j_file_content'),'display:block;');
+							var img_array = new Array();//保存图片路径
+							for(var i = 0;i < ret.file_list.length; i++){
+								var img_url;
+								if(BASE_APP_TYPE == 1){
+									img_url = BASE_IMAGE_PRE+"down/Material/"+ ret.file_list[i].substring(0, 2) + "/" + ret.file_list[i] + commonReturnPhotoCutSize(0);
+								}else{
+									img_url = BASE_URL_ACTION + "/html/thumb/Material/" + ret.file_list[i].substring(0, 2) + "/" + ret.file_list[i] + commonReturnPhotoCutSize(0);;
+								}
+								img_array.push(img_url);
+							}
+							uploadImgHtml(img_array);//将图片显示到页面中
+						}
+						
+						addTemplateHtml('step_body', 'step_script', ret,1);
+					}else{
+						popToast('获取详情信息失败');
+					}
+				}
+		});
+	}
+	/*
+	 *author:zhaoj
+	 *function:图片的HTML
+	 *date：20160628
+	 */
+	function uploadImgHtml(img_array) {
+		var img_html="";
+		var onerror_html = "this.src='../../../../../image/common/tpsx.png'";
+		for(var i = 0;i < img_array.length; i++){
+			img_html = img_html + '<img class="ima_notice" src="'+img_array[i]+'" onerror="'+onerror_html+'"  alt="附件" onclick="openImage('+i+')" />';
+		}
+		$api.append($api.byId('j_file_content'), img_html);
+	}
+	
+	
+</script>
+</html>

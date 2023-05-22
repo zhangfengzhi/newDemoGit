@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no" />
+    <title>初始化页面-慧办公</title>
+    <link rel="stylesheet" type="text/css" href="../../../../css/aui/aui.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../../css/module/ipad/init_teacher.css" />
+	<link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+	
+	<link id="j_mode" rel="stylesheet" type="text/css" href="" />
+    <style type="text/css">
+     .cshym-content{overflow:visible;} .hbg-scroll{width:100%;height:100%;position:absolute;left:0;top:0;-webkit-transform:translate3d(0,0,0);-moz-transform:translate3d(0,0,0);-o-transform:translate3d(0,0,0);-ms-transform:translate3d(0,0,0);transform:translate3d(0,0,0);-webkit-backface-visibility:hidden;-webkit-transition:all 0.3s ease-in-out;}
+     .change_point{position:fixed;width:40px;padding:5px;right:10px;top:50%;margin-top:-45px;z-index: 999;}
+     .change_point div{width:15px;height:15px; border-radius:15px; background: #ccc;margin:10px;}
+     .change_point div.active{background: #929191;}
+     .cshym-content li .bg-img > em{display: inline-block;position: absolute;background: #f00;color: #fff;border-radius: 20px;width: 30px;height: 30px;text-align: center;line-height: 30px;right: -6px;top: -5px;}
+    </style>
+</head>
+<body id="j_body" ontouchstart="touchSatrt(event);" ontouchmove="touchMove(event);" ontouchend="touchEnd(event);">
+	<div class="change_point">
+		<div id="point_1" onclick="scrollToTop()" class="active aui-hide">&nbsp;</div>
+		<div id="point_2" onclick="scrollToBottom(2)" class="aui-hide">&nbsp;</div>
+		<div id="point_3" onclick="scrollToBottom(3)" class="aui-hide">&nbsp;</div>
+	</div>
+	<div id="j_scroll" class="hbg-scroll clearfix">
+    	<ul id="j_hbg" class="cshym-content aui-hide">
+    	</ul>
+    	<script type="text/html" id="cshym_hbg_script">
+    		<%for(var i = 1; i <= 1; i++){%>
+                <%if(list[i].list.length != 0){%>
+                    <%for(var j = 0; j < list[i].list.length; j++){%>
+                        <%if(list[i].list[j].code == 'hjx_rcbg_kqgl_kqjl' || list[i].list[j].code == 'hjx_rcbg_kqgl_kqgz' || list[i].list[j].code == 'hjx_rcbg_kqgl_kqsp' || list[i].list[j].code == 'hjx_rcbg_kqgl_kqtj' || list[i].list[j].code == 'hjx_rcbg_tzgg'){%>
+                            <li onclick='openModuleIpad("<%=list[i].list[j].win_url%>","<%=list[i].list[j].type%>","<%=list[i].list[j].code%>","<%=list[i].list[j].menu%>","<%=list[i].list[j].childMenu%>");'>
+                                <div class="j_img zoomImage bg-img <%=list[i].list[j].icon_css%>">
+                                    <%if(list[i].list[j].kq_count>0){%>
+                                        <em id="notice_count"><%=list[i].list[j].kq_count%></em>
+                                    <%}%>
+                                    <%if(list[i].list[j].kq_count>99){%>
+                                        <em id="notice_count">99+</em>
+                                    <%}%>
+                                    <div class="mode-name"><%=list[i].list[j].win_name%></div>
+                                </div>
+                            </li>
+                        <%}else{%>
+                            <li onclick='openModuleIpad("<%=list[i].list[j].win_url%>","<%=list[i].list[j].type%>","<%=list[i].list[j].code%>","<%=list[i].list[j].menu%>","<%=list[i].list[j].childMenu%>");'>
+                                <div class="j_img zoomImage bg-img <%=list[i].list[j].icon_css%>">
+                                    <div class="mode-name"><%=list[i].list[j].win_name%></div>
+                                </div>
+                            </li>
+                        <%}%>
+                    <%}%>
+                <%}else{%>
+                    <div class="no-data" style="font-size:20px;margin-top:2%;">暂无模块</div>
+                <%}%>
+            <%}%>
+    	</script>
+	</div>
+<script type="text/javascript" src="../../../../script/api.js"></script>
+<script type="text/javascript" src="../../../../script/base_config.js"></script>
+<script type="text/javascript" src="../../../../script/common/common.js"></script>
+<script type="text/javascript" src="../../../../script/init/init_config.js"></script>
+<script type="text/javascript" src="../../../../script/assembly/executeApp.js" ></script>
+<script type="text/javascript" src="../../../../script/plug-in/template.js"></script>
+<script type="text/javascript" src="../../../../script/init/init_config.js"></script>
+<script type="text/javascript" src="../../../../script/init/init_config_new.js"></script>
+<script type="text/javascript" src="../../../../script/assembly/tongjiData.js"></script>
+<script type="text/javascript" src="../../../../script/init/iphone/init_module.js" ></script>
+<script type="text/javascript" src="../../../../script/plug-in/base64.js" ></script>
+
+<script type="text/javascript">
+	var header_h;
+	var startY,startX,x,y;//触摸时的坐标
+	var pageNum = 0;
+	var curPage = 1;
+	var isMove = false;
+	apiready = function(){
+		commonSetTheme({"level":4,"type":4});
+		header_h = api.pageParam.header_h;
+		initData();
+	};
+	
+	/*
+    *author:zhaoj
+    *function:初始化页面,加载应用菜单
+    *date：20171124
+    */
+    function initData(){
+      setNoticeTs(function(is_true){
+            initModeShowHbg();
+        });
+    }
+    
+    /*
+     * 功能：加载模块
+     * 作者；张自强
+     * 时间：20180929
+     */
+    function initModeShowHbg(){
+        init_yy_menu_new(function(code_list){
+            setBasicData(code_list,function(data){
+                api.hideProgress();
+                for(var i=0;i<data.list[1].list.length;i++){
+                    data.list[1].list[i].kq_count = 0;
+                }
+                getKaoqinMenu1(data);
+            });
+        });
+    }
+	
+	/*
+    *author:zhaoj
+    *function:触摸开始记录位置
+    *date：20171117
+    */
+	 function touchSatrt(e){//触摸
+        //e.preventDefault();
+        var touch=e.touches[0];
+        startY = touch.pageY;   //刚触摸时的坐标              
+        startX = touch.pageX;   //刚触摸时的坐标   
+        isMove = true;
+    }
+    /*
+    *author:zhaoj
+    *function:触摸开始，和触摸开始的坐标进行对比，大于0说明是向下滑动，小于0说明是向上滑动
+    *date：20171117
+    */
+	 function touchMove(e){//滑动          
+	 	 e.preventDefault();
+		 if (isMove){
+		 	 var  touch = e.touches[0];               
+			 y = touch.pageY - startY;//滑动的距离
+			 x = touch.pageX - startX;//滑动的距离
+			 if(Math.abs(x) > Math.abs(y)){
+			    if(api.systemType =='ios' && x > 0){
+			        commonExecScript('root','','changeBtnTitle("hjx_btn",0,1);',0);
+			    }
+			 }else{
+			    if(pageNum > 1){
+			        if(y<0){
+			        	curPage++;
+			        }else{
+			            curPage--;
+			        }
+			        curPage = Math.min(curPage,pageNum);   
+			        curPage = Math.max(curPage,1);   
+			        scrollToBottom(curPage);
+			    }
+			 }
+		 }
+		 isMove = false;
+    } 
+    
+	/*
+    *author:zhaoj
+    *function:设置高度
+    *date：20170814
+    */
+   	function setMarginTop(){
+   		$api.removeCls($api.byId('j_hbg'), 'aui-hide');
+   		var div_array = $api.domAll($api.byId('j_hbg'), '.j_img');
+   		var height_h = $api.cssVal(div_array[0],'width');
+   		height_h = height_h.substring(0,height_h.length-2);
+   		height_h = Math.floor(height_h*1/2)+20;
+   		for(var i = 0; i < div_array.length; i++){
+   			$api.css(div_array[i],'margin-top:-'+height_h+'px;');
+   		}
+   		header_h = api.pageParam.header_h;
+        for(var i = 0; i < pageNum; i++){
+   			commonAddOrRemoveHideCss('point_' + (i + 1),1);
+   		}
+   	}
+   	
+   	/*
+	*author:zhaoj
+	*function:获取考勤菜单权限
+	*date：20170413
+	*/
+	function getKaoqinMenu1(data) {
+	    var wdkq_flag = false;
+        var kqsp_flag = false;
+        var kqgl_flag = false;
+        var dktj_flag = false;
+        var tzgg_flag = false;
+		api.ajax({
+			url : BASE_URL_ACTION + '/leave/getPurviewInfo',
+			method : 'get',
+			timeout : 0,
+			dataType : 'json',
+			timeout : 30,
+			data : {
+				values : {
+					"random_num" : creatRandomNum(),
+					"person_id" : $api.getStorage("person_id"),
+					"identity_id" : $api.getStorage("identity"),
+				}
+			},
+			headers : {
+				'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+			}
+		}, function(ret, err) {
+			if (err) {
+				commonAddOnceHtml('j_hbg','cshym_hbg_script',data);
+                setTimeout(function(){
+                    if(data.list[1].list.length > 8){
+                        pageNum = Math.ceil(data.list[1].list.length/8);
+                    }
+                        setMarginTop();
+                },2000);
+			} else {
+				if (ret.success) {
+					var list = ret.list;
+					var wdkq_count = 0;
+					var kqsp_count = 0;
+					var kqgl_count = 0;
+					var dktj_count = 0;
+					var tzgg_count = 0;
+					if(list && list.length > 0){
+					   for(var k=0;k<list.length;k++){
+                           switch(list[k].id*1){
+                               case 1:
+                                   wdkq_flag = true;
+                                   wdkq_count = list[k].count;
+                                   break;
+                               case 2:
+                                   kqsp_flag = true;
+                                   kqsp_count = list[k].count;
+                                   break;
+                               case 3:
+                                   kqgl_flag = true;
+                                   kqgl_count = list[k].count;
+                                   break;
+                               case 6:
+                                   dktj_flag = true;
+                                   dktj_count = list[k].count;
+                                   break;
+                               case 4:
+                                   tzgg_flag = true;
+                                   tzgg_count = list[k].count;
+                           }
+                       }
+					}
+					var hbg_list = data.list[1].list;
+					
+					var index1 = hbg_list.indexOf("hjx_rcbg_xzgw_deal");
+					var index2 = hbg_list.indexOf("hjx_rcbg_xzgw_handled");
+					if (index1 !== -1 && index2 !== 2){
+						hbg_list.splice(index2,1);
+					}
+					
+					for(var i=0;i<hbg_list.length;i++){
+					   switch(hbg_list[i].code){
+					       case 'hjx_rcbg_kqgl_kqjl'://我的考勤
+					           if(wdkq_flag){
+					               data.list[1].list.kq_count = wdkq_count
+					           }else{
+					               data.list[1].list.splice(i,1);
+					           }
+					           break;
+					       case 'hjx_rcbg_kqgl_kqgz'://考勤管理
+					           if(kqgl_flag){
+                                   data.list[1].list.kq_count = kqgl_count
+                               }else{
+                                   data.list[1].list.splice(i,1);
+                               }
+                               break;
+                           case 'hjx_rcbg_kqgl_kqsp'://考勤审批
+                               if(kqsp_flag){
+                                   data.list[1].list.kq_count = kqsp_count
+                               }else{
+                                   data.list[1].list.splice(i,1);
+                               }
+                               break;
+                           case 'hjx_rcbg_kqgl_kqtj'://打卡统计
+                               if(dktj_flag){
+                                   data.list[1].list.kq_count = dktj_flag
+                               }else{
+                                   data.list[1].list.splice(i,1);
+                               }
+                               break;
+                           case 'hjx_rcbg_tzgg'://通知公告
+                               if(tzgg_flag){
+                                   data.list[1].list.kq_count = tzgg_count
+                               }else{
+                                   data.list[1].list.splice(i,1);
+                               }
+                               break;
+                           case 'hjx_rcbg_xzgw_deal':
+                                if (index1 !== -1){
+                                	flag = true;
+                                }
+                            	if (index2 == -1){
+                            		hbg_list[i].childMenu = "deal";
+                            	}else{
+                            		hbg_list[i].childMenu = "";
+                            	}
+                            	break;
+                            case 'hjx_rcbg_xzgw_handled':
+                            	if (index1 == -1){
+                            		flag = true;
+                            		hbg_list[i].childMenu = "handled";
+                            	}else{
+                            		hbg_list[i].childMenu = "";
+                            	}
+                            	break;
+					   }
+					}
+					
+					commonAddOnceHtml('j_hbg','cshym_hbg_script',data);
+					setTimeout(function(){
+                        if(data.list[1].list.length > 8){
+                            pageNum = Math.ceil(data.list[1].list.length/8);
+                        }
+                            setMarginTop();
+                    },2000); 
+				} else {
+					commonAddOnceHtml('j_hbg','cshym_hbg_script',data);
+					setTimeout(function(){
+                        if(data.list[1].list.length > 8){
+                            pageNum = Math.ceil(data.list[1].list.length/8);
+                        }
+                            setMarginTop();
+                    },2000);
+				}
+				
+				
+			}
+		});
+	}
+	
+	
+	
+</script>
+</body>
+</html>

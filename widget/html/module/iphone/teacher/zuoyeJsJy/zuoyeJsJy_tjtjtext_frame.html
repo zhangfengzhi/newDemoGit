@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+		<title>检测提交统计页面</title>
+		<link rel="stylesheet" type="text/css" href="../../../../../css/module/common/log-show-content.css" />
+		<link rel="stylesheet" type="text/css" href="../../../../../css/aui_css_new/aui.css" />
+		<link rel="stylesheet" type="text/css" href="../../../../../css/aui/aui.css" />
+
+		<link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+		<style>
+			body {
+				margin: 0;
+				background: rgba(0,0,0,0);
+			}
+			textarea{width:90%;margin-left:5%;margin-bottom:3px;}
+			.count {
+				height: 70px;
+				background: #ffffff;
+				margin-bottom: 3px;
+			}
+			.left-div {
+				width: 32%;
+				float: left;
+				text-align: center;
+				margin-top: 12px;
+			}
+			.middle-div {
+				width: 33%;
+				float: left;
+				text-align: center;
+				margin-top: 12px;
+			}
+			.right-div {
+				width: 33%;
+				float: right;
+				text-align: center;
+				margin-top: 12px;
+			}
+			.left-div span, .left-div div, .middle-div span, .middle-div div, .right-div span, .right-div div {
+				font-size: 14px;
+				color: #555555;
+			}
+			.left-div font {
+				font-size: 16px;
+				color: #A020F0;
+			}
+			.middle-div font {
+				font-size: 16px;
+			}
+			.right-div font {
+				font-size: 16px;
+				color: #FF9900;
+			}
+			.title {
+				padding: 10px 7px 0;
+			}
+			.person-name2 {
+				color: #3A3A3A;
+				float: left;
+				width: 35%;
+				padding: 0px 0 0 10px;
+			}
+			.img-box img {
+				height: 100%;
+				width: 100%;
+			}
+			.menu-btn-tj {
+				position: absolute;
+				right: 15px;
+				top: 18px;
+			}
+			.h20 {
+				height: 10px;
+				background: #EFEFEF;
+			}
+			.button_remind {
+				background-color: #f7f9f8 !important;
+				color: #3A3A3A;
+				border: 1px solid #ABABAB;
+			}
+			.button_line {
+				border-bottom: 1px dashed #999;
+				width: 98%;
+				margin-bottom: 3px;
+				padding: 0px 0px 2px 0px;
+			}
+			.aui-user-view-cell {
+				padding: 11px 0px 11px 15px;
+			}
+			.li_div {
+				padding: 14px 0 0 0;
+			}
+			.djbjys {
+				background: #DEDEDE;
+			}
+			.answer-title {
+				border-top: 1px solid #f1f1f1;
+				height: 55px;
+				width: 100%;
+				margin-bottom: 20px;
+			}
+			.answer-title div {
+				height: 35px;
+				display: inline-block;
+				line-height: 35px;
+				margin-top: 13px;
+				padding: 0 15px;
+				color: #ffffff;
+			}
+			.detail-content{text-indent:5%;color: #8F8F94}
+			.no-data {
+				text-align: center;
+				color: #c0c0c0;
+				padding-top: 20px;
+				margin-bottom: 20px;
+			}
+			.pinglun_form{
+				line-height: 55px;
+				width: 100%;
+			}
+			.footer-btn button{
+				float:left;
+				margin-left:5%;
+				margin-bottom:15px;
+			}
+			.footer-btn .score-div{
+                border:1px solid #FF9900;
+                width:70%;
+                float:left;
+                margin-left:5%;
+                margin-right:2%;
+                height:20px;
+                border-radius:10px;
+                padding:0;
+             }
+            .footer-btn .score-stu-div{
+                float:left;
+                width:20%;
+                font-size:15px;
+                height:25px;
+                line-height:20px;
+                text-align:center;
+                max-width:20%;
+            }
+            .footer-btn .score-stu-div span{
+                color:#67CF22;
+                font-size:20px;
+            }
+            .footer-btn .score-btn{
+                width:100%;
+                padding-right:8%;
+                padding-top:10px;
+            }
+            .footer-btn .score-btn .add-btn{
+                float:right;
+                margin-left:30px;
+            }
+            .footer-btn .score-btn .jian-btn{
+                float:right;
+            }
+			.footer-btn-last button{
+				float:right;
+				margin-right:15px;
+				margin-bottom:15px;
+			}
+			.btn-wrong{
+				color: #ffffff;
+				background-color: red;
+				border: 1px solid red;
+			}
+			.btn-right {
+				color: #ffffff;
+				background-color: #FFD34F;
+				border: 1px solid #FFD34F;
+			}
+			.tip-zuoda{
+	    		height:30px;
+	    		padding:0px 0 10px 0px;
+	    		font-size:16px;
+	    		color:#7E7E7E;
+	    		text-indent:5%;
+    		}
+    		.long-div{
+                width:25px;
+                background:#FF9900;
+                height:100%;
+                border-radius:10px 10px 10px 10px;
+            }
+		</style>
+	</head>
+	<body class="common-iphone-zuoye-tea">
+		<div class="h20"></div>
+		<ul id="log_dep_body" style = "margin-bottom: 0px;">
+			<div id="yipiyue"></div>
+			<script type="text/html" id="yipiyue_script">
+				<%if(type == 3){%>
+					<%if(list.length > 0){%>
+						<%for(var i=0;i<list.length;i++){%>						<!--未提交，未提醒-->
+							<li class="aui-user-view-cell aui-img" tapmode >
+								<!--<div class="aui-img-object aui-pull-left img-box">
+									<img class = "head-icon" onerror="this.src='../../../../../image/common/header.png'" src="<%=list[i].avatar_file_id%>" data-echo="" alt="缩略图"/>
+								</div>-->
+								<div class="aui-img-body li_div">
+									<div class="person-name2 ellipsis">
+										<%=list[i].title%>
+									</div>
+									<button id = "remind_span_<%=i%>"  onclick="sendSysMsg(<%=i%>,<%=list[i].id%>);" class="aui-btn aui-btn-default-kz1 menu-btn-tj button_remind" >
+										<font id = "remind_font_<%=i%>">提&nbsp;&nbsp;&nbsp;醒</font>
+									</button>
+								</div>
+							</li>
+						<%}%>
+					<%}else{%>
+						<div class="no-data">暂无未提交的学生</div>
+					<%}%>
+				<%}else if(type == 1){%>
+					<%if(list.length > 0){%>
+					   <div id="yipiyue_list">
+						<%for(var i=0;i<list.length;i++){%>
+						<li  class="aui-user-view-cell aui-img" tapmode onclick="piYue(<%=list[i].id%>,'<%=list[i].title%>',2);">
+							<div class="aui-img-object aui-pull-left img-box">
+								<img class = "head-icon" onerror="this.src='../../../../../image/common/header.png'" src="<%=list[i].avatar_file_id%>" data-echo="" alt="缩略图"/>
+							</div>
+							<div class="aui-img-body li_div">
+								<div class="person-name2 ellipsis">
+									<%=list[i].title%>
+								</div>
+								<button class="aui-btn aui-btn-default-kz1 menu-btn-tj button_remind">
+									<font style = "">查看</font>
+								</button>
+							</div>
+						</li>
+						<%}%>
+					    </div>
+					<%}else{%>
+						<div class="no-data">暂无已批阅的学生</div>
+					<%}%>
+				<%}else if(type == 2){%>
+					<%if(list.length > 0){%>
+					    <div id="weipiyue_list">
+						<%for(var i=0;i<list.length;i++){%>
+							<li  class="aui-user-view-cell aui-img" tapmode onclick="piYue(<%=list[i].id%>,'<%=list[i].title%>',1);">
+								<div class="aui-img-object aui-pull-left img-box">
+									<img class = "head-icon" onerror="this.src='../../../../../image/common/header.png'" src="<%=list[i].avatar_file_id%>" data-echo="" alt="缩略图"/>
+								</div>
+								<div class="aui-img-body li_div">
+									<div class="person-name2 ellipsis">
+										<%=list[i].title%>
+									</div>
+									<button class="aui-btn aui-btn-default-kz1 menu-btn-tj button_remind" >
+									<font style = "">批阅</font>
+								</button>
+								</div>
+							</li>
+						<%}%>
+						</div>
+					<%}else{%>
+						<div class="no-data">暂无未批阅的学生</div>
+					<%}%>
+				<%}%>
+				</script>
+			</ul>
+	</body>
+	<script type="text/javascript" src="../../../../../script/api.js"></script>
+	<script type="text/javascript" src="../../../../../script/common/common.js"></script>
+	<script type="text/javascript" src="../../../../../script/plug-in/template.js" ></script>
+	<script type="text/javascript" src="../../../../../script/assembly/photoBrowser.js"></script>
+	<script type="text/javascript" src="../../../../../script/base_config.js" ></script>
+	<script type="text/javascript" src="../../../../../script/assembly/log-current-time.js"></script>
+	<script type="text/javascript" src="../../../../../script/plug-in/echo.min.js"></script>
+	<script type="text/javascript" src="../../../../../script/plug-in/base64.js" ></script>
+	<script type="text/javascript" src="../../../../../script/assembly/Merge.js"></script>
+	<script type="text/javascript" src="../../../../../script/assembly/trans.js" ></script>
+	<script type="text/javascript" src="../../../../../script/assembly/executeApp.js" ></script>
+	<script type="text/javascript" src="../../../../../script/assembly/openResource.js" ></script>
+	<script type="text/javascript">
+	var BASE_URL_ACTION = '';
+	var zy_id = 0;//检测id；
+	var stu_id = -1;//学生id
+	var stu_name_dq = '';//当前学生姓名
+	var header_h = 0;
+	apiready = function(){commonSetTheme({"level":5,"type":0});
+		header_h = api.pageParam.header_h;
+		zy_id = api.pageParam.zy_id;
+		BASE_URL_ACTION = $api.getStorage('BASE_URL_ACTION');
+		changeBtn(api.pageParam.type,api.pageParam.list);
+	}
+	/*
+	 * 功能：切换统计类型
+	 * 作者：张自强
+	 * 时间：20170822
+	 */
+	function changeBtn(type,list){
+		if(type == 1){
+			$api.css($api.byId('yipiyue'),'display:block');
+			var yipiyue_list = {list : [],type:1};
+			yipiyue_list.list = list;
+			commonAddOnceHtml('yipiyue','yipiyue_script',yipiyue_list);
+		}else if(type == 2){
+			$api.css($api.byId('yipiyue'),'display:block');
+			var wipiyue_list = {list : [],type:2};
+			wipiyue_list.list = list;
+			commonAddOnceHtml('yipiyue','yipiyue_script',wipiyue_list);
+		}else if(type == 3){
+			$api.css($api.byId('yipiyue'),'display:block');
+			var weitj_list = {list : [],type:3};
+			weitj_list.list = list;
+			commonAddOnceHtml('yipiyue','yipiyue_script',weitj_list);
+		}
+	}
+	
+	/*
+	 * 功能：进入批阅页面
+	 * 作者：张自强
+	 * 时间：20170822
+	 */
+	function piYue(id,name,type){
+	    commonExecScript('zuoyeJsJy_piyuetext_window','zuoyeJsJy_piyuetext_frame','changeStu("'+id+'","'+name+'",'+type+');',1); 
+        setTimeout(function(){
+        	api.execScript({
+	        name : 'zuoyeJsJy_piyuetext_window',
+	        script: 'back();'
+        });
+        },1000);
+	}
+	</script>
+</html>

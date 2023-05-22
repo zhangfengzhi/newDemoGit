@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<meta name="format-detection" content="telephone=no"/>
+		<title>行政公文</title>
+		<link rel="stylesheet" type="text/css" href="../../../../css/aui/aui.css" />
+		<link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+		<style>
+		</style>
+	</head>
+	<body>
+		<div id="wrap">
+			<header class="aui-bar aui-bar-nav aui-bar-primary" id="aui-header">
+				<div id="cloud" class="topbar activebar">
+					<!--<div class="win-menu">
+					<a id='menu' class="aui-iconfont aui-icon-add" ></a>
+					</div>-->
+				</div>
+			</header>
+		</div>
+	</body>
+	<script type="text/javascript" src="../../../../script/api.js"></script>
+	<script type="text/javascript" src="../../../../script/base_config.js"></script>
+	<script type="text/javascript" src="../../../../script/common/common.js"></script>
+	<script type="text/javascript" src="../../../../script/assembly/openResource.js"></script>
+	<script type="text/javascript" src="../../../../script/plug-in/base64.js" ></script>
+	<script type="text/javascript" src="../../../../script/assembly/executeApp.js" ></script>
+	<script type="text/javascript">
+        //顶部header高度
+        var header_h;
+        var w_h;
+        var page_type = "win";
+        apiready = function() {
+            //定位header位置，留出上面电池等空隙，苹果需要
+            commonSetTheme({"level":4,"type":0});
+            var header = $api.byId('aui-header');
+            $api.fixStatusBar(header);
+            if(api.systemType == 'ios'){
+				header_h = 10;
+			}else{
+				header_h = 0;
+			}
+            
+            w_h = api.winHeight - header_h;
+            backForAndroid();
+            openBgFrame(api.pageParam);
+        };
+        
+		function openBgFrame() {
+			var org_type = 100;
+			var org_id = $api.getStorage('bureau_id');
+			if(Number(org_id) > 100000 && Number(org_id) < 200000){
+				org_type = 101;
+			}else if(Number(org_id) > 200000 && Number(org_id) < 300000){
+				org_type = 102;
+			}else if(Number(org_id) > 300000 && Number(org_id) < 400000){
+				org_type = 103;
+			}else if(Number(org_id) > 400000){
+				org_type = 104;
+			}
+		
+			var url = $api.getStorage('BASE_URL_ACTION') + "/pro_integration/reactProject/documentfFor103MobileApp/index.html?menu=" + 
+			api.pageParam.menu + "&childMenu=" + api.pageParam.childMenu + "&person_id=" + $api.getStorage('person_id') +  '&identity_id='
+		     + $api.getStorage('identity') + "&org_id=" + org_id + "&org_type=" + org_type+"&token=" + $api.getStorage("token_ypt")+"&useBaseInterface=0";
+		     console.log(url)
+		    commonOpenFrame('xzgw_frame',url,header_h + 20,false,false,"rgba(0,0,0,0)",{header_h: header_h});
+		    showSelfProgress();
+		}
+
+
+		function back() {
+			api.execScript({
+            	name:api.winName,
+				frameName:"xzgw_frame",
+                script: 'onReturnBack()'
+            });
+		}
+
+        /**
+         * 安卓点击返回的时候
+         * 周枫
+         * 2015.10.14
+         */
+        function backForAndroid() {
+            api.addEventListener({
+                name : "keyback"
+            }, function(ret, err) {
+                back();
+            });
+        }
+    </script>
+</html>

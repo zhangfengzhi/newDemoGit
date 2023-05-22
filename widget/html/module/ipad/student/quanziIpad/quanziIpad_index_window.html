@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+		<title>圈子</title>
+		<link rel="stylesheet" type="text/css" href="../../../../../css/aui/aui.css"/>
+		<link rel="stylesheet" type="text/css" href="../../../../../css/module/ipad/left-right-layout.css"/>
+        <link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+	</head>
+	<body id="j_body" class="left-layout-body common-ipad-quanziIpadstu">
+		<div id="wrap">
+			<header class="aui-bar aui-bar-nav aui-bar-primary" id="aui-header">
+				<div id="cloud" class="topbar activebar">
+					<div id="back" class="back" onclick="back();" tapmode="">
+						<i class="aui-iconfont aui-icon-left"></i>返回
+					</div>
+					<div  class="mTitle" id="mTitle">
+						
+					</div>
+					<div class="win-menu">
+						<a id="j_add" class="aui-iconfont aui-icon-add btn-new aui-hide"  onclick="openAddFrame();"></a>
+					</div>
+				</div>
+			</header>
+		</div>
+		<!--左侧导航-->
+		<div id="j_left_tag" class="left-tag">
+			<div class="tag-item" onclick="changeTagItem(0,0,0);">
+				<div class="icon class-icon"></div>
+				<div id="j_class_name" class="name"></div>
+				<div class="parting-line">
+					<div class="left-rectangle fl"></div>
+					<div class="right-rectangle fr"></div>
+					<hr />
+				</div>
+			</div>
+			<div id="j_school" class="tag-item aui-hide" onclick="changeTagItem(1,0,0);">
+				<div class="icon school-icon"></div>
+				<div class="name">我的学校</div>
+				<div class="parting-line">
+					<div class="left-rectangle fl"></div>
+					<div class="right-rectangle fr"></div>
+					<hr />
+				</div>
+			</div>
+			<div id="school_div" class="aui-hide"></div>
+			<script type="text/html" id="school_script">
+				<% if(list_stage.length > 0){ %>
+					<% for(var i=0; i<list_stage.length; i++){%>
+						<div class="drop-down">
+							<div class="name" onclick="isShowClassData(this,<%=list_stage[i].columns.STAGE_ID%>);">
+								<span><%=list_stage[i].columns.STAGE_NAME%><div id="j_triangle_<%=list_stage[i].columns.STAGE_ID%>" class="triangle-down fl">&nbsp;</div></span>
+							</div>
+							<ul id="j_<%=list_stage[i].columns.STAGE_ID%>" class="mlr15 ptb10 aui-hide"></ul>
+						</div>
+					<%}%>
+				<%}%>
+			</script>
+		</div>
+		<!--//左侧导航-->
+		<div id="j-right" class="win-right quanzi-right fr"></div>
+	</body>
+	<script type="text/javascript" src="../../../../../script/api.js"></script>
+	<script type="text/javascript" src="../../../../../script/base_config.js" ></script>
+	<script type="text/javascript" src="../../../../../script/common/common.js"></script>
+	<script type="text/javascript" src="../../../../../script/plug-in/template.js" ></script>
+	<script type="text/javascript" src="../../../../../script/assembly/tongjiData.js"></script>
+	<script type="text/javascript" src="../../../../../script/assembly/voicePlayer.js" ></script>
+	<script type="text/javascript">
+		var back_type ="index";//返回参数
+		var storage_json;//缓存中的数据
+		var voice_type = 2;//朗读页面显示隐藏判断参数，2是打开，1是隐藏
+		var voice_content;//朗读内容
+		apiready = function(){
+			commonSetTheme({"level":5,"type":0});
+			commonIosAuiHeader();//定位header位置，留出上面电池等空隙，苹果需要
+			genStorageShowBtn();
+			$api.css($api.byId('j_left_tag'),'top:'+api.pageParam.header_h+'px;max-height:'+(api.winHeight*1-api.pageParam.header_h*1)+'px;height:'+(api.winHeight*1-api.pageParam.header_h*1)+'px;');//设置左侧导航的样式
+			commonBackForAndroid();//安卓关闭
+			commonOpenTjData($api.getStorage("identity")+'_'+api.winName);
+		};
+		/*
+		*author:zhaoj
+		*function:返回页面
+		*date：20161220
+		*/
+		function back() {
+			switch(back_type) {
+				case 'index':
+				  	commonCloseTjData($api.getStorage("identity")+'_'+api.winName);
+					api.closeWin();
+					break;
+				case 'detail':
+					voice_type = 2;
+					commonExecScript('quanziIpad_index_window','quanziIpad_index_frame','isShowBoxShow(0);',1);//隐藏虚线
+					commonCloseFrame('common_voiceplay_frame');
+				  	commonCloseFrame('quanziIpad_detail_frame');
+				  	reBackType('index');
+					break;
+				case 'comment':
+				  	commonCloseFrame('quanziIpad_comment_frame');
+				  	reBackType('detail');
+					break;
+				case 'add':
+				  	commonCloseFrame('quanziIpad_add_frame');
+				  	reBackType('index');
+					break;
+				case 'picture':
+				  	commonExecScript('quanziIpad_index_window','quanziIpad_add_frame','closePicture();',1);
+				  	reBackType('add');
+					break;
+				case 'open_picture':
+				  	reBackType('add');
+					break;
+				case 'picture_detail':
+				  	reBackType('detail');
+					break;
+			}
+		}
+		/**
+		 * 重置从哪个页面退出
+		 * 周枫
+		 * 2015.12.17
+		 */
+		function reBackType(type) {
+			switch(type) {
+				//如果列表页面退出
+				case 'index':
+					back_type = 'index';
+					break;
+				//如果详情页面退出
+				case 'detail':
+					back_type = 'detail';
+					break;
+				//如果评论页面退出
+				case 'comment':
+					back_type = 'comment';
+					break;
+				//如果添加页面退出
+				case 'add':
+					back_type = 'add';
+					break;
+				//如果添加页面退出
+				case 'picture':
+					back_type = 'picture';
+					break;
+				//如果打开图片退出
+				case 'open_picture':
+					back_type = 'open_picture';
+					break;
+				//如果打开图片退出
+				case 'picture_detail':
+					back_type = 'picture_detail';
+					break;
+			}
+		}
+		/*
+		*author:zhaoj
+		*function:打开详情页面
+		*date：20170911
+		*/
+		function openDetailFrame(oparam){
+			reBackType('detail');
+			var header_h = api.pageParam.header_h;//顶部高度
+			if(api.winWidth <= 1024){
+				var frame_w = Math.floor(api.winWidth*0.42);
+				var frame_x = Math.floor(api.winWidth*0.58);
+			}else{
+				var frame_w = Math.floor(api.winWidth*0.4);
+				var frame_x = Math.floor(api.winWidth*0.6);
+			}
+			pageParamJson={"header_h":header_h,'x':frame_x,'w':frame_w,"oparam":oparam,"org_type":storage_json.org_type,"org_id":storage_json.org_id};//打开frame页面json数据
+			//打开frame页面
+			commonOpenFrame("quanziIpad_detail_frame","quanziIpad_detail_frame.html",header_h,false,false,"rgba(0,0,0,0)",pageParamJson);
+			commonExecScript('quanziIpad_index_window','quanziIpad_index_frame','isShowBoxShow(1);',1);//显示虚线
+		}
+		/*
+		*author:zhaoj
+		*function:打开评论页面
+		*date：20170912
+		*/
+		function openCommentFrame(d, pid, person_id, identity_id, person_name,id){
+			reBackType('comment');
+			var header_h = api.pageParam.header_h;//顶部高度
+			pageParamJson={"header_h":header_h,"d":d,"pid":pid,"person_id":person_id,"identity_id":identity_id,"person_name":person_name,"id":id};//打开frame页面json数据
+			//打开frame页面
+			commonOpenFrame("quanziIpad_comment_frame","quanziIpad_comment_frame.html",0,false,false,"rgba(0,0,0,0)",pageParamJson);
+		}
+		/*
+		*author:zhaoj
+		*function:打开添加页面
+		*date：20170912
+		*/
+		function openAddFrame(){
+			reBackType('add');
+			var header_h = api.pageParam.header_h;//顶部高度
+			pageParamJson={"header_h":header_h};//打开frame页面json数据
+			//打开frame页面
+			commonOpenFrame("quanziIpad_add_frame","quanziIpad_add_frame.html",0,false,false,"rgba(0,0,0,0)",pageParamJson);
+		}
+		/*
+		*author:zhaoj
+		*function:打开列表页面
+		*date：20170912
+		*/
+		function openIndexFrame(){
+			var header_h = api.pageParam.header_h;//顶部高度
+			if(api.winWidth <= 1024){
+				var frame_w = Math.floor(api.winWidth*0.58);
+				$api.css($api.dom('.win-right'),'width:42%');
+			}else{
+				var frame_w = Math.floor(api.winWidth*0.6);
+				$api.css($api.dom('.win-right'),'width:40%');
+			}
+			var frame_x = 0;
+			if(frame_w <= 614){
+				frame_w=frame_w-150;
+				frame_x = 150;
+			}else{
+				frame_w=frame_w-180;
+				frame_x = 180;
+			}
+			pageParamJson={"header_h":header_h,'w':frame_w,"x":frame_x};//打开frame页面json数据
+			//打开frame页面
+			commonOpenFrame("quanziIpad_index_frame","quanziIpad_index_frame.html",header_h,false,false,"rgba(0,0,0,0)",pageParamJson);
+		}
+		/*
+		*author:zhaoj
+		*function:根据缓存判断当前人是否登录过，如果登录过，根据缓存显示他上一次的操作，要是清除缓存，当前人当没有登录过处理
+		*date：20170913
+		*/
+		function genStorageShowBtn(){
+			var identity_id = $api.getStorage('identity');//身份id
+			storage_json = $api.strToJson($api.getStorage('quanziIpad_infor_'+$api.getStorage('identity')+'_'+$api.getStorage('person_id')));//从缓存中取出当前人之前记录的
+			var flag = isEmptyString(storage_json);//判断是否为空，true：代表为空，false：代表不为空，证明当前登录人之前的登录
+			if(!flag){
+				//不为空的情况下
+				if(identity_id == 6){
+					//学生
+					if(storage_json.org_id == $api.getStorage('class_id')){
+						//如果上次登录的是自己的班级，显示发表圈子按钮
+						isShowAddBtn(1);
+					}
+				}else{
+					//家长
+					isShowAddBtn(1);
+				}
+			}else{
+				isShowAddBtn(1);
+				if(identity_id == 6){
+					//学生
+					storage_json = {'org_name':'我的班级',"org_type":105,"org_id":$api.getStorage('class_id')};//写入缓存的json数据 
+				}else{
+					//家长
+					storage_json = {'org_name':'孩子的班级',"org_type":105,"org_id":$api.getStorage('class_id')};//写入缓存的json数据 
+				}
+				$api.setStorage('quanziIpad_infor_'+$api.getStorage('identity')+'_'+$api.getStorage('person_id'),JSON.stringify(storage_json));
+			}
+			commonSetWindowName(storage_json.org_name);
+			getIdentityShowBtn();
+			openIndexFrame();
+		}
+		/*
+		*author:zhaoj
+		*function:是否显示发表圈子按钮
+		*date：20170913
+		*/
+		function isShowAddBtn(type){
+			type ? $api.removeCls($api.byId('j_add'),'aui-hide') : $api.addCls($api.byId('j_add'),'aui-hide');
+		}
+		/*
+		*author:zhaoj
+		*function:根据身份id，判断是否显示我的学校以及全校班级情况
+		*date：20170913
+		*/
+		function getIdentityShowBtn(){
+			storage_json = $api.strToJson($api.getStorage('quanziIpad_infor_'+$api.getStorage('identity')+'_'+$api.getStorage('person_id')));//从缓存中取出当前人之前记录的
+			if($api.getStorage('identity') == 6){
+				//学生
+				$api.text($api.byId('j_class_name'),'我的班级');
+				$api.removeCls($api.byId('j_school'), 'aui-hide');
+				//获取学段
+//				getStageList(function(flag,ret){
+//					if(flag){
+//						commonAddOnceHtml('school_div','school_script',ret);
+//					}else{
+//						popToast(ret);
+//					}
+//				});
+//				$api.removeCls($api.byId('school_div'), 'aui-hide');
+			}else{
+				//家长
+				$api.text($api.byId('j_class_name'),'孩子的班级');
+			}
+		}
+		/*
+		*author:zhaoj
+		*function:切换左侧导航
+		*param：type=0：我的班级，type = 1：我的学校，type = 2：学校其他班级
+		*org_id:当前机构id；org_name:当前机构名称
+		*date：20170913
+		*/
+		function changeTagItem(type,org_id,org_name,self){
+			//当type是0或者1的时候，获取org_id;用来判断是否需要切换
+			commonCloseFrame('quanziIpad_detail_frame');
+			if(type == 0){
+				org_id = $api.getStorage('class_id');
+			}else if(type == 1){
+				org_id =$api.getStorage('bureau_id');
+			}
+			//判断当前选项和现在点击的选项不一致时，才切换数据
+			if(org_id != storage_json.org_id){
+				storage_json = {};//写入缓存的json数据 
+				deleteClassActive();//去掉其他班级选中状态
+				if(type == 0){
+					//我的班级
+					storage_json = {'org_name':$api.text($api.byId('j_class_name')),"org_type":105,"org_id":$api.getStorage('class_id')};
+					$api.addCls($api.byId('j_class_'+org_id), 'active');//给下拉对应的班级加上选中样式
+					isShowAddBtn(1);
+				}else if(type == 1){
+					//我的学校
+					storage_json = {'org_name':'我的学校',"org_type":104,"org_id":$api.getStorage('bureau_id')};
+					isShowAddBtn(0);
+				}else{
+					//学校其他班级
+					$api.addCls($api.byId('j_class_'+org_id), 'active');//给选中的班级添加样式
+					//点击的是班级是当前登录人所在的班级
+					if($api.getStorage('class_id') == org_id){
+						storage_json = {'org_name':$api.text($api.byId('j_class_name')),"org_type":105,"org_id":$api.getStorage('class_id')};
+						isShowAddBtn(1);
+					}else{
+						storage_json = {'org_name':org_name,"org_type":105,"org_id":org_id};
+						isShowAddBtn(0);
+					}
+				}
+				$api.setStorage('quanziIpad_infor_'+$api.getStorage('identity')+'_'+$api.getStorage('person_id'),JSON.stringify(storage_json));//写入缓存
+				commonSetWindowName(storage_json.org_name);//重新给window页面命名
+				commonExecScript('quanziIpad_index_window','quanziIpad_index_frame','initData(1);',1);//切换index列表数据
+			}else{
+				commonExecScript('quanziIpad_index_window','quanziIpad_index_frame','commonBackTop();',1);//回到最顶部
+			}
+		}
+		/*
+		*author:zhaoj
+		*function:获取学段
+		*date：20170913
+		*/
+		function deleteClassActive(){
+			var li_array = $api.domAll($api.byId('j_body'), 'li');
+			for(var i = 0; i < li_array.length; i++){
+				$api.removeCls(li_array[i],'active');
+			}
+		}
+		/*
+		*author:zhaoj
+		*function:获取学段
+		*date：20170913
+		*/
+		function getStageList(callback){
+			api.ajax({
+		        url:BASE_URL_ACTION+'/class/getStageList?random_num=' + creatRandomNum() + '&bureau_id=' + $api.getStorage('school_id'),
+				method : 'get',
+				timeout : 30,
+				dataType : 'json',
+				headers : {
+					'Cookie' : 'person_id='+$api.getStorage("person_id")+';identity_id='+$api.getStorage("identity")+'; token='+$api.getStorage("token_ypt")+';'
+				}
+	        },function(ret,err){
+	        	if(err){
+	        		callback(false,'获取学段失败，请稍候重试');
+	        	}else{
+	        		if(ret.success){
+	        			callback(true,ret);
+	        		}else{
+	        			callback(false,'获取学段失败，请稍候重试');
+	        		}
+	        	}
+	        });
+		}
+		/*
+		*author:zhaoj
+		*function:点击学段展示收起
+		*date：20170913
+		*/
+		function isShowClassData(self,stage_id){
+			var tri_obj= $api.byId('j_triangle_'+stage_id);
+			if($api.hasCls(tri_obj, 'triangle-down')){
+				//展开
+				var li_array = $api.domAll($api.byId('j_'+stage_id), 'li');
+				if(li_array.length == 0){
+					//获取入学年份，根据入学年份获取班级
+					showSelfProgress('加载中...');
+					getEntranceYear(stage_id);
+				}else{
+					showClass(stage_id);
+				}
+				$api.removeCls(tri_obj, 'triangle-down');
+				$api.addCls(tri_obj, 'triangle-top');
+			}else{
+				//收起
+				$api.removeCls(tri_obj, 'triangle-top');
+				$api.addCls(tri_obj, 'triangle-down');
+				$api.addCls($api.byId('j_'+stage_id), 'aui-hide');
+			}
+		}
+		/*
+		*author:zhaoj
+		*function:获取入学年份
+		*provider：吴缤
+		*date：20170913
+		*/
+		function getEntranceYear(stage_id){
+			class_json = [];
+			api.ajax({
+		        url:BASE_URL_ACTION + '/class/getEntranceYear?org_id='+ $api.getStorage('bureau_id') +'&stage_id=' + stage_id + '&random_num='+creatRandomNum(), 
+				method : 'post',
+				timeout : 30,
+				dataType : 'json',
+				cache : false,
+				headers : {
+					'Cookie' : 'person_id='+$api.getStorage("person_id")+';identity_id='+$api.getStorage("identity")+'; token='+$api.getStorage("token_ypt")+';'
+				}
+	        },function(ret,err){
+	        	if(err){
+	        		popToast('获取班级失败，请稍候重试');
+	        		api.hideProgress();
+	        	}else{
+	        		if(ret.success){
+	
+	        			if(ret.list.length > 0){
+	        				//递归获取班级
+	        				bgGetClassList(0,ret,stage_id,function(flag){
+	        					api.hideProgress();
+	        					showClass(stage_id);
+	        				});
+	        			}else{
+	        				popToast('当前学段无可用班级');
+	        			}
+	        		}else{
+	        			popToast('获取班级失败，请稍候重试');
+	        			api.hideProgress();
+	        		}
+	        	}
+	        	
+	        });
+		}
+		/*
+		*author:zhaoj
+		*function:展示当前学段下的所有班级
+		*date：20170913
+		*/
+		function showClass(stage_id){
+			var li_html="";
+			for(var i = 0; i < class_json.length; i++){
+				var click_html='changeTagItem(2,'+class_json[i].id+',"'+class_json[i].name+'");' 
+				if(storage_json.org_id == class_json[i].id){
+					li_html += '<li id="j_class_'+class_json[i].id+'" class="active" onclick='+click_html+'>';
+				}else{
+					li_html += '<li id="j_class_'+class_json[i].id+'" onclick='+click_html+'>';
+				}
+				li_html += '<span>'+class_json[i].name+'</span>';
+				li_html += '</li>';
+			}
+			$api.html($api.byId('j_'+stage_id), li_html);
+			$api.removeCls($api.byId('j_'+stage_id), 'aui-hide');
+		}
+		/*
+		*author:zhaoj
+		*function:递归获取班级
+		*date：20170913
+		*/
+		function bgGetClassList(index,ret,stage_id,callback){
+			if(index < ret.list.length){
+				getClassList(index,ret,stage_id,function(){
+					index++;
+					return bgGetClassList(index,ret,stage_id,callback);
+				});
+			}else{
+				callback(true);
+			}
+		}
+		/*
+		*author:zhaoj
+		*function:获取班级
+		*date：20170913
+		*/
+		function getClassList(index,ret,stage_id,callback){
+			api.ajax({
+				url:BASE_URL_ACTION+'/class/getClassList?random_num='+creatRandomNum()+'&entrance_year='+ret.list[index].ENTRANCE_YEAR+'&org_id='+$api.getStorage('bureau_id')+'&pageNumber=1&pageSize='+BASE_PAGE_SIZE+'&random_num='+creatRandomNum()+'&stage_id='+stage_id+'&bureau_id='+$api.getStorage('bureau_id'), 
+				method : 'post',
+				dataType : 'json',
+				timeout : 30,
+				cache : false,
+				headers : {
+					'Cookie' : 'person_id='+$api.getStorage("person_id")+';identity_id='+$api.getStorage("identity")+'; token='+$api.getStorage("token_ypt")+';'
+				}
+	        },function(ret,err){
+	        	if(err){
+	        		api.hideProgress();
+	        	}else{
+	        		if(ret.success){
+	        			var class_list = ret.table_List;
+	        			for(var j=0;j<class_list.length;j++){
+	        				var data = new Object();
+	        				data.name = ret.table_List[j].CLASS_NAME;
+	        				data.id = ret.table_List[j].CLASS_ID;
+	        				class_json.push(data);
+	        			}
+	        		}else{
+	        			api.hideProgress();
+	        		}
+	        	}
+	        	callback();
+	        });
+		}
+	</script>
+</html>

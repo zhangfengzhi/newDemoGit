@@ -1,0 +1,52 @@
+.head-img-box {
+	float: left;
+	width: 15%;
+	height: 44px;
+	text-align: center;
+	padding: 0 0 0 5px;
+}
+.head-icon {
+	margin-top: 5px;
+	height: 38px;
+	width: 38px;
+	border-radius: 20px 20px 20px 20px;
+}
+.content-box {
+	float: left;
+	width: 85%;
+	padding: 0 0 0 3px;
+}
+.content-detail {
+	/* margin-top: 5px; */
+	font-size: 15px;
+	color: #333333;
+	padding: 5px 0px 0px 3px;
+}
+.content-detail span {
+	float: right;
+	margin-right: 5px;
+}
+.work-title {
+	font-size: 14px;
+}
+.going {
+	color: #3585B7;
+}
+.complete {
+	color: #34A8FA;
+}
+.delay {
+	color: #8B4789;
+}
+.lag {
+	color: #CD2626;
+}
+.remark {
+	color: #4A708B;
+}
+.log-detail {
+	height: auto;
+	text-align: left;
+	font-size: 14px;
+	color: #454545;
+}

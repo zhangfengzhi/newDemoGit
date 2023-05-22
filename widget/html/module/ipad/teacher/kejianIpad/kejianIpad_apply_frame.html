@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <title>另存为</title>
+    <link rel="stylesheet" type="text/css" href="../../../../../css/aui/aui.css" />
+    <link rel="stylesheet" type="text/css" href="../../../../../css/module/ipad/popup-body.css"/>
+    <link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+    <style>
+    	.popup-body-new	.commont-content{padding:52px 0 50px 0;width:470px;height:230px;margin-top:-115px;margin-left:-235px;}
+    	.content-name{height:60px;}
+    	input[type='text']{height:45px;border-bottom:1px dashed #aaaaaa;padding:10px 0;}
+    	textarea{height:165px;padding:20px;max-height:165px;overflow-y: auto;}
+    	.popup-body-new .commont-content .position{font-size:16px;padding:20px 0 0 30px;}
+    	.zy-name{float:left;top:29px;padding-left:5%;padding-top:15px;min-width:80px;width:30%;}
+    	.input-div{position:relative;display:inline-block;margin-right:5%;float:right;padding-top:12px;width:90%;}
+    	.input-div input{border:1px solid #cccccc;border-radius:3px;line-height:16px;padding:9px 5px;width:100%;}
+    	.tip{position:absolute;right:0;bottom:-12px;height:20px;line-height:20px;font-size:14px;color:#f00;}
+    </style>
+</head>
+<body class="popup-body-new common-ipad-kejianIpad">	
+	<div class="commont-content">
+		<div class="top fl">
+			<div class="name">选用</div>
+			<div class="close fr" onclick="closeFrame();"></div>
+		</div>
+		<div class="content">
+			<div class="zy-name">修改课件名称</div>
+			<div class="input-div">
+				<input id="fl_val" type="text" oninput='showTip(this.value.length,this);'placeholder="剩余100个字符" maxlength="100" />
+			</div>
+		</div>
+		<div class="btn" onclick="insertResourceBaseInfo();">保存</div>
+	</div>
+</body>
+<script type="text/javascript" src="../../../../../script/api.js"></script>
+<script type="text/javascript" src="../../../../../script/base_config.js" ></script>
+<script type="text/javascript" src="../../../../../script/plug-in/base64.js" ></script>
+<script type="text/javascript" src="../../../../../script/common/common.js" ></script>
+<script type="text/javascript" src="../../../../../script/module/common/kejianJs.js" ></script>
+<script type="text/javascript">
+	var BASE_URL_ACTION;
+	var lobal_variable;
+	apiready = function(){
+		commonSetTheme({"level":5,"type":0});
+		BASE_URL_ACTION = $api.getStorage('BASE_URL_ACTION');
+		lobal_variable = JSON.parse(api.pageParam.lobal_variable);	
+		$api.val($api.byId('fl_val'), Base64.decode(api.pageParam.name));
+		showTip(Base64.decode(api.pageParam.name).length,"");
+	};
+	/*
+	*author:zhaoj
+	*function:提示问题描述或课堂评价描述剩余多少字符
+	*date：20160315
+	*/
+	function showTip(length,self){
+        var count = 100 - length;
+        $api.text($api.byId('tip'),'剩余'+count+'个字符');
+        if(self !=""){
+            commonRemoveExpression(self);
+        }
+    }
+    /*
+	*author:zhaoj
+	*function:关闭当前frame
+	*date：20160315
+	*/
+	function closeFrame(){
+		commonCloseFrame('kejianIpad_apply_frame');
+	}
+</script>
+</html>

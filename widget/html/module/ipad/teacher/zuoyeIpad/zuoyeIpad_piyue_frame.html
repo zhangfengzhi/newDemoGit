@@ -1,0 +1,1668 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<meta name="format-detection" content="telephone=no"/>
+		<title>检测审批页面</title>
+		<link rel="stylesheet" type="text/css" href="../../../../../css/aui/aui.css" />
+		<link rel="stylesheet" type="text/css" href="../../../../../css/aui_css_new/aui.css" />
+		<link rel="stylesheet" type="text/css" href="../../../../../css/module/common/list_frame.css" />
+		<link rel="stylesheet" type="text/css" href="../../../../../css/module/common/jyeoo/ques_data.css" />
+		<link id="j_theme_base" rel="stylesheet" type="text/css" href="" /><style>
+			body {
+				margin: 0;
+				background: rgba(0,0,0,0);
+			}
+			.clearfix:after {
+				content: ' ';
+				display: block;
+				clear: both;
+				visibility: hidden;
+				line-height: 0;
+				height: 0;
+			}
+			.answer-title {
+				border-top: 1px solid #f1f1f1;
+				height: 55px;
+				width: 100%;
+				margin-bottom: 20px;
+			}
+			.stu-answer-title {
+				height: 55px;
+				width: 100%;
+				margin-bottom: 20px;
+			}
+			.title {
+				width: 18%;
+				float: left;
+			}
+			.answer-title div {
+				height: 35px;
+				display: inline-block;
+				line-height: 35px;
+				margin-top: 13px;
+				padding: 0 15px;
+				color: #ffffff;
+			}
+			.stu-answer-title div {
+				height: 35px;
+				display: inline-block;
+				line-height: 35px;
+				margin-top: 13px;
+				padding: 0 15px;
+				color: #ffffff;
+			}
+			
+			.next {
+				line-height: 55px;
+				text-align: right;
+				
+			}
+			.plr15 {
+				padding: 0 15px;
+			}
+			.footer-div{
+				position:fixed;
+				z-index:999;
+				height:55px;
+				background:#ffffff;
+				display: block;
+				bottom: 0px;
+				width:100%;
+				box-shadow:3px 0 4px #aaaaaa;
+			}
+			.footer-div .prevQ,.footer-div .nextQ{display: inline-block;width:50%;float: left;}
+			.footer-div .prevQ{text-align: left;}
+			.footer-div .nextQ{text-align: right;}
+			.footer_div{height:57px;}
+			.plrb15{padding:0 15px 15px 15px;}
+			.no-question-data{text-align:center;color:#666;height:50px;line-height:50px;}
+			.footer-btn button{
+				float:left;
+				margin-left:5%;
+				margin-bottom:15px;
+			}
+			.footer-btn-last button{
+				float:right;
+				margin-right:15px;
+				margin-bottom:15px;
+			}
+			.check_right{
+				border-bottom: 2px solid #CCCCCC;
+				line-height: 55px;
+				width: 100%;
+			}
+			.pinglun_form{
+				line-height: 55px;
+				width: 100%;
+			}
+			textarea{width:90%;margin-left:5%;margin-bottom:3px;}
+    		.tip{
+	    		height:30px;
+	    		padding:0px 0 20px 0px;
+	    		font-size:14px;
+	    		color:#f00;
+	    		text-indent:5%;
+    		}
+    		.tip-zuoda{
+	    		height:30px;
+	    		padding:0px 0 10px 0px;
+	    		font-size:16px;
+	    		color:#7E7E7E;
+	    		text-indent:5%;
+    		}
+    		.btn-right {
+				color: #ffffff;
+				background-color: #FFD34F;
+				border: 1px solid #FFD34F;
+			}
+			.btn-wrong{
+				color: #ffffff;
+				background-color: red;
+				border: 1px solid red;
+			}
+			.piyueing{
+				font-size: 14px;
+				color: #555555;
+			}
+			.detail-content{text-indent:5%;color: #8F8F94}
+			.no-data {
+				text-align: center;
+				color: #c0c0c0;
+				padding-top: 20px;
+				margin-bottom: 20px;
+			}
+			.zoomImage{padding-bottom:80%;}
+            .zoomImage img{position:absolute;width:100%;top:0;bottom:0;height:100%;}
+            
+            #piyue_pi{
+				display: flex;
+				align-items: center;
+				-webkit-flex-wrap: wrap;
+				flex-wrap: wrap;
+				padding-left: 5%;
+				
+			}
+			#piyue_pi img{
+				padding: 10px;
+				max-width: 200px;
+    			max-height: 200px;
+			}
+		</style>
+	</head>
+	<body id="body" class="common-ipad-zuoyeIpad-tea">
+			<div style="border:5px solid #EFEFEF"></div>
+			<div id="no_zuoda" class="no-data" style="display:none">该题已批阅完成</div>
+			<div id="has_zuoda" style="display:none">
+				<div id="j_analysis_title" class="stu-answer-title clearfix">
+					<div>
+						当前学生
+					</div>
+				</div>
+				<div id="btn_list" class="detail-content">
+					<div id="stu_name">张三</div>
+				</div>
+				<div id="j_analysis_title" class="answer-title clearfix">
+					<div>
+						学生答案
+					</div>
+				</div>
+				<div id="fj_zuoda" class="tip-zuoda">附件答案:</div>
+				<div id="no_stu_zuoda" class="tip">注：点击图片可以进行批阅(仅限图片)！</div>
+				<div id="piyue_pi">
+				
+				</div>
+				<div id="stu_txt_div" style="border-top:1px solid #EFEFEF"></div>
+				<div id="wb_zuoda" style="margin-top:20px" class="tip-zuoda">文本答案:</div>
+				<div id="stu_txt" style="margin-top:5px;margin-bottom:10px;margin-left:5%;text-indent:5%;display:none;color:#909090"></div>
+				<div id="j_analysis_title" class="answer-title clearfix">
+					<div>
+						该题正误
+					</div>
+				</div>
+				<div class="footer-btn pinglun_form  clearfix">
+					<div id="btn_list">
+						<button id="btn_0" class="aui-btn" onclick="changeBtn(0);">
+							√
+						</button>
+						<button id="btn_1" class="aui-btn " onclick="changeBtn(1);">
+							×
+						</button>
+						<button id="btn_2" class="aui-btn" onclick="changeBtn(2);">
+							√20%
+						</button>
+						<button id="btn_3" class="aui-btn" onclick="changeBtn(3);">
+							√50%
+						</button>
+						<button id="btn_4" class="aui-btn" onclick="changeBtn(4);">
+							√80%
+						</button>
+					</div>
+				</div>
+				<div id="j_analysis_title" class="answer-title clearfix">
+					<div>
+						该题评语
+					</div>
+				</div>
+				<div id="pinglun"　class="footer-btn-last pinglun_form  clearfix">
+					<textarea id="comt_content" autocapitalize="off" rows="8" placeholder="说点什么吧..." maxlength ='500'></textarea>
+					<button class="aui-btn aui-btn-info" style="float:right;margin-right:15px;margin-bottom:15px;" onclick="saveAll();">
+							提交
+					</button>
+					<button class="aui-btn aui-btn-success" style="float:right;margin-right:15px;margin-bottom:15px;" onclick="clearInput();">
+							清空
+					</button>
+				</div>
+				<div style="border:30px solid #FFFFFF"></div>
+			</div>
+			<div id="footer-div" class="footer-div next clearfix" style="display:none">
+				<div class="prevQ" style="float:left;" onclick="enterPrePerson();"><span class="aui-iconfont aui-icon-left"></span>上一人</div>
+				<div class="nextQ" style="float:right;" onclick="goNextPerson();">下一人<span class="aui-iconfont aui-icon-right"></span></div>
+			</div>
+		<div id="footer_div" class="footer_div">
+			&nbsp;
+		</div>
+	</body>
+	<script type="text/javascript" src="../../../../../script/api.js"></script>
+	<script type="text/javascript" src="../../../../../script/base_config.js" ></script>
+	<script type="text/javascript" src="../../../../../script/plug-in/template.js" ></script>
+	<script type="text/javascript" src="../../../../../script/plug-in/base64.js" ></script>
+	<script type="text/javascript" src="../../../../../script/common/common.js" ></script>
+	<script type="text/javascript" src="../../../../../script/assembly/Merge.js"></script>
+	<script type="text/javascript" src="../../../../../script/assembly/trans.js" ></script>
+	<script type="text/javascript" src="../../../../../script/assembly/jsdrawingBorad.js" ></script>
+	<script type="text/javascript" src="../../../../../script/assembly/executeApp.js" ></script>
+	<script type="text/javascript" src="../../../../../script/assembly/openResource.js" ></script>
+	<script type="text/javascript">
+		var header_h;
+		var BASE_URL_ACTION;
+		var BASE_APP_TYPE;
+		//试题总数
+		var qt_id;//题目的类型
+		//身份id
+		var que_source;//试题来源，1，东师理想，2箐优网
+		var tj_frame_isopen = false;//提交统计页面是否已经打开
+		var piyue_state = 0;
+		var stu_id = 0;//学生id
+		var zy_id = 0;//检测id
+		var question_id = '';//题id
+		var wpy_list = [];//未批阅的学生列表
+		var ypy_list = [];//已批阅的学生列表
+		var wtj_list = [];//未提交的学生列表
+		var content = "";//题干内容
+		var content_exp = "";//题目解析
+		var content_daan = "";//正确答案
+		var q_cur_num = 0;//当前为第几人
+		var score = -1;//得分
+		var img_id_num = 0;//选中的图片的id
+		var sort = -1;//题的序号
+		var jy_subject_en_name = "";//精优题需要的名字
+		var page_num = 0;//当前题的顺序
+		var change_type = 0;//切换已批阅(1),未批阅（2），未提交（3）按钮
+		var file_id_old = '';//旧的图片路径
+		var img_type = 0;//图片类型
+		var zg_img_json={"list":[]};//主观题图片json数据，根据这个json数据图片进行排序
+		var trans;
+		var py_again = false;//是否是重新批阅已经提交批阅的题
+		var py_again_stu_name = '';//重新批阅的学生的名字
+		var py_again_stu_id = -1;//重新批阅的学生的id
+		var que_scores = 0;
+		var closeTj = false;//是否打开了已批阅详情页面
+		var closeTj_first = false;//是否第一次打开已批阅详情页面
+		var btn_hide = 2;
+		apiready = function() {
+			commonSetTheme({"level":5,"type":0});
+			sort = api.pageParam.sort;
+			zy_id = api.pageParam.zy_id;
+			que_source = api.pageParam.que_source;
+			question_id = api.pageParam.question_id;
+			trans = api.require('trans');
+			if(question_id == false){
+				var rett = api.pageParam.rett;
+				question_id = rett.question_list[0].question_id_char;
+			}
+			header_h = api.pageParam.header_h;
+			stu_id = api.pageParam.stu_id;
+			BASE_URL_ACTION = $api.getStorage('BASE_URL_ACTION');
+			BASE_APP_TYPE = $api.getStorage('BASE_APP_TYPE');
+			commonRefreshHeaderInfo();
+			getDtStatuList(0);
+		};
+
+		/*
+		 * 功能：显示图片
+		 * 作者：张自强
+		 * 时间：20170830
+		 */
+		function uploadImg(file_path,ext,i,type,file_id,zg_type,file_piyue_path,length,resource_type,resource_id_int,no_piyue) {	
+			if(resource_type == 1){
+				if(zg_type){
+					var file_path_tmp= file_path.substring(file_path.indexOf('base64')+7,file_path.length);
+					var img_path = 'fs://img/';
+					var img_name = ''+file_id+'.'+ext;
+					var img_path_true = api.fsDir + '/img/' + img_name;
+					common_trans.saveImage(file_path_tmp, img_path, img_name, function(is_true, data){
+						if(is_true){
+							
+						} else {
+							
+						}
+					});	
+				}else{
+	
+				}
+				
+				api.download({
+				    url:file_path,
+				    savePath:  'fs://img/'+file_id+'.'+ext,
+				    report: false,
+				    cache: false,
+				    allowResume: true
+				},function( ret, err ){
+				});	
+				
+				var onclickfunction = "openDrawDoardFrame('"+file_id+"','"+ext+"',"+i+",'"+no_piyue+"');";
+				var img_html = '<div style="border:5px solid #ffffff"></div><div id="'+file_id+'" class="j_img_li" onclick="'+onclickfunction+'">';
+				img_html = img_html + '<img id="img'+i+'" class="j_img" src="'+file_path+'" height="auto"/>';
+				if(length > 1 && i < length-1){
+					img_html = img_html + '</div><div style="border-top:1px solid #EFEFEF"></div>';
+				}else{
+					img_html = img_html + '</div><div></div>';
+				}
+				$api.append($api.byId('piyue_pi'), img_html);
+			}else{
+				var openHtml = "openAnswer('"+resource_id_int+"','"+file_path+"','"+ type+"','"+ resource_type+"','"+ file_id+"','"+ ext+"')";
+	            var li_html = '<div style="border:5px solid #ffffff"></div><div class="j_img_li" onclick="'+openHtml+'">';
+	            var mr_picture = "this.src='../../../../../image/fun-module/common/wk_default.png'";
+	             li_html +='<img src="'+file_path+'" onerror="'+mr_picture+' height="auto"/>';
+	            if(length > 1 && i < length-1){
+					li_html = li_html + '</div><div style="border-top:1px solid #EFEFEF"></div>';
+				}else{
+					li_html = li_html + '</div><div></div>';
+				}
+	            $api.append($api.byId('piyue_pi'), li_html);
+        	}
+		}
+
+
+		/*
+		 * 功能：判断是否是第一人或最后一人
+		 * 作者：张自强
+		 * 时间：20170831
+		 */
+		function judgeLastOrFirst(q_cur,length){
+			if(q_cur == 0 && length > 1){
+				$api.css($api.byId('footer-div'),'display:block');
+				$api.css($api.dom('.prevQ'),'display:none;');
+				$api.css($api.dom('.nextQ'),'display:block');
+			}else if(q_cur == length-1 && length > 1){
+				$api.css($api.byId('footer-div'),'display:block');
+				$api.css($api.dom('.prevQ'),'display:block;');
+				$api.css($api.dom('.nextQ'),'display:none');
+			}else if(q_cur == 0 && length <= 1){
+				$api.css($api.byId('footer-div'),'display:none');
+			}else{
+				$api.css($api.byId('footer-div'),'display:block');
+				$api.css($api.dom('.prevQ'),'display:block;');
+				$api.css($api.dom('.nextQ'),'display:block');
+			}
+		}
+		
+		/*
+		 * 功能：切换到下一个人
+		 * 作者：张自强
+		 * 时间：20170825
+		 */
+		function goNextPerson(){
+			if (q_cur_num < wpy_list.length-1) {
+				q_cur_num++;
+				stu_id = wpy_list[q_cur_num].id;
+				$api.text($api.byId('stu_name'),wpy_list[q_cur_num].name);
+				getStuZgQuesList();	
+			} else {
+				api.toast({
+					msg : '已经到第一人'
+				});
+				q_cur_num = wpy_list.length-1;
+			}
+			judgeLastOrFirst(q_cur_num,wpy_list.length);
+		}
+
+		/*
+		 * 功能：切换到上一个人
+		 * 作者：张自强
+		 * 时间：20170825
+		 */
+		function enterPrePerson(){
+			if (q_cur_num > 0) {
+				q_cur_num--;
+				stu_id = wpy_list[q_cur_num].id;
+				$api.text($api.byId('stu_name'),wpy_list[q_cur_num].name);
+				getStuZgQuesList();	
+			} else {
+				api.toast({
+					msg : '已经到第一人'
+				});
+				q_cur_num = 0;
+			}
+			judgeLastOrFirst(q_cur_num,wpy_list.length);
+		}
+	
+
+		/*
+		 * 功能：打打开手写板页面
+		 * 时间：20170822
+		 * 作者：张自强
+		 */
+		function openDrawDoardFrame(file_id,ext,i,no_piyue){
+			var img_w = document.getElementById('img'+i).width;
+			var img_h = document.getElementById('img'+i).height;
+			var url = document.getElementById('img'+i).src;
+			file_id_old = file_id;
+			img_id_num = i;
+json={"header_h":api.pageParam.header_h,"stem":api.pageParam.zy_name_base64,"content":content,"content_exp":content_exp,"content_daan":content_daan,"file_id":file_id,"ext":ext,'img_h':img_h,'img_w':img_w,"no_piyue":no_piyue,"url":url};//打开frame页面所需参数
+			commonOpenWin('zuoyeIpad_drawingBoard_window', 'zuoyeIpad_drawingBoard_window.html', true, false, json);
+		}
+		
+		
+
+	
+	/*
+	 * 功能：修改学生姓名
+	 * 时间：20170821
+	 * 作者：张自强
+	 */
+	function reNameStu(id,txt){
+		$api.text($api.byId('stu_name'), txt);
+		stu_id = id;
+		for(var i=0;i<wpy_list.length;i++){
+			if(wpy_list[i].id == id){
+				q_cur_num = i;
+				judgeLastOrFirst(q_cur_num,wpy_list.length);
+			}
+		}
+		$api.html($api.byId('piyue_pi'), '');
+		getStuZgQuesList();
+	}
+	
+		/*
+	*author:zhaoj
+	*function:清除所有痕迹
+	*date：20170531
+	*/
+	function clearanceMark(){
+		drawingBoard.clear();
+	}
+	/*
+	*author:zhaoj
+	*function:撤销或者恢复
+	*date：20170531
+	*/
+	function revokeOrRestore(type){
+		if(type){
+			drawingBoard.revoke();
+		}else{
+			drawingBoard.restore();
+		}
+	}
+	
+    /*
+     * 功能：修改评分按钮的颜色
+     * 作者：张自强
+     * 时间：20170822
+     * 参数：num： 0 正确
+     *          1 错误
+     *          2 正确20%
+     *          3 正确50%
+     *          4 正确80%
+     */
+    function changeBtn(num){
+    	for(var i=0;i<=4;i++){
+    		if(i == num){
+    			switch (num){
+		    		case 0:
+		    			score = 1;
+		    			$api.addCls($api.byId('btn_0'), 'aui-btn-success');
+		    			break;
+		    		case 1:
+		    			score = 0;
+		    			$api.addCls($api.byId('btn_1'), 'btn-wrong');
+		    			break;
+		    		case 2:
+		    			score = 0.2;
+		    			$api.addCls($api.byId('btn_2'), 'btn-right');
+		    			break;
+		    		case 3:
+		    			score = 0.5; 
+		    			$api.addCls($api.byId('btn_3'), 'btn-right');
+		    			break;
+		    		case 4:
+		    			score = 0.8;
+		    			$api.addCls($api.byId('btn_4'), 'btn-right');
+		    			break;
+    			}
+    		}else{
+    			if( i == 0){
+    				$api.removeCls($api.byId('btn_0'), 'aui-btn-success');
+    			}else if( i == 1){
+    				$api.removeCls($api.byId('btn_1'), 'btn-wrong');
+    			}else{
+    				$api.removeCls($api.byId('btn_'+i), 'btn-right');
+    			}
+    		}
+    	}
+    	if(num == 5){
+    		score = -1;
+    		$api.removeCls($api.byId('btn_0'), 'aui-btn-success');
+    		$api.removeCls($api.byId('btn_1'), 'btn-wrong');
+    		$api.removeCls($api.byId('btn_2'), 'btn-right');
+    		$api.removeCls($api.byId('btn_3'), 'btn-right');
+    		$api.removeCls($api.byId('btn_4'), 'btn-right');
+    	}
+    }
+    
+    /*
+     * 功能：清空输入框的内容
+     * 作者：张自强
+     * 时间：20170822
+     */
+    function clearInput(){
+    	changeBtn(5);
+    	$api.val($api.byId('comt_content'),'');
+    }
+    
+    /*
+     * 功能：打开检测提交情况统计页面
+     * 作者：张自强
+     * 时间：20170822
+     */
+    function sortMethod(type){
+    	change_type = type;
+    	var status_list = [];
+    	if(type == 1){
+    		status_list = ypy_list;
+    	}else if(type == 2){
+    		status_list = wpy_list;
+    	}else{
+    		status_list = wtj_list;
+    	}
+    	if(tj_frame_isopen == false){
+    		piyue_state = type;
+			var pageParamJson = {
+				"header_h" : header_h,
+				"type" : type,
+				"tj_frame_isopen" : tj_frame_isopen,
+				"list" : status_list,
+				"zy_id":zy_id,
+				"question_id" : question_id,
+				"que_source" : que_source,
+				"jy_subject_en_name" : jy_subject_en_name,
+				"zy_name" : api.pageParam.zy_name,
+				"sort" : sort,
+				"stu_id" : stu_id
+			};
+			tj_frame_isopen = true;
+			api.execScript({
+		        name : 'zuoyeIpad_piyue_window',
+		        script: 'reBackType("tj");'
+	        });
+			commonOpenFrame('zuoyeIpad_tjtj_frame', 'zuoyeIpad_tjtj_frame.html', header_h + 130, false, false, "#ffffff", pageParamJson);
+		}else{
+			if(piyue_state == type){
+				if(type == 1){
+			        if(closeTj){
+			        	closeTj_first = true;
+	        		     api.execScript({
+	                        name : 'zuoyeIpad_piyue_window',
+	                        script: 'hideMenu();'
+                        });
+						api.execScript({
+							name : 'zuoyeIpad_piyue_window',
+				            frameName:'zuoyeIpad_tjtj_frame',
+				            script: 'changeBtn('+type+','+JSON.stringify(status_list)+');'
+		           	 	});
+		           	 	closeTj = false;
+			        }else{
+			        	if(closeTj_first){
+			        		if(btn_hide==2){
+			        			btn_hide=1;
+			        			type = 4;
+			        			api.execScript({
+			                        name : 'zuoyeIpad_piyue_window',
+			                        script: 'showMenu();'
+		                        });
+			        		}else{
+			        			btn_hide=2;
+			        			type = 1;
+				       			api.execScript({
+			                        name : 'zuoyeIpad_piyue_window',
+			                        script: 'hideMenu();'
+		                        });
+			        		}
+			        		api.execScript({
+								name : 'zuoyeIpad_piyue_window',
+					            frameName:'zuoyeIpad_tjtj_frame',
+					            script: 'btnListHide('+btn_hide+');'
+		           	 		});
+			        	}else{
+			        		type = 4;
+				        	piyue_state = 0;
+				        	tj_frame_isopen = false;
+				        	api.execScript({
+				            	name : 'zuoyeIpad_piyue_window',
+				            	script: 'back();'
+			            	});
+			        	}
+			        }
+				}else{
+					api.execScript({
+		            	name : 'zuoyeIpad_piyue_window',
+		            	script: 'back();'
+	            	});
+	            	type = 4;
+			        piyue_state = 0;
+			        tj_frame_isopen = false
+			        judgeLastOrFirst(q_cur_num,wpy_list.length);
+				}
+	    	}else{
+	    		piyue_state = type;
+	    		api.execScript({
+					name : 'zuoyeIpad_piyue_window',
+		            frameName:'zuoyeIpad_tjtj_frame',
+		            script: 'changeBtn('+type+','+JSON.stringify(status_list)+');'
+           	 	});
+	    	}
+		}
+		openDownIcon(type);
+    }
+    
+    /*
+     * 功能：打开下角标
+     * 作者：张自强
+     * 时间：20170831
+     */
+    function openDownIcon(type){
+    	api.execScript({
+   			name : 'zuoyeIpad_piyue_window',
+   			script:'openDownIcon('+type+');'
+   		});
+    }		
+    
+    /*
+     * 功能：切换统计页面是否打开的状态
+     * 作者：张自强
+     * 时间：20170822
+     */
+    function changeTjFrame(flag){
+   		tj_frame_isopen = flag; 
+    }
+    
+    /*
+     * 功能：获取答题详情列表
+     * 作者：张自强
+     * 时间：20170824
+     * 接口提供人：陈旭刚
+     */
+    function getDtStatuList(type){
+    	showSelfProgress('加载中...');
+    	wtj_list = [];
+    	ypy_list = [];
+    	wpy_list = [];
+    	api.ajax({
+			url : BASE_URL_ACTION + '/xx/getStuInfoByZyQueID?zy_id=' + zy_id + '&question_id_char=' + question_id + '&is_all='+type,
+			method : 'get',
+			timeout : 30,
+			dataType : 'json',
+			headers : {
+	'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+}
+		}, function(ret, err) {
+			if (err) {
+				popToast('对不起，获取检测信息失败');
+			} else {
+				if(type == 0){
+					var class_ypy_num = 0;//班级已批阅学生个数
+					var class_wpy_num = 0;//班级为批阅学生个数
+					var group_ypy_num = 0;//分组已批阅学生个数
+					var group_wpy_num = 0;//班级未批阅学生个数
+					var wtj_num = 0;      //未提交学生个数
+					var group_flag = false;//判断分组学生个数是否加完（循环是否走完）
+					var class_flag = false;//判断班级学生个数是否加完（循环是否走完）
+					var class_list = ret.class_list;
+					var sum_ypy = 0;//已批阅学生总数
+					var sum_wpy = 0;//未批阅学生总数
+					for(var i=0;i<class_list.length;i++){
+						if(class_list[i].group_list.length>0){
+							for(var j=0;j<class_list[i].group_list.length;j++){
+								if(class_list[i].group_list[j].wtj_student_list.length>0){
+									wtj_num+=class_list[i].group_list[j].wtj_student_list.length;
+									for(var k=0;k<class_list[i].group_list[j].wtj_student_list.length;k++){
+										var param = new Object();
+										param.name           = class_list[i].group_list[j].wtj_student_list[k].student_name;
+										param.id             = class_list[i].group_list[j].wtj_student_list[k].student_id;
+										param.avatar_file_id = class_list[i].group_list[j].wtj_student_list[k].avatar_file_id;
+										param.tel            = class_list[i].group_list[j].wtj_student_list[k].stu_tel;
+										wtj_list.push(param);		
+									}
+								}
+							}
+						}
+						if(class_list[i].wtj_student_list){
+							if(class_list[i].wtj_student_list.length>0){
+								wtj_num += class_list[i].wtj_student_list.length;
+								for(var j=0;j<class_list[i].wtj_student_list.length;j++){
+									var param = new Object();
+									param.name = class_list[i].wtj_student_list[j].student_name;
+									param.id =class_list[i].wtj_student_list[j].student_id;
+									param.avatar_file_id = class_list[i].wtj_student_list[j].avatar_file_id;
+									param.tel = class_list[i].wtj_student_list[j].stu_tel;
+									wtj_list.push(param);
+								}
+							}	
+						}
+						if(class_list[i].group_list.length>0){
+							for(var j=0;j<class_list[i].group_list.length;j++){
+								if(class_list[i].group_list[j].student_list){
+									for(var k=0;k<class_list[i].group_list[j].student_list.length;k++){
+										if(class_list[i].group_list[j].student_list[k].check_status == 1){
+											sum_ypy++;
+											var param = new Object();
+											param.name           = class_list[i].group_list[j].student_list[k].student_name;
+											param.id             = class_list[i].group_list[j].student_list[k].student_id;
+											param.avatar_file_id = class_list[i].group_list[j].student_list[k].avatar_file_id;
+											param.tel            = class_list[i].group_list[j].student_list[k].stu_tel;
+											ypy_list.push(param);
+										}
+										if(class_list[i].group_list[j].student_list[k].check_status == 0){
+											sum_wpy++;
+											var param = new Object();
+											param.name           = class_list[i].group_list[j].student_list[k].student_name;
+											param.id             = class_list[i].group_list[j].student_list[k].student_id;
+											param.avatar_file_id = class_list[i].group_list[j].student_list[k].avatar_file_id;
+											param.tel            = class_list[i].group_list[j].student_list[k].stu_tel;
+											wpy_list.push(param);
+											if(param.id == stu_id){
+												$api.text($api.byId('stu_name'), param.name);
+											}
+										}	
+									}	
+								}else{
+									if(class_list[i].group_list[j].check_status == 1){
+										sum_ypy++;
+										var param = new Object();
+										param.name = class_list[i].group_list[j].student_name;
+										param.id = class_list[i].group_list[j].student_id;
+										param.avatar_file_id = class_list[i].group_list[j].avatar_file_id;
+										param.tel = class_list[i].group_list[j].stu_tel;
+										ypy_list.push(param);
+									}
+									if(class_list[i].group_list[j].check_status == 0){
+										sum_wpy++;
+										var param = new Object();
+										param.name = class_list[i].group_list[j].student_name;
+										param.id = class_list[i].group_list[j].student_id;
+										param.avatar_file_id = class_list[i].group_list[j].avatar_file_id;
+										param.tel = class_list[i].group_list[j].stu_tel;
+										wpy_list.push(param);
+										if(param.id == stu_id){
+											$api.text($api.byId('stu_name'), param.name);
+										}
+									}	
+								}
+								if(i==class_list.length-1){
+									group_flag = true;
+								}
+							}
+						}else{
+							if(i==class_list.length-1){
+									group_flag = true;
+							}
+						}
+						if(class_list[i].student_list.length>0){
+							for(var j=0;j<class_list[i].student_list.length;j++){
+								if(class_list[i].student_list[j].check_status == 1){
+									sum_ypy++;
+									var param = new Object();
+									param.name = class_list[i].student_list[j].student_name;
+									param.id = class_list[i].student_list[j].student_id;
+									param.avatar_file_id = class_list[i].student_list[j].avatar_file_id;
+									param.tel = class_list[i].student_list[j].stu_tel;
+									ypy_list.push(param);
+								}
+								if(class_list[i].student_list[j].check_status == 0){
+									sum_wpy++;
+									var param = new Object();
+									param.name = class_list[i].student_list[j].student_name;
+									param.id = class_list[i].student_list[j].student_id;
+									param.avatar_file_id = class_list[i].student_list[j].avatar_file_id;
+									param.tel = class_list[i].student_list[j].stu_tel;
+									wpy_list.push(param);
+									if(param.id == stu_id){
+										$api.text($api.byId('stu_name'), param.name);
+									}
+								}
+								if(i==class_list.length-1){
+									class_flag = true;
+								}
+							}
+						}else{
+							if(i==class_list.length-1){
+								class_flag = true;
+							}
+						}
+						if(class_flag && group_flag){
+							var stu_flag = false;
+							if(wpy_list.length > 0){
+								for(var k=0;k<wpy_list.length;k++){
+									if(wpy_list[k].id == stu_id){
+										stu_flag = true;
+										q_cur_num = k;
+										judgeLastOrFirst(q_cur_num,wpy_list.length);
+									}
+									if(k == wpy_list.length-1){
+										if(!stu_flag){
+											$api.css($api.byId('has_zuoda'),'display:none');
+  	   										$api.css($api.byId('no_zuoda'),'display:block');
+  	   										judgeLastOrFirst(0,0);
+  	   										api.hideProgress();
+										}
+									}
+								}
+							}else{
+								judgeLastOrFirst(0,0);
+							}
+							if(tj_frame_isopen){
+								var status_list = [];
+						    	if(change_type == 1){
+						    		status_list = ypy_list;
+						    	}else if(change_type == 2){
+						    		status_list = wpy_list;
+						    	}else{
+						    		status_list = wtj_list;
+						    	}
+						    	api.execScript({
+									name : 'zuoyeIpad_piyue_window',
+						            frameName:'zuoyeIpad_tjtj_frame',
+						            script: 'changeBtn('+change_type+','+JSON.stringify(status_list)+');'
+				           	 	});
+							}else{
+								if(!stu_flag){
+									$api.css($api.byId('has_zuoda'),'display:none');
+  	   								$api.css($api.byId('no_zuoda'),'display:block');
+  	   								api.ajax({
+										url : BASE_URL_ACTION + '/xx/getZyInfoById?random_num=' + creatRandomNum()+'&zy_type=1&zy_id='+zy_id+"&person_id="+$api.getStorage("person_id")+"&identity_id="+$api.getStorage("identity"),
+										method : 'get',
+										timeout : 30,
+										dataType : 'json',
+										headers : {
+								'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+							}
+									}, function(ret, err) {
+										var ret_daan = ret.zy_info.ques;
+										for(var i=0; i<ret_daan.length;i++){
+											if(ret_daan[i].question_id_char == question_id){
+												que_source = ret_daan[i].que_source;
+												if(que_source == 1){
+													content = Base64.decode(ret_daan[i].html_json.question_title);
+													if(ret_daan[i].html_json.question_analysis){
+														content_exp = Base64.decode(ret_daan[i].html_json.question_analysis);
+													}else{
+														content_exp = "略";
+													}
+													if(ret_daan[i].html_json.question_answer){
+														content_daan = Base64.decode(ret_daan[i].html_json.question_answer);
+													}else{
+														content_daan = "略";
+													}
+												}else{
+													jy_subject_en_name = ret_daan[i].jy_subject_en_name;
+													question_id_char = ret_daan[i].question_id_char;
+													api.ajax({
+												        url : BASE_URL_ACTION + '/xx/getAnswerByStuZyQueId?random_num=' + creatRandomNum(),
+												        method : 'post',
+												       	timeout : 30,
+														dataType : 'json',
+														data : {
+															values : {
+																"jy_subject_en_name" : jy_subject_en_name,
+																"que_source" : que_source,
+																"question_id_char" : question_id_char,
+																"p_type" : 1,
+																"question_id" : -1,
+																"student_id" : stu_id,
+																"zy_id" : zy_id,
+																"is_need_html": 1,
+															}
+														},
+														headers : {
+												'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+											}
+											        },function(ret,err){
+											        	if(err){
+											        		api.hideProgress();
+											        		popToast('获取检测详情失败，请稍候重试');
+											        	}else{
+												        		var rettt= ret;
+													        	if(rettt.tea_notes){
+													        		$api.text($api.byId('comt_content'), rettt.tea_notes);
+													        	}else{
+													        		$api.text($api.byId('comt_content'), '无');
+													        	}
+																	content = rettt.html_json.Content;
+																	if(rettt.html_json.Analyse){
+																		content_exp = rettt.html_json.Analyse;
+																	}else{
+																		content_exp = "略";
+																	}
+																	
+																	if(rettt.html_json.Method){
+																		content_daan = rettt.html_json.Method;
+																	}else{
+																		content_daan = "略";
+																	}
+											        		}
+											        	});	
+												}
+											}
+										}
+										
+									});	
+								}else{
+									getStuZgQuesList();
+								}
+							}
+							api.execScript({
+	                            name :'zuoyeIpad_piyue_window',
+	                            script: 'addValueList('+sum_ypy+','+sum_wpy+','+wtj_num+');'
+                            });                       
+						}	
+					}
+				}
+			}
+			api.hideProgress();
+			commonControlRefresh();
+		});
+    }
+    /*
+     * 功能：改变题id
+     * 作者：张自强
+     * 时间：20170824 
+     */
+     function changeQuestionId(quest_id,sort_num,num){
+     	if(change_type != 2 && tj_frame_isopen){
+     		change_type = 2;
+     		tj_frame_isopen = false;
+     		openDownIcon(4);
+			api.closeFrame({
+				name : 'zuoyeIpad_tjtj_frame'
+			});
+			api.execScript({
+	            name : 'zuoyeIpad_piyue_window',
+	            script: 'showMenu();'
+            });
+     	}
+     	closeTj_first = false;
+     	score = -1;
+     	page_num = num;
+     	sort = sort_num;
+     	clearInput();
+     	changeBtn(5);
+     	$api.html($api.byId('piyue_pi'), '');
+     	question_id = quest_id;
+	   	getDtStatuList(0);
+     }
+    /*
+     * 功能：获取主观题列表
+     * 作者：张自强
+     * 时间：20170824
+     * 接口提供人：陈旭刚
+     */
+    function getStuZgQuesList(){
+    	if(wpy_list.length == 0){
+    		$api.css($api.byId('has_zuoda'),'display:none');
+  	   		$api.css($api.byId('no_zuoda'),'display:block');
+  	   		api.ajax({
+				url : BASE_URL_ACTION + '/xx/getZyInfoById?random_num=' + creatRandomNum()+'&zy_type=1&zy_id='+zy_id,
+				method : 'get',
+				timeout : 30,
+				dataType : 'json',
+				headers : {
+		'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+	}
+			}, function(ret, err) {
+				var ret_daan = ret.zy_info.ques;
+				for(var i=0; i<ret_daan.length;i++){
+					if(i == page_num){
+						if(ret_daan.que_source == 1){
+							content = Base64.decode(ret_daan[i][i].html_json.question_title);
+							if(ret_daan[i].html_json.question_analysis){
+								content_exp = Base64.decode(ret_daan[i].html_json.question_analysis);
+							}else{
+								content_exp = "略";
+							}
+							if(ret_daan[i].html_json.question_answer){
+								content_daan = Base64.decode(ret_daan[i].html_json.question_answer);
+							}else{
+								content_daan = "略";
+							}
+						}else{
+							content = ret_daan[i].html_json.Content;
+							if(ret_daan[i].html_json.Analyse){
+								content_exp = ret_daan[i].html_json.Analyse;
+							}else{
+								content_exp = "略";
+							}
+							
+							if(ret_daan[i].html_json.Method){
+								content_daan = ret_daan[i].html_json.Method;
+							}else{
+								content_daan = "略";
+							}
+						}
+					}
+				}
+				
+			});
+	 	}else{
+    		api.ajax({
+			url : BASE_URL_ACTION + '/xx/getStuZgQuesList?random_num=' + creatRandomNum(),
+			method : 'post',
+			timeout : 30,
+			dataType : 'json',
+			data : {
+				values : {
+					"student_id" : stu_id,
+					"zy_id" : zy_id
+				}
+			},
+			headers : {
+	'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+}
+		}, function(ret, err) {
+			if(err){
+				popToast('对不起，获取检测详情失败，请稍候重试');
+			}else{
+				if(ret.success){
+					var rett = ret;
+					for(var i=0;i<rett.question_list.length;i++){
+						if(rett.question_list[i].question_id_char == question_id){
+							var question_list = rett.question_list[i];
+							que_source = rett.question_list[i].que_source;
+							jy_subject_en_name = rett.question_list[i].jy_subject_en_name;
+							getAnswerByStuZyQueId(question_list.jy_subject_en_name,question_list.que_source,question_list.question_id_char);
+						}
+					}
+				}else{
+					popToast('对不起，获取检测详情失败，请稍候重试');
+				}
+			}
+		});
+	  }	
+    }
+   
+    
+    /*
+     * 功能：获取学生作答答案
+     * 作者：张自强
+     * 时间：20170824
+     * 接口提供人：陈旭刚
+     */
+    function getAnswerByStuZyQueId(jy_subject_en_name,que_source,question_id_char){
+    	showSelfProgress('加载中...');
+    	zg_img_json={"list":[]};
+    	$api.text($api.byId('piyue_pi'), '');
+    	clearInput();
+		api.ajax({
+	        url : BASE_URL_ACTION + '/xx/getAnswerByStuZyQueId?random_num=' + creatRandomNum(),
+	        method : 'post',
+	       	timeout : 30,
+			dataType : 'json',
+			data : {
+				values : {
+					"jy_subject_en_name" : jy_subject_en_name,
+					"que_source" : que_source,
+					"question_id_char" : question_id_char,
+					"p_type" : 1,
+					"question_id" : -1,
+					"student_id" : stu_id,
+					"zy_id" : zy_id,
+				}
+			},
+			headers : {
+	'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+}
+        },function(ret,err){
+        	if(err){
+        		api.hideProgress();
+        		popToast('获取检测详情失败，请稍候重试');
+        		$api.css($api.byId('has_zuoda'),'display:block');
+  	   			$api.css($api.byId('no_zuoda'),'display:none');
+  	   			$api.text($api.byId('no_stu_zuoda'),'该学生没有作答！');
+        	}else{
+        		if(ret.succsee == false){
+        			api.hideProgress();
+        			popToast('获取检测详情失败，请稍候重试');
+        		}
+        		var rettt = ret;
+					que_scores = rettt.que_scores;
+	        		if(wpy_list.length == 0){
+	        			$api.css($api.byId('has_zuoda'),'display:none');
+	  	   				$api.css($api.byId('no_zuoda'),'display:block');
+	  	   				if(rettt.que_source == 1){
+							content = Base64.decode(rettt.html_json.question_title);
+							if(rettt.html_json.question_analysis){
+								content_exp = Base64.decode(rettt.html_json.question_analysis);
+							}else{
+								content_exp = "略";
+							}
+							if(rettt.html_json.question_answer){
+								content_daan = Base64.decode(rettt.html_json.question_answer);
+							}else{
+								content_daan = "略";
+							}
+						}else{
+							content = rettt.html_json.Content;
+							if(rettt.html_json.Analyse){
+								content_exp = rettt.html_json.Analyse;
+							}else{
+								content_exp = "略";
+							}
+							
+							if(rettt.html_json.Method){
+								content_daan = rettt.html_json.Method;
+							}else{
+								content_daan = "略";
+							}
+						}
+						api.hideProgress();
+	        		}else{
+						if(rettt.que_source == 1){
+							content = Base64.decode(rettt.html_json.question_title);
+							if(rettt.html_json.question_analysis){
+								content_exp = Base64.decode(rettt.html_json.question_analysis);
+							}else{
+								content_exp = "略";
+							}
+							if(rettt.html_json.question_answer){
+								content_daan = Base64.decode(rettt.html_json.question_answer);
+							}else{
+								content_daan = "略";
+							}
+						}else{
+							content = rettt.html_json.Content;
+							if(rettt.html_json.Analyse){
+								content_exp = rettt.html_json.Analyse;
+							}else{
+								content_exp = "略";
+							}
+							
+							if(rettt.html_json.Method){
+								content_daan = rettt.html_json.Method;
+							}else{
+								content_daan = "略";
+							}
+						}
+			        	var answer_list = rettt.stu_answer;		        	
+			        	var stu_answer_txt = rettt.stu_answer_txt;                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                
+						if($api.trim(stu_answer_txt).length > 0){
+							$api.css($api.byId('stu_txt'),'display:block');
+							$api.css($api.byId('stu_txt_div'),'display:block');
+							$api.css($api.byId('wb_zuoda'),'display:block');
+							$api.css($api.byId('fj_zuoda'),'display:block');
+		                	$api.html($api.byId('stu_txt'),'</div>'+stu_answer_txt+'<div>');
+		                }else{
+		                	$api.css($api.byId('stu_txt'),'display:none');
+		                	$api.css($api.byId('stu_txt_div'),'display:none');
+		                	$api.css($api.byId('wb_zuoda'),'display:none');
+		                	$api.css($api.byId('fj_zuoda'),'display:none');
+		                }
+			        	if(answer_list && answer_list.length>0){
+			  	   			$api.text($api.byId('no_stu_zuoda'),'注：点击图片可以进行批阅(仅限图片)！');
+			  	   			$api.css($api.byId('has_zuoda'),'display:block');
+			  	   			$api.css($api.byId('no_zuoda'),'display:none');
+	    					for(var i = 0; i < answer_list.length; i++){
+									var oparam = new Object();
+									oparam.file_id = answer_list[i].file_id;
+									oparam.img_url = '';
+									oparam.ext = answer_list[i].ext;
+									oparam.resource_info_id = answer_list[i].resource_info_id;
+									oparam.resource_type = answer_list[i].resource_type;
+									oparam.type = true;
+									oparam.resource_id_int = answer_list[i].resource_id_int;
+									oparam.file_piyue_path = answer_list[i].piyue_file_path;
+									oparam.stu_answer_txt = answer_list[i].stu_answer;
+									oparam.no_piyue = false;											
+									zg_img_json.list.push(oparam);
+									if(i == answer_list.length-1){
+										for(var j = 0; j < answer_list.length; j++){
+											var img_url;
+											if(answer_list[j].resource_type == 1){
+												if(answer_list[j].resource_info_id != -1){
+													if(BASE_APP_TYPE == 1){
+														img_url = BASE_IMAGE_PRE+'down/Material/'+ answer_list[j].file_id.substring(0, 2) + "/" + answer_list[j].file_id + '.' + answer_list[j].ext + commonReturnPhotoCutSize(0,0,0,answer_list[j].ext);
+													}else{
+														img_url = BASE_URL_ACTION+'/html/'+BASE_IMAGE_PRE+ answer_list[j].file_id.substring(0, 2) + "/" + answer_list[j].file_id + '.' + answer_list[j].ext + commonReturnPhotoCutSize(0);
+													}
+												}else{
+													if(BASE_APP_TYPE == 1){
+														img_url = BASE_IMAGE_PRE+'down/Material/'+ answer_list[j].file_id.substring(0, 2) + "/" + answer_list[j].file_id + '.' + answer_list[j].ext + commonReturnPhotoCutSize(0,0,0,answer_list[j].ext);
+													}else{
+														img_url = BASE_URL_ACTION + "/html/thumb/App/" + answer_list[j].file_id.substring(0, 2) + "/" + answer_list[j].file_id + '.' + answer_list[j].ext + commonReturnPhotoCutSize(0);
+													}
+												}
+											}else{
+												//资源库中的缩略图
+								                if (BASE_APP_TYPE == 1) {
+													img_url = url_path + BASE_THUMB_BEGIN + answer_list[j].thumb_id.substring(0, 2) + '\/' + answer_list[j].thumb_id + BASE_THUMB_END;
+												} else {
+													img_url = BASE_URL_ACTION + BASE_THUMB_BEGIN + answer_list[j].thumb_id.substring(0, 2) + '/' + answer_list[j].thumb_id + BASE_THUMB_END;
+												}
+											}	
+											zg_img_json.list[j].img_url = img_url;
+											if(j == answer_list.length-1){
+												exePic(0,answer_list,function(flag){
+												api.hideProgress();
+													if(flag){
+														for(var i = 0; i < zg_img_json.list.length; i++){
+															uploadImg(zg_img_json.list[i].img_url,zg_img_json.list[i].ext,i,zg_img_json.list[i].resource_info_id,zg_img_json.list[i].file_id,zg_img_json.list[i].type,zg_img_json.list[i].file_piyue_path,zg_img_json.list.length,zg_img_json.list[i].resource_type,zg_img_json.list[i].resource_id_int,zg_img_json.list[i].no_piyue);
+															if(i == zg_img_json.list.length-1){
+																api.hideProgress();
+															}
+														}
+													}
+												});
+											}
+										}
+									}
+								}
+			        	}else{
+			        		$api.css($api.byId('has_zuoda'),'display:block');
+			  	   			$api.css($api.byId('no_zuoda'),'display:none');
+			  	   			$api.text($api.byId('no_stu_zuoda'),'该学生没有作答！');
+			  	   			api.hideProgress();
+			        	}	
+	        		}
+        	}
+        	commonControlRefresh();
+        });
+    }
+    
+    /*
+     * 功能：打开题干页面
+     * 作者：张自强
+     * 时间：20170825
+     */
+    function openMenuFrame(){
+    	var pageParamJson={"header_h":api.pageParam.header_h,"stem":api.pageParam.zy_name_base64,"content":content,"content_exp":content_exp,"content_daan":content_daan};//打开frame页面所需参数
+				commonOpenFrame('zuoyeIpad_stem_frame', 'zuoyeIpad_stem_frame.html',api.pageParam.header_h, true, false,"#ffffff",pageParamJson);	//打开index页面
+    }
+    
+   	/*
+	 * 功能：显示教师批阅痕迹
+	 * 作者：张自强
+	 * 时间：20170826
+	 */
+	function WatchPiyuePath(file_path){
+		common_trans.decodeImgToBase64(file_path,function(flag,data){
+			if(flag){
+			    savePiyuePath(data);
+			}else{
+				popToast(data);
+				api.execScript({
+					name:'zuoyeIpad_drawingBoard_window',
+		            script: 'back();'
+		        });
+			}
+		});
+	    
+	}
+	
+	
+		/*
+		 * 功能：保存教师批阅痕迹
+		 * 作者：张自强
+		 * 时间：20170826
+		 */
+		function savePiyuePath(file_id){
+			showSelfProgress('加载中...');
+			var stu_piyue_id = -1;
+			if(py_again){
+				stu_piyue_id = py_again_stu_id;
+			}else{
+				stu_piyue_id = stu_id;
+			}
+			api.ajax({
+				url : BASE_URL_ACTION + '/xx/savePiYuePath?random_num=' + creatRandomNum(),
+				method : 'post',
+				timeout : 30,
+				dataType : 'json',
+				data : {
+						values : {
+							"student_id" : stu_piyue_id,
+							"zy_id" : zy_id,
+							"que_source" : que_source,
+							"question_id" : -1,
+							"question_id_char" : question_id,
+							"piyue_file":'data:image/png;base64,'+file_id,
+							"file_id" : file_id_old,
+							"piyue_client" : 2
+						}
+					},
+				headers : {
+		'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+	}
+			}, function(ret, err) {
+				if(err){
+					popToast('保存失败，请稍候重试');
+					api.execScript({
+						name:'zuoyeIpad_drawingBoard_window',
+			            script: 'back();'
+				    });
+				}else{
+					if(ret.success){
+						if(py_again){
+							api.execScript({
+	                            frameName :'zuoyeIpad_tjtj_frame',
+	                            script: 'checkStuZY('+py_again_stu_id+',"'+py_again_stu_name+'");'
+	                        });
+	                        py_again = false;
+						}else{
+							getAnswerByStuZyQueId(jy_subject_en_name,que_source,question_id);	
+						}
+						api.execScript({
+							name:'zuoyeIpad_drawingBoard_window',
+				            script: 'back();'
+				        });
+						popToast('保存成功');
+					}else{
+						popToast('保存失败，请稍候重试');
+						api.execScript({
+							name:'zuoyeIpad_drawingBoard_window',
+				            script: 'back();'
+				        });
+					}
+				}
+				api.hideProgress();
+			});
+		}
+		
+	/*
+     * 功能：提交教师批阅
+     * 作者：张自强
+     * 时间：20170825
+     */
+    function saveAll(){
+		var tea_note = $api.val($api.byId('comt_content'));
+    	if(score == -1){
+    		popAlert('请选择该题的正误');
+    	}else{
+	    	api.confirm({
+				title :  '提示',
+				msg : '是否提交？',
+				buttons : ["确定", "取消"]
+			}, function(ret, err) {
+				if (1 == ret.buttonIndex) {
+					showSelfProgress('加载中...');
+					api.ajax({
+						url : BASE_URL_ACTION + '/xx/piyueZy?random_num=' + creatRandomNum(),
+						method : 'post',
+						timeout : 30,
+						dataType : 'json',
+						data : {
+							values : {
+								"jy_subject_en_name":jy_subject_en_name,
+								"person_id":$api.getStorage('person_id'),
+								"qt_type" : 2,
+								"que_scores":que_scores*score,
+								"que_source":que_source,
+								"question_id":-1,
+								"question_id_char":question_id,
+								"score":score,
+								"student_id" : stu_id,
+								"tea_note" : tea_note,
+								"zy_id" : zy_id
+							}
+						},
+						headers : {
+				'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+			}
+					}, function(ret, err) {
+						if(err){
+							popToast('对不起，保存批阅失败，请稍候重试');
+						}else{
+							if(ret.success){
+								finishAndEnterNextOne();
+							}else{
+								popToast('对不起，保存批阅失败，请稍候重试');
+							}
+						}
+						api.hideProgress();
+					});
+				}else{
+					
+				}
+			});
+    	}
+    }
+    
+    /*
+     * 功能：批阅完后，自动进入到下一人
+     * 作者：张自强
+     * 时间：20170828
+     */
+    function finishAndEnterNextOne(){
+		if (q_cur_num < wpy_list.length-1) {
+				q_cur_num++;
+				stu_id = wpy_list[q_cur_num].id;
+				$api.text($api.byId('stu_name'),wpy_list[q_cur_num].name);
+				getDtStatuList(0);
+		}else{
+			if(wpy_list.length -1 > 0){
+				q_cur_num = 0;
+				stu_id = wpy_list[0].id;
+				$api.text($api.byId('stu_name'),wpy_list[0].name);
+				getDtStatuList(0);
+			}else{
+				api.confirm({
+					title :  '提示',
+					msg : '已经是最后一个学生了，是否开始批阅下一道题？',
+					buttons : ["确定", "取消"]
+				}, function(ret, err) {
+					if (1 == ret.buttonIndex) {
+						finishAndEnterNextTi();
+					}else{
+						getDtStatuList(0);
+						$api.css($api.byId('no_zuoda'),'display:block');
+						$api.css($api.byId('has_zuoda'),'display:none');
+					}
+				});	
+			}
+		}
+   	}
+    
+    
+    /*
+     * 功能：批阅完后，自动跳转到下一道题
+     * 作者：张自强
+     * 时间：20170828
+     */
+    function finishAndEnterNextTi(){
+    	var rett = api.pageParam.rett;
+		var list = rett.question_list;
+    	if (page_num < list.length-1) {
+			page_num++;
+			for(var i=0;i<list.length;i++){
+				if(i == page_num){
+	                api.execScript({
+				        name : 'zuoyeIpad_piyue_window',
+				        frameName:'zuoyeIpad_nav_frame',
+				        script: 'checkQuestion('+i+','+list[i].sort+',"'+list[i].question_id_char+'","'+list[i].jy_subject_en_name+'",'+list[i].que_source+');'
+		        	});	
+				}
+			}
+		} else {
+			getDtStatuList(0);
+			$api.css($api.byId('no_zuoda'),'display:block');
+			$api.css($api.byId('has_zuoda'),'display:none');
+		}
+    }
+
+
+	/*
+	 * 功能：根据检测id获取到学生列表
+	 * 作者：张自强
+	 * 时间：20170823
+	 * 接口提供人：陈旭刚
+	 */
+	function getStuList(){
+		var zy_id = api.pageParam.zy_id;
+		api.ajax({
+			url : BASE_URL_ACTION + '/xx/getQuePyInfoByzyID?zy_id=' + zy_id,
+			method : 'get',
+			timeout : 30,
+			dataType : 'json',
+			headers : {
+	'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+}
+		}, function(ret, err) {
+			if (err) {
+				popToast('对不起，获取检测信息失败，请稍候重试');
+			} else {
+				if(ret.success){
+				}else{
+					popToast('对不起，获取检测信息失败，请稍候重试');
+				}
+			}
+		});
+	}
+	
+	
+		/*
+		 * 功能：将教师批阅痕迹和学生上传的答案合成为一张图片
+		 * 作者：张自强
+		 * 时间：20170830
+		 */
+		function exePic(index,answer_list,callback){
+			if(index < answer_list.length){
+				if(answer_list[index].resource_type == 1){
+					if(answer_list[index].piyue_client == 2){
+						api.download({
+						    url:zg_img_json.list[index].img_url,
+						    savePath:  'fs://img/js/'+answer_list[index].file_id+'.'+answer_list[index].ext,
+						    report: false,
+						    cache: false,
+						    allowResume: true
+						},function( ret, err ){
+						});	
+						var file_path_tmp= answer_list[index].piyue_file_path.substring(answer_list[index].piyue_file_path.indexOf('base64')+7,answer_list[index].piyue_file_path.length);
+						var img_path = 'fs://img/';
+						var img_name = ''+answer_list[index].file_id+'.'+answer_list[index].ext;
+						var img_path_true = api.fsDir + '/img/' + img_name;
+						common_trans.saveImage(file_path_tmp, img_path, img_name, function(is_true, data){
+							if(is_true){
+								for(var i = 0; i < zg_img_json.list.length; i++){
+									if(zg_img_json.list[i].file_id == answer_list[index].file_id){
+										zg_img_json.list[i].type = false;
+										zg_img_json.list[i].img_url = answer_list[index].piyue_file_path;
+										index++;
+										return exePic(index,answer_list,callback);
+									}
+								}
+							} else {
+								
+							}
+						});	
+					}else if(answer_list[index].piyue_file_path != null){
+						api.download({
+						    url:zg_img_json.list[index].img_url,
+						    savePath:  'fs://img/js/'+answer_list[index].file_id+'.'+answer_list[index].ext,
+						    report: false,
+						    cache: false,
+						    allowResume: true
+						},function( ret, err ){
+						});	
+						api.download({
+						    url: zg_img_json.list[index].img_url,
+						    savePath:  'fs://img/'+answer_list[index].file_id+'.'+answer_list[index].ext,
+						    report: false,
+						    cache: false,
+						    allowResume: true
+						},function( ret, err ){
+							if(err) {
+								popToast('获取检测详情失败，请稍候重试');
+			                    callback(true);
+							} else {
+								if(ret.percent == 100) {
+			                    		var savePath = ret.savePath;
+							            MergePic(savePath, answer_list[index].piyue_file_path, function(result) {
+						            		//调用这个方法合成试题和批阅痕迹,reslut为base64；建议用chrome查看该demo
+											for(var i = 0; i < zg_img_json.list.length; i++){
+												if(zg_img_json.list[i].file_id == answer_list[index].file_id){
+													zg_img_json.list[i].img_url = result;
+													index++;
+													return exePic(index,answer_list,callback);
+												}
+											}
+										});
+			                    	} 
+							}
+						});
+					}else{
+						if(api.systemType == 'ios'){
+							zg_img_json.list[index].no_piyue = true;
+						}else{
+							api.download({
+							    url:zg_img_json.list[index].img_url,
+							    savePath:  'fs://img/js/'+answer_list[index].file_id+'.'+answer_list[index].ext,
+							    report: false,
+							    cache: false,
+							    allowResume: true
+							},function( ret, err ){
+							});	
+						}
+						api.download({
+						    url: zg_img_json.list[index].img_url,
+						    savePath:  'fs://img/'+answer_list[index].file_id+'.'+answer_list[index].ext,
+						    report: false,
+						    cache: false,
+						    allowResume: true
+						},function( ret, err ){
+							for(var i = 0; i < zg_img_json.list.length; i++){
+								if(zg_img_json.list[i].file_id == answer_list[index].file_id){
+									zg_img_json.list[i].type = false;
+									index++;
+									return exePic(index,answer_list,callback);
+								}
+							}
+						});
+					}
+				}else{
+					index++;
+					return exePic(index,answer_list,callback);
+				}
+			}else{
+				callback(true);
+			}
+		}
+		
+		/*
+		 * 功能：获取再次批阅检测时候需要的参数
+		 * 作者：张自强
+		 * 时间：20170831
+		 */
+		function openTjTjDrawDoardFrame(file_id_id,ext,i,name,img_h,img_w,stu_again_id){
+			py_again = true;
+			py_again_stu_name = name;
+			file_id_old = file_id_id;
+			img_id_num = i;
+			py_again_stu_id = stu_again_id;
+			var content_ypy = $api.getStorage('zy_content');
+			var content_exp_ypy = $api.getStorage('zy_content_exp');
+			var content_daan_ypy = $api.getStorage('zy_content_daan');
+json={"header_h":api.pageParam.header_h,"stem":api.pageParam.zy_name_base64,"content":content_ypy,"content_exp":content_exp_ypy,"content_daan":content_daan_ypy,"file_id":file_id_id,"ext":ext,'img_h':img_h,'img_w':img_w};//打开frame页面所需参数
+			commonOpenWin('zuoyeIpad_drawingBoard_window', 'zuoyeIpad_drawingBoard_window.html', true, false, json);
+		}
+		
+		/*
+		 * 功能：下拉刷新回调方法
+		 * 作者：张自强
+		 * 时间：20170906
+		 */
+		function initData(current){
+			$api.text($api.byId('piyue_pi'), '');
+			getDtStatuList(0);
+		}
+		
+		/*
+		 * 功能：切换已批阅详情页面是否打开的参数
+		 * 作者：张自强
+		 * 时间：20170906
+		 */
+		function changecloseTj(){
+			closeTj = true;
+			api.execScript({
+	            name : 'zuoyeIpad_piyue_window',
+	            script: 'showMenu();'
+            });
+		}
+		
+		
+		   /*
+        *author:zhaoj
+        *function:打开主观题答案
+        *date：20170904
+        */
+        function openAnswer(resource_id_int,img_url,resource_info_id,resource_type,file_id,ext){
+    		var param_json = {"is_show_tip":1,"resource_id_int":resource_id_int,"resource_info_id":resource_info_id};
+    		commonGetResInfo(param_json,function(flag,ret){
+    			api.hideProgress();
+    			if(flag){
+					common_openResource.open(ret.resource_format,ret.file_id,ret.resource_title,ret.m3u8_status,api.winName,'reBackType("voice");','back();',ret.resource_id_int);
+    			}else{
+    				popToast('打开失败，请稍候重试');
+    			}
+    		});
+        }
+	</script>
+</html>

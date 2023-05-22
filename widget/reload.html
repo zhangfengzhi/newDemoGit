@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<!-- html5：在创建html时为了防止页面缩放等不兼容效果，要创建个viewport  -->
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<!-- 在IOS设备上，有时会将数字转为手机号，这里也要禁止下 -->
+		<meta name="format-detection" content="telephone=no"/>
+		<title>重定向页面</title>
+	</head>
+	<body>
+		<script type="text/javascript" src="script/api.js"></script>
+		<script type="text/javascript" src="script/base_config.js"></script>
+		<script type="text/javascript" src="script/common/common.js"></script>
+		<script type="text/javascript" src="script/plug-in/webjs/jsencrypt.min.js"></script>
+		<script type="text/javascript" src="script/login/login.js"></script>
+		<script type="text/javascript" src="script/common/appintentForScanner.js"></script>
+		<script type="text/javascript" src="script/plug-in/webjs/jsencrypt.min.js"></script>
+		<script type="text/javascript" src="script/huihua/hh_db.js"></script>
+	</body>
+	<script type="text/javascript">
+		//判断当前app是否被调用
+		var index_app = 0;
+		
+		apiready = function() {
+		console.log(api.winName)
+			addAppintentEvent();
+			//页面跳转
+			if (index_app == 0) {	
+			     if($api.getStorage("isAgreePrivacyPolicy")!=1){  //是否同意隐私协议  1代表同意  其他为 不同意  
+                    setTimeout(function(){
+                        commonOpenWin('common_policy_frame', 'widget://html/common/common_policy_frame.html', false, false, {content:""})
+                    },500)
+                }else{
+                    openIndex();
+                }	
+			}
+			
+			if ($api.getStorage("keepAlive") != 1){
+				$api.setStorage("keepAlive",1);
+				var keepmodule = api.require('keepAliveModule');
+				if (keepmodule){
+					keepmodule.startKeep();
+				}
+			}
+		};
+		/**
+		 * 页面跳转
+		 * 周枫
+		 * 2016.5.13
+		 */
+		function openIndex() {
+			var jsonPath = "widget://res/json/config.json";
+			commonBaseConfig(jsonPath,function(data) {
+				var uiMode = "phone";
+				var url_html = '';
+				var app_index = '';
+				var login_name = $api.getStorage('login_name');
+				var idy_type = $api.getStorage('idy_type');
+				switch(uiMode) {
+					case 'phone':
+						commonSetScreen(3);
+						url_html = data.phone_login_config.login_index;
+						app_index = data.phone_login_config[idy_type+'_index'];
+						break;
+//					case 'pad':
+//							//平板端并且是学生端时需横屏
+//							var idy_type = $api.getStorage('idy_type');
+//							if(idy_type == 'parent' || idy_type == 'work'){
+//								commonSetScreen(3);
+//							}else{
+//								if(api.systemType == 'ios'){
+//									commonSetScreen(5);
+//								}else{
+//									commonSetScreen(2);
+//								}
+//							}
+//							url_html = data.pad_login_config.login_index;
+//							app_index = data.pad_login_config[idy_type+'_index'];
+//						
+//						break;
+					default:
+						commonSetScreen(3);
+						url_html = data.phone_login_config.login_index;
+						app_index = data.phone_login_config[idy_type+'_index'];
+						break;
+				}
+				//判断缓存中是否存在，判断是否登录的状态
+				if ( !isEmptyString(login_name) && !isEmptyString(idy_type)) {
+				    commonOpenWin('root', app_index, false, false,{});
+				    api.removeLaunchView();
+    					api.ajax({
+                        url : $api.getStorage('BASE_URL_ACTION') + '/rongcloud/getTokenRongCloud',
+                        method : 'post',
+                        dataType : 'json',
+                        timeout:30,
+                        data : {
+                            values : {
+                                "login_name" : $api.getStorage('login_name'),
+                                "login_pas" : $api.getStorage('login_pad'),
+                                "ip_addr" : $api.getStorage('BASE_SERVER_IP'),
+                                "app_type" : $api.getStorage('BASE_APP_TYPE'),
+                                "is_check" : true
+                            }
+                        }
+                    }, function(ret, err) {
+                        
+                    });
+				} else {
+				    console.log(user_name_from_outside)
+    				if(user_name_from_outside && password_from_outside){
+    				    doLogin()
+    				}else{
+    				    commonOpenWin('login', url_html, false, false,{});
+    				}
+				    setTimeout('api.removeLaunchView();', 500);
+				}
+			});
+		}
+
+		function isReLogin(callback) {
+			api.confirm({
+				title : "提示",
+				msg : "当前用户不一致，您是否要注销更换用户？",
+				buttons : ["确定", "取消"]
+			}, function(ret, err) {
+				var sourceType;
+				if (2 == ret.buttonIndex) {
+					callback(true);
+				} else if (1 == ret.buttonIndex) {
+					callback(true);
+				}
+			});
+		}
+	</script>
+</html>

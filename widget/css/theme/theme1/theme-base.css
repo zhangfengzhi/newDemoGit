@@ -1,0 +1,1056 @@
+.common-init .mode-tip ul li .zy{background:url(../../../image/theme/theme1/iphone/init/zuoye.png) center center no-repeat;background-size: auto 35px;}
+.common-init .mode-tip ul li .bjtz{background:url(../../../image/theme/theme1/iphone/init/bjtz.png) center center no-repeat;background-size: auto 35px;}
+.common-init .mode-tip ul li .img-wdkq{width:64px;height:64px;border-radius:50%;margin:13px 0 0 13px;background:url(../../../image/theme/theme1/iphone/init/wdkq.png) #34a8Fa center center no-repeat;background-size: auto 35px;}
+.common-init .mode-tip ul li .img-kqsp{width:64px;height:64px;border-radius:50%;margin:13px 0 0 13px;background:url(../../../image/theme/theme1/iphone/init/kqsp.png) #34a8Fa center center no-repeat;background-size: auto 35px;}
+.common-init .more-tzgg{background:url(../../../image/theme/theme1/iphone/init/more.png) #efeff4 0 0 no-repeat;background-size:45px 45px;}
+.common-init .mode-tip ul li .img-kqsp{background:url(../../../image/theme/theme1/iphone/init/kqsp.png) #34a8Fa center center no-repeat;background-size: auto 35px;}
+.common-init .mode-tip ul li .bd div{border:2px solid #34a8Fa;}
+.common-init .mode-tip ul li .img-dktj{background:url(../../../image/theme/theme1/iphone/init/dktj.png)  #34a8Fa center center no-repeat;background-size: auto 35px;}
+.common-init .mode-tip ul li .img-wjdc{background:url(../../../image/theme/theme1/iphone/init/wjdc-work.png) #34a8Fa center center no-repeat;background-size: auto 35px;}
+.common-init .mode-tip ul li .img-zthd{background:url(../../../image/theme/theme1/iphone/init/zthd-work.png) center center no-repeat;background-size: auto 64px;}
+.common-init .tzgg-back{background:url(../../../image/theme/theme1/iphone/init/tzgg.png) #34a8Fa 10px center no-repeat;background-size: 35px 35px;}
+.common-init .aui-content-padded .common-quanzi-tip{position:absolute;right:20px;top:0;width:50px;height:100px;background:url(../../../image/theme/theme1/iphone/init/quanzi.png) center 0 no-repeat;background-size:50px auto;z-index:999;}
+/*--aui里的样式-----------------*/
+.aui-bar{background:#34a8Fa;}
+.aui-text-primary {
+	color: #34a8Fa;
+}
+.aui-label-primary {
+	background-color: #34a8Fa;
+}
+.aui-btn-primary-old{
+	background-color: #34a8Fa;
+    border: 1px solid #34a8Fa;
+}
+.aui-btn-primary {
+	background-color: #34a8Fa;
+	border: 1px solid #34a8Fa;
+}
+.aui-btn-warning {
+	background-color: #34a8Fa;
+	border: 1px solid #34a8Fa;
+}
+.aui-badge-primary {
+	background-color: #34a8Fa;
+}
+.aui-bar-primary {
+	background-color: #34a8Fa;
+}
+.aui-nav.aui-bar-tab .active-primary .aui-iconfont, .aui-nav.aui-bar-tab .active-primary p {
+	color: #34a8Fa;
+}
+.aui-nav .aui-bar-tab .active-primary .aui-iconfont, .aui-nav .aui-bar-tab .active-primary p {
+	color: #34a8Fa;
+}
+.aui-chat-sender .aui-chat-sender-cont{
+	background: #34a8Fa;
+}
+.aui-chat-sender .aui-chat-sender-cont-voice {
+	background: #34a8Fa;
+}
+.aui-chat-right-triangle{
+	border-color: transparent transparent transparent #34a8Fa;
+}
+.aui-checkbox:checked {
+	background-color: #34a8Fa;
+}
+.aui-switch:checked {
+	border-color: #34a8Fa;
+	box-shadow: #34a8Fa 0 0 0 26px inset;
+	background-color: #34a8Fa;
+}
+.aui-tab-nav li.active {
+	color: #34a8Fa;
+	border-bottom: 2px #34a8Fa solid;
+}
+.aui-tab-nav.aui-tab-border {
+	border-color: #34a8Fa;
+}
+.topbar{
+	background: #34a8Fa;
+}
+.aui-tab-nav.aui-tab-border li{
+	color: #34a8Fa;
+	border-color: #34a8Fa;
+}
+.btn-top {
+	background-color: #34a8Fa;
+}
+.btn-top-active {
+	color: #34a8Fa;
+}
+.aui-text-primary {
+	color: #34a8Fa !important;
+}
+.aui-tab-nav.aui-tab-border li.active {
+	background-color: #34a8Fa;
+}
+.aui-progress-primary {
+	background-color: #34a8Fa;
+}
+.aui-range input[type='range']::-webkit-slider-thumb {
+    border-color: #34a8Fa;
+    background-color: #34a8Fa;
+}
+.aui-range input[type='range'].aui-range-primary::-webkit-slider-thumb{
+    background-color: #34a8Fa;
+    border-color: #34a8Fa;
+}
+.aui-bg-primary {
+	background-color: #34a8Fa !important;
+}
+.aui-radio:checked,
+.aui-radio.aui-checked {
+	background-color: #34a8Fa;
+	border: solid 1px #34a8Fa;
+}
+.aui-checkbox:checked,
+.aui-checkbox.aui-checked {
+	background-color: #34a8Fa;
+	border: solid 1px #34a8Fa;
+}
+.aui-counter-minus,
+.aui-counter-plus {
+	color: #34a8Fa;
+}
+.time-axis-body .time-axis-month .month-name{background:url(../../../image/fun-module/common/time.png) 0 0 no-repeat;background-size:auto 100%;color:#34a8Fa;}
+.time-axis-body .time-axis-month .month-name                                                                                                                                             .month{background:#34a8Fa;}
+.time-axis-body .time-axis-month .triangle-left{border-right: 8px solid #34a8Fa; }
+.zsd-name{color:#34a8Fa;}
+.search-ipad .search-body{border:1px solid #34a8Fa;background:#34a8Fa url(../../../image/fun-module/common/search.png) 232px center no-repeat;background-size:28px auto;}
+/*--aui里的样式--结束---------------*/
+/*--圈子-----------------*/
+/*.mode-tip ul li .img div{border:2px solid #34a8Fa;}*/
+.init-iphone-body .bb {border-bottom: 1px solid #34a8Fa;}
+.init-iphone-body .menu-list li.active{ color:#34a8Fa;}
+.init-iphone-body .quanzi-add-btn{background:#34a8Fa !important}
+.init-iphone-body .content{color: #34a8Fa;}
+.init-iphone-body .aui-img-body .person-name{color:#34a8Fa !important;}
+.init-iphone-body .person-name-font{color:#34a8Fa}
+.init-iphone-body .quanzi-title{color: #34a8Fa;}
+.init-iphone-body .pinglun-person-name{color:#34a8Fa}
+/*--圈子--结束---------------*/
+/*--手机-index页面-----------------*/
+.index-iphone .aui-nav .aui-bar-tab .active .aui-iconfont, .aui-nav .aui-bar-tab .active p{color:#34a8Fa;}
+/*--手机-index页面--结束---------------*/
+/*--平板-index页面-----------------*/
+.index-ipad .btn-top.btn-active-top{color:#34a8Fa;}
+/*--平板-index页面--结束---------------*/
+.huihua-commont .aui-chat-sender .aui-chat-sender-cont,.aui-chat-sender .aui-chat-sender-cont-voice{background:#34a8Fa !important;}
+.huihua-commont .aui-chat-right-triangle{border-color: transparent transparent transparent #34a8Fa !important;}
+.huihua-commont .footer-div .wid{background: #34a8Fa;}
+.tongxunlu-common .title{border-bottom: 2px solid #34a8Fa;color: #34a8Fa;}
+.tongxunlu-common .group-name{color: #34a8Fa}
+.tongxunlu-common .topbar{background: #34a8Fa;}
+.w-ipad-common .contactQQ{border-top:2px solid #34a8Fa;}
+.w-ipad-common .answer dl dt{color:#34a8Fa;}
+.w-ipad-common .login-header dl dd{background:#34a8Fa;}
+.w-ipad-common .triangle-top{border-bottom: 9px solid #34a8Fa;}
+.w-ipad-common .select-menu{background: #34a8Fa;}
+.w-ipad-common .tag-change .right{background:#34a8Fa;}
+.w-ipad-common .common-ul li .right{color:#34a8Fa;}
+.w-ipad-common .footer-div .wid{background:#34a8Fa;}
+.w-ipad-common .thirdblock .item{background: #34a8Fa;}
+.w-ipad-common .item_btn{background: #169BD5;}
+.w-iphone-common .tag-title div.active{border-bottom:2px solid #34a8Fa;color:#34a8Fa;}
+.w-iphone-common .contactQQ{border-top:2px solid #34a8Fa;}
+.w-iphone-common .answer dl dt{color:#34a8Fa;}
+.w-iphone-common .tag-change .right{background:#34a8Fa;}
+/*--手机-考勤页面-----------------*/
+.common-iphone-kaoqin .aui-icon-check{color:#34a8Fa;}
+.common-iphone-kaoqin .tag-title div.active{border-bottom:2px solid #34a8Fa;color:#34a8Fa;}
+.common-iphone-kaoqin .step-content dl dt .border-pass{border-top:1px solid #34a8Fa;border-bottom:1px solid #34a8Fa;}
+.common-iphone-kaoqin .step-content dl dd.pass div{color:#34a8Fa;}
+.common-iphone-kaoqin .bggreen{background:#34a8Fa;}
+.common-iphone-kaoqin .tag-title div.active{border-bottom:2px solid #34a8Fa;color:#34a8Fa;}
+.common-iphone-kaoqin .color_34a8Fa{background:#34a8Fa !important;}
+.common-iphone-kaoqin .second-group div{background:#34a8Fa;}
+.common-iphone-kaoqin .bm-name{color:#34a8Fa;}
+/*--手机-班级通知页面-----------------*/
+.common-iphone-bjtz .topbar{background: #34a8Fa;}
+.common-iphone-bjtz .person-name{color:#34a8Fa !important}
+.common-iphone-bjtz .quanzi-title{color:#34a8Fa;}
+/*--手机-通知公告页面-----------------*/
+.common-iphone-notice .bggreen{background:#34a8Fa;}
+/*--手机-学生导学页面-----------------*/
+.common-iphone-daoxueNewXs .remain-day{color:#34a8Fa;}
+.common-iphone-daoxueNewXs .now-year{color:#34a8Fa;margin-bottom:-10px;padding-top:10px;}
+.common-iphone-daoxueNewXs .change_jc_xd{color:#34a8Fa;}
+.common-iphone-daoxueNewXs .zuoye-name{color:#34a8Fa;}
+.common-iphone-daoxueNewXs .title{border-left:2px solid #34a8Fa;}
+.common-iphone-daoxueNewXs .question-item ul li div{border:1px solid #34a8Fa;}
+.common-iphone-daoxueNewXs .question-item ul li div.active{background:#34a8Fa;}
+.common-iphone-daoxueNewXs .zuoye-lx-name{border-bottom: 2px solid #34a8Fa;}
+.common-iphone-daoxueNewXs .seleted .num{color: #34a8Fa;}
+.common-iphone-daoxueNewXs .option dl dt{color: #34a8Fa;}
+.common-iphone-daoxueNewXs .option .right{border: 2px solid #34a8Fa !important;}
+.common-iphone-daoxueNewXs .option .right dt{background: #34a8Fa !important;}
+.common-iphone-daoxueNewXs .option .active{border: 2px solid #34a8Fa !important;}
+.common-iphone-daoxueNewXs .option .active dt{background: #34a8Fa !important;}
+.common-iphone-daoxueNewXs .upload-answer button{background: #34a8Fa;}
+.common-iphone-daoxueNewXs .next{border-top: 2px solid #34a8Fa;color: #34a8Fa}
+.common-iphone-daoxueNewXs .analysis-btn{background:#34a8Fa;}
+.common-iphone-daoxueNewXs .text-btn button{background:#34a8Fa;}
+.common-iphone-daoxueNewXs .answer-title div{background: #34a8Fa;}
+.common-iphone-daoxueNewXs .common-ul li .right{color:#34a8Fa;}
+.common-iphone-daoxueNewXs .footer-div .wid{background:#34a8Fa;}
+.common-iphone-daoxueNewXs .content .triangle{border-left: 6px solid #34a8Fa;}
+/*--手机-学生课件页面-----------------*/
+.common-iphone-kejianJyXs .remain-day{color:#34a8Fa;}
+.common-iphone-kejianJyXs .now-year{color:#34a8Fa;}
+.common-iphone-kejianJyXs .change_jc_xd{color:#34a8Fa;}
+.common-iphone-kejianJyXs .common-ul li .right{color:#34a8Fa;}
+.common-iphone-kejianJyXs .footer-div .wid{background:#34a8Fa;}
+/*--手机-学生检测页面-----------------*/
+.common-iphone-zuoyeXsJy .nav div.active{color:#34a8Fa;border-bottom:2px solid #34a8Fa;}
+.common-iphone-zuoyeXsJy .remain-day{color:#34a8Fa;}
+.common-iphone-zuoyeXsJy .now-year{color:#34a8Fa;}
+.common-iphone-zuoyeXsJy .month .bg div{background: #34a8Fa;}
+.common-iphone-zuoyeXsJy .zuoye-name-list{color:#34a8Fa;}
+.common-iphone-zuoyeXsJy .zuoye-title{border-left:2px solid #34a8Fa;}
+.common-iphone-zuoyeXsJy .menu-list li.active { color:#34a8Fa;}
+.common-iphone-zuoyeXsJy .question-item ul li div{border:1px solid #34a8Fa;}
+.common-iphone-zuoyeXsJy .question-item ul li div.active{background:#34a8Fa;}
+.common-iphone-zuoyeXsJy .zuoye-name {border-bottom: 2px solid #34a8Fa;}
+.common-iphone-zuoyeXsJy .answer-title div{background: #34a8Fa;}
+.common-iphone-zuoyeXsJy .seleted .num{color: #34a8Fa;}
+.common-iphone-zuoyeXsJy .option dl dt{color: #34a8Fa;}
+.common-iphone-zuoyeXsJy .option .right { border: 2px solid #34a8Fa !important;}
+.common-iphone-zuoyeXsJy .option .right dt {background: #34a8Fa !important;}
+.common-iphone-zuoyeXsJy .option .active {border: 2px solid #34a8Fa !important;}
+.common-iphone-zuoyeXsJy .option .active dt {background: #34a8Fa !important;}
+.common-iphone-zuoyeXsJy .upload-answer button {background: #34a8Fa;}
+.common-iphone-zuoyeXsJy .next {border-top: 2px solid #34a8Fa;color: #34a8Fa}
+.common-iphone-zuoyeXsJy .analysis-btn{background:#34a8Fa;}
+.common-iphone-zuoyeXsJy .text-btn button{background:#34a8Fa;}
+.common-iphone-zuoyeXsJy .zuoye-title-name{border-bottom:2px solid #34a8Fa;color:#34a8Fa;}
+.common-iphone-zuoyeXsJy .seleted div font{color:#34a8Fa;}
+/*--手机-学生游戏页面-----------------*/
+.common-iphone-game-stu .menu-ul li.active span{border:1px solid #34a8Fa;color:#34a8Fa;}
+.common-iphone-game-stu .footer-div .wid{background:#34a8Fa;}
+/*--手机-学生专题页面-----------------*/
+.common-iphone-zhuanti-stu .menu-ul li.active span{border:1px solid #34a8Fa;color:#34a8Fa;}
+.common-iphone-zhuanti-stu .footer-div .wid{background:#34a8Fa;}
+/*--手机-学生题本页面-----------------*/
+.common-iphone-tibenJy .master{background:#34a8Fa;}
+.common-iphone-tibenJy .st-type{color:#34a8Fa;}
+.common-iphone-tibenJy .menu-list li.active{ color:#34a8Fa;}
+.common-iphone-tibenJy .zuoye-name {border-bottom: 2px solid #34a8Fa;}
+.common-iphone-tibenJy .answer-title div{background: #34a8Fa;}
+.common-iphone-tibenJy .seleted .num {color: #34a8Fa;}
+.common-iphone-tibenJy .option .active {border: 2px solid #34a8Fa !important;}
+.common-iphone-tibenJy .option .active dt {background: #34a8Fa !important;}
+.common-iphone-tibenJy .upload-answer button {background: #34a8Fa;}
+.common-iphone-tibenJy .next {border-top: 2px solid #34a8Fa;color: #34a8Fa}
+.common-iphone-tibenJy .analysis-btn{background:#34a8Fa;}
+.common-iphone-tibenJy .tiben-zuoye-name{border-bottom: 2px solid #34a8Fa;}
+.common-iphone-tibenJy .seleted div font{color:#34a8Fa;}
+.common-iphone-tibenJy .select-picture{border:1px solid #34a8Fa;color:#34a8Fa;}
+.common-iphone-tibenJy .canyu-quanxian{color:#34a8Fa;}
+/*--手机-学生主题活动-------------------*/ 
+.common-iphone-zthdstu .tag-title div.active{border-bottom:2px solid #34a8Fa;color:#34a8Fa;}
+.common-iphone-zthdstu .zuoye-content li{border:1px solid #34a8Fa;}
+.common-iphone-zthdstu .triangle-top{border-top: 7px solid #34a8Fa;}
+.common-iphone-zthdstu .tag-title div.active{border-bottom:2px solid #34a8Fa;color:#34a8Fa;}
+.common-iphone-zthdstu .select-picture{border:1px solid #34a8Fa;color:#34a8Fa;}
+.common-iphone-zthdstu .bb {border-bottom: 1px solid #34a8Fa;}
+.common-iphone-zthdstu .canyu-quanxian,
+.common-iphone-zthdstu .person-name-font,
+.common-iphone-zthdstu .hdxq-zhankai,
+.common-iphone-zthdstu .hdxq-shouqi,
+.common-iphone-zthdstu .hdjs-active,
+.common-iphone-zthdstu .hdxq-edit,
+.common-iphone-zthdstu .hdzp-content,
+.common-iphone-zthdstu .quanzi-title,
+.common-iphone-zthdstu .pinglun-person-name,
+.common-iphone-zthdstu .zuoye-content li .name,
+.common-iphone-zthdstu .remain-day,
+.common-iphone-zthdstu .add-fj,
+.common-iphone-zthdstu .cyqx,
+.common-iphone-zthdstu .select-person .per-name,
+.common-iphone-zthdstu .menu-list li.active
+{color:#34a8Fa;}
+.common-iphone-zthdstu .add-file-btn div.btn,
+.common-iphone-zthdstu .footer-div .wid,
+.common-iphone-zthdstu .role div.active,
+.common-iphone-zthdstu .select-show ul li.active,
+.common-iphone-zthdstu .fbzp-button,
+.common-iphone-zthdstu .select-down,
+.common-iphone-zthdstu .btn button{background:#34a8Fa;}
+/*--pad-导学页面-----------------*/
+.common-ipad-daoxueNewstu .version span,.book span{color:#34a8Fa;}
+.common-ipad-daoxueNewstu .drop-down{background:#34a8Fa;}
+.common-ipad-daoxueNewstu .zuoye-name{border-bottom:2px solid #34a8Fa;}
+.common-ipad-daoxueNewstu .question-item ul li div{border:1px solid #34a8Fa;}
+.common-ipad-daoxueNewstu .question-item ul li div.active{background:#34a8Fa;}
+.common-ipad-daoxueNewstu .zuoye-name{border-bottom: 2px solid #34a8Fa;}
+/*.common-ipad-daoxueNewstu .answer-title div{background: #34a8Fa;}*/
+.common-ipad-daoxueNewstu .seleted .num {color: #34a8Fa;}
+.common-ipad-daoxueNewstu .option dl dt{color: #34a8Fa;}
+.common-ipad-daoxueNewstu .option .right {border: 2px solid #34a8Fa !important;}
+.common-ipad-daoxueNewstu .option .right dt {background: #34a8Fa !important;color: #ffffff !important;}
+.common-ipad-daoxueNewstu .option .active {border: 2px solid #34a8Fa !important;}
+.common-ipad-daoxueNewstu .option .active dt {background: #34a8Fa !important;color: #ffffff !important;}
+.common-ipad-daoxueNewstu .upload-answer button{background: #34a8Fa;}
+.common-ipad-daoxueNewstu .next{border-top: 2px solid #34a8Fa;color: #34a8Fa}
+.common-ipad-daoxueNewstu .analysis-btn{background:#34a8Fa;}
+.common-ipad-daoxueNewstu .text-btn button{background:#34a8Fa;}
+.common-ipad-daoxueNewstu .commont-content .top{background:#34a8Fa;}
+.common-ipad-daoxueNewstu .btn{background:#34a8Fa;}
+/*--pad-学生--课件页面-----------------*/
+.common-ipad-kejianNewstu .version span,.book span{color:#34a8Fa;}
+.common-ipad-kejianNewstu .drop-down{background:#34a8Fa;}
+.common-ipad-kejianNewstu .commont-content .top{background:#34a8Fa;}
+.common-ipad-kejianNewstu .btn{background:#34a8Fa;}
+/*--pad-学生-检测页面-----------------*/
+.common-ipad-zuoyeIpadstu .nav div.active{color:#34a8Fa;border-bottom:2px solid #34a8Fa;}
+.common-ipad-zuoyeIpads .zuoye-name{color:#34a8Fa;}
+.common-ipad-zuoyeIpads .title{border-left:2px solid #34a8Fa;}
+.common-ipad-zuoyeIpadstu .menu-list li.active{ color:#34a8Fa;}
+.common-ipad-zuoyeIpadstu .zuoye-name {border-bottom: 2px solid #34a8Fa;}
+.common-ipad-zuoyeIpadstu .answer-title div {background: #34a8Fa;}
+.common-ipad-zuoyeIpadstu .seleted .num{color: #34a8Fa;}
+.common-ipad-zuoyeIpadstu .option .active{border: 2px solid #34a8Fa !important;}
+.common-ipad-zuoyeIpadstu .option .active dt{background: #34a8Fa !important;}
+.common-ipad-zuoyeIpadstu .upload-answer button{background: #34a8Fa;}
+.common-ipad-zuoyeIpadstu .next{border-top: 2px solid #34a8Fa;color: #34a8Fa;}
+.common-ipad-zuoyeIpadstu .analysis-btn{background:#34a8Fa;}
+.common-ipad-zuoyeIpadstu .text-btn button{background:#34a8Fa;}
+.common-ipad-zuoyeIpadstu .seleted div font{color:#34a8Fa;}
+.common-ipad-zuoyeIpadstu .question-item ul li div{border:1px solid #34a8Fa;}
+.common-ipad-zuoyeIpadstu .question-item ul li div.active{background:#34a8Fa;}
+.common-ipad-zuoyeIpadstu .option dl dt{color: #34a8Fa;}
+.common-ipad-zuoyeIpadstu .option .right {border: 2px solid #34a8Fa !important;}
+.common-ipad-zuoyeIpadstu .option .right dt{background: #34a8Fa !important;}
+.common-ipad-zuoyeIpadstu .upload-answer button{background: #34a8Fa;}
+.common-ipad-zuoyeIpadstu .next{border-top: 2px solid #34a8Fa;color: #34a8Fa}
+/*--手机-日志页面-----------------*/
+.common-iphone-rizhi .time-content{border-bottom: 2px solid #34a8Fa;}
+.common-iphone-rizhi .time-content-fabu{border-bottom: 1px solid #34a8Fa;}
+.common-iphone-rizhi .title{color: #34a8Fa;border-bottom: 2px solid #34a8Fa;}
+/*--手机-打卡记录页面-----------------*/
+.common-iphone-dk .top{background:#34a8Fa;}
+.common-iphone-dk .green{color:#34a8Fa !important;}
+.common-iphone-dk .aui-icon-check{color:#34a8Fa;}
+.common-iphone-dk .title{color: #34a8Fa;border-bottom: 2px solid #34a8Fa;}
+.common-iphone-dk .title{color: #34a8Fa;border-bottom: 2px solid #34a8Fa;}
+/*--pad-学生--启智游戏页面-----------------*/
+.common-ipad-gameIpad .res-detail .pass font{color:#34a8Fa;}
+.common-ipad-gameIpad .footer-div .wid50{background:#34a8Fa;}
+.common-ipad-gameIpad .footer-div .wid{background:#34a8Fa;}
+.common-ipad-gameIpad .dt-ul li .detail .other .checkpoint font{color:#34a8Fa;}
+.common-ipad-gameIpad .menu-ul li.active span{border:1px solid #34a8Fa;}
+.common-ipad-gameIpad .menu-ul li.active span{border:1px solid #34a8Fa;color:#34a8Fa;}
+.common-ipad-gameIpad .menu-title span{	border-left:2px solid #34a8Fa;}
+/*--pad-学生--专题学习页面-----------------*/
+.common-ipad-zhuantiIpadstu .res-detail .pass font{color:#34a8Fa;}
+.common-ipad-zhuantiIpadstu .footer-div .wid50{background:#34a8Fa;}
+.common-ipad-zhuantiIpadstu .footer-div .wid{background:#34a8Fa;}
+.common-ipad-zhuantiIpadstu .dt-ul li .detail .other .checkpoint font{color:#34a8Fa;}
+.common-ipad-zhuantiIpadstu .menu-ul li.active span{border:1px solid #34a8Fa;}
+.common-ipad-zhuantiIpadstu .menu-ul li.active span{border:1px solid #34a8Fa;color:#34a8Fa;}
+.common-ipad-zhuantiIpadstu .menu-title span{	border-left:2px solid #34a8Fa;}
+/*--手机-访客页面-----------------*/
+.common-iphone-fangke .zuoye-content li .time font{color: #34a8Fa;}
+.common-iphone-fangke .bf-name{color: #34a8Fa;}
+/*--pad-学生--学业报告页面-----------------*/
+.common-ipad-xxgj .top hr{background: #34a8Fa;}
+.common-ipad-xxgj .top .name{background:#34a8Fa;}
+.common-ipad-xxgj .top .finish-count{color:#34a8Fa;}
+.common-ipad-xxgj .top .tj .all-study{color:#34a8Fa;}
+.common-ipad-xxgj .class-record-detail ul li:nth-child(1) .tip-icon{background:#34a8Fa url(../../../image/fun-module/ipad/jxbg/jushou.png) center center no-repeat;background-size:15px auto;}
+.common-ipad-xxgj .class-record-detail ul li:nth-child(2) .tip-icon{background:#34a8Fa url(../../../image/fun-module/ipad/jxbg/tiwen.png) center center no-repeat;background-size:27px auto;}
+.common-ipad-xxgj .class-record-detail ul li:nth-child(3) .tip-icon{background:#34a8Fa url(../../../image/fun-module/ipad/jxbg/gxpm.png) center center no-repeat;background-size:23px auto;}
+.common-ipad-xxgj .class-record-detail ul li:nth-child(4) .tip-icon{background:#34a8Fa url(../../../image/fun-module/ipad/jxbg/toupiao.png) center center no-repeat;background-size:20px auto;}
+.common-ipad-xxgj .class-record-detail ul li:nth-child(5) .tip-icon{background:#34a8Fa url(../../../image/fun-module/ipad/jxbg/fxtp.png) center center no-repeat;background-size:23px auto;}
+.common-ipad-xxgj .record-detail .name{color:#34a8Fa;}
+.common-ipad-xxgj .select-type-w div{border:1px solid #34a8Fa;}
+.common-ipad-xxgj .select-type-w span.active{background:#34a8Fa;}
+.common-ipad-xxgj .menu-list li.active{color:#34a8Fa;}
+.common-ipad-cjfx .answer-title div {background: #34a8Fa;}
+.common-ipad-cjfx .seleted .num {color: #34a8Fa;}
+.common-ipad-cjfx .option .active {border: 2px solid #34a8Fa !important;}
+.common-ipad-cjfx .option .active dt {background: #34a8Fa !important;}
+.common-ipad-cjfx .upload-answer button {background: #34a8Fa;}
+.common-ipad-cjfx .next {	border-top: 2px solid #34a8Fa;color: #34a8Fa}
+.common-ipad-cjfx .tag-title div.active{border-bottom:2px solid #34a8Fa;color:#34a8Fa;}
+.common-ipad-cjfx .analysis-btn{background:#34a8Fa;}
+.common-ipad-cjfx .tzxl{color:#34a8Fa;}
+.common-ipad-cjfx .index-tip{background:#34a8Fa;}
+.common-ipad-cjfx .rl-score li .rl-btn{background:#34a8Fa;}
+.common-ipad-cjfx .person-cj li span font.up{color:#34a8Fa;}
+.common-ipad-cjfx .cz_table font.up{color:#34a8Fa !important;}
+.common-ipad-cjfx .wid{background:#34a8Fa;}
+.common-ipad-cjfx .cj-detail-top{background:#34a8Fa;}
+.common-ipad-cjfx .each-subject ul li div font.num{color:#34a8Fa;}
+.common-ipad-cjfx .cjxq-title .name{color:#34a8Fa;}
+.common-ipad-cjfx .com-tag ul li.active{background:#34a8Fa;border:1px solid #34a8Fa;}
+.common-ipad-cjfx .cz_table tr td.ljc-positive{color:#34a8Fa;}
+.common-ipad-cjfx .dbylxk-summary .ysxk{background:#34a8Fa;}
+.common-ipad-cjfx .dbylxk-summary .ysxk-name{color:#34a8Fa;}
+.common-ipad-cjfx .cjb-content li .person-detail span .bpm{	background:#34a8Fa;}
+.common-ipad-cjfx .cjgk-div .lxcj-detail span:last-child font.dyl{color:#34a8Fa;}
+.common-ipad-cjfx .cjgk-div button{background: #34a8Fa;}
+.common-ipad-cjfx .cjgk-div .subject-list li.active{background:#34a8Fa;}
+.common-ipad-cjfx .stfx-body .mf span,.detail-stfx .mf span{color:#34a8Fa;}
+.common-ipad-cjfx .common-analysis-text{border-top:1px dashed #34a8Fa;}
+/*--手机-班级通知---教师-----------------*/
+.common-iphone-bjtz-tea .topbar{background: #34a8Fa;}
+/*--手机--学生分组--教师-----------------*/
+.common-stuGroup .title{border-bottom: 2px solid #34a8Fa;color:#34a8Fa;}
+.common-stuGroup .footer-div .wid50{background:#34a8Fa;}
+.common-stuGroup .footer-div .wid{background:#34a8Fa;}
+.common-stuGroup .aui-icon-check{color:#34a8Fa;}
+/*--手机--导学--教师-----------------*/
+.common-iphone-daojueJyJs .title{border-bottom: 2px solid #34a8Fa;color:#34a8Fa;}
+.common-iphone-daojueJyJs .title-js-dx{color:#34a8Fa;}
+.common-iphone-daojueJyJs .footer-div .wid{background:#34a8Fa;}
+.common-iphone-daojueJyJs .zuoye-name,
+.common-iphone-daojueJyJs.time span,
+.common-iphone-daojueJyJs .remain-day,
+.common-iphone-daojueJyJs .now-year,
+.common-iphone-daojueJyJs .change_jc_xd,
+.common-iphone-daojueJyJs .seleted .num,
+.common-iphone-daojueJyJs .dx-js-name
+{color:#34a8Fa;}
+.common-iphone-daojueJyJs .title-content{border-left:2px solid #34a8Fa;}
+.common-iphone-daojueJyJs .zuoye-name{border-bottom: 2px solid #34a8Fa;}
+.common-iphone-daojueJyJs .answer-title div,
+.common-iphone-daojueJyJs .upload-answer button,
+.common-iphone-daojueJyJs .class-title div,
+.common-iphone-daojueJyJs .analysis-btn
+{background:#34a8Fa;}
+.common-iphone-daojueJyJs .option .active {border: 2px solid #34a8Fa !important;}
+.common-iphone-daojueJyJs .option .active dt{background: #34a8Fa !important;}
+.common-iphone-daojueJyJs .next{border-top: 2px solid #34a8Fa;color: #34a8Fa;}
+.common-iphone-daojueJyJs .bb2{border-bottom:2px solid #34a8Fa;}
+.common-iphone-daojueJyJs ul li.active{color:#34a8Fa;border:1px solid #34a8Fa;}
+.common-iphone-daojueJyJs .content .triangle{border-left: 6px solid #34a8Fa;}
+/*--手机--专题--教师-----------------*/
+.common-iphone-zhuanti-tea .footer-div .wid50,
+.common-iphone-zhuanti-tea .footer-div .wid
+{background:#34a8Fa;}
+.common-iphone-zhuanti-tea .dt-ul li .detail .other .checkpoint font,
+.common-iphone-zhuanti-tea .menu-ul li.active span
+{color:#34a8Fa;}
+.common-iphone-zhuanti-tea .menu-title span{border-left:2px solid #34a8Fa;}
+.common-iphone-zhuanti-tea .menu-ul li.active span{border:1px solid #34a8Fa;}
+/*--pad-教师-导学-----------------*/
+.common-ipad-daoxueIpad .axis-body .top-content {background:#34a8Fa;}
+.common-ipad-daoxueIpad.axis-body .top-content .right{background:#34a8Fa !important;}
+.common-ipad-daoxueIpad .time-axis-zy .zy-content .bottom .btn span{background:#34a8Fa;}
+.common-ipad-daoxueIpad .zuoye-name {border-bottom: 2px solid #34a8Fa;}
+.common-ipad-daoxueIpad .answer-title div {background: #34a8Fa;}
+.common-ipad-daoxueIpad .seleted .num {color: #34a8Fa;}		
+.common-ipad-daoxueIpad .option .active {border: 2px solid #34a8Fa !important;}
+.common-ipad-daoxueIpad .option .active dt {background: #34a8Fa !important;}
+.common-ipad-daoxueIpad .upload-answer button {background: #34a8Fa;}
+.common-ipad-daoxueIpad .next {border-top: 2px solid #34a8Fa;color: #34a8Fa}	
+.common-ipad-daoxueIpad .analysis-btn{background:#34a8Fa;}
+.common-ipad-daoxueIpad .bb2{border-bottom:2px solid #34a8Fa;}
+.common-ipad-daoxueIpad .time span{color:#34a8Fa;}
+.common-ipad-daoxueIpad .footer-div2 .wid{background:#34a8Fa;}
+.common-ipad-daoxueIpad .footer-div .wid{background:#34a8Fa;}
+.common-ipad-daoxueIpad .class-title div{background:#34a8Fa;}
+.common-ipad-daoxueIpad.common-ipad-daoxueIpad-pratice ul li.active{color:#34a8Fa;border:1px solid #34a8Fa;}
+.common-ipad-daoxueIpad.common-ipad-daoxueIpad-group .num div{background:#34a8Fa !important;}
+.common-ipad-daoxueIpad.popup-body-new .top,.common-ipad-daoxueIpad.popup-body-new .btn{background:#34a8Fa;}
+.common-ipad-daoxueIpad.common-ipad-daoxueIpad-jczy .num div,.common-ipad-daoxueIpad.common-ipad-daoxueIpad-jczy .btn2 div span{background:#34a8Fa;}
+.common-ipad-daoxueIpad.common-ipad-daoxueIpad-jczy .num div .aui-icon-right{color:#34a8Fa !important;}
+.common-ipad-daoxueIpad.common-ipad-daoxueIpad-jczy .title{border-bottom: 2px solid #34a8Fa;color:#34a8Fa;}
+.common-ipad-daoxueIpad.common-ipad-daoxueIpad-jczy .footer-div .wid50{background:#34a8Fa;}
+.common-ipad-daoxueIpad.common-ipad-daoxueIpad-jczy .aui-icon-check{color:#34a8Fa;}
+/*--pad-教师-课件-----------------*/
+.common-ipad-kejianIpad.popup-body-new .top,.common-ipad-kejianIpad.popup-body-new .btn{background:#34a8Fa;}
+.common-ipad-kejianIpad.common-ipad-kejianIpad-jczy .num div,.common-ipad-kejianIpad.common-ipad-kejianIpad-jczy .btn2 div span{background:#34a8Fa;}
+.common-ipad-kejianIpad.common-ipad-kejianIpad-jczy .num div .aui-icon-right{color:#34a8Fa !important;}
+.common-ipad-kejianIpad.common-ipad-kejianIpad-jczy .title{border-bottom: 2px solid #34a8Fa;color:#34a8Fa;}
+.common-ipad-kejianIpad.common-ipad-kejianIpad-jczy .footer-div .wid50{background:#34a8Fa;}
+.common-ipad-kejianIpad.common-ipad-kejianIpad-jczy .aui-icon-check{color:#34a8Fa;}
+.common-ipad-kejianIpad .footer-div .wid{background:#34a8Fa;}
+.common-ipad-kejianIpad.axis-body .top-content .right{background:#34a8Fa !important;}
+.common-ipad-kejianIpad .time-axis-zy .zy-content .bottom .btn span{background:#34a8Fa;}
+.common-ipad-kejianIpad.bb2{border-bottom:2px solid #34a8Fa;}
+.common-ipad-kejianIpad.time span{color:#34a8Fa;}
+.common-ipad-kejianIpad .class-title div{background:#34a8Fa;}
+.common-ipad-kejianIpad.common-ipad-kejianIpad-public ul li.active{color:#34a8Fa;border:1px solid #34a8Fa;}
+.common-ipad-kejianIpad .footer-div .wid{background:#34a8Fa;}
+/*--pad-学生--班级通知页面-----------------*/	
+.common-ipad-bjtzIpadstu .person-info .person-name{color:#34a8Fa;}	
+.common-ipad-bjtzIpadstu .detail-title{color:#34a8Fa;color:#34a8Fa;}
+.common-ipad-bjtzIpadstu .praise-comment-content .comment-infor ul li .person-name{color:#34a8Fa;}
+.common-ipad-bjtzIpadstu .praise-comment-content .comment-infor ul li .comment-text font{color:#34a8Fa;}
+.common-ipad-bjtzIpadstu .left-tag .tag-item .parting-line .left-rectangle,.left-layout-body .left-tag .tag-item .parting-line .right-rectangle{background:#34a8Fa;}
+.common-ipad-bjtzIpadstu .left-tag .tag-item .parting-line hr{background:#34a8Fa;}
+.common-ipad-bjtzIpadstu .left-tag .drop-down .name,.drop-down ul{border-bottom:1px dashed #34a8Fa;}
+.common-ipad-bjtzIpadstu .right-content ul li .right .person-name{color:#34a8Fa;}
+.common-ipad-bjtzIpadstu .right-content ul li .right .title{color:#34a8Fa;}
+.common-ipad-bjtzIpadstu .thumb-content ul li .title{color:#34a8Fa;}
+/*--pad-学生--圈子页面-----------------*/	
+.common-ipad-quanziIpadstu .person-info .person-name{color:#34a8Fa;}	
+.common-ipad-quanziIpadstu .detail-title{color:#34a8Fa;color:#34a8Fa;}
+.common-ipad-quanziIpadstu .praise-comment-content .comment-infor ul li .person-name{color:#34a8Fa;}
+.common-ipad-quanziIpadstu .praise-comment-content .comment-infor ul li .comment-text font{color:#34a8Fa;}
+.common-ipad-quanziIpadstu .left-tag .tag-item .parting-line .left-rectangle,.left-layout-body .left-tag .tag-item .parting-line .right-rectangle{background:#34a8Fa;}
+.common-ipad-quanziIpadstu .left-tag .tag-item .parting-line hr{background:#34a8Fa;}
+.common-ipad-quanziIpadstu .left-tag .drop-down .name,.drop-down ul{border-bottom:1px dashed #34a8Fa;}
+.common-ipad-quanziIpadstu .right-content ul li .right .person-name{color:#34a8Fa;}
+.common-ipad-quanziIpadstu .right-content ul li .right .title{color:#34a8Fa;}
+.common-ipad-quanziIpadstu .thumb-content ul li .title{color:#34a8Fa;}
+.common-ipad-quanziIpadstu .commont-content .top{background:#34a8Fa;}
+.common-ipad-quanziIpadstu .btn{background:#34a8Fa;}
+/*--pad-学生--新闻资讯页面-----------------*/	
+.common-ipad-xwzxIpadstu .person-info .person-name{color:#34a8Fa;}	
+.common-ipad-xwzxIpadstu .detail-title{color:#34a8Fa;color:#34a8Fa;}
+.common-ipad-xwzxIpadstu .praise-comment-content .comment-infor ul li .person-name{color:#34a8Fa;}
+.common-ipad-xwzxIpadstu .praise-comment-content .comment-infor ul li .comment-text font{color:#34a8Fa;}
+.common-ipad-xwzxIpadstu .left-tag .tag-item .parting-line .left-rectangle,.left-layout-body .left-tag .tag-item .parting-line .right-rectangle{background:#34a8Fa;}
+.common-ipad-xwzxIpadstu .left-tag .tag-item .parting-line hr{background:#34a8Fa;}
+.common-ipad-xwzxIpadstu .left-tag .drop-down .name,.drop-down ul{border-bottom:1px dashed #34a8Fa;}
+.common-ipad-xwzxIpadstu .right-content ul li .right .person-name{color:#34a8Fa;}
+.common-ipad-xwzxIpadstu .right-content ul li .right .title{color:#34a8Fa;}
+.common-ipad-xwzxIpadstu .thumb-content ul li .title{color:#34a8Fa;}
+/*--pad-学生--主题活动页面-----------------*/	
+.common-ipad-zthdIpadstu .person-info .person-name{color:#34a8Fa;}	
+.common-ipad-zthdIpadstu .detail-title{color:#34a8Fa;color:#34a8Fa;}
+.common-ipad-zthdIpadstu .praise-comment-content .comment-infor ul li .person-name{color:#34a8Fa;}
+.common-ipad-zthdIpadstu .praise-comment-content .comment-infor ul li .comment-text font{color:#34a8Fa;}
+.common-ipad-zthdIpadstu .left-tag .tag-item .parting-line .left-rectangle,.left-layout-body .left-tag .tag-item .parting-line .right-rectangle{background:#34a8Fa;}
+.common-ipad-zthdIpadstu .left-tag .tag-item .parting-line hr{background:#34a8Fa;}
+.common-ipad-zthdIpadstu .left-tag .drop-down .name,.drop-down ul{border-bottom:1px dashed #34a8Fa;}
+.common-ipad-zthdIpadstu .right-content ul li .right .person-name{color:#34a8Fa;}
+.common-ipad-zthdIpadstu .right-content ul li .right .title{color:#34a8Fa;}
+.common-ipad-zthdIpadstu .thumb-content ul li .title{color:#34a8Fa;}
+.common-ipad-zthdIpadstu .add-file-btn div.btn{background:#34a8Fa;}
+.common-ipad-zthdIpadstu .select-menu{background:#34a8Fa;}
+/*.common-ipad-zthdIpadstu .triangle-top{border-bottom: 10px solid #34a8Fa;}*/
+.common-ipad-zthdIpadstu .top .detail .other-infor{color:#34a8Fa;}
+.common-ipad-zthdIpadstu .top .btns div{background:#34a8Fa;}
+.common-ipad-zthdIpadstu .comment .title{color:#34a8Fa;}
+.common-ipad-zthdIpadstu .comment .input-box .submit-btn{background:#34a8Fa;}
+.common-ipad-zthdIpadstu .comment .content ul li .detail .person-name font{color:#34a8Fa;}
+.common-ipad-zthdIpadstu .left-tag .tag-item .name{color:#34a8Fa;}
+.common-ipad-zthdIpadstu .add-fj{color:#34a8Fa;}
+.common-ipad-zthdIpadstu .triangle-top{border-top: 7px solid #34a8Fa;}
+.common-ipad-zthdIpadstu .select-person .per-name{color:#34a8Fa;}
+.common-ipad-zthdIpadstu .select-show ul li.active{background:#34a8Fa;}
+.common-ipad-zthdIpadstu .btn button{background:#34a8Fa;}
+.common-ipad-zthdIpadstu .role div.active{background:#34a8Fa;}
+.common-ipad-zthdIpadstu .time-axis-zy .zy-content .right .name{color:#34a8Fa;}
+.common-ipad-zthdIpadstu .nav ul{border:1px solid #34a8Fa;}
+.common-ipad-zthdIpadstu .nav ul li.active{background:#34a8Fa;}
+.common-ipad-zthdIpadstu .new-hot div.active{color:#34a8Fa;}
+.common-ipad-zthdIpadstu .time-axis-zy .zy-content .right .name{color:#34a8Fa;}
+.common-ipad-zthdIpadstu .table-body th{background:#34a8Fa;}
+/*--pad-学生--问卷调查页面-----------------*/	
+.common-ipad-dcwjIpadstu .zuoye-name {border-bottom: 2px solid #34a8Fa;}
+.common-ipad-dcwjIpadstu .answer-title div {background: #34a8Fa;}
+.common-ipad-dcwjIpadstu .seleted .num {color: #34a8Fa;}
+.common-ipad-dcwjIpadstu .option .active {border: 2px solid #34a8Fa !important;}
+.common-ipad-dcwjIpadstu .option .active dt {background: #34a8Fa !important;}
+.common-ipad-dcwjIpadstu .next {border-top: 2px solid #34a8Fa;color: #34a8Fa;}
+.common-ipad-dcwjIpadstu .result_btn span{background:#34a8Fa;}
+.common-ipad-dcwjIpadstu .chart ul li .person-num font{color:#34a8Fa;}
+.common-ipad-dcwjIpadstu .answer-text ul li .content span{color:#34a8Fa;}
+.common-ipad-dcwjIpadstus .title{color:#34a8Fa;border-left:2px solid #34a8Fa;}
+.common-ipad-dcwjIpadstu .content .object-right ul li.active{background:#34a8Fa;}
+.common-ipad-dcwjIpadstus .content .object-right ul li.active{background:#34a8Fa;border:1px solid #34a8Fa;}
+.common-ipad-dcwjIpadstus .footer-div .wid{background:#34a8Fa;}
+.common-ipad-dcwjIpadstus .footer-div .wid50{background:#34a8Fa;}
+.common-ipad-dcwjIpads .zuoye-name{border-bottom: 2px solid #34a8Fa;color:#34a8Fa;}
+.common-ipad-dcwjIpads .question-item ul li div{border:1px solid #34a8Fa;}
+.common-ipad-dcwjIpads .question-item ul li div.active{background:#34a8Fa;}
+.common-ipad-dcwjIpads .footer-div .wid50{background:#34a8Fa;}
+.common-ipad-dcwjIpads .footer-div .wid{background:#34a8Fa;}
+
+/*--pad-教师-检测-----------------*/
+.common-ipad-zuoyeIpad-tea.popup-body-new .top,.common-ipad-zuoyeIpad-tea.popup-body-new .btn{background:#34a8Fa;}
+.common-ipad-zuoyeIpad-tea .biaoti{color:#34a8Fa}
+.common-ipad-zuoyeIpad-tea .sel1{border: 1px #34a8Fa solid;color:#34a8Fa}
+.common-ipad-zuoyeIpad-tea .search-btn{background-color:#34a8Fa ;}
+.common-ipad-zuoyeIpad-tea .zuoye-name{color:#34a8Fa;}
+.common-ipad-zuoyeIpad-tea .zuoye-name2{border-bottom: 2px solid #34a8Fa;}
+.common-ipad-zuoyeIpad-tea .title{border-left:2px solid #34a8Fa;}
+.common-ipad-zuoyeIpad-tea .title2{border-bottom: 2px solid #34a8Fa;color:#34a8Fa;}
+.common-ipad-zuoyeIpad-tea .footer-div .wid{background:#34a8Fa;}
+.common-ipad-zuoyeIpad-tea.axis-body .top-content .right{background:#34a8Fa !important;}
+.common-ipad-zuoyeIpad-tea .time-axis-zy .zy-content .bottom .btn span{background:#34a8Fa;}
+.common-ipad-zuoyeIpad-tea .question-item li div.active{background:#34a8Fa;}
+.common-ipad-zuoyeIpad-tea .question-item li div{border:1px solid #34a8Fa;}
+.common-ipad-zuoyeIpad-tea .tag-title div.active{border-bottom:2px solid #34a8Fa;color:#34a8Fa;}
+.common-ipad-zuoyeIpad-tea .answer-title div{background: #34a8Fa;}
+.common-ipad-zuoyeIpad-tea .stu-answer-title div{background: #34a8Fa;}
+.common-ipad-zuoyeIpad-tea .next {border-top: 2px solid #34a8Fa;color: #34a8Fa}
+.common-ipad-zuoyeIpad-tea .middle-div font{color: #34a8Fa;}
+.common-ipad-zuoyeIpad-tea .bb2{border-bottom:2px solid #34a8Fa;}
+.common-ipad-zuoyeIpad-tea .time span{color:#34a8Fa;}
+.common-ipad-zuoyeIpad-tea .class-title div{background:#34a8Fa;}
+.common-ipad-zuoyeIpad-tea.common-ipad-zuoyeIpad-tea-publish ul li.active{color:#34a8Fa;border:1px solid #34a8Fa;}
+.common-ipad-zuoyeIpad-tea.common-ipad-zuoyeIpad-tea-publish .nav div.active{color:#34a8Fa;border-bottom:2px solid #34a8Fa;}
+.common-ipad-zuoyeIpad-tea .seleted .num{color: #34a8Fa;}
+.common-ipad-zuoyeIpad-tea .option .active {border: 2px solid #34a8Fa !important;}
+.common-ipad-zuoyeIpad-tea .option .active dt {background: #34a8Fa !important;}
+.common-ipad-zuoyeIpad-tea .upload-answer button {background: #34a8Fa;}
+.common-ipad-zuoyeIpad-tea .analysis-btn{background:#34a8Fa;}
+.common-ipad-zuoyeIpad-tea .st li span{border:1px solid #34a8Fa;}
+.common-ipad-zuoyeIpad-tea .zw-content{background:#34a8Fa;}
+.common-ipad-zuoyeIpad-tea .person-name{color:#34a8Fa;}
+.common-ipad-zuoyeIpad-tea .st-num li span{border:1px solid #34a8Fa;}
+.common-ipad-zuoyeIpad-tea .st-total{color:#34a8Fa;}
+.common-ipad-zuoyeIpad-tea .class-name{color:#34a8Fa;border-left:2px solid #34a8Fa;}
+/*--手机-教师-公共的切换教材页-----------------*/
+.common-ipad-change.popup-body-new .top,.common-ipad-change.popup-body-new .btn{background:#34a8Fa;}
+
+/*--手机-教师-检测-----------------*/
+
+.common-iphone-zuoye-tea .nav div.active,
+.common-iphone-zuoye-tea .title-save
+{color:#34a8Fa;border-bottom:2px solid #34a8Fa;}
+.common-iphone-zuoye-tea .sel1{border: 1px #34a8Fa solid;color:#34a8Fa}
+.common-iphone-zuoye-tea .title-detail,
+.common-iphone-zuoye-tea .title-st-list
+{border-left:2px solid #34a8Fa;}
+.common-iphone-zuoye-tea .footer-div .wid,
+.common-iphone-zuoye-tea .month .bg div,
+.common-iphone-zuoye-tea .search-btn,
+.common-iphone-zuoye-tea .middle-div font,
+.common-iphone-zuoye-tea .class-title div,
+.common-iphone-zuoye-tea .upload-answer button ,
+.common-iphone-zuoye-tea .analysis-btn,
+.common-iphone-zuoye-tea .zw-content
+{background: #34a8Fa;}
+.common-iphone-zuoye-tea .question-item li div.active,.common-iphone-zuoye-tea .answer-title div,.common-iphone-zuoye-tea .stu-answer-title div{background: #34a8Fa !important;}
+.common-iphone-zuoye-tea .now-year,
+.common-iphone-zuoye-tea .change_jc_xd,
+.common-iphone-zuoye-tea .zuoye-name-detail,
+.common-iphone-zuoye-tea .biaoti,
+.common-iphone-zuoye-tea .zuoye-name,
+.common-iphone-zuoye-tea .time span,
+.common-iphone-zuoye-tea .seleted .num,
+.common-iphone-zuoye-tea .person-name,
+.common-iphone-zuoye-tea .middle-div font,
+.common-iphone-zuoye-tea .middle-div-piyue font,
+.common-iphone-zuoye-tea .st-total font,
+.common-iphone-zuoye-tea .title-js-zy-apply
+{color:#34a8Fa;}
+.common-iphone-zuoye-tea .question-item li div,
+.common-iphone-zuoye-tea .st li span,
+.common-iphone-zuoye-tea .st-num li span
+{border:1px solid #34a8Fa;}
+.common-iphone-zuoye-tea .tag-title div.active{border-bottom:2px solid #34a8Fa;color:#34a8Fa;}
+.common-iphone-zuoye-tea .next {border-top: 2px solid #34a8Fa;color: #34a8Fa}
+.common-iphone-zuoye-tea .bb2,
+.common-iphone-zuoye-tea .zuoye-name-single,
+.common-iphone-zuoye-tea .zuoye-name-st 
+{border-bottom:2px solid #34a8Fa;}
+.common-iphone-zuoye-tea ul li.active{color:#34a8Fa;border:1px solid #34a8Fa;}
+.common-iphone-zuoye-tea .option .active {border: 2px solid #34a8Fa !important;}
+.common-iphone-zuoye-tea .option .active dt {background: #34a8Fa !important;}
+.common-iphone-zuoye-tea .class-name{color:#34a8Fa;border-left:2px solid #34a8Fa;}
+/*--手机-教师--教学报告----------------*/		
+.common-iphone-jxbg-tea	.all-study{color:#34a8Fa}
+.common-iphone-jxbg-tea	.name_first{background:#34a8Fa;}
+.common-iphone-jxbg-tea	.xian{border-bottom:1px solid #34a8Fa;}
+.common-iphone-jxbg-tea	.class-record-detail ul li:nth-child(1) .tip-icon{background:#34a8Fa url(../../../image/fun-module/ipad/jxbg/jushou.png) center center no-repeat;background-size:15px auto;}
+.common-iphone-jxbg-tea	.class-record-detail ul li:nth-child(3) .tip-icon
+{background:#34a8Fa url(../../../image/fun-module/ipad/jxbg/tiwen.png) center center no-repeat;background-size:20px auto;}
+.common-iphone-jxbg-tea	.class-record-detail ul li:nth-child(4) .tip-icon{background:#34a8Fa url(../../../image/fun-module/ipad/jxbg/gxpm.png) center center no-repeat;background-size:18px auto;}
+.common-iphone-jxbg-tea	.class-record-detail ul li:nth-child(2) .tip-icon{background:#34a8Fa url(../../../image/fun-module/ipad/jxbg/toupiao.png) center center no-repeat;background-size:18px auto;}
+.common-iphone-jxbg-tea	.class-record-detail ul li:nth-child(5) .tip-icon{background:#34a8Fa url(../../../image/fun-module/ipad/jxbg/fxtp.png) center center no-repeat;background-size:18px auto;}
+.common-iphone-jxbg-tea	.record-detail .name{color:#34a8Fa;}
+.common-iphone-jxbg-tea	.nav ul{border:1px solid #34a8Fa;}
+.common-iphone-jxbg-tea	.nav li{border-right:1px solid #34a8Fa;color:#34a8Fa;}
+.common-iphone-jxbg-tea	.nav li.active{background:#34a8Fa;}
+.common-iphone-jxbg-tea	.title .name{background:#34a8Fa;}
+/*--pad-学生--校园广播页面-----------------*/	
+.common-ipad-guangbostu .person-info .person-name{color:#34a8Fa;}	
+.common-ipad-guangbostu .detail-title{color:#34a8Fa;color:#34a8Fa;}
+.common-ipad-guangbostu .praise-comment-content .comment-infor ul li .person-name{color:#34a8Fa;}
+.common-ipad-guangbostu .praise-comment-content .comment-infor ul li .comment-text font{color:#34a8Fa;}
+.common-ipad-guangbostu .left-tag .tag-item .parting-line .left-rectangle,.left-layout-body .left-tag .tag-item .parting-line .right-rectangle{background:#34a8Fa;}
+.common-ipad-guangbostu .left-tag .tag-item .parting-line hr{background:#34a8Fa;}
+.common-ipad-guangbostu .left-tag .drop-down .name,.drop-down ul{border-bottom:1px dashed #34a8Fa;}
+.common-ipad-guangbostu .right-content ul li .right .person-name{color:#34a8Fa;}
+.common-ipad-guangbostu .right-content ul li .right .title{color:#34a8Fa;}
+.common-ipad-guangbostu .thumb-content ul li .title{color:#34a8Fa;}
+/*--pad-学生--校园菜谱页面-----------------*/	
+.common-ipad-cpIpadstu .person-info .person-name{color:#34a8Fa;}	
+.common-ipad-cpIpadstu .detail-title{color:#34a8Fa;color:#34a8Fa;}
+.common-ipad-cpIpadstu .praise-comment-content .comment-infor ul li .person-name{color:#34a8Fa;}
+.common-ipad-cpIpadstu .praise-comment-content .comment-infor ul li .comment-text font{color:#34a8Fa;}
+.common-ipad-cpIpadstu .left-tag .tag-item .parting-line .left-rectangle,.left-layout-body .left-tag .tag-item .parting-line .right-rectangle{background:#34a8Fa;}
+.common-ipad-cpIpadstu .left-tag .tag-item .parting-line hr{background:#34a8Fa;}
+.common-ipad-cpIpadstu .left-tag .drop-down .name,.drop-down ul{border-bottom:1px dashed #34a8Fa;}
+.common-ipad-cpIpadstu .right-content ul li .right .person-name{color:#34a8Fa;}
+.common-ipad-cpIpadstu .right-content ul li .right .title{color:#34a8Fa;}
+.common-ipad-cpIpadstu .thumb-content ul li .title{color:#34a8Fa;}
+.common-ipad-cpIpadstu.popup-body-new .top,.common-ipad-cpIpadstu.popup-body-new .btn{background:#34a8Fa;}
+
+/*--手机-教师--课件----------------*/		
+.common-iphone-kenjianJs .footer-div .wid{background:#34a8Fa;}
+.common-iphone-kenjianJs .title{ border-bottom: 2px solid #34a8Fa;color:#34a8Fa;}	
+.common-iphone-kenjianJs .title-kj-js{color:#34a8Fa;}
+.common-iphone-kenjianJs .remain-day,
+.common-iphone-kenjianJs .now-year,
+.common-iphone-kenjianJs .change_jc_xd,
+.common-iphone-kenjianJs .zuoye-name,
+.common-iphone-kenjianJs .time span
+{color:#34a8Fa;}
+.common-iphone-kenjianJs .bb2{border-bottom:2px solid #34a8Fa;}
+.common-iphone-kenjianJs .class-title div{background:#34a8Fa;}
+.common-iphone-kenjianJs ul li.active{color:#34a8Fa;border:1px solid #34a8Fa;}
+/*--手机-教师--题本----------------*/
+.common-iphone-jstb .stu-answer-title div,
+.common-iphone-jstb .upload-answer button,
+.common-iphone-jstb .master
+{background: #34a8Fa;}
+.common-iphone-jstb .zuoye-name {border-bottom: 2px solid #34a8Fa;}
+.common-iphone-jstb .seleted div font,
+.common-iphone-jstb .st-type,
+.common-iphone-jstb .menu-list li.active
+{color:#34a8Fa;}
+.common-iphone-jstb .option .active {border: 2px solid #34a8Fa !important;}
+.common-iphone-jstb .option .active dt {background: #34a8Fa !important;}
+.common-iphone-jstb .next {border-top: 2px solid #34a8Fa;color: #34a8Fa}
+.common-iphone-jstb .answer-title div {background: #34a8Fa;}
+/*--手机-教师--主题活动----------------*/
+.common-iphone-zthd-tea .add-fj,
+.common-iphone-zthd-tea .cyqx,
+.common-iphone-zthd-tea .select-person .per-name,
+.common-iphone-zthd-tea .canyu-quanxian,
+.common-iphone-zthd-tea .zuoye-content li .name,
+.common-iphone-zthd-tea .remain-day,
+.common-iphone-zthd-tea .menu-list li.active,
+.common-iphone-zthd-tea .person-name-font,
+.common-iphone-zthd-tea .hdxq-shouqi,
+.common-iphone-zthd-tea .hdxq-zhankai,
+.common-iphone-zthd-tea .hdjs-active,
+.common-iphone-zthd-tea .hdxq-edit,
+.common-iphone-zthd-tea .hdzp-content,
+.common-iphone-zthd-tea .quanzi-title,
+.common-iphone-zthd-tea .pinglun-person-name,
+.common-iphone-zthd-tea .aui-img-body .person-name-font
+{color:#34a8Fa;}
+.common-iphone-zthd-tea .fbzp-button,
+.common-iphone-zthd-tea .select-down,
+.common-iphone-zthd-tea .select-show ul li.active,
+.common-iphone-zthd-tea .btn button,
+.common-iphone-zthd-tea .role div.active,
+.common-iphone-zthd-tea .add-file-btn div.btn,
+.common-iphone-zthd-tea .footer-div .wid
+{background:#34a8Fa;}
+.common-iphone-zthd-tea .triangle-top{border-top: 7px solid #34a8Fa;}
+.common-iphone-zthd-tea .select-picture{border:1px solid #34a8Fa;color:#34a8Fa;}
+.common-iphone-zthd-tea .bb {border-bottom: 1px solid #34a8Fa;}
+.common-iphone-zthd-tea .tag-title div.active{border-bottom:2px solid #34a8Fa;color:#34a8Fa;}
+.common-iphone-zthd-tea .zuoye-content li{border:1px solid #34a8Fa;}
+
+/*--ipad-教师--教学报告----------------*/
+.common-ipad-jxbg-tea .index-tip{background:#34a8Fa;}
+.common-ipad-jxbg-tea .rl-score li .rl-btn{background:#34a8Fa;}
+.common-ipad-jxbg-tea .person-cj li span font.up{color:#34a8Fa;}
+.common-ipad-jxbg-tea .cz_table font.up{color:#34a8Fa !important;}
+.common-ipad-jxbg-tea .wid{background:#34a8Fa;}
+.common-ipad-jxbg-tea .cj-detail-top{background:#34a8Fa;}
+.common-ipad-jxbg-tea .each-subject ul li div font.num{color:#34a8Fa;}
+.common-ipad-jxbg-tea .cjxq-title .name{color:#34a8Fa;}
+.common-ipad-jxbg-tea .com-tag ul li.active{background:#34a8Fa;border:1px solid #34a8Fa;}
+.common-ipad-jxbg-tea .cz_table tr td.ljc-positive{color:#34a8Fa;}
+.common-ipad-jxbg-tea .dbylxk-summary .ysxk-name{color:#34a8Fa;}
+.common-ipad-jxbg-tea .cjb-content li .person-detail span .bpm{background:#34a8Fa;}
+.common-ipad-jxbg-tea .cjb-content li .pk span .up{color:#34a8Fa;}
+.common-ipad-jxbg-tea .cjgk-div .lxcj-detail span:last-child font.dyl{color:#34a8Fa;}
+.common-ipad-jxbg-tea .cjgk-div button{ background: #34a8Fa;}
+.common-ipad-jxbg-tea .cjgk-div .subject-list li.active{background:#34a8Fa;}
+.common-ipad-jxbg-tea .cjgk-div .stfx-body .mf span,.detail-stfx .mf span{color:#34a8Fa;}
+.common-ipad-jxbg-tea .common-analysis-text{border-top:1px dashed #34a8Fa;}
+.common-ipad-jxbg-tea .title .name{background:#34a8Fa;}
+.common-ipad-jxbg-tea .menu-list li.active{color:#34a8Fa;}
+/*--ipad-教师--主题活动----------------*/
+.common-ipad-zthd-tea .tag-item .parting-line .right-rectangle{background:#34a8Fa;}
+.common-ipad-zthd-tea.left-layout-body .left-tag .drop-down .name,.drop-down ul{border-bottom:1px dashed #34a8Fa;}
+.common-ipad-zthd-tea.left-layout-body .right-content ul li .right .person-name{color:#34a8Fa;}
+.common-ipad-zthd-tea.left-layout-body .right-content ul li .right .title{color:#34a8Fa;}
+.common-ipad-zthd-tea.left-layout-body .thumb-content ul li .title{color:#34a8Fa;}
+.common-ipad-zthd-tea.right-layout-body .person-info .person-name{color:#34a8Fa;}
+.common-ipad-zthd-tea.right-layout-body .detail-title{color:#34a8Fa;}
+.common-ipad-zthd-tea.right-layout-body .praise-comment-content .comment-infor ul li .person-name{color:#34a8Fa;}
+.common-ipad-zthd-tea.right-layout-body .praise-comment-content .comment-infor ul li .comment-text font{color:#34a8Fa;}
+.common-ipad-zthd-tea.left-layout-body .left-tag .tag-item .parting-line hr{background:#34a8Fa;}
+.common-ipad-zthd-tea .add-fj{color:#34a8Fa;}
+.common-ipad-zthd-tea .triangle-top{border-top: 7px solid #34a8Fa;}
+.common-ipad-zthd-tea .cyqx{color:#34a8Fa;}
+.common-ipad-zthd-tea .select-down{background:#34a8Fa;}
+.common-ipad-zthd-tea .select-person .per-name{color:#34a8Fa;}
+.common-ipad-zthd-tea .select-show ul li.active{background:#34a8Fa;}
+.common-ipad-zthd-tea .btn button{background:#34a8Fa;}
+.common-ipad-zthd-tea .role div.active{background:#34a8Fa;}
+.common-ipad-zthd-tea .select-menu{background:#34a8Fa;}
+.common-ipad-zthd-tea .select-menu .triangle-top{border-bottom: 10px solid #34a8Fa;}
+.common-ipad-zthd-tea .add-file-btn div.btn{background:#34a8Fa;}
+.common-ipad-zthd-tea .select-menu{background:#34a8Fa;}
+.common-ipad-zthd-tea .top .detail .other-infor{color:#34a8Fa;}
+.common-ipad-zthd-tea .top .btns div{background:#34a8Fa;}
+.common-ipad-zthd-tea .comment .title{color:#34a8Fa;}
+.common-ipad-zthd-tea .comment .content ul li .detail .person-name font{color:#34a8Fa;}
+.common-ipad-zthd-tea .comment .input-box .submit-btn{background:#34a8Fa;}
+.common-ipad-zthd-tea.left-layout-body .left-tag .tag-item .name{color:#34a8Fa;}
+.common-ipad-zthd-tea .time-axis-zy .zy-content .right .name{color:#34a8Fa;}
+.common-ipad-zthd-tea .nav ul{border:1px solid #34a8Fa;}
+.common-ipad-zthd-tea .nav ul li.active{background:#34a8Fa;}
+.common-ipad-zthd-tea .new-hot div.active{color:#34a8Fa;}
+.common-ipad-zthd-tea .time-axis-zy .zy-content .right .name{color:#34a8Fa;}
+.common-ipad-zthd-tea .table-body th{background:#34a8Fa;}
+/*--pad-学生--名师云课页面-----------------*/	
+.common-ipad-yunkeIpadstu .res-detail .pass font{color:#34a8Fa;}
+.common-ipad-yunkeIpadstu .footer-div .wid50{background:#34a8Fa;}
+.common-ipad-yunkeIpadstu .footer-div .wid{background:#34a8Fa;}
+.common-ipad-yunkeIpadstu .dt-ul li .detail .other .checkpoint font{color:#34a8Fa;}
+.common-ipad-yunkeIpadstu .menu-ul li.active span{border:1px solid #34a8Fa;}
+.common-ipad-yunkeIpadstu .menu-ul li.active span{border:1px solid #34a8Fa;color:#34a8Fa;}
+.common-ipad-yunkeIpadstu .menu-title span{	border-left:2px solid #34a8Fa;}
+.common-ipad-yunkeIpadstu .record-content li .top .name .tip{background:#34a8Fa;}
+.common-ipad-yunkeIpadstu .record-content li .top .money{color:#34a8Fa;}
+.common-ipad-zthd-tea.popup-body-new .top,.common-ipad-zthd-tea.popup-body-new .btn{background:#34a8Fa;}
+/*--ipad-教师--题本----------------*/
+.common-ipad-tibenIpad-tea .zuoye-name{border-bottom: 2px solid #34a8Fa;}
+.common-ipad-tibenIpad-tea .answer-title div{background: #34a8Fa;}
+.common-ipad-tibenIpad-tea .seleted{background:#34a8Fa;}
+.common-ipad-tibenIpad-tea .option dl dt{color: #34a8Fa;}
+.common-ipad-tibenIpad-tea .analysis-btn{background:#34a8Fa;}
+.common-ipad-tibenIpad-tea .menu-list li.active{color:#34a8Fa;}
+.common-ipad-tibenIpad-tea .close-btn{background: #34a8Fa;}
+.common-ipad-tibenIpad-tea.popup-body-new .top,.common-ipad-tibenIpad-tea.popup-body-new .btn{background:#34a8Fa;}
+/*--ipad-教师--专题学习----------------*/
+.common-ipad-zhuantiIpad-tea .footer-div .wid50{background:#34a8Fa;}
+.common-ipad-zhuantiIpad-tea .footer-div .wid{background:#34a8Fa;}
+.common-ipad-zhuantiIpad-tea .menu-ul li.active span{border:1px solid #34a8Fa;color:#34a8Fa;}
+.common-ipad-zhuantiIpad-tea .dt-ul li .detail .other .checkpoint font{color:#34a8Fa;}
+.common-ipad-zhuantiIpad-tea .menu-title span{border-left:2px solid #34a8Fa;}
+.common-ipad-zhuantiIpad-tea .res-detail .pass font{color:#34a8Fa;}
+/*--ipad-教师--考勤----------------*/
+.common-ipad-kaoqinIpad-tea.popup-body-new .top,.common-ipad-kaoqinIpad-tea.popup-body-new .btn{background:#34a8Fa;}
+.common-ipad-kaoqinIpad-tea .triangle-top{border-bottom: 9px solid #34a8Fa;}
+.common-ipad-kaoqinIpad-tea.popup-body-new .select-menu{background: #34a8Fa;}
+.common-ipad-kaoqinIpad-tea .step-content dl dt .border-pass{border-top:1px solid #34a8Fa;border-bottom:1px solid #34a8Fa;}
+.common-ipad-kaoqinIpad-tea .step-content dl dd.pass div{color:#34a8Fa;}
+.common-ipad-kaoqinIpad-tea .result_btn span{background:#34a8Fa;}
+.common-ipad-kaoqinIpad-tea .tag-title div.active{border-bottom:2px solid #34a8Fa;color:#34a8Fa;}
+.common-ipad-kaoqinIpad-tea .bggreen{background:#34a8Fa;}
+.common-ipad-kaoqinIpad-tea .second-group div{background:#34a8Fa;}
+.common-ipad-kaoqinIpad-tea .bm-name{color:#34a8Fa;}
+/*--ipad-教师--通知公告----------------*/
+.common-ipad-noticeIpad-tea.popup-body-new .top,.common-ipad-noticeIpad-tea.popup-body-new .btn{background:#34a8Fa;}
+.common-ipad-noticeIpad-tea .triangle-top{border-bottom: 9px solid #34a8Fa;}
+.common-ipad-noticeIpad-tea.popup-body-new .select-menu{background: #34a8Fa;}
+.common-ipad-noticeIpad-tea.left-layout-body .left-tag .drop-down .name,.drop-down ul{border-bottom:1px dashed #34a8Fa;}
+.common-ipad-noticeIpad-tea.left-layout-body .right-content ul li .right .person-name{color:#34a8Fa;}
+.common-ipad-noticeIpad-tea.left-layout-body .right-content ul li .right .title{color:#34a8Fa;}
+.common-ipad-noticeIpad-tea.left-layout-body .thumb-content ul li .title{color:#34a8Fa;}
+.common-ipad-noticeIpad-tea.right-layout-body .person-info .person-name{color:#34a8Fa;}
+.common-ipad-noticeIpad-tea.right-layout-body .detail-title{color:#34a8Fa;}
+.common-ipad-noticeIpad-tea.right-layout-body .praise-comment-content .comment-infor ul li .person-name{color:#34a8Fa;}
+.common-ipad-noticeIpad-tea.right-layout-body .praise-comment-content .comment-infor ul li .comment-text font{color:#34a8Fa;}
+.common-ipad-noticeIpad-tea.left-layout-body .left-tag .tag-item .parting-line hr{background:#34a8Fa;}
+.common-ipad-noticeIpad-tea .bggreen{background:#34a8Fa;}
+.common-ipad-noticeIpad-tea.left-layout-body .left-tag .tag-item.active .name{color: #34a8Fa;}
+/*--ipad-教师--班级通知----------------*/
+.common-ipad-bjtzIpad-tea.popup-body-new .top,.common-ipad-bjtzIpad-tea.popup-body-new .btn{background:#34a8Fa;}
+.common-ipad-bjtzIpad-tea .triangle-top{border-bottom: 9px solid #34a8Fa;}
+.common-ipad-bjtzIpad-tea.popup-body-new .select-menu{background: #34a8Fa;}
+.common-ipad-bjtzIpad-tea.left-layout-body .left-tag .drop-down .name,.drop-down ul{border-bottom:1px dashed #34a8Fa;}
+.common-ipad-bjtzIpad-tea.left-layout-body .right-content ul li .right .person-name{color:#34a8Fa;}
+.common-ipad-bjtzIpad-tea.left-layout-body .right-content ul li .right .title{color:#34a8Fa;}
+.common-ipad-bjtzIpad-tea.left-layout-body .thumb-content ul li .title{color:#34a8Fa;}
+.common-ipad-bjtzIpad-tea.right-layout-body .person-info .person-name{color:#34a8Fa;}
+.common-ipad-bjtzIpad-tea.right-layout-body .detail-title{color:#34a8Fa;}
+.common-ipad-bjtzIpad-tea.right-layout-body .praise-comment-content .comment-infor ul li .person-name{color:#34a8Fa;}
+.common-ipad-bjtzIpad-tea.right-layout-body .praise-comment-content .comment-infor ul li .comment-text font{color:#34a8Fa;}
+.common-ipad-bjtzIpad-tea.left-layout-body .left-tag .tag-item .parting-line hr{background:#34a8Fa;}
+/*--ipad-教师--圈子----------------*/
+.common-ipad-quanziIpad-tea.popup-body-new .top,.common-ipad-quanziIpad-tea.popup-body-new .btn{background:#34a8Fa;}
+.common-ipad-quanziIpad-tea .triangle-top{border-bottom: 9px solid #34a8Fa;}
+.common-ipad-quanziIpad-tea.popup-body-new .select-menu{background: #34a8Fa;}
+.common-ipad-quanziIpad-tea.left-layout-body .left-tag .drop-down .name,.drop-down ul{border-bottom:1px dashed #34a8Fa;}
+.common-ipad-quanziIpad-tea.left-layout-body .right-content ul li .right .person-name{color:#34a8Fa;}
+.common-ipad-quanziIpad-tea.left-layout-body .right-content ul li .right .title{color:#34a8Fa;}
+.common-ipad-quanziIpad-tea.left-layout-body .thumb-content ul li .title{color:#34a8Fa;}
+.common-ipad-quanziIpad-tea.right-layout-body .person-info .person-name{color:#34a8Fa;}
+.common-ipad-quanziIpad-tea.right-layout-body .detail-title{color:#34a8Fa;}
+.common-ipad-quanziIpad-tea.right-layout-body .praise-comment-content .comment-infor ul li .person-name{color:#34a8Fa;}
+.common-ipad-quanziIpad-tea.right-layout-body .praise-comment-content .comment-infor ul li .comment-text font{color:#34a8Fa;}
+.common-ipad-quanziIpad-tea.left-layout-body .left-tag .tag-item .parting-line hr{background:#34a8Fa;}
+/*--ipad-教师--问卷调查----------------*/
+.common-ipad-dcwjIpad-tea .zuoye-name{border-bottom: 2px solid #34a8Fa;}
+.common-ipad-dcwjIpad-tea .answer-title div{background: #34a8Fa;}
+.common-ipad-dcwjIpad-tea .seleted .num{color: #34a8Fa;}
+.common-ipad-dcwjIpad-tea .option .active {border: 2px solid #34a8Fa !important;}
+.common-ipad-dcwjIpad-tea .next {color: #34a8Fa;border-top: 2px solid #34a8Fa;}
+.common-ipad-dcwjIpad-tea .option .active dt {background: #34a8Fa !important;}
+.common-ipad-dcwjIpad-tea .chart ul li .person-num font {color:#34a8Fa;}
+.common-ipad-dcwjIpad-tea .answer-text ul li .content span{color:#34a8Fa;}
+.common-ipad-dcwjIpad-teas .title{color:#34a8Fa;border-left:2px solid #34a8Fa;}
+.common-ipad-dcwjIpad-teas .content .object-right ul li.active{background:#34a8Fa;border:1px solid #34a8Fa;}
+.common-ipad-dcwjIpad-teas .footer-div .wid{background:#34a8Fa;}
+.common-ipad-dcwjIpad-tea .question-item ul li div{border:1px solid #34a8Fa;}
+.common-ipad-dcwjIpad-tea .question-item ul li div.active{background:#34a8Fa;}
+.common-ipad-dcwjIpad-tea .footer-div .wid50{background:#34a8Fa;}
+.common-ipad-dcwjIpad-tea .result_btn span{background:#34a8Fa;}
+/*--ipad-教师--新闻资讯----------------*/
+.common-ipad-xwzxIpad-tea.popup-body-new .top,.common-ipad-xwzxIpad-tea.popup-body-new .btn{background:#34a8Fa;}
+.common-ipad-xwzxIpad-tea .triangle-top{border-bottom: 9px solid #34a8Fa;}
+.common-ipad-xwzxIpad-tea.popup-body-new .select-menu{background: #34a8Fa;}
+.common-ipad-xwzxIpad-tea.left-layout-body .left-tag .drop-down .name,.drop-down ul{border-bottom:1px dashed #34a8Fa;}
+.common-ipad-xwzxIpad-tea.left-layout-body .right-content ul li .right .person-name{color:#34a8Fa;}
+.common-ipad-xwzxIpad-tea.left-layout-body .right-content ul li .right .title{color:#34a8Fa;}
+.common-ipad-xwzxIpad-tea.left-layout-body .thumb-content ul li .title{color:#34a8Fa;}
+.common-ipad-xwzxIpad-tea.right-layout-body .person-info .person-name{color:#34a8Fa;}
+.common-ipad-xwzxIpad-tea.right-layout-body .detail-title{color:#34a8Fa;}
+.common-ipad-xwzxIpad-tea.right-layout-body .praise-comment-content .comment-infor ul li .person-name{color:#34a8Fa;}
+.common-ipad-xwzxIpad-tea.right-layout-body .praise-comment-content .comment-infor ul li .comment-text font{color:#34a8Fa;}
+.common-ipad-xwzxIpad-tea.left-layout-body .left-tag .tag-item .parting-line hr{background:#34a8Fa;}
+.common-ipad-xwzxIpad-tea .topbar{background:#34a8Fa;}
+.common-ipad-xwzxIpad-tea .bggreen{background:#34a8Fa;}
+/*--手机-学生广播页面-----------------*/
+.common-iphone-guangbo .zuoye-name{border-bottom: 2px solid #34a8Fa;}
+.common-iphone-guangbo .answer-title div{background: #34a8Fa;}
+.common-iphone-guangbo .seleted1 .num {color: #34a8Fa;}
+/*--手机-名师云课页面-----------------*/
+.common-iphone-yunke .more-btn{color:#34a8Fa;}
+.common-iphone-yunke .record-content li .top .name .tip{background:#34a8Fa;}
+.common-iphone-yunke .record-content li .top .money{color:#34a8Fa;}
+.common-iphone-yunke .res-detail .pass font{color:#34a8Fa;}
+.common-iphone-yunke .footer-div .wid50{background:#34a8Fa;}
+.common-iphone-yunke .footer-div .wid{background:#34a8Fa;}
+.common-iphone-yunke .dt-ul li .detail .other .checkpoint font{color:#34a8Fa;}
+.common-iphone-yunke .menu-ul li.active span{border:1px solid #34a8Fa;}
+.common-iphone-yunke .menu-ul li.active span{border:1px solid #34a8Fa;color:#34a8Fa;}
+.common-iphone-yunke .menu-title span{	border-left:2px solid #34a8Fa;}
+.common-iphone-yunke .statu-active{color:#34a8f6 !important}
+/*--手机-学生--学业报告-----------------*/
+.common-iphone-xybgstu .all-study{color:#34a8Fa;}
+.common-iphone-xybgstu .name_first{background:#34a8Fa;}
+.common-iphone-xybgstu .xian{border-bottom:1px solid #34a8Fa;}
+.common-iphone-xybgstu .mokuai_list{border:1px solid  #34a8Fa;}
+.common-iphone-xybgstu .mokuai_list li{border-right:1px solid  #34a8Fa;}
+.common-iphone-xybgstu .class-record-detail ul li:nth-child(1) .tip-icon{background:#34a8Fa url(../../../image/fun-module/ipad/xybg/jushou.png) center center no-repeat;background-size:15px auto;}
+.common-iphone-xybgstu .class-record-detail ul li:nth-child(3) .tip-icon{background:#34a8Fa url(../../../image/fun-module/ipad/xybg/tiwen.png) center center no-repeat;background-size:20px auto;}
+.common-iphone-xybgstu .class-record-detail ul li:nth-child(4) .tip-icon{background:#34a8Fa url(../../../image/fun-module/ipad/xybg/gxpm.png) center center no-repeat;background-size:20px auto;}
+.common-iphone-xybgstu .class-record-detail ul li:nth-child(2) .tip-icon{background:#34a8Fa url(../../../image/fun-module/ipad/xybg/toupiao.png) center center no-repeat;background-size:18px auto;}
+.common-iphone-xybgstu .class-record-detail ul li:nth-child(5) .tip-icon{background:#34a8Fa url(../../../image/fun-module/ipad/xybg/fxtp.png) center center no-repeat;background-size:20px auto;}
+.common-iphone-xybgstu .record-detail .name{color:#34a8Fa;}
+.common-iphone-xybgstu .select-type-w div{border:1px solid #34a8Fa;}
+.common-iphone-xybgstu .select-type-w span.active{background:#34a8Fa;}
+.common-iphone-xybgstu .nav ul{ border:1px solid #34a8Fa;}
+.common-iphone-xybgstu .nav li{border-right:1px solid #34a8Fa;color:#34a8Fa;}
+.common-iphone-xybgstu .nav li.active{background:#34a8Fa;}
+.common-iphone-xybgstu .index-tip{background:#34a8Fa;}
+.common-iphone-xybgstu .rl-score li .rl-btn{background:#34a8Fa;}
+.common-iphone-xybgstu .person-cj li span font.up{color:#34a8Fa;}
+.common-iphone-xybgstu .cz_table font.up{color:#34a8Fa !important;}
+.common-iphone-xybgstu .wid{background:#34a8Fa;}
+.common-iphone-xybgstu .cj-detail-top{background:#34a8Fa;}
+.common-iphone-xybgstu .each-subject ul li div font.num{color:#34a8Fa;}
+.common-iphone-xybgstu .cjxq-title .name{color:#34a8Fa;}
+.common-iphone-xybgstu .com-tag ul li.active{background:#34a8Fa;border:1px solid #34a8Fa;}
+.common-iphone-xybgstu .cz_table tr td.ljc-positive{color:#34a8Fa;}
+.common-iphone-xybgstu .dbylxk-summary .ysxk{background:#34a8Fa;}
+.common-iphone-xybgstu .dbylxk-summary .ysxk-name{color:#34a8Fa;}
+.common-iphone-xybgstu .cjb-content li .person-detail span .bpm{	background:#34a8Fa;}
+.common-iphone-xybgstu .cjgk-div .lxcj-detail span:last-child font.dyl{color:#34a8Fa;}
+.common-iphone-xybgstu .cjgk-div button{background: #34a8Fa;}
+.common-iphone-xybgstu .cjgk-div .subject-list li.active{background:#34a8Fa;}
+.common-iphone-xybgstu .stfx-body .mf span,.detail-stfx .mf span{color:#34a8Fa;}
+.common-iphone-xybgstu .common-analysis-text{border-top:1px dashed #34a8Fa;}
+.common-iphone-cjfxXs .index-tip{background:#34a8Fa;}
+.common-iphone-cjfxXs .rl-score li .rl-btn{background:#34a8Fa;}
+.common-iphone-cjfxXs .person-cj li span font.up{color:#34a8Fa;}
+.common-iphone-cjfxXs .cz_table font.up{color:#34a8Fa !important;}
+.common-iphone-cjfxXs .wid{background:#34a8Fa;}
+.common-iphone-cjfxXs .cj-detail-top{background:#34a8Fa;}
+.common-iphone-cjfxXs .each-subject ul li div font.num{color:#34a8Fa;}
+.common-iphone-cjfxXs .cjxq-title .name{color:#34a8Fa;}
+.common-iphone-cjfxXs .com-tag ul li.active{background:#34a8Fa;border:1px solid #34a8Fa;}
+.common-iphone-cjfxXs .cz_table tr td.ljc-positive{color:#34a8Fa;}
+.common-iphone-cjfxXs .dbylxk-summary .ysxk{background:#34a8Fa;}
+.common-iphone-cjfxXs .dbylxk-summary .ysxk-name{color:#34a8Fa;}
+.common-iphone-cjfxXs .cjb-content li .person-detail span .bpm{	background:#34a8Fa;}
+.common-iphone-cjfxXs .cjgk-div .lxcj-detail span:last-child font.dyl{color:#34a8Fa;}
+.common-iphone-cjfxXs .cjgk-div button{background: #34a8Fa;}
+.common-iphone-cjfxXs .cjgk-div .subject-list li.active{background:#34a8Fa;}
+.common-iphone-cjfxXs .stfx-body .mf span,.detail-stfx .mf span{color:#34a8Fa;}
+.common-iphone-cjfxXs .common-analysis-text{border-top:1px dashed #34a8Fa;}
+.common-iphone-cjfxXs .answer-title div{background: #34a8Fa;}
+.common-iphone-cjfxXs .seleted .num {color: #34a8Fa;}
+.common-iphone-cjfxXs .option .active {border: 2px solid #34a8Fa !important;}
+.common-iphone-cjfxXs .option .active dt {background: #34a8Fa !important;}
+.common-iphone-cjfxXs .upload-answer button {background: #34a8Fa;}
+.common-iphone-cjfxXs .next {	border-top: 2px solid #34a8Fa;color: #34a8Fa;}
+.common-iphone-cjfxXs .option .active dt {background: #34a8Fa !important;}
+.common-iphone-cjfxXs .tag-title div.active{border-bottom:2px solid #34a8Fa;color:#34a8Fa;}
+/*--手机-扫一扫---------------------*/
+.common-iphone-sys .topbar {background: #34a8Fa;}
+.common-iphone-sys .item.active{background:#34a8Fa;}
+/*--ipad-教师--访客----------------*/
+.common-ipad-fangkeIpad-tea .tea_stu a{border: 3px solid #34a8Fa;color: #34a8Fa;}
+.common-ipad-fangkeIpad-tea .tea_stu a em{color:#34a8Fa;}
+.common-ipad-fangkeIpad-tea .result_btn span{background:#34a8Fa;}
+.common-ipad-fangkeIpad-tea .month .bg div{background:#34a8Fa;}
+.common-ipad-fangkeIpad-tea .zuoye-content li .time font{color: #34a8Fa;}
+.common-ipad-fangkeIpad-tea .fangke_name{color: #34a8Fa;}
+/*--ipad-教师--打卡记录----------------*/
+.common-ipad-dakaIpad-tea .top{background:#34a8Fa;}
+.common-ipad-dakaIpad-tea .green{color:#34a8Fa !important;}
+.common-ipad-dakaIpad-tea .aui-icon-check{color:#34a8Fa;}
+.common-ipad-dakaIpad-tea .title{border-bottom: 2px solid #34a8Fa;color: #34a8Fa;}
+/*--ipad-教师--打卡统计----------------*/
+.common-ipad-datjIpad-tea.left-layout-body .left-tag .drop-down .name,.drop-down ul{border-bottom:1px dashed #34a8Fa;}
+.common-ipad-datjIpad-tea.left-layout-body .right-content ul li .right .person-name{color:#34a8Fa;}
+.common-ipad-datjIpad-tea.left-layout-body .right-content ul li .right .title{color:#34a8Fa;}
+.common-ipad-datjIpad-tea.left-layout-body .thumb-content ul li .title{color:#34a8Fa;}
+.common-ipad-datjIpad-tea.right-layout-body .person-info .person-name{color:#34a8Fa;}
+.common-ipad-datjIpad-tea.right-layout-body .detail-title{color:#34a8Fa;}
+.common-ipad-datjIpad-tea.right-layout-body .praise-comment-content .comment-infor ul li .person-name{color:#34a8Fa;}
+.common-ipad-datjIpad-tea.right-layout-body .praise-comment-content .comment-infor ul li .comment-text font{color:#34a8Fa;}
+.common-ipad-datjIpad-tea.left-layout-body .left-tag .tag-item .parting-line hr{background:#34a8Fa;}
+.common-ipad-datjIpad-tea.left-layout-body .left-tag .tag-item.active .name{color: #34a8Fa;}
+/*--iphone--手机--新闻资讯----------------*/
+.common-iphone-xwzx .bggreen{background:#34a8Fa;}
+/*--iphone-手机--问卷调查----------------*/
+.common-Iphone-dcwjIphone-common .zuoye-name{border-bottom: 2px solid #34a8Fa;}
+.common-Iphone-dcwjIphone-common .answer-title div{background: #34a8Fa;}
+.common-Iphone-dcwjIphone-common .seleted .num{color: #34a8Fa;}
+.common-Iphone-dcwjIphone-common .option .active {border: 2px solid #34a8Fa !important;}
+.common-Iphone-dcwjIphone-common .option .active dt{background: #34a8Fa !important;}
+.common-Iphone-dcwjIphone-common .next{border-top: 2px solid #34a8Fa;color: #34a8Fa}
+.common-Iphone-dcwjIphone-common .chart ul li .person-num font{color:#34a8Fa;}
+.common-Iphone-dcwjIphone-common .answer-text ul li .content span{color:#34a8Fa;}
+.common-Iphone-dcwjIphone-commons .content .object-right ul li.active{background:#34a8Fa;border:1px solid #34a8Fa;}
+.common-Iphone-dcwjIphone-commons .footer-div .wid{background:#34a8Fa;}
+.common-Iphone-dcwjIphone-commons .title{color:#34a8Fa;border-left:2px solid #34a8Fa;}
+.common-Iphone-dcwjIphone-common .question-item ul li div{border:1px solid #34a8Fa;}
+.common-Iphone-dcwjIphone-common .question-item ul li div.active{background:#34a8Fa;}
+.common-Iphone-dcwjIphone-commons .footer-div .wid50{background:#34a8Fa;}
+.common-Iphone-dcwjIphone-common .content li .bottom .status1{color:#34a8Fa;}
+/*--iphone--手机--家长主题活动----------------*/
+.common-Iphone-zthdIphone-par .tag-title div.active{border-bottom:2px solid #34a8Fa;color:#34a8Fa;}
+.common-Iphone-zthdIphone-par .footer-div .wid{background:#34a8Fa;}
+.common-Iphone-zthdIphone-par .zuoye-content li{border:1px solid #34a8Fa;}
+.common-Iphone-zthdIphone-par .zuoye-content li .name,
+.common-Iphone-zthdIphone-par .remain-day,
+.common-Iphone-zthdIphone-par .menu-list li.active,
+.common-Iphone-zthdIphone-par .hdjs-active,
+.common-Iphone-zthdIphone-par .person-name-font,
+.common-Iphone-zthdIphone-par .hdxq-edit,
+.common-Iphone-zthdIphone-par .hdxq-zhankai,
+.common-Iphone-zthdIphone-par .hdxq-shouqi,
+.common-Iphone-zthdIphone-par .hdzp-content,
+.common-Iphone-zthdIphone-par .aui-img-body .person-name-font,
+.common-Iphone-zthdIphone-par .quanzi-title,
+.common-Iphone-zthdIphone-par .pinglun-person-name
+{color:#34a8Fa;}
+.common-Iphone-zthdIphone-par .fbzp-button
+{background:#34a8Fa;}
+/*--iphone--手机--设置教材----------------*/
+.common-iphone-szjc .footer-div .wid{background:#34a8Fa;}
+.common-iphone-szjc .common-ul li .right{color:#34a8Fa;}

@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<!-- html5：在创建html时为了防止页面缩放等不兼容效果，要创建个viewport  -->
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<!-- 在IOS设备上，有时会将数字转为手机号，这里也要禁止下 -->
+		<meta name="format-detection" content="telephone=no"/>
+		<title>考勤统计</title>
+		<link rel="stylesheet" type="text/css" href="../../../../../css/aui/aui.css" />
+		<link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+		<style>
+			.history-date {
+				font-size: 12px;
+			}
+			#message-content {
+				overflow-y: auto;
+				display: none;
+			}
+			
+			
+			.t_display_n {
+				display: none;
+			}
+			.t_display_b {
+				display: block;
+			}
+			.tag-title{height:45px; line-height:43px;background:#ffffff ;}
+			.tag-title div{width:50%;text-align:center;color:#62656A;}
+			.fl{float:left;}
+			.fr{float:right;}
+			.nav{display:block;}
+			.nav li{display:inline-block;float:left;}
+			.nav li span{display:inline-block;color:#262626;}
+			.nav li.active span{height:45px;border-bottom:2px solid #f00; color:#f00;}
+			.plr20{padding:0 20px;}
+		</style>
+	</head>
+	<body class="common-ipad-kaoqinIpad-tea">
+		<div id="wrap">
+			<header class="aui-bar aui-bar-nav aui-bar-primary" id="aui-header">
+				<div id="cloud" class="topbar activebar">
+					<div id="back" class="back" onclick="back();" tapmode="">
+						<i class="aui-iconfont aui-icon-left"></i>返回
+					</div>
+					<div  class="mTitle" id="mTitle">
+						考勤统计
+					</div>
+					<div class="win-menu">
+					</div>
+				</div>
+				<div class="tag-title">
+					<ul class="nav clearfix">
+						<li id="qingjia" class="plr20 active" onclick="openQjFrame();">
+							<span>请假</span>
+						</li>
+						<li id="gongchu" class="plr20" onclick="openGcFrame();">
+							<span>公出</span>
+						</li>
+					</ul>
+				</div>
+			</header>
+			<div  class="aui-content aui-content-padded" id="message-content">
+				<p class="aui-text-center history-date"></p>
+			</div>
+		</div>
+	</body>
+	<script type="text/javascript" src="../../../../../script/api.js"></script>
+	<script type="text/javascript" src="../../../../../script/common/common.js"></script>
+	<script type="text/javascript">
+		//顶部header高度
+		var header_h;
+		apiready = function() {
+			commonSetTheme({"level":5,"type":0});
+			//定位header位置，留出上面电池等空隙，苹果需要
+			var header = $api.byId('aui-header');
+			header_h = api.pageParam.header_h;
+			//打开我的考勤请假申请页面
+			if(api.pageParam.ruleType == 0){
+				$api.removeCls($api.byId('gongchu'),'active');
+				$api.addCls($api.byId('qingjia'),'active');
+				var pageParamJson = {header_h : header_h,type:api.pageParam.ruleType}
+				commonOpenFrame('kaoqinIpad_myKqtj_frame','kaoqinIpad_myKqtj_frame.html', header_h+45, true, false, '#ffffff', pageParamJson);
+			}else{
+				$api.removeCls($api.byId('qingjia'),'active');
+				$api.addCls($api.byId('gongchu'),'active');
+				var pageParamJson = {header_h : header_h,type:api.pageParam.ruleType}
+				commonOpenFrame('kaoqinIpad_myKqtj_frame','kaoqinIpad_myKqtj_frame.html', header_h+45, true, false, '#ffffff', pageParamJson);
+			}
+			$api.fixStatusBar(header);
+			//安卓关闭
+			if (api.systemType == 'android') {
+				backForAndroid();
+			}
+		};
+		/*
+		*author:zhaoj
+		*function:打开我的考勤请假申请页面
+		*date：20160620
+		*/
+		function openQjFrame(){
+			$api.removeCls($api.byId('gongchu'),'active');
+			$api.addCls($api.byId('qingjia'),'active');
+			commonExecScript('kaoqinIpad_myKqtj_window','kaoqinIpad_myKqtj_frame','changeType(0);',1);
+		}
+		/*
+		*author:zhaoj
+		*function:打开我的考勤公出申请页面
+		*date：20160620
+		*/
+		function openGcFrame(){
+			$api.removeCls($api.byId('qingjia'),'active');
+			$api.addCls($api.byId('gongchu'),'active');
+			commonExecScript('kaoqinIpad_myKqtj_window','kaoqinIpad_myKqtj_frame','changeType(1);',1);
+		}
+		
+		/*
+		*author:zhaoj
+		*function:返回页面
+		*date：20160307
+		*/
+		function back() {
+			api.closeWin();
+		}
+
+		/**
+		 * 安卓点击返回的时候
+		 * 周枫
+		 * 2015.10.14
+		 */
+		function backForAndroid() {
+			api.addEventListener({
+				name : "keyback"
+			}, function(ret, err) {
+				back();
+			});
+		}
+	</script>
+</html>

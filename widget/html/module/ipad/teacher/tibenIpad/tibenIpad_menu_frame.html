@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>题本</title>
+    <link rel="stylesheet" type="text/css" href="../../../../../css/aui/aui.css"/>
+    <link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+    <style>
+		html, body {
+			background-color: transparent;
+			background: rgba(0,0,0,0);
+			font-size:18px;
+		}
+		body {
+			padding: 0;
+			margin: 0;
+		}
+		.shadow {
+			position: absolute;
+			left: 0;
+			top: 0;
+			width: 100%;
+			height: 100%;
+			z-index: 1;
+		}
+		.header {
+			width: 100%;
+			height: 45px;
+		}
+		.main {
+			width: 100%;
+		}
+		.menu-list {
+			list-style: none;
+			background-color: #ffffff;
+			box-shadow: 0px 0px 5px #cccccc;
+			position: relative;
+			width: 160px;
+			float: right;
+			z-index: 2;
+			padding: 0;
+			margin: 0;
+		}
+		.menu-list li {
+			height: 53px;
+			line-height: 53px;
+			display: block;
+			border-bottom: 1px solid #eeeeee;
+			color: #333;
+			font-family: sans-serif;
+		}
+		.menu-list li span {
+			width: 100%;
+			display: inline-block;
+			height: 53px;
+			line-height: 53px;
+			float: left;
+			text-align:center;
+			max-width:100%;
+		}
+	</style>
+</head>
+<body class="common-ipad-tibenIpad-tea">
+	<div class="shadow" tapmode onclick="closeFrame();"></div>
+	<div id="header" class="header"></div>
+	<div id="main" class="main aui-hide">
+	</div>
+	<script type="text/html" id="div_script">
+		<ul class="menu-list">
+			<%for(var i=0; i<list.length; i++) {%>
+				<%if(index_menu == i){%>
+					<li class="active"
+				<%}else{%>
+					<li 
+				<%}%>
+					onclick="setStageSubject('<%=list[i].stage_name%>','<%=list[i].subject_name%>',<%=i%>,this)">
+					<span class="ellipsis"><%=list[i].stage_name%><%=list[i].subject_name%></span>
+				</li>
+			<%}%>
+		</ul>
+	</script>
+<body>
+</body>
+<script type="text/javascript" src="../../../../../script/api.js"></script>
+<script type="text/javascript" src="../../../../../script/base_config.js" ></script>
+<script type="text/javascript" src="../../../../../script/plug-in/template.js" ></script>
+<script type="text/javascript" src="../../../../../script/common/common.js"></script>
+<script type="text/javascript" src="../../../../../script/plug-in/base64.js" ></script>
+<script type="text/javascript">
+	var total_json = {};//全局参数
+	apiready = function(){
+		commonSetTheme({"level":5,"type":0});
+		setHeight();
+		var data = {"list":[]};
+		data.list = JSON.parse(Base64.decode(api.pageParam.stage_subject));
+		if(data.list.length > 0){
+			data.index_menu = api.pageParam.index_menu;
+			commonAddOnceHtml('main','div_script',data);
+		}else{
+			popToast('暂无学段学科');
+			closeFrame();
+		}
+	};
+	/*
+	*author:zhaoj
+	*function:关闭页面
+	*date：20171011
+	*/
+	function closeFrame(){
+		commonExecScript('tibenIpad_index_window','','back();',0);
+	}
+	/*
+	*author:zhaoj
+	*function:设置高度
+	*date：20171011
+	*/
+	function setHeight(){
+		header_h = api.pageParam.header_h;
+		$api.css($api.byId('header'), 'height:' + header_h + 'px;');
+		$api.css($api.byId('main'), 'height:' + (api.winHeight - header_h) + 'px;');
+		commonAddOrRemoveHideCss('main',1);
+	}
+	/*
+	*author:zhaoj
+	*function:设置学段学科
+	*date：20171012
+	*/
+	function setStageSubject(stage_name,subject_name,index,self){
+		$api.removeCls($api.dom($api.byId('main'), '.active'), 'active');
+		$api.addCls(self, 'active');
+		commonExecScript('tibenIpad_index_window','','setStageSubject("'+stage_name+'","'+subject_name+'",'+index+');',0);//显示学段学科
+		setTimeout(function(){
+			closeFrame();
+		},100);
+	}
+</script>
+</html>

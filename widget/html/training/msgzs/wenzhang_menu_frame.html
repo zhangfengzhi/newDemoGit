@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<title>文章下拉菜单</title>
+		<style>
+    	html, body {
+        	background-color: rgba(0,0,0,0) !important;
+   		 }
+    	body{padding:0;margin:0;}
+    	.shadow{position:absolute;left:0;top:0;width:100%;height:100%;z-index: 1;}
+    	.header{width:100%;height:45px;}
+    	.main{width:100%;}
+    	.menu-list{
+    		list-style:none;
+    		background-color: #ffffff;
+			box-shadow: 0px 0px 5px #cccccc;
+			position: relative;
+			width: 150px;
+			float: right;
+			z-index: 2;
+			padding: 0;
+			margin:0;
+		}
+		.menu-list li {
+			height: 48px;
+			line-height:48px;
+			display: block;
+			border-bottom: 1px solid #eeeeee;
+			color: #333;
+			font-family: sans-serif;
+			text-align:center;
+		}
+		.menu-list li .icon-box{width:50px;height:48px;display:inline-block; text-align:center;}
+		.menu-list li span{display:block;width:100%;height:48px;line-height:48px;float:left;text-align:center;}
+		
+    </style>
+	</head>
+	<body>
+		<div class="shadow" tapmode onclick="api.closeFrame({name:'wenzhang_menu_frame'});"></div>
+		<div id="header" class="header"></div>
+		<div id="wzmenu_div"></div>
+		<script type="text/html" id="wzmenu_script">
+			<div id="main" class="main">
+				<ul class="menu-list">
+					<%for(var i=0; i<list.length; i++) {%>
+						<li onclick="getWzAllList('<%=list[i].menu_id %>','<%=list[i].menu_type %>','<%=list[i].menu_name %>');">
+							<span><%=list[i].menu_name%></span>
+						</li>
+					<% } %>
+				</ul>
+			</div>
+		</script>
+		
+	</body>
+	<script type="text/javascript" src="../../../script/api.js"></script>
+	<script type="text/javascript" src="../../../script/base_config.js" ></script>
+	<script type="text/javascript" src="../../../script/plug-in/template.js" ></script>
+	<script type="text/javascript" src="../../../script/common/wenzhang_common.js" ></script>
+	<script type="text/javascript">
+		var header_h;
+		apiready = function() {
+			header_h = api.pageParam.header_h;
+			$api.css($api.byId('header'), 'height:' + header_h + 'px;');
+			$api.css($api.byId('main'), 'height:' + (api.winHeight - header_h) + 'px;');
+			loadMenuData();
+		};
+		
+		/**
+		 * 加载全部文章数据
+		 * 周枫
+		 * 2016.4.5
+		 */
+		function getWzAllList(menu_id, menu_type, menu_name) {
+			if(menu_type == 1){
+				api.execScript({
+					name : 'wenzhang_index_window',
+					script : 'openMyListFrame('+menu_id+','+menu_type+',"'+menu_name+'");'
+				});
+			}else{
+				api.execScript({
+					name : 'wenzhang_index_window',
+					script : 'openAllListFrame('+menu_id+','+menu_type+',"'+menu_name+'");'
+				});
+			}
+			api.closeFrame({
+				name : 'wenzhang_menu_frame'
+			});
+		}
+
+		/**
+		 * 加载menu级别
+		 * 周枫
+		 * 2016.4.5
+		 */
+		function loadMenuData() {
+			loadClassListData(function(is_true, class_list_arr){
+				if(is_true) {
+					//定义最终返回菜单的数组
+					var bar_items = [];
+					//加入全部文章
+					var arr_all = {
+						menu_id : 0,
+						menu_name : "全部文章",
+						menu_true_name : "全部",
+						menu_type : 0
+					};
+					bar_items.push(arr_all);
+					var arr_person = {
+						menu_id : 1,
+						menu_name : "我的文章",
+						menu_true_name : "全部",
+						menu_type : 1
+					};
+					bar_items.push(arr_person);
+					//班级个数
+					var c_length = class_list_arr.length;
+					//遍历班级存入
+					for(var i=0; i<c_length; i++) {
+						var arr_class = {
+							menu_id : class_list_arr[i].class_id,
+							menu_name : class_list_arr[i].class_name,
+							menu_true_name : class_list_arr[i].class_name,
+							menu_type : 105
+						};
+						bar_items.push(arr_class);
+					}
+					//安装机构类型： 100：全国， 101：省， 102：市， 103：区县， 104：校，105：班级
+					var org_level = parseInt($api.getStorage('org_level'));
+					if (org_level == 100) {
+						org_level = 101;
+					}
+					//学校id
+					var school_id = $api.getStorage('school_id');
+					if ( typeof (school_id) == 'undefined') {
+						school_id = $api.getStorage('bureau_id');
+					}
+					//学校名字
+					var school_name = $api.getStorage('school_name');
+					if ( typeof (school_name) == 'undefined') {
+						school_name = $api.getStorage('bureau_name');
+					}
+					//区id
+					var district_id = $api.getStorage('district_id');
+					//区名字
+					var district_name = $api.getStorage('district_name');
+					//市id
+					var city_id = $api.getStorage('city_id');
+					//市名字
+					var city_name = $api.getStorage('city_name');
+					//省id
+					var province_id = $api.getStorage('province_id');
+					//省名字
+					var province_name = $api.getStorage('province_name');
+					
+					var arr_school = {
+						menu_id : school_id,
+						menu_name : "本校文章",
+						menu_true_name : school_name,
+						menu_type : 104
+					};
+					var arr_person = {
+						menu_id : school_id,
+						menu_name : "我的文章",
+						menu_true_name : school_name,
+						menu_type : 1
+					};
+					var arr_district = {
+						menu_id : district_id,
+						menu_name : "本区文章",
+						menu_true_name : district_name,
+						menu_type : 103
+					};
+					var arr_city = {
+						menu_id : school_id,
+						menu_name : "本市文章",
+						menu_true_name : city_name,
+						menu_type : 102
+					};
+					var arr_province = {
+						menu_id : school_id,
+						menu_name : "本省文章",
+						menu_true_name : province_name,
+						menu_type : 101
+					};
+					bar_items.push(arr_school);
+					var menu_list = {};
+					menu_list["list"] = bar_items;
+					var html_type = template.render('wzmenu_script', menu_list);
+					document.getElementById('wzmenu_div').innerHTML = html_type;
+				} else {
+					api.toast({
+	                    msg:class_list_json
+                    });
+				}
+			});
+			
+					
+		}
+		
+	</script>
+</html>

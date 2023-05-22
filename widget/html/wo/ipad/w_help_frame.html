@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<!-- html5：在创建html时为了防止页面缩放等不兼容效果，要创建个viewport  -->
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<!-- 在IOS设备上，有时会将数字转为手机号，这里也要禁止下 -->
+		<meta name="format-detection" content="telephone=no"/>
+		<title>理想帮助</title>
+		<link rel="stylesheet" type="text/css" href="../../../css/aui/aui.css" />
+		<link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+	</head>
+	<body class="w-ipad-common">
+		<script type="text/javascript" src="../../../script/api.js" ></script>
+		<script type="text/javascript" src="../../../script/base_config.js" ></script>
+		<!--<script src="http://www.sobot.com/chat/pc/pc.min.js?sysNum=1b490094cb60432b963e62e2759926bb" id="zhichiload" ></script>-->
+	</body>
+	<script type="text/javascript">
+		apiready = function() {
+			commonSetTheme({"level":3,"type":0});
+			loadHelp();
+		};
+		function loadHelp() {
+			
+			var user_id = $api.getStorage('login_name');
+			var nick_name = $api.getStorage('person_name');
+			var param = {
+				sysNum : "1b490094cb60432b963e62e2759926bb",
+				userId : user_id,
+				nickName : nick_name,
+				phone : "",
+				email : "",
+				//ios:机器人优先模式，是否直接显示转人工按钮(值为"NO"时，会在机器人无法回答时显示转人工按钮)
+				isShowTansfer : 'NO',
+				//ios:自己处理消息中的链接，如果设置为1，将通过callBack返回到页面ret=1,value为link实际地址，desc为描述
+				isCustomLinkClick : 1,
+				//ios:返回按钮的文字
+				backButtonTitle : '返回',
+				titleFont : 18.0,
+				backgroundColor : "#f0f0f0",
+				topViewTextColor : "#FFFFFF",
+				//android:可设置头部颜色; 提交评价问题选中背景色以及提交评价按钮背景色; 聊天内容中，相似问题字体颜色和富文本类型中“阅读全文”字体颜色，可为空
+				themeColor : '#34A8FA',
+				//
+				customBannerColor : '#34A8FA',
+				isCustomLinkClick : 1,
+				backButtonTitle : "返回",
+				backButtonImage : "SobotKit.bundle/ZCWebTitleBack_normal.png",
+			};
+			
+			var zhichi = api.require('zhiChi');
+			zhichi.startZhiChi(param, callBack);
+		}
+
+		function callBack(ret, err) {
+			if(ret.type == 1){
+				api.execScript({
+					name : 'w_help_window',
+	                script: 'back();'
+                });
+			}
+//			alert("ret.type=" + ret.type + "\nvalue=" + ret.value + "\nret.desc=" + ret.desc);
+		}
+	</script>
+</html>

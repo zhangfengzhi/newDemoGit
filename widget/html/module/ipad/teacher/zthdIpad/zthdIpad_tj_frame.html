@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<!-- html5：在创建html时为了防止页面缩放等不兼容效果，要创建个viewport  -->
+	<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+	<!-- 在IOS设备上，有时会将数字转为手机号，这里也要禁止下 -->
+	<meta name="format-detection" content="telephone=no"/>
+    <title>课件</title>
+    <link rel="stylesheet" type="text/css" href="../../../../../css/aui/aui.css" />
+    <link rel="stylesheet" type="text/css" href="../../../../../css/aui_css_new/aui.css" />
+     <link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+     <style>
+    	body{background:#ffffff;}
+    	table{width:90%;border:1px solid #CDCDCD;font-size:18px;height:100%;margin:0 5%;color:#858582}
+    	tr{width:100%;}
+    	.table-header{border-bottom:none;}
+    	th,td{border-bottom:1px solid #CDCDCD;border-right:1px solid #CDCDCD;text-align:center}
+    	th{padding-top:10px;padding-bottom:10px;border-bottom:none}
+    	td{padding-top:5px;padding-bottom:5px;}
+    	.num{width:10%;max-width:10%}
+    	.tea-name{width:30%;max-width:30%}
+    	.hd-num,.cy-num,.zp-num{width:20%;max-width:20%}
+    	tr .active{color:#f76736}
+    	.desc{
+          float:right;
+          background:url(../../../../../image/fun-module/ipad/zthd/tj-desc.png) right center no-repeat;
+          background-size:10px 20px;
+          width:15px;
+          height:100%;
+          margin-right:20px;
+        }
+        .asc{
+          float:right;
+          background:url(../../../../../image/fun-module/ipad/zthd/tj-asc.png) right center no-repeat;
+          background-size:10px 20px;
+          width:15px;
+          height:100%;
+          margin-right:20px;
+        }
+        tr .active .desc{
+            float:right;
+            background:url(../../../../../image/fun-module/ipad/zthd/tj-desc-active.png) right center no-repeat;
+            background-size:10px 20px;
+            width:15px;
+            height:100%;
+            margin-right:20px;
+        }
+        tr .active .asc{
+            float:right;
+            background:url(../../../../../image/fun-module/ipad/zthd/tj-asc-active.png) right center no-repeat;
+            background-size:10px 20px;
+            width:15px;
+            height:100%;
+            margin-right:20px;
+        }
+	</style>
+</head>
+<body class="index-body common-ipad-zthd-tea">
+	<div class="clearfix">
+		<table id="zthd_div" cellspacing=0></table>
+		<script  type="text/html" id="zthd_script">
+			<%if(list.length == 0){%>
+				<div class="no-data">暂无主题活动统计信息</div>
+			<%}else{%>
+				<%for(var i=0;i< list.length;i++){%>
+				    <tr class="xjtj-tr">
+					    <td class="num ellipsis"><%=px_num + i%></td>
+						<td class="tea-name ellipsis" onclick="openZthd('<%=list[i].PERSON_ID%>','<%=list[i].PERSON_NAME%>',<%=list[i].act_count%>);"><%=list[i].PERSON_NAME%></td>
+					    <td class="hd-num ellipsis"><%=list[i].act_count%></td>
+					    <td class="cy-num ellipsis"> <%=list[i].played_num%></td>
+					    <td class="zp-num ellipsis"><%=list[i].works_num%></td>
+					</tr>
+				<%}%>
+			<%}%>
+		</script>
+	</div>
+</body>
+<script type="text/javascript" src="../../../../../script/api.js"></script>
+<script type="text/javascript" src="../../../../../script/base_config.js" ></script>
+<script type="text/javascript" src="../../../../../script/common/common.js" ></script>
+<script type="text/javascript" src="../../../../../script/plug-in/template.js" ></script>
+<script type="text/javascript" src="../../../../../script/plug-in/base64.js" ></script>
+<script type="text/javascript">
+	var currentPage = 1;//当前分页数
+    var totalPages = 0;//总页数
+    var totalData = 0;//定义一个变量存储第一次加载返回来的总记录数
+    var start_time = "";//开始时间
+    var end_time = "";//结束时间
+    var sort_column = 1;//排序类型，1：活动数量，3：参与人数，2：作品数量
+    var sort_type = 'desc';//排序方式
+    var px_num = 1;//排序位数
+    var keyword = '';//搜索关键字
+    apiready = function(){
+        commonSetTheme({"level":5,"type":0});
+        initData(1);
+        commonScrollBottomReload();
+        commonRefreshHeaderInfo(); 
+    };
+    
+    /*
+     * 功能：加载主题活动列表
+     * 作者：张自强
+     * 时间：20171023
+     * 接口提供人：李雪
+     */
+    function initData(current_page){
+        showSelfProgress('加载中...');
+        currentPage = current_page;
+        if(start_time != ''){
+            start_time += ' 00:00:00'
+        }
+        if(end_time != ''){
+            end_time += ' 23:59:59'
+        }
+        
+        switch(sort_column*1){
+            case 1://1：活动数量
+                now_selected_type = 'act_count';
+                break;
+            case 3://3：参与人数
+                now_selected_type = 'played_num';
+                break;
+            case 2://2：作品数量
+                now_selected_type = 'works_num';
+                break;
+        }
+        api.ajax({
+                url:BASE_URL_ACTION + '/space/topic/get_topic_act_school_teacher_list?bureau_id='+$api.getStorage('bureau_id')+'&page_num='+currentPage+'&page_size='+20+'&end_time='+end_time+'&start_time='+start_time+'&word_name='+now_selected_type+'&sort='+sort_type+'&random_num='+creatRandomNum()+'&keyword='+keyword,
+                method : 'get',
+                timeout : 0,
+                dataType : 'json',
+                headers : {
+        'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+    }
+            }, function(ret, err) {
+                totalPages = ret.total_page;
+                totalData = ret.total_row;//定义一个变量存储第一次加载返回来的总记录数
+                if(err){
+                    popToast('获取主题活动列表失败，请稍候重试');
+                }else{
+                    if(ret.success){
+                        ret.sort_type = sort_type;
+                        var list = ret.list;
+                        var first_flag = false;
+                        var second_flag = false;
+                        var three_first_flag = false;
+                        if(list && list.length >= 2){
+                           switch(sort_column*1){
+                               case 1://活动数量
+                                   if(list[0]._count == list[1].act_count){
+                                       first_flag = true;
+                                   }
+                                   if(list.length >=3){
+                                       if(list[1].act_count == list[2].act_count){
+                                           second_flag = true;
+                                       }
+                                       if(list[0].act_count == list[1].act_count && list[1].act_count == list[2].act_count){
+                                           three_first_flag = true;
+                                       }
+                                   }
+                                   break;
+                               case 2://参与人数
+                                   if(list[0].played_num == list[1].played_num){
+                                       first_flag = true;
+                                   }
+                                   if(list.length >=3){
+                                       if(list[1].played_num == list[2].played_num){
+                                           second_flag = true;
+                                       }
+                                       if(list[0].played_num == list[1].played_num && list[1].played_num == list[2].played_num){
+                                           three_first_flag = true;
+                                       }
+                                   }
+                                   break;
+                               case 3://作品数量
+                                   if(list[0].works_num == list[1].works_num){
+                                       first_flag = true;
+                                   }
+                                   if(list.length >=3){
+                                       if(list[1].works_num == list[2].works_num){
+                                           second_flag = true;
+                                       }
+                                       if(list[0].works_num == list[1].works_num && list[1].works_num == list[2].works_num){
+                                           three_first_flag = true;
+                                       }
+                                   }
+                                   break;
+                           }
+                        }
+                        ret.first_flag = first_flag;
+                        ret.second_flag = second_flag;
+                        ret.three_first_flag = three_first_flag;
+                        if(currentPage != 1){
+                            px_num += ret.list.length;
+                        }else{
+                            px_num = 1;
+                        }
+                        ret.px_num = px_num;
+                        commonAddManyHtml('zthd_div','zthd_script',ret);
+                    }else{
+                        popToast('获取主题活动列表失败，请稍候重试');
+                    }
+                }
+                //通知顶部下拉刷新数据加载完毕，组件会恢复到默认状态
+                commonControlRefresh();
+                api.hideProgress();
+            });
+    }
+    
+    /*
+     * 功能：修改时间并加载数据
+     * 作者 ：张自强
+     * 时间：20180912
+     */
+    function changeTimeAndInit(startTime,endTime){
+        start_time = startTime;
+        end_time = endTime;
+        initData(1);
+    }
+    
+    /*
+     * 功能：修改排序方式
+     * 作者：张自强
+     * 时间：20180912
+     */
+    function changeSortType(sortColumn,sortType){
+        sort_column = sortColumn;
+        sort_type = sortType;
+        initData(1);
+    } 
+    
+    /*
+     * 功能：打开某个教师的主题活动列表
+     * 作者：张自强
+     * 时间：20180913
+     */
+    function openZthd(id,name,hdNum){
+        var pageParamJson = {'header_h':api.pageParam.header_h,'fromType':2,'start_time':start_time,'end_time':end_time,'person_now':id,'person_now_name':name,'hdNum':hdNum};
+        commonOpenWin('zthdIpad_tj_index_window', 'zthdIpad_tj_index_window.html', false, false,pageParamJson);
+    }
+    
+    /*
+     *作者:zfz
+     *功能:设置搜索值，并根据搜索条件加载相关数据数据
+     *日期：20180427
+     */
+    function setKeyword(data) {
+        keyword = $api.trimAll(data);
+        keyword = Base64.decode(keyword);
+        initData(1);
+    }
+    
+    /*
+     * 功能:修改排序方式
+     * 作者：张自强
+     * 时间：20181228
+     */
+    function changeEscType(index,type){
+        sort_column = index;
+        sort_type = type;
+        initData(1);
+    }
+</script>
+</html>

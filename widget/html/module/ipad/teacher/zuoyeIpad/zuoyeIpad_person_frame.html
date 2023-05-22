@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>人员列表</title>
+    <link rel="stylesheet" type="text/css" href="../../../../../css/aui/aui.css"/>
+    <link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+    <style>
+    	.cz_table {
+				background-color: #dcdcdc;
+				border-collapse: collapse;
+				margin: 0 auto;
+				table-layout: fixed;
+				width: 100%;
+				margin-top:5px;
+			}
+			.cz_table th, .cz_table td {
+				border: 1px solid #dcdcdc;
+				font-family: Microsoft YaHei;
+				font-size: 14px;
+				font-weight: 500;
+				line-height: 40px;
+				text-align: center;
+			}
+			.cz_table td {
+				background-color: #fff;
+				color: #333;
+				line-height: 40px;
+				overflow: hidden;
+				text-overflow: ellipsis;
+				white-space: nowrap;
+			}
+			.cz_table th {
+				background: none repeat scroll 0 0 #ededed;
+				color: rgb(51, 51, 51);
+			}
+			.cz_out {
+				border-left: 32px solid #7e7e7e;
+				border-top: 37px solid #909090;
+				color: #e3e3e3;
+				height: 0;
+				position: relative;
+				width: 0;
+			}
+			.cz_b {
+				display: block;
+				font-style: normal;
+				left: -26px;
+				position: absolute;
+				top: -42px;
+				width: 35px;
+			}
+			.cz_em {
+				display: block;
+				font-style: normal;
+				left: -30px;
+				position: absolute;
+				top: -26px;
+			}
+			.cz_table tr th:first-child,.cz_table tr td:first-child{width:20%;}
+			.tag-title{height:45px; line-height:43px;background:#ffffff ;border-bottom:2px solid #E6E6E6;position:fixed;width:100%;left:0;top:0;}
+			.tag-title div{width:33%;text-align:center;color:#62656A;}
+			.fl{float:left;}
+			.fr{float:right;}
+			.title{padding-left:10px;padding-top:55px;font-size:14px;}
+    </style>
+</head>
+<body class="common-ipad-zuoyeIpad-tea">
+	<div id="j_menu" class="tag-title">
+		<div id="j_-1" class="fl active" onclick="changeType(-1);">应交</div>
+		<div id="j_1" class="fl" onclick="changeType(1);">已交</div>
+		<div id="j_0" class="fr" onclick="changeType(0);">未交</div>
+	</div>
+	<div class="title">学生列表</div>
+	<table class="cz_table" style="table-layout: fixed; width: 100%;">
+		<thead>
+		    <tr>
+		      <th>序号</th>
+		      <th>姓名</th>
+		      <th>所在班级</th>
+		    </tr>
+  		</thead>
+		<tbody id="div_body"></tbody>
+		<script type="text/html" id="div_script">
+		<%if(stu_list.length==0){%>
+			<td class="no-data" colspan="3" style="border:none;padding-top:0;">暂无学生</td>
+		<%}else{%>
+			<%for(var i = 0 ;i < stu_list.length; i++){%>
+				<tr>
+				    <td><%=i+1%></td>
+				    <td><%=stu_list[i].student_name%></td>
+				    <td><%=stu_list[i].class_name%></td>
+				</tr>
+			<%}%>
+		<%}%>
+		</script>
+	</table>
+</body>
+<script type="text/javascript" src="../../../../../script/api.js"></script>
+<script type="text/javascript" src="../../../../../script/base_config.js" ></script>
+<script type="text/javascript" src="../../../../../script/plug-in/template.js" ></script>
+<script type="text/javascript" src="../../../../../script/common/common.js" ></script>
+<script type="text/javascript" src="../../../../../script/common/jszy_jy_common.js" ></script>
+<script type="text/javascript">
+	var BASE_URL_ACTION;
+	var zy_id;//检测id
+	var	obj_type;//1 代表全部，1班级2群组
+	var	obj_id;//班级/群组ID
+	var	yingj_totalRow;//应交人数
+	var	yij_totalRow;//已交人数
+	var	wj_totalRow;//未交人数
+	apiready = function(){
+		commonSetTheme({"level":5,"type":0});
+		BASE_URL_ACTION = $api.getStorage('BASE_URL_ACTION');
+		zy_id = api.pageParam.zy_id;
+		obj_type=api.pageParam.obj_type;
+		obj_id=api.pageParam.obj_id;
+		yingj_totalRow=api.pageParam.yingj_totalRow;
+		yij_totalRow=api.pageParam.yij_totalRow;
+		wj_totalRow =api.pageParam.wj_totalRow;
+		changeType(-1);
+	};
+	/*
+	*作者:zhaoj
+	*功能:切换标签
+	*日期：20160921
+	*/
+	function changeType(zy_tijiao_statu){
+		var divArray = $api.domAll($api.byId('j_menu'), 'div');
+		for(var i = 0; i < divArray.length; i++){
+			$api.removeCls(divArray[i],'active');
+		}
+		$api.addCls($api.byId('j_'+zy_tijiao_statu),'active');
+		if(zy_tijiao_statu == -1){
+			getZySubmitStuList(zy_tijiao_statu,yingj_totalRow);
+		}else if(zy_tijiao_statu == 1){
+			getZySubmitStuList(zy_tijiao_statu,yij_totalRow);
+		}else{
+			getZySubmitStuList(zy_tijiao_statu,wj_totalRow);
+		}
+	}
+	/*
+	*作者:zhaoj
+	*功能:获取学生数据
+	*日期：20160921
+	*/
+	function getZySubmitStuList(zy_tijiao_statu,totalRow){
+		showSelfProgress('加载中...');
+		if(totalRow != 0){
+			api.ajax({
+				url : BASE_URL_ACTION + '/xx/getZySubmitStuList?zy_id='+zy_id+'&obj_id='+obj_id+'&obj_type='+obj_type+'&pageSize='+totalRow+'&pageNumber=1&totalRow='+totalRow+'&zy_tijiao_statu='+zy_tijiao_statu+'&random='+creatRandomNum(),
+				method : 'get',
+				timeout : 30,
+				dataType : 'json',
+				cache : false,
+			}, function(ret, err) {
+				api.hideProgress();
+				if (err) {
+					popToast('获取学生信息失败');
+				} else {
+					if(ret){
+						var html_type = template.render('div_script', ret);
+						document.getElementById('div_body').innerHTML = html_type;
+					}else{
+						popToast('获取学生信息失败');
+					}
+				}
+			});
+		}else{
+			api.hideProgress();
+			var data={"stu_list": []};
+			var html_type = template.render('div_script', data);
+			document.getElementById('div_body').innerHTML = html_type;
+		}
+	}
+</script>
+</html>

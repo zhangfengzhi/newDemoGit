@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<!-- html5：在创建html时为了防止页面缩放等不兼容效果，要创建个viewport  -->
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<!-- 在IOS设备上，有时会将数字转为手机号，这里也要禁止下 -->
+		<meta name="format-detection" content="telephone=no"/>
+		<title>title</title>
+		<link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+		<style>
+			  html, body {
+            background-color: transparent;
+            
+        }
+			.bg {
+				background: #6a6a6a;
+				width: 50%;
+				margin: 50% 0px 0px 23%;
+				border-radius: 8px;
+				text-align: center;
+				padding: 2%;
+			}
+			.bgimg {
+				height: 100px;
+			}
+			.bgtext {
+				height: 30px;
+				padding: 10px 0px 0px 0px;
+				border-radius: 4px;
+				/*background-color: #FF0000;*/
+				color: #FFFFFF;
+			}
+		</style>
+	</head>
+	<body class="huihua-commont">
+		<div class="bg" id="bg">
+			<img src="../../image/chatBox/dialogImg1.png" class="bgimg" id="bgimg"/>
+			<div class="bgtext" id="bgtext">
+				手指上滑，取消发送
+			</div>
+		</div>
+		<script type="text/javascript" src="../../script/api.js" ></script>
+		<script type="text/javascript" src="../../script/common/common.js" ></script>
+		<script type="text/javascript" src="../../script/base_config.js" ></script>
+	</body>
+	
+	<script type="text/javascript">
+		apiready = function() {
+			commonSetTheme({"level":2,"type":0});
+//			$api.attr($api.byId('bgimg'), 'src' , BASE_CHATBOX_PATH + '/dialogImg1.png');
+		};
+		function moveOut() {
+			document.getElementById('bgimg').src = '../../image/chatBox/dialogImg2.png';
+			document.getElementById('bgtext').innerHTML = '松开手指，取消发送';
+			document.getElementById('bgtext').style.background = "#891313";
+		}
+
+		function moveIn() {
+			document.getElementById('bgimg').src = '../../image/chatBox/dialogImg1.png';
+			document.getElementById('bgtext').innerHTML = '手指上滑，取消发送';
+			document.getElementById('bgtext').style.background = '#6a6a6a';
+		}
+
+		function moveShort() {
+			document.getElementById('bgimg').src = '../../image/chatBox/dialogImg3.png';
+			document.getElementById('bgtext').innerHTML = '录音时间太短';
+			document.getElementById('bgtext').style.background = "#6a6a6a";
+		}
+		
+		function moveLong() {
+			document.getElementById('bgimg').src = '../../image/chatBox/dialogImg3.png';
+			document.getElementById('bgtext').innerHTML = '语音太长了，最多1分钟';
+			document.getElementById('bgtext').style.background = "#6a6a6a";
+		}
+	</script>
+</html>

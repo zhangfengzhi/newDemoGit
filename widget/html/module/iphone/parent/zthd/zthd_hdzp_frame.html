@@ -1,0 +1,572 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <!-- 在IOS设备上，有时会将数字转为手机号，这里也要禁止下 -->
+	<meta name="format-detection" content="telephone=no"/>
+    <title>主题活动-活动作品</title>
+    <link rel="stylesheet" type="text/css" href="../../../../../css/aui_css_new/aui.css" />
+    <link rel="stylesheet" type="text/css" href="../../../../../css/module/common/img-auto.css" />
+    <link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+</head>
+<style type="text/css">
+body { background: #ffffff;}
+/*重新定义*/
+.aui-user-view-cell:after {left: 0;}
+/*自定义*/
+.hdzp-content {font-size: 16px;white-space:nowrap;width:100%;overflow:auto;}
+.otherinfo p { font-size: 12px; margin-bottom: 5px;}
+.no-quanzi{position:absolute;width: 100%;text-align:center;color:#666;padding-top:15px;display:none}
+.aui-ellipsis-1{padding-top:2px;width:50%}
+.aui-img-body{padding-top:2px}
+.aui-user-view-cell:after{border-bottom: 1px solid #ffffff;}
+.quanzi-content-div{padding-left:76px;}
+.quanzi-content{font-size: 16px;display: -webkit-box;-webkit-box-orient: vertical;-webkit-line-clamp:3;overflow: hidden;width:95%}
+.content-border{border:5px solid #ffffff}
+.quanzi-title-left{width:5%;display:inline-block;float:left;text-align: center}
+.quanzi-title-middle{max-width:80%;display:inline-block;float:left;}
+.quanzi-title-right{width:5%;display:inline-block;float:left;text-align: center}
+.aui-list-view.aui-grid-view {padding: 0 10px 0 0;margin-bottom:0;}
+.pinglun{background:url(../../../../../image/fun-module/common/praise-comment.png) 2px -19px no-repeat;background-size: auto 35px;font-size:10px;color:#8f8f94;height:20px;position:absolute;right:10px;padding-top:2px;padding-left:20px;bottom:11px;}
+.w-dianzan{background:url(../../../../../image/fun-module/common/praise-comment.png) 2px 1px  no-repeat;background-size:auto 32px;font-size:10px;color:#8f8f94;height:20px;position:absolute;right:50px;padding-top:2px;padding-left:20px;bottom:11px;}
+.yulan{background:url(../../../../../image/fun-module/ipad/zthd/yulan.png) 0 4px  no-repeat;background-size:auto 11px;font-size:10px;color:#8f8f94;height:20px;position:absolute;right:90px;padding-top:2px;padding-left:22px;bottom:11px;}
+.my-zuopin-div{border-bottom:1px solid #dedede;overflow:auto}
+.input-div{width:90%;margin:0 auto;height:auto;height:35px;margin-top:10px}
+.input-div input{height:30px;font-size:14px;color:#686868}
+.gongneng-list{width:90%;margin:0 auto;margin-bottom:8px;margin-top:2px;}
+.gongneng-list span{font-size:14px;color:#686868}
+.gongneng-list span:nth-child(1){background:url(../../../../../image/fun-module/ipad/zthd/picture.png) 0 0  no-repeat;background-size:auto 14px;padding-left:20px;}
+.gongneng-list span:nth-child(2){background:url(../../../../../image/fun-module/ipad/zthd/vedio.png) 0 0  no-repeat;background-size:auto 14px;padding-left:20px;}
+.gongneng-list span:nth-child(3){background:url(../../../../../image/fun-module/ipad/zthd/audio.png) 0 0  no-repeat;background-size:auto 14px;padding-left:20px;}
+.boutique-tu{float:left;background:url(../../../../../image/fun-module/ipad/zthd/boutique.png) 0 0  no-repeat;background-size:auto 35px;width:30px;height:40px;top:2px;margin-left:25px;}
+.fbzp-button{float:right;height:24px;margin-bottom:5px;margin-top:5px;border-radius:5px;font-size:12px;padding:4px 10px;color:#ffffff;}
+.hdtj-first-head-div{margin:10px auto;margin-bottom:2px;text-align: center;overflow: auto;height: 30px;line-height:30px;}
+.hdtj-head-child{width:33.3%;max-width:33%;font-size:14px;text-align: center;float:left;overflow:hidden;text-overflow: ellipsis;}
+.hdtj-second-head-div{margin:0 auto;text-align: center;overflow: auto;background:#f6f6f6;height: 40px;line-height:40px;padding-top:1px;border-top:1px solid #98999b;}
+.hdtj-second-div-first-div{width:18%;max-width:18%;font-size:14px;text-align: center;float:left;overflow:hidden;text-overflow: ellipsis;}
+.hdtj-second-div-second-div{width:23%;max-width:23%;font-size:14px;float:left;overflow:hidden;text-overflow: ellipsis;}
+.hdtj-third-div-first-div{text-align: center;border-bottom:1px solid #98999b;overflow: auto;height:40px;line-height:40px;}
+.hdtj-second-div-center{text-align:center}
+.content-img{width:90%;margin:10px auto;}
+.content-img img{width:100%}
+.hdjs-hd-title-div{padding-bottom:10px;border-bottom:1px solid #f6f6f6}
+.hdjs-hd-title{width:100%;text-align:center;margin-top:10px;}
+.comment-content li {padding-bottom :8px;margin:0 5px 0 5px;border-bottom:1px solid #dedede;}
+.comment-content li:last-child{border-bottom:none;}
+.comment-content .header-img {display: inline-block;width: 34px;height: 34px;margin-right: 8px;border-radius: 17px;vertical-align: middle;}
+.comment-content .details {padding-top:10px;height: 40px;color: #CACACA;font-size: 14px;margin-bottom:10px;}
+.comment-content .comt-person-name {display: inline-block;width: 100%;color:#777777;height:45px;position:relative;}
+.comment-content .comt-person-name span {position:absolute;bottom:0;left:0;}
+.comment-content .comment-text {color: #474747;font-size: 15px;word-break: break-all;}
+.details-no-huifu{padding-top:10px;height: 32px;color: #CACACA;font-size: 14px;}
+.comt-opt {margin-top: 7px;}
+.comt-opt div {width: 40px;float: right;text-align: right;color: #0062CC;font-size: 14px;}
+.delete-comt{background: url(../../../../../image/fun-module/ipad/zthd/delete.png) 4px 2px no-repeat; background-size: auto 13px;height:20px;}
+.reply{background: url(../../../../../image/fun-module/ipad/zthd/comment-bg.png) 0 2px no-repeat; background-size: auto 13px;height:20px;}
+.hdxq-div{padding:10px 10px;border-bottom:1px solid #f6f6f6}
+.hdxq-star{background:url(../../../../../image/fun-module/ipad/zthd/star.png) 0 5px  no-repeat;background-size:auto 14px;padding-left:20px;font-size:18px;}
+.hdxq-edit{float:right;right:0;background:url(../../../../../image/fun-module/ipad/zthd/edit.png) 38px 5px  no-repeat;background-size:auto 14px;padding-right:20px;}
+.hdxq-div-jianjie{padding:5px 0;padding-left:20px;font-size:14px;color:#686868}
+.hdxq-padding-bottom{padding-bottom:5px;}
+.hdxq-zhankai{float:right;right:0;background:url(../../../../../image/fun-module/ipad/zthd/more.png) 30px 6px  no-repeat;background-size:auto 5px;padding-right:20px;}
+.hdxq-shouqi{float:right;right:0;background:url(../../../../../image/fun-module/ipad/zthd/less.png) 30px 6px  no-repeat;background-size:auto 5px;padding-right:20px;}
+.hdxq-jianjie{position:relative;top:-21px;padding-left:67px}
+.hdtl-div{padding:10px 10px;border-bottom:1px solid #f6f6f6}
+.pl370{padding-left:10px;}
+.pl370 .name{left:10px;}
+.hdzp-content .name{position:absolute;left:14px;top:50%;margin-top:-10px;padding-left:20px;background:url(../../../../../image/fun-module/ipad/zthd/star.png) 0 -1px no-repeat;background-size:18px auto;z-index:1;font-size:16px;}
+.hdzp-content .top-show{top:25px;}
+.down-show ul li{width:100%;float:left;margin-bottom:10px;}
+.down-show ul li:nth-child(odd){padding-right:10px}
+.down-show ul li:nth-child(even){padding-right:10px}
+.down-show ul li .fj-detail{position:relative;display:inline-block;padding:0 37px;max-width:100%;width:100%;height:30px;line-height:30px;background: url(../../../../../image/fun-module/ipad/zthd/fj-qbz.png) 9px 5px no-repeat;background-size:17px auto;color:#00f}
+.border-left{border-left:1px solid #98999b;}
+.aui-col-xs-4{max-width: 90px;}
+.aui-list-view.aui-grid-view .aui-list-view-cell{padding: 0;margin: 1.5% 0 0 1.5%;width:30.3%;}
+</style>
+<body class="common-Iphone-zthdIphone-par">
+	<div class="aui-searchbar-wrap demo" id="search">
+		<div class="aui-searchbar aui-border-radius" tapmode onclick="commonDoSearch();">
+			<i class="aui-iconfont aui-icon-search"></i>
+			<div class="aui-searchbar-text">
+				请输入关键字
+			</div>
+			<div class="aui-searchbar-input">
+				<form action="javascript:startSearch(1);">
+					<input oninput="commonRemoveExpression(this)" type="text" placeholder="" id="search-input" maxlength ='20'>
+				</form>
+			</div>
+			<i class="aui-iconfont aui-icon-roundclosefill" tapmode onclick="commonClearInput()"></i>
+		</div>
+		<div class="aui-searchbar-cancel aui-text-info" tapmode onclick="commonCancelSearch()">
+			取消
+		</div>
+	</div>
+	<!--作品列表-->
+	<div id="zuopin-list">
+		<div class="aui-content-padded" style="margin-left:1px;">
+			<ul id="zuopin_div"></ul>
+			<script type="text/html" id="zuopin_script">
+				<%if(list.length == 0 && page_num == 1){%>
+					<div class="no-data">暂无作品</div>
+				<%}else{%>
+					<%for(var i=0;i<list.length;i++){%>
+						<li class="aui-list-view" style="border-bottom:1px solid #dedede">
+					        <div class="aui-user-view-cell aui-img quanzi_header" onclick="openXQ(<%=list[i].id%>,'<%=list[i].avatar_fileid%>');">							
+					            <img class="aui-img-object aui-pull-left" style="border-radius:8px"  onerror="this.src='../../../../../image/common/header.png'" src='<%=list[i].avatar_fileid%>'>
+					            <div class="aui-img-body">
+					                <span class="person-name-font" style="width:50%;"><%=list[i].person_name%></span>
+					                <div class='aui-ellipsis-1'>
+					                	<span style="font-size:12px;color:#8f8f94;"><%=list[i].create_time.substring(0,16)%></span>
+					                	<div id="delete-quanzi" class="pinglun"><%=list[i].comment_num%></div>
+										<div id="dianzan" class="w-dianzan"><%=list[i].praise_num%></div>
+										<div id="yulan_<%=list[i].id%>" class="yulan"><%=list[i].view_num%></div>	
+					                </div>
+					            </div>
+					        </div>
+					        <%if(list[i].is_boutique == 1){%>
+					        	<div id="boutique" class="boutique-tu"></div>
+					        <%}%>
+					        <div class="quanzi-content-div" onclick="openXQ(<%=list[i].id%>,'<%=list[i].avatar_fileid%>');">
+					        	<div class="hdzp-content">
+						       		<div class="ellipsis quanzi-title-middle"><%=list[i].name%></div>
+						        </div>
+					        	<div class="quanzi-content">
+						       		<%=list[i].overview%>
+						        </div>
+					        </div>
+					       		        
+						       <div>
+								<ul class="aui-list-view aui-grid-view zoomImage-full-4-3" style="padding-left:75px">
+									<%if(list[i].thumbs.length> 0){%>
+										<%for(var j=0;j<list[i].thumbs.length && j<3;j++){%>
+								          	 <%if(list[i].thumbs[j].ext =='jpg'||list[i].thumbs[j].ext =='png'||list[i].thumbs[j].ext =='bmp'||list[i].thumbs[j].ext =='gif'){%>
+                                                <li class="aui-list-view-cell aui-img aui-col-xs-4" onclick="openAttachment(<%=list[i].id%>,'<%=list[i].thumbs[j].resource_id_int%>','<%=list[i].thumbs[j].resource_format%>',this,event,<%=list[i].thumbs[j].imgIndex%>,<%=i%>)" currentPage="<%=list[i].thumbs[j].currentPage%>" attachment="<%=list[i].thumbs[j].file_id%>" ext="<%=list[i].thumbs[j].ext%>">
+								                	<img class="aui-img-object" onerror="this.src='../../../../../image/common/tpsx.png'" src="<%=list[i].thumbs[j].image_url%>" style="height:60px">
+								            	</li>
+                                           <%}else if(commonContainsArray(support_extension,list[i].thumbs[j].ext)){%>
+                                                <li class="aui-list-view-cell aui-img aui-col-xs-4" onclick="openAttachment(<%=list[i].id%>,'<%=list[i].thumbs[j].resource_id_int%>','<%=list[i].thumbs[j].resource_format%>',this,event)" attachment="<%=list[i].thumbs[j].file_id%>" ext="<%=list[i].thumbs[j].ext%>">
+								                	<%if (list[i].attachment[j].defaultUrl==false){%>
+								                		<img class="production-play-img" style="height:60px;width:100%;position: absolute;background-color: black;opacity: 0.7"
+                                                        	src="../../../../../image/fun-module/ipad/zthd/play.png">
+                                                    <%}%>
+								                	<img class="aui-img-object" src=<%=list[i].attachment[j].vediothumburl%> style="height:60px">
+								            	</li>
+                                            <%}else if(list[i].thumbs[j].ext =='mp3'||list[i].thumbs[j].ext =='wav'){%>
+                                                <li class="aui-list-view-cell aui-img aui-col-xs-4" onclick="openAttachment(<%=list[i].id%>,'<%=list[i].thumbs[j].resource_id_int%>','<%=list[i].thumbs[j].resource_format%>',this,event)" attachment="<%=list[i].thumbs[j].file_id%>" ext="<%=list[i].thumbs[j].ext%>">
+                                                <!--	<table style="height:<%=height_div%>px;width:100%;">
+                                                		<tr>
+                                                			<td align="middle">-->
+			                                                    <img class="aui-img-object" src="../../../../../image/fun-module/ipad/zthd/voice-bg.png" style="height:30px">
+                                                			<!--</td>
+                                            			</tr>
+                                        			</table>-->
+								                	
+								            	</li>
+											<% <%}else if(list[i].thumbs[j].ext =='doc'||list[i].thumbs[j].ext =='docx'){%>
+												 <li class="aui-list-view-cell aui-img aui-col-xs-4" onclick="openAttachment(<%=list[i].id%>,'<%=list[i].thumbs[j].resource_id_int%>','<%=list[i].thumbs[j].resource_format%>',this,event)" attachment="<%=list[i].thumbs[j].file_id%>" ext="<%=list[i].thumbs[j].ext%>">
+								                	<img class="aui-img-object" src="../../../../../image/fun-module/ipad/zthd/doc.png" style="height:60px">
+								            	</li>
+											<%}else if(list[i].thumbs[j].ext =='xlsx'||list[i].thumbs[j].ext =='xls'){%>
+												 <li class="aui-list-view-cell aui-img aui-col-xs-4" onclick="openAttachment(<%=list[i].id%>,'<%=list[i].thumbs[j].resource_id_int%>','<%=list[i].thumbs[j].resource_format%>',this,event)" attachment="<%=list[i].thumbs[j].file_id%>" ext="<%=list[i].thumbs[j].ext%>">
+								                	<img class="aui-img-object" src="../../../../../image/fun-module/ipad/zthd/xls.png" style="height:60px">
+								            	</li>
+											<%}else if(list[i].thumbs[j].ext =='txt'){%>
+												 <li class="aui-list-view-cell aui-img aui-col-xs-4" onclick="openAttachment(<%=list[i].id%>,'<%=list[i].thumbs[j].resource_id_int%>','<%=list[i].thumbs[j].resource_format%>',this,event)" attachment="<%=list[i].thumbs[j].file_id%>" ext="<%=list[i].thumbs[j].ext%>">
+								                	<img class="aui-img-object" src="../../../../../image/fun-module/ipad/zthd/txt.png" style="height:60px">
+								            	</li>
+											<%}else if(list[i].thumbs[j].ext =='sb2'){%>
+												 <li class="aui-list-view-cell aui-img aui-col-xs-4" onclick="openAttachment(<%=list[i].id%>,'<%=list[i].thumbs[j].resource_id_int%>','<%=list[i].thumbs[j].resource_format%>',this,event)" attachment="<%=list[i].thumbs[j].file_id%>" ext="<%=list[i].thumbs[j].ext%>">
+								                	<img class="aui-img-object" src="../../../../../image/fun-module/ipad/zthd/sb2.png" style="height:60px">
+								            	</li>
+											%}else if(list[i].thumbs[j].ext =='ppt' || list[i].thumbs[j].ext =='pptx'){%>
+												 <li class="aui-list-view-cell aui-img aui-col-xs-4" onclick="openAttachment(<%=list[i].id%>,'<%=list[i].thumbs[j].resource_id_int%>','<%=list[i].thumbs[j].resource_format%>',this,event)" attachment="<%=list[i].thumbs[j].file_id%>" ext="<%=list[i].thumbs[j].ext%>">
+								                	<img class="aui-img-object" src="../../../../../image/fun-module/ipad/zthd/ppt.png" style="height:60px">
+								            	</li>
+											<%}%>
+									<%}%>
+								<%}%>
+						         </ul>
+						        </div>
+				        	<div class="content-border"></div>
+					    </li>
+					<%}%>
+				<%}%>
+			</script>
+		</div>	
+	</div>
+</body>
+<script type="text/javascript" src="../../../../../script/api.js"></script>
+<script type="text/javascript" src="../../../../../script/base_config.js" ></script>
+<script type="text/javascript" src="../../../../../script/plug-in/template.js" ></script>
+<script type="text/javascript" src="../../../../../script/common/common.js"></script>
+<script type="text/javascript" src="../../../../../script/assembly/openPicker.js"></script>
+<script type="text/javascript" src="../../../../../script/assembly/UIAlbumBrowser.js"></script>
+<script type="text/javascript" src="../../../../../script/assembly/getPicture.js"></script>
+<script type="text/javascript" src="../../../../../script/assembly/photoBrowser.js"></script>
+<script type="text/javascript" src="../../../../../script/plug-in/base64.js" ></script>
+<script type="text/javascript" src="../../../../../script/assembly/openResource.js" ></script>
+<script type="text/javascript" src="../../../../../script/module/iphone/common/zthd/zthd.js" ></script>
+<script type="text/javascript">
+    var currentPage = 1;//当前分页数
+	var totalPages = 0;//总页数
+	var totalData = 0;//定义一个变量存储第一次加载返回来的总记录数
+	var changeType = 2;//定义初始化类型
+	var header_h = 0;
+	var netAudio;//播放录音对象
+	var imageList=[];//图片路径
+	var header_h;
+	var keyword = "";//搜索关键字
+    apiready = function () {
+    	commonSetTheme({"level":5,"type":0});
+    	header_h = api.pageParam.header_h;
+    	netAudio = api.require('netAudio');
+    	header_h = api.pageParam.header_h;
+    	changeType = api.pageParam.type
+		changeHd(changeType);
+		commonScrollBottomReload();
+		commonRefreshHeaderInfo(); 
+    }
+    
+		 /*
+		 * 打开详情页面
+		 * 张自强
+		 * 20170721
+		 */
+		function openXQ(id,avatar_fileid){
+			setTimeout(function (){
+				commonExecScript('zthd_hd_window','','reBackType("content");',0);
+				var pageParamJson={"header_h":header_h,"id":id,"avatar_fileid":avatar_fileid,"person_id":api.pageParam.person_id};
+				commonOpenFrame('zthd_content_frame', 'zthd_content_frame.html',header_h+45, true, false,"#ffffff", pageParamJson);
+			},300);
+		}
+		
+		/*
+		 * 添加浏览次数
+		 * 张自强
+		 * 20170720
+		 */
+		function addBrowseNum(wz_id, expand_id, callback) {
+			api.ajax({
+				url : BASE_URL_ACTION + '/blog/addBrowseNum',
+				method : 'post',
+				dataType : 'json',
+				timeout : 30,
+				cache : false,
+				data : {
+					values : {
+						"article_id" : wz_id,
+						"identity_id" : $api.getStorage('identity'),
+						"person_id" : $api.getStorage('person_id')
+					}
+				}
+			}, function(ret, err) {
+				if (err) {
+					callback(false, '添加浏览次数失败');
+				} else {
+					if (ret.success) {
+						callback(true, ret.info);
+					} else {
+						callback(false, '添加浏览次数失败');
+					}
+				}
+			});
+		}
+		
+		
+		/*
+		 * 功能：切换活动类型
+		 * 作者：张自强
+		 * 时间：20171021
+		 */
+		function changeHd(type){
+			changeType = type;
+			currentPage = 1;
+			totalPages = 0;
+			totalData = 0;
+			switch(type){
+				case 2:
+					//活动作品
+					$api.css($api.byId('my-zuopin'),'display:none');
+          			initData(1);
+					break;
+				case 3:
+					//我的作品
+					$api.css($api.byId('my-zuopin'),'display:block');
+					initData(1);
+					break;
+			}
+		}
+		
+		/*
+		 * 功能：根据主题id获取(我的)作品列表
+		 * 作者：张自强
+		 * 时间：20171024
+		 */
+		function initData(current_page){
+			commonShowProgress('加载中...',true);
+			currentPage = current_page;
+			var Url = '';
+			if(changeType == 2){
+				Url = BASE_URL_ACTION + '/ypt/space/topic/get_works_by_topicid?topic_id='+api.pageParam.id+'&person_id='+$api.getStorage('person_id')+'&identity_id='+$api.getStorage('identity')+'&page_size='+BASE_PAGE_SIZE+'&page_num='+currentPage+'&name='+keyword;
+				getzpList(Url);
+			}else if(changeType == 3){
+				commonGetStudentInfoByParentId($api.getStorage("person_id"), $api.getStorage("identity"), function(is_true, stu_info_json){
+					if(is_true) {
+						Url = BASE_URL_ACTION + '/ypt/space/topic/get_my_works_by_topicid?topic_id='+api.pageParam.id+'&person_id='+stu_info_json.student_id+'&identity_id=6&page_size='+BASE_PAGE_SIZE+'&page_num='+currentPage+'&name='+keyword;
+						getzpList(Url);
+					}else{
+						popToast(stu_info_json);
+					}
+				});
+			}
+			
+		}
+		
+		function getzpList(Url){
+			 api.ajax({
+				url : Url,
+				method : 'get',
+				timeout : 0,
+				dataType : 'json',
+				headers : {
+		'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+	}
+			}, function(ret, err) {
+				totalPages = ret.total_page;
+				totalData = ret.total_row;//定义一个变量存储第一次加载返回来的总记录数
+				if(err){
+					popToast('获取活动作品列表失败，请稍候重试');
+				}else{
+					if(ret.success){
+						if (currentPage == 1){
+							imageList = [];
+						}
+						for(var i = 0; i < ret.list.length; i++){
+							var img_url="";
+					    	if (BASE_APP_TYPE == 1) {
+								img_url = BASE_IMAGE_PRE+"down/Material/" + ret.list[i].avatar_fileid.substring(0, 2) + "/" + ret.list[i].avatar_fileid+ commonReturnPhotoCutSize(0);		
+							} else {
+								img_url = BASE_URL_ACTION + "/html/thumb/Material/" + ret.list[i].avatar_fileid.substring(0, 2) + "/" + ret.list[i].avatar_fileid + commonReturnPhotoCutSize(0);
+							}
+							ret.list[i].avatar_fileid = img_url;
+							ret.list[i].thumbs=[];
+							var imgIndex = 0;
+							var imageArray = [];
+							//附件
+							if(!isEmptyString(ret.list[i].attachment)){
+                      			var attachment=ret.list[i].attachment;
+                                for(var j = 0; j < attachment.length; j++){
+                                    var ext = attachment[j].resource_format;
+                                    var oparam = new Object();
+                                    oparam.file_id = attachment[j].file_id;
+                                    oparam.resource_id_int = attachment[j].resource_id_int;
+                                    oparam.resource_format = attachment[j].resource_format;
+                                    oparam.image_url = gertImageUrl(attachment[j].file_id,ext,1);
+                                    oparam.image_url_yt = gertImageUrl(attachment[j].file_id,ext,0);
+                                    oparam.ext=ext.toLowerCase();
+                                    oparam.currentPage = currentPage;
+									if((ext=='png' || ext=='jpg' || ext == 'bmp' || ext =='gif')){
+										imageArray.push(gertImageUrl(attachment[j].file_id,ext,1));
+										oparam.imgIndex = imgIndex;
+										imgIndex++;
+									}
+									
+									ret.list[i].thumbs.push(oparam);
+									if(attachment[j].resource_type_name == "视频"){
+										if (parseInt(attachment[j].m3u8_status)===2 || parseInt(attachment[j].m3u8_status)===0){
+											attachment[j].vediothumburl = BASE_URL_ACTION+"/html/down/Thumbs/" + attachment[j].thumb_id.substr(0,2)+"/"+attachment[j].thumb_id+".thumb";
+										    attachment[j].defaultUrl = false;
+										}else{
+											attachment[j].vediothumburl = "../../../../../image/fun-module/ipad/zthd/vedio-bg.png";
+											attachment[j].defaultUrl = true;
+										}
+									}
+								}
+							}
+							
+							imageList.push(imageArray);
+							var oparam = new Object();
+							oparam.works_id = ret.list[i].id;
+							oparam.type = 0;//代表是从活动作品页面进去的
+							oparam.avatar_fileid = ret.list[i].avatar_fileid;
+							ret.list[i].oparam = JSON.stringify(oparam);
+							
+						}
+						var zp_list = ret.list;
+						var zp_list_up = [];
+						for(var i=0;i<zp_list.length;i++){
+							if(zp_list[i].is_boutique == 1){
+								zp_list_up.push(zp_list[i]);
+							}
+						}
+						for(var i=0;i<zp_list.length;i++){
+							if(zp_list[i].is_boutique == 0){
+								zp_list_up.push(zp_list[i]);
+							}
+						}
+						ret.support_audio_extension = support_audio_extension;
+						ret.support_extension = support_extension;
+						ret.commonContainsArray = commonContainsArray;
+						ret.list = zp_list_up;
+						var wid_a = $api.cssVal($api.byId("zuopin_div"),"width");
+						var wid_a_num = wid_a.substring(0,wid_a.length-2) - 100;
+						var height_div = wid_a_num * 0.33 * 0.9 * 0.75;
+						ret.height_div = height_div; 
+						commonAddManyHtml('zuopin_div','zuopin_script',ret);
+					}else{
+						popToast('获取活动作品列表失败，请稍候重试');
+					}
+				}
+				//通知顶部下拉刷新数据加载完毕，组件会恢复到默认状态
+				commonControlRefresh();
+				api.hideProgress();
+			});
+		}
+		
+	   /*
+	    *author:zhaoj
+	    *function:获取缩率图路径
+	    *date：20171023
+	    */
+		function gertImageUrl(file_id,ext,type){
+			var img_url='';//图片路径
+	        if(!isEmptyString(file_id)){
+	            if(ext == 'png' || ext == 'PNG'|| ext == 'jpg'|| ext == 'JPG'|| ext == 'gif'|| ext == 'GIF'|| ext == 'bmp'|| ext == 'BMP'){
+	                image_hz = type?commonReturnPhotoCutSize(0):'';
+	                if (BASE_APP_TYPE == 1) {
+	                    img_url = BASE_IMAGE_PRE+"down/Material/" + file_id.substring(0, 2) + "/" + file_id+'.'+ext+ image_hz;      
+	                } else {
+	                    img_url = BASE_URL_ACTION + "/html/thumb/Material/" + file_id.substring(0, 2) + "/" + file_id+'.'+ext+image_hz;
+	                }
+	            }
+	        }
+	        return img_url;
+		}
+		
+		
+		
+		/*
+		 * 功能：打开发布作品页面
+		 * 作者：张自强
+		 * 时间：20171025
+		 */
+		function openAddZuoPin(){
+			commonExecScript('zthd_hd_window','','reBackType("add")',0);
+			var header_h = api.pageParam.header_h;
+			var pageParamJson={"header_h":header_h,"id":api.pageParam.id};//打开frame页面所需参数
+			commonOpenFrame('zthd_addZuoPin_frame', 'zthd_addZuoPin_frame.html',header_h, true, false,"#ffffff",pageParamJson);	//打开index页面
+		}
+		
+	   /*
+	    *author:zhaoj
+	    *function:播放音频
+	    *date：20171024
+	    */
+	    function openAudio(voice_url,self){
+	    	commonShowProgress('加载中...',false);
+	    	netAudio.play({
+			    path: voice_url
+			},function( ret, err ){    
+			    if( ret ){
+			    	if(ret.current == 0){
+			    		api.hideProgress();
+	                    var img_dom = $api.dom(self, 'img');
+	                    $api.attr(img_dom, 'src','../../../../../image/fun-module/ipad/zthd/voice-bg.gif');
+			    	}
+			    	if(ret.complete==true){
+						popToast('播放完毕');
+						$api.removeCls(self, 'is_play');
+						var img_dom = $api.dom(self, 'img');
+						$api.attr(img_dom, 'src','../../../../../image/fun-module/ipad/zthd/voice-bg.png');		
+			    	}
+			    }else{
+	                api.hideProgress();
+			    	popToast('加载失败');
+			    }
+			});
+	    }
+	    
+	   /*
+		*author:zhaoj
+		*function:停止录音
+		*date：20171024
+		*/
+		function stopVoice(self){
+			netAudio.stop();
+			api.hideProgress();
+			var img_dom = $api.dom(self, 'img');
+			$api.attr(img_dom, 'src','../../../../../image/fun-module/ipad/zthd/voice-bg.png');		
+		}
+		
+   /*
+    *author:zhaoj
+    *function:打开附件
+    *date：20171023
+    */
+    function openAttachment(works_id,resource_id_int,resource_format,self,e,imgIndex,index){
+    	add_works_view_num(works_id);
+    	if (resource_format=='png' || resource_format=='jpg' || resource_format == 'bmp' || resource_format =='gif'){
+    		index = ($api.attr(self, 'currentPage') - 1) * 10 + index;
+    		openPictureShowWin(imageList[index],imgIndex);
+    		return;
+    	}
+    	
+        var param_json = {"is_show_tip":1,"resource_id_int":resource_id_int};
+        commonGetResInfo(param_json,function(flag,ret){
+            api.hideProgress();
+            if(flag){
+                if(resource_format != "mp3"){
+                    var oparam ={"res_type":ret.resource_format, "res_path":ret.file_id, "res_title":ret.resource_title,"m3u8_status":ret.m3u8_status,"winName":api.winName,"setBackFun":'reBackType("voice");',"backFun":'back();',"res_id":'open_picture',"pic_back":'hdzp_picture'};
+                     common_openResource.open_new(JSON.stringify(oparam));
+                }else{
+                    var res_url='';
+                    if (BASE_APP_TYPE == 1) {
+                        res_url = BASE_IMAGE_PRE+"down/Material/" + ret.file_id.substring(0, 2) + "/" + ret.file_id+'.'+ret.resource_format;        
+                    } else {
+                        res_url = BASE_URL_ACTION + "/html/thumb/Material/" + ret.file_id.substring(0, 2) + "/" + ret.file_id+'.'+ret.resource_format;
+                    }
+                    if($api.hasCls(self, 'is_play')){
+                        //停止播放
+                        $api.removeCls(self, 'is_play');
+                        var img_dom = $api.dom(self, 'img');
+                        $api.attr(img_dom, 'src','../../../../../image/fun-module/ipad/zthd/voice-bg.png');
+                        stopVoice(self);
+                    }else{
+                        //正在播放
+                        $api.addCls(self, 'is_play');
+                        openAudio(res_url,self);
+                    }
+                }
+            }else{
+                popToast('打开失败，请稍候重试');
+            }
+        });
+        e.stopPropagation();
+    }
+    
+    
+    /*
+	 *作者:zfz
+	 *功能:开始搜索
+	 *日期：20180427
+	 */
+	function startSearch(type) {
+		commonSearch(type, function(data) {
+			setKeyword(data);
+		})
+	}
+	
+	/*
+	 *作者:zfz
+	 *功能:设置搜索值，并根据搜索条件加载相关数据数据
+	 *日期：20180427
+	 */
+	function setKeyword(data) {
+		keyword = $api.trimAll(data);
+		keyword = Base64.decode(keyword);
+		initData(1);
+	}
+</script>
+</html>

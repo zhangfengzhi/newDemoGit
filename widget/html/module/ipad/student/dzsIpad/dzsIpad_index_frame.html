@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>电子书</title>
+    <link rel="stylesheet" type="text/css" href="../../../../../css/aui/aui.css"/>
+    <link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+    <style>
+		.time-axis{padding:30px 0 10px 0;}
+    	.time-axis-body{background:#fff;}
+    	.time-axis-top-blank{height:20px !important;}
+    	.time-axis-content{min-height:155px;}
+    	.time-axis-content .tip{color:#fff;width:40px !important;height:20px !important;line-height:20px;text-align:center;border-radius:5px !important;top:0 !important;right:-18px !important;font-size:14px !important;}
+    	.time-axis-body .time-axis-content .img img{bottom:0 !important;width:100%;height:100%;}
+    	.bottom-name,.study-count{position:absolute;bottom:0;height:30px;line-height:32px;color:#fff;font-size:14px;}
+    	.bottom-name{width:100%;left:0;background:rgba(0,0,0,0.6);padding:0 8px;}
+    	.study-count{right:0;padding-right:8px;}
+    	.time-axis-body .time-axis-content .zoomImage{padding-bottom:63%;}
+	</style>
+</head>
+<body class="axis-body common-ipad-dzsIpad">
+	<div class="msg-top"></div>
+	<div id="msg_top_all" style="height:0px; overflow:hidden"></div>
+	<div class="time-axis">
+		<div id="j_blank" class="time-axis-top-blank aui-hide"></div>
+		<div id="div_body" class="time-axis-body clearfix">
+		</div>
+		<script type="text/html" id="div_script">
+			<% if(list.length == 0){ %>
+				<div class="no-data"><span>暂无电子书</span><`/div>
+			<% }else{ %>
+				<%for(var i=0; i < list.length; i++) {%>
+					<div class="time-axis-content clearfix" onclick="ksxx('<%=list[i].oparam_base64%>');">
+						<div class="img zoomImage">
+							<img src="<%=list[i].img_src%>" />
+							<div class="bottom-name ellipsis"><%=list[i].dzs_name%></div>
+						</div>
+					</div>
+				<%}%>
+			<% } %>
+		</script>
+	</div>
+</body>
+<script type="text/javascript" src="../../../../../script/api.js"></script>
+<script type="text/javascript" src="../../../../../script/base_config.js" ></script>
+<script type="text/javascript" src="../../../../../script/plug-in/base64.js" ></script>
+<script type="text/javascript" src="../../../../../script/plug-in/template.js" ></script>
+<script type="text/javascript" src="../../../../../script/common/common.js"></script>
+<script type="text/javascript" src="../../../../../script/assembly/executeApp.js" ></script>
+<script type="text/javascript" src="../../../../../res/json/dzs_json/shuxue.json"></script>
+<script type="text/javascript" src="../../../../../res/json/dzs_json/yingyu.json"></script>
+<script type="text/javascript" src="../../../../../res/json/dzs_json/yinyue.json"></script>
+<script type="text/javascript" src="../../../../../res/json/dzs_json/yuwen.json"></script>
+<script type="text/javascript">
+	var header_h;//顶部header高度
+	var currentPage=1;//当前分页数
+	var totalPages;//总页数
+	var BASE_URL_ACTION;
+	var subject_id;//学科id
+	var type_id;//专题类型
+	var keyword = "";//搜索条件
+	var order_type=1;//排序方式，1最新，2最热
+	var subject_data;//菜单学科html
+	var total_param={};
+	apiready = function(){
+		commonSetTheme({"level":5,"type":0});
+		header_h = api.pageParam.header_h;
+		total_param.person_id = $api.getStorage("person_id");
+		total_param.identity = $api.getStorage("identity");
+		showSelfProgress("加载中...");
+		openNavigationBar();//打开专题类型滑动条
+		commonRefreshHeaderInfo();//下拉刷新
+		commonScrollBottomReload();//上拉加载更多数据
+	};
+	
+	/**
+	 * 打开游戏类型
+	 * 周枫
+	 * 2016.12.26 
+	 */
+	function openNavigationBar() {
+		commonCloseNavigationBar();
+			var bar_items = [
+				{
+					"title" : '语文',
+					"id" : 1,
+				},{
+					"title" : '数学',
+					"id" : 2,
+				},{
+					"title" : '英语',
+					"id" : 3,
+				},{
+					"title" : '音乐',
+					"id" : 4,
+				}
+			];
+			var params = {
+				y : header_h+1,
+				w : api.winWidth,
+				h:64,
+				items : bar_items,
+				winName : api.winName,
+				frameName : api.frameName,
+				file_level:2
+			};
+			commonMyNavigationBar(params);
+	}
+	/*
+	*author:zhaoj
+	*function:点击游戏类型回调函数
+	*date：20161220
+	*/
+	function callBackNew(id, index) {
+		type_id = id;
+		showSelfProgress("加载中...");
+		msg_top_all.scrollIntoView();//切换学科时，定位到最上方 
+		initData(1);
+	}
+	/*
+	*author:zhaoj
+	*function:加载数据
+	*date：20161220
+	*/
+	function initData(current_page){
+		currentPage = current_page;
+		//通知顶部下拉刷新数据加载完毕，组件会恢复到默认状态
+		var data={"list":[]};
+		switch(type_id*1){
+			case 1:
+				//语文
+				data.list = yuwen.list;
+				break;
+			case 2:
+				//数学
+				data.list = shuxue.list;
+				break;
+			case 3:
+				//英语
+				data.list = yingyu.list;
+				break;
+			case 4:
+				//音乐
+				data.list = yinyue.list;
+				break;
+		}
+		for(var i = 0; i < data.list.length; i++){
+			var img_src = '';
+			if (BASE_APP_TYPE == 1) {
+				img_src = BASE_IMAGE_PRE+"down/Material/" + data.list[i].img_url.substring(0, 2) + "/" + data.list[i].img_url+'.'+data.list[i].img_ext+ commonReturnPhotoCutSize(0);		
+			} else {
+				img_src = BASE_URL_ACTION + "/html/thumb/Material/"+ data.list[i].img_url.substring(0, 2) + "/" + data.list[i].img_url+'.'+data.list[i].img_ext+ commonReturnPhotoCutSize(0);	
+			}
+			console.log(img_src);
+			data.list[i].img_src = img_src;
+			data.list[i].oparam_base64 = Base64.encode(JSON.stringify(data.list[i]));
+		}
+		commonAddOnceHtml('div_body','div_script',data);
+		commonControlRefresh();
+		api.hideProgress();
+	}
+	
+	/*
+	*author:zhaoj
+	*function:设置搜索值，并根据搜索条件加载相关数据数据
+	*date：20161220
+	*/
+	function setKeyword(data) {
+		keyword = data;
+    	currentPage = 1;
+    	initData(currentPage);
+	}
+	/*
+	 *author:zhaoj
+	 *function:开始学习
+	 *date：20161220
+	 */
+	function ksxx(oparam_base64) {
+		var oparam = JSON.parse(Base64.decode(oparam_base64));
+		var app_key = "";
+		var down_url = "";
+		var app_type = api.systemType;
+		if(app_type == "ios") {
+			app_key = BASE_ZY_APP_IOS;
+			down_url = BASE_ZY_APP_DOWN_IOS;
+		} else {
+			app_key = BASE_ZY_APP_ANDROID;
+			down_url= BASE_ZY_APP_DOWN_ANDROID;
+		}
+		var dsbook_info = {"filename":oparam.dzs_id+'.'+oparam.dzs_ext,"filetitle":oparam.dzs_name}
+		var oparamJsonData = {"type":7,"app_key":app_key,"down_url":down_url,"id":oparam.dzs_id,"resource_id":oparam.dzs_id,"dsbook_info":Base64.encode(JSON.stringify(dsbook_info))};
+		//判断是否已经安装app
+		common_app.appInstalled(oparamJsonData);
+	}
+</script>
+</html>

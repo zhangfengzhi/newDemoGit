@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>班级通知</title>
+    <link rel="stylesheet" type="text/css" href="../../../../../css/aui/aui.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../../../css/module/ipad/left-right-layout.css"/>
+    <link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+</head>
+<body class="left-layout-body common-ipad-bjtzIpad-tea">
+	<div id="j_top" style="height:0px; overflow:hidden"></div>
+	<div id="j_box_shadow" class="box-shadow aui-hide"></div>
+	<!--右侧内容-->
+	<div class="thumb-content clearfix">
+		<ul id="div_body">
+<!--			<li class="active">	
+				<img class="thumb-img" src="../../../image/fun-module/common/bjtz.png" />
+				<div class="title pr20 pt20 mt10">
+					<span class="ellipsis">
+						
+						勿忘初心
+						
+					</span>
+				</div>
+				<div class="detail-infor mt20">
+					<div class="person-name">鹿晗</div>
+					<div class="time pt5">2017-09-17 09：13</div>
+				</div>
+			</li>-->
+		</ul>
+		<script id="div_script" type="text/html">
+			<%if(list.length == 0){%>
+				<div class="no-data">暂无班级通知</div>
+			<%}else{%>
+				<%for(var i=0;i<list.length;i++){%>
+					<li onclick="openDetailFrame('<%=list[i].transfer_data%>',this);">	
+						<img class="thumb-img" src="<%=list[i].thumb_id%>" onerror="this.src='../../../../../image/fun-module/common/bjtz.png'" />
+						<div class="title pr20 pt20 mt10">
+							<span class="ellipsis">
+								
+								<%=list[i].title%>
+								
+							</span>
+						</div>
+						<div class="detail-infor mt20">
+							<div class="person-name ellipsis"><%=list[i].person_name%></div>
+							<div class="time pt5"><%=list[i].create_time.substring(0,16)%></div>
+						</div>
+					</li>
+				<%}%>	
+			<%}%>
+		</script>
+	</div>
+	<!--//右侧内容-->
+</body>
+<script type="text/javascript" src="../../../../../script/api.js"></script>
+<script type="text/javascript" src="../../../../../script/base_config.js" ></script>
+<script type="text/javascript" src="../../../../../script/plug-in/template.js" ></script>
+<script type="text/javascript" src="../../../../../script/common/common.js"></script>
+<script type="text/javascript" src="../../../../../script/plug-in/base64.js" ></script>
+<script type="text/javascript">
+	var currentPage = 1;//当前分页数
+	var totalPages = 0;//总页数
+	var total_json = {};//全局参数
+	apiready = function(){
+		commonSetTheme({"level":5,"type":0});
+		commonExecScript('bjtzIpad_index_window','','getTagData();',0);//切换index列表数据
+		commonScrollBottomReload();
+		commonRefreshHeaderInfo();
+	};
+	/*
+	*author:zhaoj
+	*function:切换选项，加载对应列表数据
+	*date：20170915
+	*/
+	function changeOrgId(page,id,org_type){
+		total_json.id = id;
+		total_json.org_type = org_type;
+		initData(page);
+	}
+	/*
+	*author:zhaoj
+	*function:初始化列表数据
+	*date：20170915
+	*/
+	function initData(current_page){
+		currentPage = current_page;
+		showSelfProgress('加载中...');
+		getNoticeList();
+	}
+	/*
+	*author:zhaoj
+	*function:获取新闻资讯列表
+	*date：20170915
+	*/
+	function getNoticeList(){
+		//获取新闻资讯码
+		getNewsRegisterId(total_json.id, total_json.org_type, function(is_true, a_id) {
+			if (is_true) {
+				total_json.regist_id = a_id;
+				if (a_id == -1) {
+					api.hideProgress();
+					//新闻资讯顶部下拉刷新数据加载完毕，组件会恢复到默认状态
+					commonControlRefresh();
+					commonAddManyHtml('div_body','div_script',{"list":[]});
+				} else {
+					api.ajax({
+						url : BASE_URL_ACTION + '/notice/getNoticeList?page_number=' + currentPage + '&page_size=' + BASE_PAGE_SIZE + '&register_id=' + a_id+ '&title=',
+						method : 'get',
+						timeout : 30,
+						dataType : 'json',
+						cache : false
+					}, function(ret, err) {
+						if(err){
+							popToast('获取班级通知信息失败，请稍候重试');
+						}else{
+							if (ret.success) {
+								totalPages = ret.total_page;
+								//得到缩略图路径
+	                            for (var i = 0; i < ret.list.length; i++) {
+	                                if(!ret.list[i].thumbnail){
+	                                    ret.list[i].thumb_id='../../../../../image/fun-module/common/bjtz.png';
+	                                }else{
+	                                    var thumb_url = ret.list[i].thumbnail;
+	                                    var index = thumb_url.indexOf('/Material');
+	                                    if (index != -1) {
+	                                        var thumb_id=thumb_url.substring(index+10,thumb_url.length);
+	                                        if(BASE_APP_TYPE == 1){
+	                                            ret.list[i].thumb_id = BASE_IMAGE_PRE + BASE_MATERIAL_BEGIN+ thumb_id+commonReturnPhotoCutSize(0);
+	                                        }else{
+	                                            ret.list[i].thumb_id = BASE_URL_ACTION + BASE_IMAGE_BEGIN+ thumb_id+commonReturnPhotoCutSize(0);
+	                                        }
+	                                    }else{
+	                                        ret.list[i].thumb_id = ret.list[i].thumbnail;
+	                                    }
+	                                }
+	                                var oparam = new Object();
+	                                oparam.notice_id = ret.list[i].notice_id;
+	                                ret.list[i].oparam = JSON.stringify(oparam);
+	                            }
+	                            var  onerror_img="this.src='../../../../../image/common/tpsx.png'";
+	                            //内容详情中的图片路径进行处理并将发布人姓名、时间加密
+								for(var i=0; i < ret.list.length; i++){
+									var notice_con = ret.list[i].content;
+									if (BASE_APP_TYPE == 1) {
+										var notice_str1 = '<img';
+										var notice_str2 = '<img class="ima_notice" onerror='+onerror_img+' onclick="openImage(this)"';
+										notice_con = notice_con.replaceAll(notice_str1, notice_str2);
+									}else{
+										var key = '/dsideal_yy';
+										var notice_str3 = '<img';
+										var notice_str4 = '<img class="ima_notice" onerror='+onerror_img+' onclick="openImage(this)"';
+										notice_con = notice_con.replaceAll(notice_str3, notice_str4);
+										if(notice_con.indexOf(BASE_URL_ACTION) == -1){
+											if (notice_con.indexOf(key) != -1) {
+												var key_re = BASE_URL_ACTION;
+												notice_con = notice_con.replaceAll(key, key_re);
+											}
+										}
+									}
+									ret.list[i].content = notice_con;
+									//处理需要传送到详情页面中的数据
+									var oparam = new Object();
+									oparam.content_base64 = Base64.encode(notice_con);
+									oparam.person_name_base64 = Base64.encode(ret.list[i].person_name);
+									oparam.person_id = ret.list[i].person_id;
+									oparam.notice_id = ret.list[i].notice_id;
+									oparam.create_time_base64 = Base64.encode(ret.list[i].create_time);
+									oparam.title_base64 = Base64.encode(ret.list[i].title);
+									ret.list[i].transfer_data = JSON.stringify(oparam);
+								}
+	                         	commonAddManyHtml('div_body','div_script',ret);
+							} else {
+								popToast('获取班级通知信息失败，请稍候重试');
+							}
+							api.hideProgress();
+							//新闻资讯顶部下拉刷新数据加载完毕，组件会恢复到默认状态
+							commonControlRefresh();
+						}
+					});
+				}
+			} else {
+				popToast(a_id);
+			}
+		});
+	}
+	/*
+	*author:zhaoj
+	*function:获取通知码
+	*date：20170915
+	*/
+	function getNewsRegisterId(orgs_id, level_type, callback) {
+		api.ajax({
+			url : BASE_URL_ACTION + '/space/getNewsRegisterId?a_id=' +orgs_id+'_1_bjgg'+ '&a_identity_id=' + level_type,
+			method : 'get',
+			timeout : 30,
+			dataType : 'json',
+			cache : false
+		}, function(ret, err) {
+			if (err) {
+				callback(false, '获取班级通知信息失败，请稍候重试');
+			} else {
+				if (ret.success) {
+					if(ret.flag){
+						callback(true,ret.regist_id);
+					}else{
+						applyRegisterId(function(registerId){
+							if(registerId != -1){
+								var register_a_id = orgs_id+'_1_bjgg';
+				                saveRegisterId(registerId,register_a_id,level_type,function(register,flag){
+				                	if(flag){
+					                	callback(true,register);
+					                }else{
+					                	callback(false,0);
+					                }
+				                });
+				                
+				            }
+						});
+					}
+				} else {
+					callback(false, '获取班级通知信息失败，请稍候重试');
+				}
+			}
+		});
+	}
+	/*
+	*作者:zhaoj
+	*功能:申请注册号
+	*日期：20161008
+	*/
+	function applyRegisterId(callback){
+		var registerId = -1;
+		api.ajax({
+			url :BASE_URL_ACTION + "/ypt/notice/applyRegisterId?random_num="+creatRandomNum(),
+			method : 'get',
+			timeout : 30,
+			dataType : 'json',
+			headers : {
+	'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' +$api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+		}
+		}, function(ret, err) {
+			if(ret.success){
+				registerId =ret.register_id;
+			}
+			callback(registerId);
+		});
+	}
+	/*
+	*作者:zhaoj
+	*功能:保存注册号
+	*日期：20161008
+	*/
+	function saveRegisterId(regist_id,register_a_id,a_identity_id,callback){
+		var flag = false;
+		api.ajax({
+			url :BASE_URL_ACTION + "/ypt/space/setNewsRegisterId",
+			method : 'post',
+			timeout : 30,
+			dataType : 'json',
+			data : {
+				values : {
+					"regist_id":regist_id,
+					"a_id":register_a_id,
+					"a_identity_id":a_identity_id,
+					"random_num":creatRandomNum()
+				}
+			},
+			headers : {
+	'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' +$api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+		}
+		}, function(ret, err) {
+			if(ret.success){
+				flag = true;
+			}
+			callback(regist_id,flag);
+		});
+	}
+	/*
+	*author:zhaoj
+	*function:打开详情页面
+	*date：20170912
+	*/
+	function openDetailFrame(oparam,self){
+		setLiCss(self);
+		commonCloseFrame('bjtzIpad_detail_frame');
+		oparam = Base64.encode(oparam);
+		commonExecScript('bjtzIpad_index_window','','openDetailFrame("'+oparam+'");',0);
+	}
+	/*
+	*author:zhaoj
+	*function:设置选中样式
+	*date：20170919
+	*/
+	function setLiCss(self){
+		var li_array = $api.domAll($api.byId('div_body'), 'li');
+		for(var i = 0; i < li_array.length; i++){
+			$api.removeCls(li_array[i], 'active');
+		}
+		$api.addCls(self, 'active');
+	}
+	/*
+	*author:zhaoj
+	*function:是否显示虚线
+	*date：20170919
+	*/
+	function isShowBoxShow(type){
+		type ? $api.removeCls($api.byId('j_box_shadow'), 'aui-hide') : $api.addCls($api.byId('j_box_shadow'), 'aui-hide');
+	}
+	/*
+	*author:zhaoj
+	*function:打开添加页面
+	*date：20170912
+	*/
+	function openAddFrame(){
+		var header_h = api.pageParam.header_h;//顶部高度
+		pageParamJson={"header_h":header_h,"regist_id":total_json.regist_id,'id':total_json.id};//打开frame页面json数据
+		//打开frame页面
+		commonOpenFrame("bjtzIpad_add_frame","bjtzIpad_add_frame.html",0,false,false,"rgba(0,0,0,0)",pageParamJson);
+	}
+</script>
+</html>

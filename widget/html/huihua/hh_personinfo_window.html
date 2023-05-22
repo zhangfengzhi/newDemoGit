@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<!-- html5：在创建html时为了防止页面缩放等不兼容效果，要创建个viewport  -->
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<!-- 在IOS设备上，有时会将数字转为手机号，这里也要禁止下 -->
+		<meta name="format-detection" content="telephone=no"/>
+		<title>人员window</title>
+		<link rel="stylesheet" type="text/css" href="../../css/aui/aui.css" />
+		<link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+	</head>
+	<body class="huihua-commont">
+		<div id="wrap">
+			<header class="aui-bar aui-bar-nav aui-bar-primary" id="aui-header">
+				<div id="cloud" class="topbar activebar">
+					<div id="back" class="back" onclick="back();" tapmode="">
+						<i class="aui-iconfont aui-icon-left"></i>返回
+					</div>
+					<div class="mTitle" id="mTitle">
+						详细资料
+					</div>
+					<div class="win-menu">
+						
+					</div>
+					
+				</div>
+			</header>
+			<div  class="aui-content aui-content-padded" id="message-content">
+				<p class="aui-text-center history-date"></p>
+			</div>
+		</div>
+	</body>
+	<script type="text/javascript" src="../../script/api.js"></script>
+	<script type="text/javascript" src="../../script/base_config.js"></script>
+	<script type="text/javascript" src="../../script/common/common.js"></script>
+	<script type="text/javascript">
+		apiready = function() {
+			commonSetTheme({"level":2,"type":0});
+			//定位header位置，留出上面电池等空隙，苹果需要
+			var header = $api.byId('aui-header');
+			$api.fixStatusBar(header);
+			var header_h = api.pageParam.header_h;
+			
+			var targetId = api.pageParam.targetId;
+			var old_msg_id = api.pageParam.old_msg_id;
+			var conver_type = api.pageParam.conver_type;
+			var person_name = api.pageParam.person_name;
+			var h_from = api.pageParam.h_from;
+			var avatar_url = api.pageParam.avatar_url;
+				
+			//打开人员列表frame
+			openPersonInfoFrame(header_h, targetId, old_msg_id, conver_type, person_name, h_from, avatar_url);
+			//安卓关闭
+			if (api.systemType == 'android') {
+				backForAndroid();
+			}
+			
+		};
+		
+		/**
+		 * 打开人员列表frame
+		 * 周枫
+		 * 2016.06.02
+		 */
+		function openPersonInfoFrame(header_h, targetId, old_msg_id, conver_type, person_name, h_from, avatar_url){
+			api.openFrame({
+				name : 'hh_personinfo_frame',
+				scrollToTop : true,
+				allowEdit : true,
+				url : 'hh_personinfo_frame.html',
+				rect : {
+					x : 0,
+					y : header_h,
+					w : 'auto',
+					h : api.winHeight - header_h,
+				},
+				pageParam : {
+					'targetId' : targetId,
+					'old_msg_id' : old_msg_id,
+					'conver_type' : conver_type,
+					'person_name' : person_name,
+					'header_h' : header_h,
+					'h_from' : h_from,
+					'avatar_url' : avatar_url,
+					'person_id':api.pageParam.person_id,
+					'identity_id':api.pageParam.identity_id
+				},
+				vScrollBarEnabled : true,
+				hScrollBarEnabled : false,
+				//页面是否弹动 为了下拉刷新使用
+				bounces : true
+			});
+		}
+		
+		/**
+		 * 安卓点击返回的时候
+		 * 周枫
+		 * 2015.10.14
+		 */
+		function backForAndroid() {
+			api.addEventListener({
+				name : "keyback"
+			}, function(ret, err) {
+				back();
+			});
+		}
+		
+		/**
+		 * 返回应用页面
+		 * 周枫
+		 * 2015.10.11
+		 */
+		function back() {
+			api.closeWin();
+		}
+	</script>
+</html>

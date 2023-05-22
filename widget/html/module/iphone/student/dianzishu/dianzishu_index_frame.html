@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<!-- html5：在创建html时为了防止页面缩放等不兼容效果，要创建个viewport  -->
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<!-- 在IOS设备上，有时会将数字转为手机号，这里也要禁止下 -->
+		<meta name="format-detection" content="telephone=no"/>
+		<title>电子书</title>
+    	<link rel="stylesheet" type="text/css" href="../../../../../css/aui_css_new/aui.css"/>
+    	<link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+	    <style>
+			img.avatar {
+				width: 18px;
+				height: 18px;
+				border-radius: 50%;
+			}
+			.boxCont {
+				position: relative;
+			}
+			.no-data{position:absolute;width: 100%;}
+			.li-list{float:left;width:47%;margin-left:2%;border: 1px solid #c8c7cc; margin-bottom: 10px;}
+			.li-list img{width: 100%;margin: 0;display: block;}
+			.dzs-name{background: #ffffff;color: #666;padding: 10px;font-size: 0.8em;}
+			.zoomImage{ position:relative;width:100%;height:0;padding-bottom: 100%;overflow:visible;background-position: center center;background-repeat: no-repeat; -webkit-background-size:cover; -moz-background-size:cover;background-size:cover;}
+			.zoomImage{padding-bottom:63%;}
+			.zoomImage img{bottom:0 !important;width:100%;height:100%;position: absolute;}
+		</style>
+	</head>
+	<body class="common-iphone-dianzishu">
+		<div class="aui-content">
+			<!--游戏列表-->
+			<div id="gamelist_div"><ul id="aui-waterfall"></ul></div>
+				<!--<div class="no-data">暂无游戏</div>-->
+				<script type="text/html" id="div_script">
+				<%for(var i=0;i<list.length;i++){%>
+					<li class="li-list" onclick="ksxx('<%=list[i].oparam_base64%>');">
+						<div>
+							<div class="zoomImage">
+								<img onerror="this.src='../../../../../image/fun-module/common/wk_default.png'" src="<%=list[i].img_src%>" alt="">
+							</div>
+						</div>
+						<div class="dzs-name ellipsis">
+							<%=list[i].dzs_name%>
+						</div>
+					</li>
+				<%}%>
+			</script>
+		</div>
+	</body>
+<script type="text/javascript" src="../../../../../script/api.js"></script>
+<script type="text/javascript" src="../../../../../script/base_config.js" ></script>
+<script type="text/javascript" src="../../../../../script/plug-in/base64.js" ></script>
+<script type="text/javascript" src="../../../../../script/plug-in/template.js" ></script>
+<script type="text/javascript" src="../../../../../script/common/common.js"></script>
+<script type="text/javascript" src="../../../../../script/assembly/executeApp.js" ></script>
+<script type="text/javascript" src="../../../../../res/json/dzs_json/shuxue.json"></script>
+<script type="text/javascript" src="../../../../../res/json/dzs_json/yingyu.json"></script>
+<script type="text/javascript" src="../../../../../res/json/dzs_json/yinyue.json"></script>
+<script type="text/javascript" src="../../../../../res/json/dzs_json/yuwen.json"></script>
+<script type="text/javascript">
+	var subject_id = "";//学科id
+	var currentPage = 1;//当前分页数
+	var totalPages = 0;//总页数
+	var totalData = 0;//定义一个变量存储第一次加载返回来的总记录数
+	apiready = function() {
+	    commonSetTheme({"level":5,"type":0});
+		getkjSubjectList();//获取学科
+		commonRefreshHeaderInfo();//上拉刷新
+		commonScrollBottomReload();//下拉加载
+	};
+	
+	/*
+	 * 获取所有带课件的学科
+	 * 张自强
+	 * 20170508
+	 */
+	function getkjSubjectList() {
+		var student_id = $api.getStorage('person_id');//已登录的学生的id
+			var bar_items = [
+				{
+					"title" : '语文',
+					"id" : 1,
+				},{
+					"title" : '数学',
+					"id" : 2,
+				},{
+					"title" : '英语',
+					"id" : 3,
+				},{
+					"title" : '音乐',
+					"id" : 4,
+				}
+			];
+		//打开学科导航
+		openNavigationBar(bar_items);
+	}
+			
+	/*
+	 * 学科显示导航
+	 * 张自强
+	 * 20170509
+	 */
+	function openNavigationBar(subject_items) {
+		//关闭滑动条
+		commonCloseNavigationBar();
+		var header_h = api.pageParam.header_h;
+		var params = {
+			y : header_h,
+			items : subject_items,
+			winName:'dianzishu_index_window',
+			frameName:'dianzishu_index_frame',
+			file_level:2
+		};
+		//打开滑动条
+		commonMyNavigationBar(params);
+	}
+	
+	
+	/*
+	 * 学科导航回调
+	 * 张自强
+	 * 20170509
+	 */
+	function callBackNew(id,index) {
+		showSelfProgress("加载中...");
+		type_id = id;
+		subject_id = id;
+		initData(1);
+	}
+	
+	/*
+	 * 加载课件
+	 * 张自强
+	 * 20170509
+	 */
+	function initData(current_page) {
+		currentPage = current_page;
+		//通知顶部下拉刷新数据加载完毕，组件会恢复到默认状态
+		var data={"list":[]};
+		switch(type_id*1){
+			case 1:
+				//语文
+				data.list = yuwen.list;
+				break;
+			case 2:
+				//数学
+				data.list = shuxue.list;
+				break;
+			case 3:
+				//英语
+				data.list = yingyu.list;
+				break;
+			case 4:
+				//音乐
+				data.list = yinyue.list;
+				break;
+		}
+		for(var i = 0; i < data.list.length; i++){
+			var img_src = '';
+			if (BASE_APP_TYPE == 1) {
+				img_src = BASE_IMAGE_PRE+"down/Material/" + data.list[i].img_url.substring(0, 2) + "/" + data.list[i].img_url+'.'+data.list[i].img_ext+ commonReturnPhotoCutSize(0);		
+			} else {
+				img_src = BASE_URL_ACTION + "/html/thumb/Material/"+ data.list[i].img_url.substring(0, 2) + "/" + data.list[i].img_url+'.'+data.list[i].img_ext+ commonReturnPhotoCutSize(0);	
+			}
+			data.list[i].img_src = img_src;
+			data.list[i].oparam_base64 = Base64.encode(JSON.stringify(data.list[i]));
+		}
+		commonAddOnceHtml('aui-waterfall','div_script',data);
+		commonControlRefresh();
+		setTimeout(function(){
+			api.hideProgress();
+		},500);
+	}
+	
+	/*
+	 *author:zhaoj
+	 *function:开始学习
+	 *date：20161220
+	 */
+	function ksxx(oparam_base64) {
+		var oparam = JSON.parse(Base64.decode(oparam_base64));
+		var app_key = "";
+		var down_url = "";
+		var app_type = api.systemType;
+		if(app_type == "ios") {
+			app_key = BASE_ZY_APP_IOS;
+			down_url = BASE_ZY_APP_DOWN_IOS;
+		} else {
+			app_key = BASE_ZY_APP_ANDROID;
+			down_url= BASE_ZY_APP_DOWN_ANDROID;
+		}
+		var dsbook_info = {"filename":oparam.dzs_id+'.'+oparam.dzs_ext,"filetitle":oparam.dzs_name}
+        var oparamJsonData = {"type":7,"app_key":app_key,"down_url":down_url,"id":oparam.dzs_id,"resource_id":oparam.dzs_id,"dsbook_info":Base64.encode(JSON.stringify(dsbook_info))};
+		//判断是否已经安装app
+		common_app.appInstalled(oparamJsonData);
+	}
+</script>
+</html>

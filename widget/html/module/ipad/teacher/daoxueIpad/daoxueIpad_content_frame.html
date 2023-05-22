@@ -1,0 +1,740 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <title>导学</title>
+    <link rel="stylesheet" type="text/css" href="../../../../../css/aui/aui.css" />
+    <link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+    <style>
+    	body{background:#EFEFF4;}
+		.common{padding:20px;background:#fff;margin-bottom:10px;font-size:18px;}
+		.common .name{font-weight:bold;}
+		.common .content{line-height:30px;padding-top:15px;color:#777; word-break: break-all;}
+		.common:nth-child(2){margin-bottom:0px;}
+		.img{text-align:center;padding:35px 0 20px 0;}
+    	.img div{padding-top:15px;}
+    	.common .content img{max-width:100% !important;}
+    	.common .content p{font-size:16px !important;}
+    	.footer-div {position: fixed;height: 55px;background:#ffffff;color: #8E8E8E;display: block;bottom: 0px;width: 100%;border-top: 1px solid #DBDBDB;font-size:16px;}
+		.footer-div .btn {width: 50%;display: inline-block;text-align: center;height: 55px;border-right: 1px solid #DBDBDB;float:left;}
+		.footer-div .zan {width: 50%;display: inline-block;text-align: center;height: 30px;float:left;}
+		.footer-div .btn .span,.footer-div .zan .span{display:inline-block;line-height:20px;height:55px;display: inline-block;float: left;width: 50%;padding-right: 13px;}
+		.footer-div .zan .span{line-height:23px;}
+		.footer-div .btn .span img,.footer-div .zan .span img{display:inline;height:39px;float:right;margin-right:0px;padding-top:12px;}
+		.footer-div .btn .span img{padding-top:16px;}
+		.footer-div .btn .num,.footer-div .zan .num{float: left;display: inline-block;width: 50%;text-align: left;height: 55px;padding-top: 16px;padding-left: 13px;font-size:18px;}
+		.footer-div .zan .num{padding-top: 16px;}
+		.comment {position:relative;color: #3A3A3A;font-size: 16px;background:#fff;}
+		.comt-btn {border: 1px solid #E6E6E6;height: 40px;line-height: 40px;text-align: center;border-radius: 3px;color: #c0c0c0;}
+		.comt-btn-img {width: 20px;vertical-align: middle;}
+		.comment-content{background: url(../../../../../image/fun-module/common/yiping.png) 10px 12px no-repeat; background-size: 25px 24px;}
+		.comment-content li {position:relative;padding :10px 0 8px 0;margin:0 8px 0 45px;border-bottom:1px solid #dedede;}
+		.comment-content li:last-child{border-bottom:none;}
+		.comment-content .header-img {position:absolute;left:2px;top:8px;display: inline-block;width: 40px;height: 40px;margin-right: 8px;border-radius: 20px;vertical-align: middle;}
+		.comment-content .details {height: 50px;color: #CACACA;font-size: 16px;}
+		.comment-content .comt-person-name {display: inline-block;width: 100%;color:#777777;padding-left:50px;}
+		.comment-content .comt-person-name font {color: #FE7315;}
+		.comment-content .comt-time {display: block;text-align: left;color:#a3a3a3;font-size:14px;padding-top:2px;}
+		.comment-content .comment-text {color: #474747;font-size: 16px;word-break: break-all;}
+		.comt-opt {margin-top: 7px;}
+		.comt-opt div {width: 40px;float: right;text-align: right;color: #0062CC;font-size: 14px;}
+		.zan-content{background: url(../../../../../image/fun-module/common/praised-commented.png) 10px 9px no-repeat; background-size: 25px 25px;padding:12px 8px 11px 45px;line-height:25px;font-size:16px;color:#777777;border-bottom: 1px solid #EFEFF4;}
+		.zan-content span{word-break: break-all;}
+		.footer{height:60px;}
+		.triangle-down { position:absolute;width: 0; top:-8px;left:10px; height: 0;border-left: 8px solid transparent;border-right: 8px solid transparent;border-bottom: 8px solid #fff; }
+		.blank-footer{height:65px;}
+		.no-data {color: #c0c0c0;font-size:16px;padding:14px 0 !important;line-height:18px;text-align:left !important;}
+		.resource-show img{
+    		margin-right: 13px;
+    	}
+	</style>
+</head>
+<body id="j_body" class="aui-hide common-ipad-daoxueIpad">
+	<div class="common">
+		<div class="name">导学说明</div>
+		<div id="j_desc" class="content"></div>
+	</div>
+	<div class="common">
+		<div class="name">导学内容</div>
+		<div id="j_content" class="content"></div>
+	</div>
+	<div id="abc" class="comment aui-hide">
+		<div class="triangle-down"></div>
+		<div id="zan_body" class="zan-content">
+		</div>
+		<script type="text/html" id="zan_script">
+			<% if(praise_list.length == 0){ %>
+				<span class="no-data">
+					暂无点赞
+				</span>
+			<% }else{ %>
+				<%for(var i=0; i < praise_list.length; i++) {%>
+					<span>
+						<%=praise_list[i].person_name %>
+						<%if(i != praise_list.length-1){%> , <%}%>
+					</span>
+				<% } %>
+			<%}%>
+		</script>
+		<ul id="div_body" class="comment-content"></ul>
+		<script type="text/html" id="div_script">
+			<% if(reply_list.length == 0){ %>
+				<li class="no-data">
+					暂无评论
+				</li>
+			<% }else{ %>
+				<%for(var i=0; i < reply_list.length; i++) {%>
+				<li>
+					<div class="details">
+						<img class="header-img" onerror="this.src='../../../../../image/common/header.png'" src="<%=reply_list[i].img_url%>" alt="头像" />
+						<div class="comt-person-name ellipsis">
+							<%if(reply_list[i].has_reply){%>
+							<%=reply_list[i].person_name%><font>&nbsp;回复：</font><%=reply_list[i].parent_person_name%>
+							<%}else{%>
+							<%=reply_list[i].person_name%>
+							<%}%>
+							<div class="comt-time">
+								<%=reply_list[i].time %>
+							</div>
+						</div>
+					</div>
+					<div class="comment-text">
+						<%=#reply_list[i].content %>
+					</div>
+					<div class="comt-opt clearfix">
+						<%if(reply_list[i].show_delete){%>
+						<div class="delete-comt" onclick="messageBoard_deletePost(<%=pageSize %>,<%=reply_list[i].topic_id %>,<%=reply_list[i].id %>);">删除</div>
+						<%}%>
+						<div class="reply" onclick='openCommentWindow(1,<%=reply_list[i].id %>,0,<%=reply_list[i].person_id %>,<%=reply_list[i].identity_id %>,"<%=reply_list[i].person_name %>");'>回复
+						</div>
+					</div>
+				</li>
+			<% } %>
+		<%}%>
+		</script>
+	</div>
+	<div id="j_blank_footer" class="blank-footer aui-hide">&nbsp;</div>
+	<div id="footer_div" class="footer-div aui-hide">
+		<div class="btn">
+			<span id="comt_num" class="span clearfix" onclick='openCommentWindow(0,0,0,"","","");'>
+				<img src="../../../../../image/yingyong/wenzhang/pinlun.png" alt="" />
+			</span>
+			<span id="j_pinlun_num" class="num" onclick='javascript:document.getElementById("abc").scrollIntoView()'>&nbsp;</span>
+		</div>
+		<div id="j_zan_btn" class="zan">
+			<span class="span clearfix" onclick="addPraiseInfo();">
+				<img src="../../../../../image/yingyong/wenzhang/zan.png" alt="" />
+			</span>
+			<span id="zan_num" class="num" onclick='javascript:document.getElementById("abc").scrollIntoView()'>&nbsp;</span>
+		</div>
+	</div>
+</body>
+<script type="text/javascript" src="../../../../../script/api.js"></script>
+<script type="text/javascript" src="../../../../../script/base_config.js" ></script>
+<script type="text/javascript" src="../../../../../script/plug-in/template.js" ></script>
+<script type="text/javascript" src="../../../../../script/common/common.js" ></script>
+<script type="text/javascript" src="../../../../../script/assembly/executeApp.js" ></script>
+<script type="text/javascript" src="../../../../../script/assembly/openResource.js" ></script>
+<script type="text/javascript" src="../../../../../script/assembly/photoBrowser.js"></script>
+<script type="text/javascript">
+	var BASE_URL_ACTION;
+	var BASE_APP_TYPE;
+	var currentPage = 1;//当前页面
+	var totalPages = 0;//一共有多少页
+	var header_h = 0;
+	apiready = function(){	
+		commonSetTheme({"level":5,"type":0});
+		header_h = api.pageParam.header_h;
+		BASE_URL_ACTION = $api.getStorage('BASE_URL_ACTION');
+		BASE_APP_TYPE = $api.getStorage('BASE_APP_TYPE');
+		getLeadInfoById();
+		initData(currentPage);//获取评论数据
+		getPraisecount();
+		getPraiseinfoList();//获取点赞数据
+		isExistsPraise();//验证本人是否点赞
+		commonRefreshHeaderInfo();//下拉刷新
+		commonScrollBottomReload();//上拉加载更多数据
+	};
+	/*
+	*作者:zhaoj
+	*功能:获取导学详细信息
+	*日期：20170707
+	*/
+	function getLeadInfoById(){
+		showSelfProgress('加载中...');
+		api.ajax({
+			url : BASE_URL_ACTION + '/ypt/space/lead/get_leadinfo_by_id',
+			method : 'get',
+			timeout : 30,
+			dataType : 'json',
+			returnAll : false,
+			data : {
+				values : {
+					"random_num" : creatRandomNum(),
+					"id" :api.pageParam.id
+				}
+			},
+			headers : {
+'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+}
+		}, function(ret, err) {
+			api.hideProgress();
+			$api.removeCls($api.byId('j_body'), 'aui-hide');
+			if (err) {
+				popToast('获取导学数据失败，请稍候重试');
+			} else {
+				if(ret.success){
+					$api.html($api.byId('j_name'), ret.name);
+					if(ret.desc){
+						$api.html($api.byId('j_desc'), ret.desc);
+					}else{
+						$api.html($api.byId('j_desc'), '暂无导学说明');
+					}
+					var content = ret.format_lead_learn;
+					var zy_key = 'data-type="1"';
+					var lx_key = 'data-type="2"';
+					var wk_key = 'data-type="3"';
+//					if (content.indexOf(zy_key) != -1) {
+//						content = content.replaceAll(zy_key, 'data-type="1" onclick="openZyFrame(this);"');
+//					}
+//					if(content.indexOf(lx_key) != -1){
+//						content = content.replaceAll(lx_key, 'data-type="2" onclick="openlxFrame(this);"');
+//					}
+//					if(content.indexOf(wk_key) != -1){
+//						content = content.replaceAll(wk_key, 'data-type="3" onclick="openWkFrame(this);"');
+//					}
+
+					if (ret.qt_list && ret.qt_list.length > 0){
+						for (var i = 0; i < ret.qt_list.length; i++){
+							content = content + '<p"><img title="练习" src="/dsideal_yy/images/space/a/space_tbbk/homework.png" width="80" height="60" class="bkDxResourceImg dxPractice" data-type="2" data-zy_id="'+ret.qt_list[i].zy_id+'" data-zy_type="8"/></p>';
+						}
+					}
+				
+					if (ret.wk_list && ret.wk_list.length > 0){
+						content = content + '<p class="resource-show">';
+						for (var i = 0; i < ret.wk_list.length; i++){
+							content = content + '<img title="'+ ret.wk_list[i].wkds_name
+						 	+'" src="/dsideal_yy/html/down/Thumbs/'+ ret.wk_list[i].thumb_id.substring(0,2) + '/' + 
+						 	ret.wk_list[i].thumb_id +
+						 	'.thumb" width="80" height="60" class="bkDxResourceImg" data-type="3" data-wkds_id_int="'
+						 	+ ret.wk_list[i].wkds_id_int +'" data-id="'+ ret.wk_list[i].res_id +'" />';
+						}
+						
+						content = content + "</p>";
+					}
+				
+					if (ret.material_list && ret.material_list.length > 0){
+						content = content + '<p class="resource-show">';
+						for (var i = 0; i < ret.material_list.length; i++){
+							content = content + '<img title="'+ ret.material_list[i].resource_title +
+							'" src="/dsideal_yy/html/down/Thumbs/'+ ret.material_list[i].thumb_id.substring(0,2) + '/' + 
+						 	ret.material_list[i].thumb_id +'.thumb" width="80" height="60" class="bkDxResourceImg" data-type="1" data-resource_id_int="'+ret.material_list[i].resource_id_int+'"data-resource_info_id="'+ret.material_list[i].res_id+'" />';
+						}
+						
+						content = content + "</p>";
+					}
+
+					var notice_str1 = '<img';
+					var notice_str2 = '<img onerror="this.src=\'../../../../../image/common/tpsx.png\'"';
+					content = content.replaceAll(notice_str1, notice_str2);  
+					var key = '/dsideal_yy';
+					var key1 = BASE_URL_ACTION;
+					var flag = 0;
+					if(content.indexOf(key1) != -1){
+						content = content;
+						flag = 1;
+					}
+					if(content.indexOf(key) != -1 && flag == 0){
+						var key_re = BASE_URL_ACTION;
+						content = content.replaceAll(key, key_re);
+					}
+					$api.html($api.byId('j_content'), content);
+					addLiClick();
+				}else{
+					popToast('获取导学数据失败，请稍候重试');
+				}
+			}
+		});
+	}
+	/*
+	*作者:zhaoj
+	*功能:打开资源图片
+	*日期：20161115
+	*/
+	function openZyFrame(obj){
+//		//先重置通知window返回哪个页面
+//		api.execScript({
+//			name : 'daoxueIpad_content_window',
+//			script : 'reBackType("ziyuan");'
+//		});
+//		var data_resource_id_int = obj.getAttribute('data-resource_id_int');
+//		var data_resource_info_id = obj.getAttribute('data-resource_info_id');
+//		var header_h = api.pageParam.header_h;
+//		var pageParamJson={"header_h":header_h,"data_resource_id_int":data_resource_id_int,"data_resource_info_id":data_resource_info_id};//打开frame页面所需参数
+//		commonOpenFrame('daoxueIpad_ziyuan_frame', 'daoxueIpad_ziyuan_frame.html',header_h, true, false,"#ffffff",pageParamJson);	//打开index页面
+		var data_resource_id_int = obj.getAttribute('data-resource_id_int');
+		downloadResAttachment(data_resource_id_int);
+	}
+	/*
+	*作者:zhaoj
+	*功能:打开练习页面
+	*日期：20170620
+	*/
+	function openlxFrame(obj){
+		//先重置通知window返回哪个页面
+		api.execScript({
+			name : 'daoxueIpad_content_window',
+			script : 'reBackType("practice");'
+		});
+		var zy_id = obj.getAttribute('data-zy_id');
+		var zy_type = obj.getAttribute('data-zy_type');
+		var header_h = api.pageParam.header_h;
+		var pageParamJson={"header_h":header_h,"zy_id":zy_id,"zy_type":zy_type};//打开frame页面所需参数
+		commonOpenFrame('daoxueIpad_practice_frame', 'daoxueIpad_practice_frame.html',header_h, false, false,"#ffffff",pageParamJson);	//打开index页面
+	}
+	/*
+	*作者:zhaoj
+	*功能:打开微课页面
+	*日期：20170701
+	*/
+	function openWkFrame(obj){
+		//先重置通知window返回哪个页面
+		api.execScript({
+			name : 'daoxueIpad_content_window',
+			script : 'reBackType("wk");'
+		});
+		var id = obj.getAttribute('data-id');
+		var wkds_id_int = obj.getAttribute('data-wkds_id_int');
+		var header_h = api.pageParam.header_h;
+		var pageParamJson={"header_h":header_h,"id":id,"wkds_id_int":wkds_id_int};//打开frame页面所需参数
+		commonOpenFrame('daoxueIpad_wk_frame', 'daoxueIpad_wk_frame.html',header_h, false, false,"#ffffff",pageParamJson);	//打开index页面
+	}
+	/*
+	*author:zhaoj
+	*function:获取点赞的个数
+	*date：20170706
+	*/
+	function getPraisecount() {
+		api.ajax({
+			url :  BASE_URL_ACTION + '/space/praise/get_praisecount_byid?random_num='+creatRandomNum()+'&business_id='+api.pageParam.id+'&business_type=4&person_id='+$api.getStorage("person_id")+'&identity_id='+$api.getStorage("identity"),
+			method : 'get',
+			timeout : 0,
+			dataType : 'json',
+			headers : {
+	'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+}
+		}, function(ret, err) {
+			if(ret.success){
+				$api.text($api.byId('zan_num'),ret.total);
+			}
+		});
+	}
+	/*
+	*author:zhaoj
+	*function:给文章点赞
+	*date：20170706
+	*/
+	function addPraiseInfo() {
+		api.ajax({
+			url : BASE_URL_ACTION + '/ypt/space/praise/add_praise_info',
+			method : 'post',
+			timeout : 0,
+			dataType : 'json',
+			data : {
+				values : {
+					random_num : creatRandomNum(),
+					business_id : api.pageParam.id,
+					business_type : 4,
+					identity_id	 : $api.getStorage("identity"),
+					person_id :$api.getStorage("person_id")
+				}
+			},
+			headers : {
+	'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+}
+		}, function(ret, err) {
+			if (err) {
+				popToast('点赞失败');
+			} else {
+				if(ret.success){
+					popToast('点赞成功');
+					isExistsPraise();
+					getPraisecount();
+					getPraiseinfoList();
+				}else{
+					popToast('点赞失败');
+				}
+			}
+		});
+	}
+	/*
+		*author:zhaoj
+		*function:获取点赞数据
+		*date：20160602
+		*/
+		function getPraiseinfoList(){
+			api.ajax({
+				url : BASE_URL_ACTION + '/space/praise/get_praiseinfo_list?random_num='+creatRandomNum()+'&business_id='+api.pageParam.id+'&business_type=4&page_num=1&page_size=9999',
+				method : 'get',
+				timeout : 30,
+				dataType : 'json',
+				headers : {
+		'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+	}
+			}, function(ret, err) {
+				//通知顶部下拉刷新数据加载完毕，组件会恢复到默认状态
+				commonControlRefresh();
+				if (err) {
+					var data= {"page_size":9999,"page_num":1,"success":true,"total_page":1,"total_row":"2","praise_list":[]};
+					commonAddOnceHtml('zan_body','zan_script',data);
+				} else {
+					if(ret.success){
+						zanTotalPages = ret.total_page;
+						commonAddOnceHtml('zan_body','zan_script',ret);
+					}else{
+						var data= {"page_size":9999,"page_num":1,"success":true,"total_page":1,"total_row":"2","praise_list":[]};
+					commonAddOnceHtml('zan_body','zan_script',data);
+					}
+				}
+			});
+		}
+		/*
+		*author:zhaoj
+		*function:验证本人是否已经点赞
+		*date：20170706
+		*/
+		function isExistsPraise() {
+			api.ajax({
+				url : BASE_URL_ACTION + '/ypt/space/praise/isexists_praise?random_num='+creatRandomNum()+'&business_id='+api.pageParam.id+'&business_type=4&person_id='+$api.getStorage("person_id")+'&identity_id='+$api.getStorage("identity"),
+				method : 'get',
+				timeout : 30,
+				dataType : 'json',
+				headers : {
+		'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+	}
+			}, function(ret, err) {
+				if (err) {
+					
+				} else {
+					if(ret.success){
+						if(ret.is_exists_praise){
+							var tip = "cancelPraise()";
+							var clickHtml = "javascript:document.getElementById('abc').scrollIntoView();";
+							var html = '<span onclick='+tip+' class="span clearfix"><img src="../../../../../image/yingyong/wenzhang/yizan.png" alt="" /></span><span id="zan_num" class="num" onclick='+clickHtml+'></span>';
+							$api.html($api.byId('j_zan_btn'),html);
+						}
+						getPraisecount();//获取点赞的个数
+					}else{
+						
+					}
+				}
+			});
+		}
+		/*
+		 *author:zhaoj
+		 *function:获取评论信息
+		 *date：20170706
+		 */
+		function initData(currentPage) {
+			currentPage = currentPage;
+			api.ajax({
+				url : BASE_URL_ACTION + '/bbs/topic/view?pageNumber=' + currentPage + '&pageSize=' + BASE_PAGE_SIZE + '&sort=1&type_id=' + "spaceGuidance"+api.pageParam.id+ '&message_type=2&random_num=' + creatRandomNum(),
+				method : 'get',
+				dataType : 'json',
+				cache : false,
+				timeout : 30,
+				headers : {
+					'Cookie' : 'person_id=' + $api.getStorage("person_id") + ';identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+				}
+			}, function(ret, err) {
+				api.hideProgress();
+				if (ret.success) {
+					totalPages = ret.totalPage;
+					$api.text($api.byId('j_pinlun_num'),ret.totalRow);
+					if (ret.reply_list.length > 0) {
+						var list = ret.reply_list;
+						//对数据进行处理
+						for (var i = 0; i < list.length; i++) {
+							//评论时间显示的处理
+							list[i]["time"] = list[i].create_time.substring(0, 16);
+							list[i]["content"] = transferBrStr(list[i]["content"]);
+							if (list[i].parent_person_id * 1) {
+								list[i]["has_reply"] = 1
+							} else {
+								list[i]["has_reply"] = 0;
+							}
+							var img_url;
+							if(BASE_APP_TYPE == 1){
+								img_url = BASE_IMAGE_PRE + url_path_suffix+ list[i].icon_url.substring(0, 2) + "/" + list[i].icon_url + commonReturnPhotoCutSize(0);
+							}else{
+								img_url = BASE_URL_ACTION + BASE_IMAGE_BEGIN + list[i].icon_url.substring(0, 2) + "/" + list[i].icon_url + commonReturnPhotoCutSize(0);
+							}
+							list[i]["img_url"] = img_url;
+							//是自己发表的文章，可以删除评论，不是自己发表的文章，不能删除
+							if ($api.getStorage("person_id") * 1 == list[i].person_id * 1) {
+								list[i]["show_delete"] = 1;
+							} else {
+								list[i]["show_delete"] = 0;
+							}
+						}
+						commonAddManyHtml('div_body', 'div_script', ret);
+					} else {
+						var data = {
+							"reply_list" : []
+						};
+						commonAddManyHtml('div_body', 'div_script', ret)
+					}
+				} else {
+					var data = {
+						"reply_list" : []
+					};
+					commonAddManyHtml('div_body', 'div_script', ret)
+				}
+				$api.css($api.byId('shadow'), "z-index:-1;");
+				//通知顶部下拉刷新数据加载完毕，组件会恢复到默认状态
+				commonControlRefresh();
+			});
+		}
+		//替换所有的回车换行
+		function transferBrStr(content) {
+			var string = content;
+			try {
+				string = string.replace(/\r\n/g, "<br />")
+				string = string.replace(/\n/g, "<br />");
+			} catch(e) {
+				popAlert(e.message);
+			}
+			return string;
+		}
+		/*
+		 *author:zhaoj
+		 *function:打开评论页面
+		 *date：20170706
+		 */
+		function openCommentWindow(d, pid, pagesize, person_id, identity_id, person_name){
+			commonOpenWin('daoxueIpad_comment_window', 'daoxueIpad_comment_window.html', false, false, {'header_h':api.pageParam.header_h,d : d,pid : pid,person_id : person_id,identity_id : identity_id,person_name : person_name,id : api.pageParam.id});
+		}
+		/*
+		 *author:zhaoj
+		 *function:提示是否删除评论
+		 *date：20160319
+		 */
+		function messageBoard_deletePost(pageSize, topic_id, postid) {
+			popTwoBtnConfirm('提示','确定删除该评论内容？','deleteComment('+topic_id+','+postid+')');
+		}
+		/*
+		 *author:zhaoj
+		 *function:删除评论
+		 *date：20170707
+		 */
+		function deleteComment(topic_id,postid){
+			showSelfProgress('删除中...');
+			api.ajax({
+				url : BASE_URL_ACTION + '/ypt/bbs/post/delete',
+				method : 'get',
+				dataType : 'json',
+				cache : false,
+				timeout : 30,
+				data : {
+					values : {
+						"random_num" : creatRandomNum(),
+						"topic_id" : topic_id,
+						"post_id" : postid
+					}
+				},
+				headers : {
+					'Cookie' : 'person_id=' + $api.getStorage("person_id") + ';identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+				}
+			}, function(ret, err) {
+				if (ret.success) {
+					setTimeout(function() {
+						api.hideProgress();
+						popToast('删除成功');
+						initData(1);
+					}, 2900);
+				} else {
+					api.hideProgress();
+					popAlert("删除评论失败，" + ret.info);
+					$api.css($api.byId('shadow'), "z-index:-1;");
+				}
+				if (err) {
+					api.hideProgress();
+					popAlert("删除评论失败");
+					$api.css($api.byId('shadow'), "z-index:-1;");
+				}
+			});
+		}
+		/*
+		*author:zhaoj
+		*function:取消点赞
+		*date：20160604
+		*/
+		function cancelPraise(){
+			api.ajax({
+				url : BASE_URL_ACTION + '/ypt/space/praise/cancel_praise_info',
+				method : 'post',
+				timeout : 30,
+				dataType : 'json',
+				data : {
+					values : {
+						random_num : creatRandomNum(),
+						business_id : api.pageParam.id,
+						business_type : 4,
+						identity_id	 : $api.getStorage("identity"),
+						person_id :$api.getStorage("person_id")
+					}
+				},
+				headers : {
+		'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+	}
+			}, function(ret, err) {
+				if (err) {
+					popToast('取消失败');
+				} else {
+					if(ret.success){
+						popToast('取消点赞');
+						var tip = "addPraiseInfo();";
+						var clickHtml = "javascript:document.getElementById('abc').scrollIntoView();";
+						var html = '<span class="span clearfix" onclick='+tip+'><img src="../../../../../image/yingyong/wenzhang/zan.png" alt="" /></span><span id="zan_num" class="num" onclick='+clickHtml+'></span>';
+						$api.html($api.byId('j_zan_btn'),html);
+						getPraisecount();
+						getPraiseinfoList();
+					}else{
+						popToast('取消失败');
+					}
+				}
+			});
+		}
+		/*
+		*author:zhaoj
+		*function:附件打开
+		*date：20170712
+		*/
+		function downloadResAttachment(id){
+			showSelfProgress('加载中...');
+			api.ajax({
+				url : BASE_URL_ACTION + '/ypt/resource/getResourceByIDInt',
+				method : 'get',
+				timeout : 30,
+				dataType : 'json',
+				returnAll : false,
+				data : {
+					values : {
+						"random_num" : creatRandomNum(),
+						"resource_id_int" :id
+					}
+				},
+				headers : {
+	'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+	}
+			}, function(ret, err) {
+				api.hideProgress();
+				if (err) {
+					popToast('获取数据失败，请稍候重试');
+				} else {
+					if(ret.success){
+						checkPreviewStatus(ret.resource_format,ret.preview_status,ret.file_id,ret.m3u8_status,ret.iid,id)	
+					}else{
+						popToast('获取数据失败，请稍候重试');
+					}
+				}
+			});
+		}
+		/*
+		 *author:zhaoj
+		 *function:预览前处理
+		 *date：20160302
+		 */
+		function checkPreviewStatus(format,preview_status,file_id,m3u8_status,iid,data_resource_id_int) {
+			format = format.toLowerCase();
+			commonExecScript('daoxueIpad_content_window','','changePictureType(1);',0);//切换图片类型
+			if (format == 'doc' || format == 'jpeg' || format == 'png' || format == 'gif' || format == 'bmp' || format == 'doc' || format == 'docx' || format == 'ppt' || format == 'pptx' || format == 'asf' || format == 'wmv' || format == 'mpg' || format == 'avi' || format == 'mp4' || format == 'rmvb' || format == 'txt' || format == 'xls' || format == 'xlsx') {
+				if (preview_status == '1' || preview_status == '-5') {
+					//打开文件
+					common_openResource.open(format,file_id,file_id,m3u8_status,api.winName,'reBackType("voice_c");','back();',data_resource_id_int);
+				} else if (preview_status == '2') {
+					if(format == 'txt' || format == 'doc' || format == 'docx' || format == 'ppt' || format == 'pptx' || format == 'xls' || format == 'xlsx'){
+                        common_openResource.open(format,file_id,file_id,m3u8_status,api.winName,'reBackType("voice_c");','back();',data_resource_id_int);
+                    }else{
+                        popAlert('对不起，该文件生成预览失败。');
+                    }
+				} else {
+					api.ajax({
+						url : BASE_URL_ACTION + '/ypt/checkPreviewStatus?type=1&yunormy=1' + '&target_id=' + iid + '&random_num=' + creatRandomNum(),
+						method : 'get',
+						dataType : 'json',
+						timeout : 30,
+						cache : false,
+						headers : {
+							'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+						}
+					}, function(ret, err) {
+						if (ret.success) {
+							if (preview_status == "0") {
+							    if(format == 'txt' || format == 'doc' || format == 'docx' || format == 'ppt' || format == 'pptx' || format == 'xls' || format == 'xlsx'){
+                        common_openResource.open(format,file_id,file_id,m3u8_status,api.winName,'reBackType("voice_c"");','back();',data_resource_id_int);
+                                }else{
+                                    popAlert('对不起，正在生成预览中，请稍候查看。');
+                                }
+							} else if (ret.preview_status == "1") {
+								//打开文件
+								common_openResource.open(format,file_id,file_id,m3u8_status,api.winName,'reBackType("voice_c"");','back();',data_resource_id_int);
+							} else if (preview_status == "2") {
+								if(format == 'txt' || format == 'doc' || format == 'docx' || format == 'ppt' || format == 'pptx' || format == 'xls' || format == 'xlsx'){
+                        common_openResource.open(format,file_id,file_id,m3u8_status,api.winName,'reBackType("voice_c"");','back();',data_resource_id_int);
+                                }else{
+                                    popAlert('对不起，该文件生成预览失败。');
+                                }
+							}
+						}
+					});
+				}
+			} else {
+				//打开文件
+				common_openResource.open(format,file_id,file_id,m3u8_status,api.winName,'reBackType("voice_c");','back();',data_resource_id_int);
+			}
+		}
+		/*
+		*作者:zhaoj
+		*功能:给元素添加点击事件
+		*日期：20170712
+		*/
+		function addLiClick(){
+			var res_array = $api.domAll($api.byId('j_content'),'.bkDxResourceImg');
+			for(var i = 0; i < res_array.length; i++){
+				$api.addEvt(res_array[i], 'click', function(){
+					judgeTypeOpen(this);
+				});
+			}
+		}
+		/*
+		*作者:zhaoj
+		*功能:根据type来打开不同的页面
+		*日期：20170712
+		*/
+		function judgeTypeOpen(self){
+			var data_type = $api.attr(self,'data-type');
+			if(isEmptyString(data_type)){
+				openZyFrame(self);
+			}else{
+				if(data_type == 1){
+					openZyFrame(self);
+				}else if(data_type == 2){
+					openlxFrame(self);
+				}else if(data_type == 3){
+					openWkFrame(self);
+				}
+					
+			}
+		}
+		/*
+		 *author:zhaoj
+		 *function:打开图片
+		 *date：20161202
+		 */
+		function closeImage() {
+			photoBrowser.close();
+		}
+</script>
+</html>

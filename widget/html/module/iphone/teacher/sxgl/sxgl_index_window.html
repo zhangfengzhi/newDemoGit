@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+		<title>实训管理任务列表window</title>
+		<link rel="stylesheet" type="text/css" href="../../../../../css/aui/aui.css"/>
+		<link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+		<style>
+			body {
+			}
+		</style>
+	</head>
+	<body>
+		<div id="wrap">
+			<header class="aui-bar aui-bar-nav aui-bar-primary" id="aui-header">
+				<div id="cloud" class="topbar activebar">
+					<div id="back" class="back" onclick="back();" tapmode="">
+						<i class="aui-iconfont aui-icon-left"></i>返回
+					</div>
+					<div class="mTitle" id="mTitle">
+						任务列表
+					</div>
+				</div>
+			</header>
+		</div>
+	</body>
+	<script type="text/javascript" src="../../../../../script/api.js"></script>
+	<script type="text/javascript" src="../../../../../script/common/common.js"></script>
+	<script type="text/javascript" src="../../../../../script/assembly/tongjiData.js"></script>
+	<script type="text/javascript">
+		//顶部高度
+		var header_h;
+		apiready = function() {
+		    commonSetTheme({"level":5,"type":0});
+		    header_h = api.pageParam.header_h;
+		 	//定位header位置，留出上面电池等空隙，苹果需要
+			commonIosAuiHeader();
+			//打开活动任务列表
+			openActivityListFrame();
+			//安卓关闭
+			commonBackForAndroid();
+			//统计
+			commonOpenTjData($api.getStorage("identity")+'_'+api.winName);
+		};
+		/*
+		 *author:ws
+		 *function:返回应用页面
+		 *date：20161130
+		 */
+		function back() {
+		    //统计
+			commonCloseTjData($api.getStorage("identity")+'_'+api.winName);
+			api.closeWin();
+		}
+        /*
+		 *author:ws
+		 *function:打开任务列表
+		 *date：20161130
+		 */
+		function openActivityListFrame() {	
+			var pageParamJson = {"header_h": header_h};
+			commonOpenFrame('sxgl_task_list_frame','sxgl_task_list_frame.html',header_h,true,false,"#f0f0f0",pageParamJson);
+		}
+	</script>
+</html>

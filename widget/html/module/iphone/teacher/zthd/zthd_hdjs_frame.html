@@ -1,0 +1,850 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <!-- 在IOS设备上，有时会将数字转为手机号，这里也要禁止下 -->
+	<meta name="format-detection" content="telephone=no"/>
+    <title>主题活动-活动介绍</title>
+    <link rel="stylesheet" type="text/css" href="../../../../../css/aui_css_new/aui.css" />
+    <link rel="stylesheet" type="text/css" href="../../../../../css/module-icon/mode1/iphone/zthd-fonts/zthd-arrow.css" />
+    <link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+</head>
+<style type="text/css">
+body { background: #ffffff;}
+/*重新定义*/
+.aui-user-view-cell:after {left: 0;}
+/*自定义*/
+.otherinfo p { font-size: 12px; margin-bottom: 5px;}
+.no-quanzi{position:absolute;width: 100%;text-align:center;color:#666;padding-top:15px;display:none}
+.aui-ellipsis-1{padding-top:2px;width:50%}
+.aui-img-body{padding-top:2px}
+.aui-user-view-cell:after{border-bottom: 1px solid #ffffff;}
+.quanzi-content-div{padding-left:21%}
+.quanzi-content{font-size: 16px;display: -webkit-box;-webkit-box-orient: vertical;-webkit-line-clamp:3;overflow: hidden;width:95%}
+.content-border{border:5px solid #ffffff}
+.quanzi-title-left{width:5%;display:inline-block;float:left;text-align: center}
+.quanzi-title-middle{max-width:80%;display:inline-block;float:left;}
+.quanzi-title-right{width:5%;display:inline-block;float:left;text-align: center}
+.aui-list-view.aui-grid-view {padding: 0 10px 0 0;margin-bottom:0;}
+.pinglun{background:url(../../../../../image/fun-module/common/praise-comment.png) 2px -19px no-repeat;background-size: auto 35px;font-size:10px;color:#8f8f94;height:20px;position:absolute;left:87%;padding-top:2px;padding-left:20px;bottom:11px;}
+.w-dianzan{background:url(../../../../../image/fun-module/common/praise-comment.png) 2px 1px  no-repeat;background-size:auto 32px;font-size:10px;color:#8f8f94;height:20px;position:absolute;left:75%;padding-top:2px;padding-left:20px;bottom:11px;}
+.yulan{background:url(../../../../../image/fun-module/ipad/zthd/yulan.png) 0 4px  no-repeat;background-size:auto 11px;font-size:10px;color:#8f8f94;height:20px;position:absolute;left:62%;padding-top:2px;padding-left:22px;bottom:11px;}
+.my-zuopin-div{border-bottom:1px solid #dedede;display:none}
+.input-div{width:90%;margin:0 auto;height:auto;height:35px;margin-top:10px}
+.input-div input{height:30px;font-size:14px;color:#686868}
+.gongneng-list{width:90%;margin:0 auto;margin-bottom:8px;margin-top:2px;}
+.gongneng-list span{font-size:14px;color:#686868}
+.gongneng-list span:nth-child(1){background:url(../../../../../image/fun-module/ipad/zthd/picture.png) 0 0  no-repeat;background-size:auto 14px;padding-left:20px;}
+.gongneng-list span:nth-child(2){background:url(../../../../../image/fun-module/ipad/zthd/vedio.png) 0 0  no-repeat;background-size:auto 14px;padding-left:20px;}
+.gongneng-list span:nth-child(3){background:url(../../../../../image/fun-module/ipad/zthd/audio.png) 0 0  no-repeat;background-size:auto 14px;padding-left:20px;}
+.boutique-tu{float:left;background:url(../../../../../image/fun-module/ipad/zthd/boutique.png) 0 0  no-repeat;background-size:auto 35px;width:30px;height:40px;top:2px;margin-left:25px;}
+.fbzp-button{float:right;background:#3498db;height:24px;margin-bottom:3px;border-radius:5px;font-size:12px;padding:4px 10px;color:#ffffff;}
+.hdtj-first-head-div{margin:6px auto 0px 0;text-align: center;overflow: auto;height: 60px;line-height:27px;}
+.hdtj-head-child{width:33.3%;max-width:33%;font-size:14px;text-align: center;float:left;overflow:hidden;text-overflow: ellipsis;}
+.hdtj-second-head-div{margin:0 auto;text-align: center;overflow: auto;background:#f6f6f6;line-height:40px;border-top:1px solid #b8b9ba;border-bottom:1px solid #b8b9ba;}
+.hdtj-second-div-first-div{width:19%;max-width:19%;font-size:14px;text-align: center;float:left;overflow:hidden;text-overflow: ellipsis;}
+.hdtj-second-div-second-div{width:19%;max-width:19%;font-size:14px;float:left;overflow:hidden;text-overflow: ellipsis;}
+.hdtj-third-div-first-div{text-align: center;overflow: auto;}
+.hdtj-second-div-center{text-align:center}
+.content-img{width:90%;margin:10px auto;}
+.content-img img{width:100%}
+.hdjs-hd-title-div{padding-bottom:10px;border-bottom:1px solid #f6f6f6}
+.hdjs-hd-title{width:100%;text-align:center;margin-top:10px;}
+.comment-content{padding-left:35px;}
+.comment-content li {padding-bottom :8px;margin:0 5px 0 5px;border-bottom:1px solid #dedede;}
+.comment-content li:last-child{border-bottom:none;}
+.comment-content .header-img {display: inline-block;width: 34px;height: 34px;margin-right: 8px;border-radius: 17px;vertical-align: middle;}
+.comment-content .details {padding-top:10px;height: 40px;color: #CACACA;font-size: 14px;margin-bottom:10px;}
+.comment-content .comt-person-name {display: inline-block;width: 100%;color:#777777;height:45px;position:relative;}
+.comment-content .comt-person-name span {position:absolute;bottom:0;left:0;}
+.comment-content .comment-text {color: #474747;font-size: 15px;word-break: break-all;}
+.details-no-huifu{padding-top:10px;height: 32px;color: #CACACA;font-size: 14px;}
+.comt-opt {margin-top: 7px;}
+.comt-opt div {width: 40px;float: right;text-align: right;color: #0062CC;font-size: 14px;}
+.delete-comt{background: url(../../../../../image/fun-module/ipad/zthd/delete.png) 4px 2px no-repeat; background-size: auto 13px;height:20px;}
+.reply{background: url(../../../../../image/fun-module/ipad/zthd/comment-bg.png) 0 2px no-repeat; background-size: auto 13px;height:20px;}
+.hdxq-div{padding:10px 10px 20px 10px;border-bottom:1px solid #f6f6f6}
+.hdxq-star{background:url(../../../../../image/fun-module/ipad/zthd/star.png) 0 5px  no-repeat;background-size:auto 14px;padding-left:20px;font-size:18px;}
+.hdxq-edit{float:right;right:0;padding-right:10px; font-size:14px;}
+.hdxq-div-jianjie{padding:5px 0;padding-left:20px;font-size:14px;color:#686868}
+.hdxq-padding-bottom{padding-bottom:5px;overflow-wrap:break-word;word-break: break-all}
+.hdxq-zhankai{float:right;right:0;background:url(../../../../../image/fun-module/ipad/zthd/more.png) 30px 6px  no-repeat;background-size:auto 5px;padding-right:20px;}
+.hdxq-shouqi{float:right;right:0;background:url(../../../../../image/fun-module/ipad/zthd/less.png) 30px 6px  no-repeat;background-size:auto 5px;padding-right:20px;}
+.hdxq-jianjie{position:relative;display:inline;word-break: break-all;overflow-wrap:break-word;}
+.hdtl-div{padding:10px 10px;border-bottom:1px solid #f6f6f6}
+.pl370{padding-left:10px;}
+.pl370 .name{left:10px;}
+.down-show ul li{width:100%;float:left;margin-bottom:10px;}
+.down-show ul li:nth-child(odd){padding-right:10px}
+.down-show ul li:nth-child(even){padding-right:10px}
+.down-show ul li .fj-detail{position:relative;display:inline-block;padding:0 30px;max-width:100%;height:30px;line-height:30px;background: url(../../../../../image/fun-module/ipad/zthd/fj-qbz.png) 9px 5px no-repeat;background-size:17px auto;color:#00f}
+.border-left{border-left:1px solid #b8b9ba;}
+.no-data {color: #595758;font-size:14px;padding:10px 0;line-height:18px;text-align:left !important;}
+/*.sum_bottom{width:50%; max-width:50%;}*/
+.can_click{color:#31A8FA}
+.tc{text-align:center !important;}
+.no-comment{margin-left:-15px !important;padding-left:20px;background: url(../../../../../image/fun-module/ipad/zthd-comment.png) left -10px no-repeat; background-size: auto 35px;}
+.tip{position:absolute;right:5%;top:10px;width:40px;height:40px;background:url(../../../../../image/fun-module/ipad/zthd/weifabu.png) center center no-repeat;background-size:100% auto;}
+</style>
+<body class="common-iphone-zthd-tea">
+	<div id="no_quanzi" class="no-quanzi">暂无活动</div>
+	<!--活动介绍-->
+	<div id='hd_js' style="display:none">
+		<div class="hdjs-hd-title-div">
+			<!--<div id="hdxq_name" class="hdjs-hd-title"></div>-->
+			<div class="content-img">
+				<img id="hdxq_img" src="" onerror="this.src='../../../../../image/fun-module/ipad/zthd/zthd.png'">
+				<div id="tip" class="tip">&nbsp;</div>
+			</div>
+		</div>
+		<!--活动详情-->
+		<div class="hdxq-div" id="hdxq_div"></div>
+		<script type="text/html" id="hdxq_script">
+			<div class="hdxq-star">
+				活动详情
+				<div class="hdxq-edit" id="hdxq-edit" style="display:none" onclick="openBJ();">
+					修改活动
+				</div>
+			</div>
+			<div class="hdxq-div-jianjie">
+		<!--		<div class="hdxq-padding-bottom">
+					<span>活动作品：共<%=works_num%>个</span>
+					<span style="margin-left:30px">活动评论：共<font id="j_comment"></font>条</span>
+				</div>-->
+				<div class="hdxq-padding-bottom">活动作品：共<%=works_num%>个</div>
+				<!--<div class="hdxq-padding-bottom">活动评论：共<font id="j_comment"></font>条</div>-->
+				<div class="hdxq-padding-bottom">参与人：共<font><%=played_num%></font>人</div>
+				<%if(is_publish==1){%>
+					<div class="hdxq-padding-bottom">活动日期：<%=start_time.substring(0,10)%> 至   <%=end_time.substring(0,10)%></div>
+				<%}else{%>
+					<div class="hdxq-padding-bottom">活动日期：--</div>
+				<%}%>
+				<div class="hdxq-padding-bottom">活动地点：<%=address%></div>
+				<%if(is_publish==1){%>
+					<div class="hdxq-padding-bottom">发起人：<%=person_name%></div>
+					<div  style="padding-bottom: 5px;">参与对象：<div class="hdxq-jianjie"><%=release_org_str%>
+							<div id="zk-button" class="hdxq-zhankai" onclick="showOrHideHdjj(1)">
+								展开
+							</div>
+						</div>
+					</div>
+				<%}else{%>
+					<div style="padding-bottom: 5px;">发起人：<div class="hdxq-jianjie"><%=person_name%>
+							<div id="zk-button" class="hdxq-zhankai" onclick="showOrHideHdjj(1)">
+								展开
+							</div>
+						</div>
+					</div>
+				<%}%>
+				<div id="hdjj" style="display:none">
+					<div  style="padding-bottom: 5px;">
+						活动介绍：<div class="hdxq-jianjie"><%=remarks%>
+						</div>
+					</div>
+					<div class="hdxq-padding-bottom">
+							
+					<%if(attachment.length == 0){%>
+						活动附件：暂无附件
+					</div>	
+					<%}else{%>
+						活动附件：
+					</div>
+					<div class="down-show clearfix">
+						<ul>
+							<%for(var i=0;i<attachment.length;i++){%>
+								<li>
+									<div class="fj-detail ellipsis" onclick="openAttachment('<%=attachment[i].resource_id_int%>',<%=attachment[i].img_index%>);">
+										<%=attachment[i].resource_title%>.<%=attachment[i].resource_format%>
+										<div class="delete">&nbsp;</div>
+									</div>
+								</li>
+							<%}%>
+						</ul>
+					</div>
+					<%}%>
+					<div class="hdxq-shouqi" onclick="showOrHideHdjj(0)">
+						收起
+					</div>
+				</div>
+			</div>
+		</script>
+		
+		
+		<!--活动讨论-->
+		<div class="hdtl-div">
+			<div class="hdxq-star">
+				活动讨论
+			</div>
+			<ul id="div_body" class="comment-content" style="position:relative;"></ul>
+			<div class="left-pinglun"></div>
+			<script type="text/html" id="div_script">
+				<%if(reply_list.length != 0){%>
+						<%for(var i=0; i<reply_list.length;i++) {%>
+							<li style="padding-left:45px;margin-left:10px;position:relative;">
+							<img style="position:absolute;left:0;top:10px;width:40px;height:40px;" onerror="this.src='../../../../../image/common/header.png'" src="<%=reply_list[i].icon_url%>"/>
+								<div class="details-no-huifu">
+									<%if(reply_list[i].parent_person_id == '' || reply_list[i].parent_person_id == null){%>
+										<div class="comt-person-name" >
+											<font class="person-name-font"><%=reply_list[i].person_name%></font>
+											</br>
+										</div>
+									<%}else{%>
+										<div class="comt-person-name" >
+											<font class="person-name-font"><%=reply_list[i].person_name%></font>&nbsp;<font>回复</font>&nbsp;<font class="person-name-font"><%=reply_list[i].parent_person_name%></font>
+											</br>
+										</div>
+									<%}%>
+								</div>
+								<div class="comment-text">
+									<%=#reply_list[i].content%>
+								</div>
+								<div class="comt-opt clearfix">
+									<div style="color:#a3a3a3;width:50%;float: left;text-align:left;font-size: 14px;">
+										<%=reply_list[i].create_time.substring(0,16)%>
+									</div>
+									<%if(reply_list[i].b_delete == 0){%>
+										<div class="delete-comt" style="width:25px;" onclick="messageBoard_deletePost(<%=reply_list[i].topic_id %>,<%=reply_list[i].id %>);"></div>
+									<%}%>
+									<div class="reply" style="width:20px;" onclick="openCommentWindow('<%=reply_list[i].id%>','<%=reply_list[i].topic_id%>',<%=reply_list[i].person_id%>,'<%=reply_list[i].person_name%>');">
+									</div>
+								</div>
+							</li>
+						<% } %>
+					<%}else{%>
+						<li class="no-data no-comment">
+							暂无评论
+						</li>
+					<%}%>
+			</script>
+		</div>
+	</div>
+	
+	<!--活动统计-->
+	<div id="hd-tongji" style="width:100%;display:none">
+		<div class="hdtj-first-head-div">
+			<div class="hdtj-head-child sum_bottom" id="person_sum"></div>
+			<div class="hdtj-head-child sum_bottom can_click" id="unplay_person_sum" onclick="viewUnplayInfo(event);"></div>
+			<div class="hdtj-head-child sum_bottom" id="zuopin_sum"></div>
+			<div class="hdtj-head-child" id="view_sum"></div>
+			<div class="hdtj-head-child" id="praise_sum"></div>
+			<div class="hdtj-head-child" id="pinlun_sum"></div>
+		</div>
+		
+		
+		<div class="hdtj-second-head-div">
+			<div class="hdtj-second-div-first-div">姓名</div>
+			<div class="hdtj-second-div-second-div border-left hdjs-active head_zi" onclick="order_sort_type(this,'w')" style="width: 24%;max-width: 24%">作品数量<div class="zthd-arrow-down2" style="display: inline-block;"></div></div>
+			<div class="hdtj-second-div-second-div border-left head_zi" onclick="order_sort_type(this,'v')">浏览量<div class="zthd-arrow-down2" style="display: inline-block"></div></div>
+			<div class="hdtj-second-div-second-div border-left head_zi" onclick="order_sort_type(this,'p')">点赞量<div class="zthd-arrow-down2" style="display: inline-block"></div></div>
+			<div class="hdtj-second-div-second-div border-left head_zi" onclick="order_sort_type(this,'c')">评论量<div class="zthd-arrow-down2" style="display: inline-block"></div></div>
+		</div>
+		<div id="no-data" class="no-data tc" style="display:none">暂时没有数据</div>
+		<div id="hd-div" class="hdtj-third-div-first-div"></div>
+		<script type="text/html" id="hd-script">
+			<%for(var i=0;i<list.length;i++){%>
+				<div style="height:40px;line-height: 40px;border-bottom:1px solid #b8b9ba">
+					<div class="hdtj-second-div-first-div person-name border-left ellipsis can_click" onclick="getActivityInfo('<%=list[i].person_name%>','<%=list[i].identity_id%>','<%=list[i].person_id%>',event)"><%=list[i].person_name%></div>
+					<div class="hdtj-second-div-second-div border-left"  style="width: 24%;max-width: 24%"><%=list[i].works_num%></div>
+					<div class="hdtj-second-div-second-div border-left"><%=list[i].view_num%></div>
+					<div class="hdtj-second-div-second-div hdtj-second-div-center border-left"><%=list[i].praise_num%></div>
+					<div class="hdtj-second-div-second-div hdtj-second-div-center border-left"><%=list[i].comment_num%></div>
+				</div>
+			<%}%>
+		</script>
+	</div>
+</body>
+<script type="text/javascript" src="../../../../../script/api.js" ></script>
+<script type="text/javascript" src="../../../../../script/base_config.js" ></script>
+<script type="text/javascript" src="../../../../../script/plug-in/template.js" ></script>
+<script type="text/javascript" src="../../../../../script/plug-in/base64.js" ></script>
+<script type="text/javascript" src="../../../../../script/common/common.js"></script>
+<script type="text/javascript" src="../../../../../script/plug-in/echo.min.js" ></script>
+<script type="text/javascript" src="../../../../../script/assembly/photoBrowser.js"></script>
+<script type="text/javascript" src="../../../../../script/assembly/executeApp.js" ></script>
+<script type="text/javascript" src="../../../../../script/assembly/openResource.js" ></script>
+<script type="text/javascript">
+    var currentPage = 1;//当前分页数
+	var totalPages = 0;//总页数
+	var totalData = 0;//定义一个变量存储第一次加载返回来的总记录数
+	var changeType = 1;//定义初始化类型
+	var header_h;
+	var oparam;
+	var fb_person_id = 0;//活动发起人id
+	var is_publish;
+	var imgAry = [];
+    apiready = function () {
+    	commonSetTheme({"level":5,"type":0});
+    	header_h = api.pageParam.header_h;
+    	changeType = api.pageParam.type;
+    	is_publish = api.pageParam.is_publish;
+    	oparam = new Object();
+    	oparam.order='w';
+        oparam.sort_type='desc';
+		changeHd(changeType);
+		commonScrollBottomReload();
+		commonRefreshHeaderInfo(); 
+    }
+		
+		/*
+		 * 添加浏览次数
+		 * 张自强
+		 * 20170720
+		 */
+		function addBrowseNum(wz_id, expand_id, callback) {
+			api.ajax({
+				url : BASE_URL_ACTION + '/blog/addBrowseNum',
+				method : 'post',
+				dataType : 'json',
+				timeout : 30,
+				cache : false,
+				data : {
+					values : {
+						"article_id" : wz_id,
+						"identity_id" : $api.getStorage('identity'),
+						"person_id" : $api.getStorage('person_id')
+					}
+				}
+			}, function(ret, err) {
+				if (err) {
+					callback(false, '添加浏览次数失败');
+				} else {
+					if (ret.success) {
+						callback(true, ret.info);
+					} else {
+						callback(false, '添加浏览次数失败');
+					}
+				}
+			});
+		}
+
+
+			
+		
+	   /*
+	    *author:zhaoj
+	    *function:改变
+	    *date：20171109
+	    */
+		function order_sort_type(self,order){
+			if ($api.hasCls(self,'hdjs-active')){
+				if ($api.hasCls($api.first(self), 'zthd-arrow-up2')){
+					$api.removeCls($api.first(self), 'zthd-arrow-up2');
+					$api.addCls($api.first(self), 'zthd-arrow-down2');
+					oparam.sort_type = 'desc';
+				}else{
+					$api.addCls($api.first(self), 'zthd-arrow-up2');
+					$api.removeCls($api.first(self), 'zthd-arrow-down2');
+					oparam.sort_type = 'asc';
+				}
+			}else{
+				$api.addCls(self,'hdjs-active');
+				oparam.sort_type = 'desc';
+			}
+		   
+		   oparam.order = order;
+		   var parent = self.parentNode;
+		   var domArray = $api.domAll(parent, '.head_zi');
+		   for(var i=0;i<domArray.length;i++){
+		   	  if(domArray[i] == self){
+		   	  
+		   	  }else{
+		   	  	$api.removeCls(domArray[i],'hdjs-active');
+		   	  }
+		   }
+		   initData(1);
+		}
+		
+		
+		
+		/*
+		 * 功能：切换活动类型
+		 * 作者：张自强
+		 * 时间：20171021
+		 */
+		function changeHd(type){
+			changeType = type;
+			currentPage = 1;
+			totalPages = 0;
+			totalData = 0;
+			switch(type){
+				case 1:
+					//活动介绍
+          			$api.css($api.byId('hd-tongji'),'display:none');
+          			$api.css($api.byId('hd_js'),'display:block');
+          			initData(1);
+					break;
+				case 4:
+					//活动统计
+					$api.css($api.byId('hd_js'),'display:none');
+          			$api.css($api.byId('hd-tongji'),'display:block');
+          			initData(1);
+					break;
+			}
+		}
+		
+		/*
+		 * 功能：收起或展开活动简介
+		 * 作者：张自强
+		 * 时间：20471023
+		 */
+		function showOrHideHdjj(type){
+			if(type){
+				$api.css($api.byId('hdjj'),'display:block');
+				$api.css($api.byId('zk-button'),'display:none');
+			}else{
+				$api.css($api.byId('hdjj'),'display:none');
+				$api.css($api.byId('zk-button'),'display:block');
+			}
+		}
+		
+		/*
+		 * 功能：根据id获取活动介绍
+		 * 作者：张自强
+		 * 时间：20171024
+		 */
+		function getTopic(){
+			api.ajax({
+				url : BASE_URL_ACTION + '/ypt/space/topic/get_topic_by_id?id=' + api.pageParam.id,
+				method : 'get',
+				timeout : 0,
+				dataType : 'json',
+				headers : {
+		'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+	}
+			}, function(ret, err) {
+				if(err){
+					$api.css($api.byId('no_quanzi'),'display:block');
+					$api.css($api.byId('hd_js'),'display:none');
+					$api.html($api.byId('no_quanzi','暂无活动'));
+					popToast('获取活动介绍失败，请稍候重试');
+				}else{
+					if(ret.success){
+						is_publish = ret.is_publish;
+						if (is_publish == 1){
+							$api.addCls($api.byId('tip'), "aui-hide");
+						}else{
+							$api.removeCls($api.byId('tip'), "aui-hide");
+						}
+						$api.css($api.byId('no_quanzi'),'display:none');
+						$api.css($api.byId('hd_js'),'display:block');
+						fb_person_id = ret.person_id;
+						var img_url = '';
+						if(ret.thumb_id != null && ret.thumb_id != ''){
+							if (BASE_APP_TYPE == 1) {
+								img_url = BASE_IMAGE_PRE+"down/Material/" + ret.thumb_id.substring(0, 2) + "/" + ret.thumb_id+ commonReturnPhotoCutSize(0);		
+							} else {
+								img_url = BASE_URL_ACTION + "/html/thumb/Material/" + ret.thumb_id.substring(0, 2) + "/" + ret.thumb_id + commonReturnPhotoCutSize(0);
+							}
+							$api.attr($api.byId('hdxq_img'),'src',img_url);
+						}else{
+							$api.attr($api.byId('hdxq_img'),'src','../../../../../image/fun-module/ipad/zthd/zthd.png');
+						}
+						
+//						$api.html($api.byId('hdxq_name'), ret.name);
+						commonExecScript('zthd_hd_window','','refreshTitleName("'+ret.name+'");',0);
+						commonExecScript('zthd_hd_window','','refreshAdd_zpIsShow("'+ret.start_time+'","'+ ret.end_time +'",' + ret.is_publish +');',0);
+						if (1 == ret.is_publish){
+							ret.release_org_str = analysisReleaseObj(ret.p_object,ret.release_org);
+						}
+						imgAry = [];
+						var img_index = 0;
+						for (var i = 0; i < ret.attachment.length; i++){
+							var title = ret.attachment[i].resource_title.split('.');
+			                if(title.length > 1 && title[title.length - 1] == ret.attachment[i].resource_format){
+			                    for (var j = 0; j < title.length - 1; j++){
+			                    	ret.attachment[i].resource_title = title[j];
+			                    }
+			                }
+			                
+			                if (ret.attachment[i].resource_format=='png' || ret.attachment[i].resource_format=='jpg' || ret.attachment[i].resource_format == 'bmp' || ret.attachment[i].resource_format =='gif'){
+					    		var img_url;
+					    		if (BASE_APP_TYPE == 1) {
+									img_url = BASE_IMAGE_PRE+"down/Material/" + ret.attachment[i].file_id.substring(0, 2) + "/" + ret.attachment[i].file_id+"."+ret.attachment[i].resource_format;
+								} else {
+									img_url = BASE_URL_ACTION + "/html/thumb/Material/" + ret.attachment[i].file_id.substring(0, 2) + "/" + ret.attachment[i].file_id+"."+ret.attachment[i].resource_format;
+								}
+					    		imgAry.push(img_url);
+					    		ret.attachment[i].img_index = img_index;
+					    		img_index++;
+					    	}else{
+					    		ret.attachment[i].img_index = -1;
+					    	}
+						}
+						
+						commonAddOnceHtml('hdxq_div','hdxq_script',ret);
+						if(ret.person_id == $api.getStorage('person_id')){
+							$api.css($api.byId('hdxq-edit'),'display:block');
+						}
+						//获取活动评论列表
+//						 initData(1);
+					}else{
+						$api.css($api.byId('no_quanzi'),'display:block');
+						$api.css($api.byId('hd_js'),'display:none');
+						$api.html($api.byId('no_quanzi','暂无活动'));
+						popToast('获取活动介绍失败，请稍候重试');
+					}
+				}
+			});
+		}
+		//分析发布对象
+    function analysisReleaseObj(_p_object,_release_org){
+        var str = ""
+        var p_object = parseInt(_p_object);
+        var release_org = _release_org;
+        var item;
+        if (1 === p_object){//公开
+        	for (var i=0;i<=release_org.length-1;i++){
+        		item = release_org[i];
+        		if (i < release_org.length-1){
+                    str += item.org_name+"全部学生，";
+                    str += item.org_name+"全部教师";
+//                  str += item.org_name+"全部家长，";
+                }else{
+                    str += item.org_name+"全部学生，";
+                    str += item.org_name+"全部教师";
+//                  str += item.org_name+"全部家长";
+                }
+        	}
+        }else if (2 === p_object){//全部教师
+            for (var i=0;i<=release_org.length-1;i++){
+        		item = release_org[i];
+                if (i < release_org.length-1){
+                    str += item.org_name+"全部教师，";
+                }else{
+                    str += item.org_name+"全部教师";
+                }
+            }
+        }else if (3 === p_object){//全部学生
+            for (var i=0;i<=release_org.length-1;i++){
+        		item = release_org[i];
+                if (i < release_org.length-1){
+                    str += item.org_name+"全部学生，";
+                }else{
+                    str += item.org_name+"全部学生";
+                }
+            }
+        }else if (4 === p_object){//指定参与对象
+            for (var i=0;i<=release_org.length-1;i++){
+        		item = release_org[i];
+                var r_identity_id = item.r_identity_id.split(',');
+                if (i < release_org.length-1){
+                    if (item.org_type === 106){//群组
+                        str += item.org_name+"群组，";
+                    }else {
+                    	for (var j=0;j<=r_identity_id.length-1;j++){
+                    		var identity = r_identity_id[j]
+                    		if (5 === parseInt(identity)){//教师
+                                str += item.org_name+"全部教师，";
+                            }else if (6 === parseInt(identity)){//学生
+                                str += item.org_name+"全部学生，";
+                            }else if (7 === parseInt(identity)){//家长
+//                              str += item.org_name+"全部家长，";
+                            }
+                    	}
+                    }
+                }else{
+                    if (item.org_type === 106){//群组
+                        str += item.org_name+"群组";
+                    }else {
+                       for (var j=0;j<=r_identity_id.length-1;j++){
+                    		var identity = r_identity_id[j]
+                            if (j === r_identity_id.length - 1){
+                                if (5 === parseInt(identity)){//教师
+                                    str += item.org_name+"全部教师";
+                                }else if (6 === parseInt(identity)){//学生
+                                    str += item.org_name+"全部学生";
+                                }else if (7 === parseInt(identity)){//家长
+//                                  str += item.org_name+"全部家长";
+                                }
+                            }else {
+                                if (5 === parseInt(identity)){//教师
+                                    str += item.org_name+"全部教师，";
+                                }else if (6 === parseInt(identity)){//学生
+                                    str += item.org_name+"全部学生，";
+                                }else if (7 === parseInt(identity)){//家长
+//                                  str += item.org_name+"全部家长，";
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        return str;
+    }
+		
+		/*
+		 * 功能：获取评论信息
+		 * 作者：张自强
+		 * 时间：20171024
+		 */
+		function initData(current_page){
+			showSelfProgress('加载中...');
+			currentPage = current_page;
+			if(api.pageParam.type == 4){
+				api.ajax({
+					url : BASE_URL_ACTION + '/ypt/space/topic/get_topic_statlist_by_id?topic_id='+api.pageParam.id+'&page_num='+current_page+'&page_size='+BASE_PAGE_SIZE+'&order='+oparam.order+'&sort_type='+oparam.sort_type,
+					method : 'get',
+					timeout : 0,
+					dataType : 'json',
+					headers : {
+			'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+		}
+				}, function(ret, err) {
+					totalData = ret.total_row;
+					totalPages = ret.total_page;
+					var list = ret.list;
+					var person_sum = 0;
+					var zuopin_sum = 0;
+					var pinlun_sum = 0;
+					var not_sum = 0;
+					if(err){
+						popToast('获取统计失败，请稍候重试');
+					}else{
+						if(ret.success){
+							api.ajax({
+								url : BASE_URL_ACTION + '/ypt/space/topic/get_topic_stat_by_id?topic_id='+api.pageParam.id,
+								method : 'get',
+								timeout : 0,
+								dataType : 'json',
+								headers : {
+						'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+					}
+							}, function(ret, err) {
+								if(err){
+									popToast('获取统计失败，请稍候重试');
+								}else{
+									if(ret.success){
+										person_sum = ret.played_num;
+										zuopin_sum = ret.works_num;
+										pinlun_sum = ret.comment_num;
+										not_sum = ret.not_sum;
+										
+										$api.html($api.byId('person_sum'), '参与人数：'+person_sum);
+										
+										$api.html($api.byId('zuopin_sum'), '作品数量：'+zuopin_sum);
+										$api.html($api.byId('view_sum'), '总浏览量：'+ret.view_num);
+										$api.html($api.byId('praise_sum'), '总点赞量：'+ret.praise_num);
+										$api.html($api.byId('pinlun_sum'), '总评论量：'+pinlun_sum);
+										if (is_publish==1){
+											if(ret.p_object==1){
+												$api.css($api.byId('unplay_person_sum'),'display:none');
+											}else{
+												$api.html($api.byId('unplay_person_sum'), '未参与人数：'+not_sum);
+											}
+										}else{
+											$api.css($api.byId('unplay_person_sum'),'display:none');
+										}
+										
+										var rett = {'list':list}
+										if(list.length == 0 && current_page == 1){
+											$api.css($api.byId('hd-div'),'display:none');
+											$api.css($api.byId('no-data'),'display:block');
+										}else{
+											$api.css($api.byId('hd-div'),'display:block');
+											$api.css($api.byId('no-data'),'display:none');
+											commonAddManyHtml('hd-div','hd-script',rett);
+										}
+									}else{
+										popToast('获取统计失败，请稍候重试');
+									}
+								}
+							});
+							
+						}else{
+							popToast('获取统计失败，请稍候重试');
+						}
+					}
+					//通知顶部下拉刷新数据加载完毕，组件会恢复到默认状态
+					commonControlRefresh();
+					api.hideProgress();
+				});
+			}else{
+				if (current_page == 1){
+					getTopic();
+				}
+			
+				api.ajax({
+					url : BASE_URL_ACTION + '/bbs/topic/view',
+					method : 'post',
+					timeout : 0,
+					dataType : 'json',
+					data : {
+						values : {
+							'message_type':2,
+							'pageNumber':currentPage,	
+							'pageSize':BASE_PAGE_SIZE,	
+							'sort':1,
+							'type_id':'space_topic_'+api.pageParam.id
+						}
+					},
+					headers : {
+			'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+		}
+				}, function(ret, err) {
+					totalData = ret.totalRow;
+					totalPages = ret.totalPage;
+//					$api.text($api.byId('j_comment'), ret.totalRow);
+					if(err){
+						popToast('获取评论失败，请稍候重试');
+					}else{
+						if(ret.success){
+							for(var i=0;i<ret.reply_list.length;i++){
+								if(ret.reply_list[i].icon_url != ""){
+									if(BASE_APP_TYPE == 1){
+										ret.reply_list[i].icon_url = BASE_IMAGE_PRE + url_path_suffix + ret.reply_list[i].icon_url.substring(0, 2) + "/" +ret.reply_list[i].icon_url + commonReturnPhotoCutSize(1,96,96,ret.reply_list[i].icon_url.substring((ret.reply_list[i].icon_url.length)-3),0);
+									}else{
+										ret.reply_list[i].icon_url = BASE_URL_ACTION + BASE_IMAGE_BEGIN + ret.reply_list[i].icon_url.substring(0, 2) + "/" + ret.reply_list[i].icon_url + commonReturnPhotoCutSize(1,96,96,ret.reply_list[i].icon_url.substring((ret.reply_list[i].icon_url.length)-3),0);
+									}	
+								}else{
+									ret.reply_list[i].icon_url = '../../../../../image/common/header.png';
+								}
+								commonJudgeRoles(function(type){
+                                    if($api.getStorage('person_id') == ret.reply_list[i].person_id&& $api.getStorage('identity') == ret.reply_list[i].identity_id || $api.getStorage('person_id') == fb_person_id){
+                                        ret.reply_list[i].b_delete = 0;
+                                    }else if(type*1 == 3 || type*1 == 5){
+                                        ret.reply_list[i].b_delete = 0;
+                                    }else{
+                                        ret.reply_list[i].b_delete = 1;
+                                    }
+                                });
+							}
+							commonAddManyHtml('div_body','div_script',ret);
+						}else{
+							popToast('获取评论失败，请稍候重试');
+						}
+					}
+					//通知顶部下拉刷新数据加载完毕，组件会恢复到默认状态
+					commonControlRefresh();
+					api.hideProgress();
+				});
+			}
+		}
+		
+		/*
+		 * 功能：打开评论页面
+		 * 作者：张自强
+		 * 时间：20171024
+		 */
+		function openCommentWindow(id,topic_id,person_id,person_name){
+			var pageParamJson = {'id':api.pageParam.id,"header_h":api.pageParam.header_h,'type':'hd_1','d':1,'topic_id':api.pageParam.id,'parent_id':id,"oparam":JSON.parse(Base64.decode(api.pageParam.oparam_base64))}
+			commonOpenWin('zthd_comment_window', 'zthd_comment_window.html', false, false, pageParamJson)
+		}
+	    
+	    /*
+		 *author:zhaoj
+		 *function:删除留言
+		 *date：20160319
+		 */
+		function messageBoard_deletePost(topic_id, postid) {
+			api.confirm({
+				title : '提示',
+				msg : '确定删除该评论内容？',
+				buttons : ['确定', '取消']
+			}, function(ret, err) {
+				if (ret) {
+					if (ret.buttonIndex == 1) {
+						showSelfProgress('加载中...');
+						api.ajax({
+							url : BASE_URL_ACTION + '/ypt/bbs/post/delete',
+							method : 'get',
+							dataType : 'json',
+							cache : false,
+							timeout : 30,
+							data : {
+								values : {
+									"topic_id" : topic_id,
+									"post_id" : postid
+								}
+							},
+							headers : {
+								'Cookie' : 'person_id=' + $api.getStorage("person_id") + ';identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+							}
+						}, function(ret, err) {
+							if (ret.success) {
+								setTimeout(function(){
+									popToast("删除成功");
+									initData(currentPage);
+								},2000);
+							} else {
+								api.hideProgress();
+								popToast("删除评论失败，请稍候重试");
+								$api.css($api.byId('shadow'), "z-index:-1;");
+							}
+							if (err) {
+								api.hideProgress();
+								popToast("删除评论失败,请稍候重试");
+								$api.css($api.byId('shadow'), "z-index:-1;");
+							}
+						});
+					}
+				}
+			});
+		}
+		
+		
+	    
+	   /*
+	    *author:zhaoj
+	    *function:打开附件
+	    *date：20171023
+	    */
+		function openAttachment(resource_id_int,img_index){
+			var param_json = {"is_show_tip":1,"resource_id_int":resource_id_int};
+	            commonGetResInfo(param_json,function(flag,ret){
+	                api.hideProgress();
+	                if(flag){
+	                	if (ret.resource_format=='png' || ret.resource_format=='jpg' || ret.resource_format == 'bmp' || ret.resource_format =='gif'){
+				    		openPictureShowWin(imgAry,img_index);
+				    		return;
+				    	}
+	                
+	                    var oparam ={"res_type":ret.resource_format, "res_path":ret.file_id, "res_title":ret.resource_title,"m3u8_status":ret.m3u8_status,"winName":api.winName,"setBackFun":'reBackType("voice");',"backFun":'back();',"res_id":'open_picture',"pic_back":'hdjs_picture'};
+	                
+	 common_openResource.open_new(JSON.stringify(oparam));
+	                }else{
+	                    popToast('打开失败，请稍候重试');
+	                }
+	            });
+		}
+		
+		function openBJ(){
+//	    	commonExecScript('zthd_hd_window','','reBackType("edit");',0);
+	    	var pageParamJson={"old_header_h":api.pageParam.header_h,"header_h":api.pageParam.header_h,"oparam_base64":api.pageParam.oparam_base64,'is_publish':is_publish}//打开frame页面所需参数
+//			commonOpenFrame('zthd_edit_frame', 'zthd_edit_frame.html',0, false, false,"#ffffff",pageParamJson);	//打开index页面
+	   		commonOpenWin('zthd_edit_window','zthd_edit_window.html',false,false,pageParamJson);
+	    }
+    /*
+	*author:wangdongy
+	*function:查看未参与人信息
+	*/
+	function viewUnplayInfo(e){
+//      commonExecScript('zthd_hd_window','','reBackType("unplay");',0);
+		commonOpenWin('zthd_showData_window','../../common/zthd/zthd_showData_window.html',false,false,{topic_id:api.pageParam.id,type:1,title:'未参与人',header_h:api.pageParam.header_h});
+//		commonOpenFrame('zthd_unplay_info','../../common/zthd/zthd_unplay_info.html', api.pageParam.header_h, true, false, 'rgba(0,0,0,0)', {topic_id:api.pageParam.id});
+		e.stopPropagation();
+	}
+	/*
+	*author:wangdongy
+	*function:查看作品信息
+	*/
+	function getActivityInfo(person_name,identity_id,person_id,e){
+		var title = person_name+"的作品";
+		var data = {
+			type:0,
+			identity_id:identity_id,		
+			person_id:person_id,
+			topic_id:api.pageParam.id,
+			title:title,
+			header_h:api.pageParam.header_h,
+		}
+//      commonExecScript('zthd_hd_window','','reBackType("worksinfo");',0);
+//      commonExecScript('zthd_hd_window','','commonSetWindowName("'+title+'");',0);
+		commonOpenWin('zthd_showData_window','../../common/zthd/zthd_showData_window.html',false,false,data);
+//		commonOpenFrame('zthd_view_worksinfo','../../common/zthd/zthd_view_worksinfo.html', api.pageParam.header_h, true, false, 'rgba(0,0,0,0)', data);
+		e.stopPropagation();
+	}
+</script>
+</html>

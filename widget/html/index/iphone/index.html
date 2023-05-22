@@ -1,0 +1,194 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<!-- html5：在创建html时为了防止页面缩放等不兼容效果，要创建个viewport  -->
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<!-- 在IOS设备上，有时会将数字转为手机号，这里也要禁止下 -->
+		<meta name="format-detection" content="telephone=no"/>
+		<title>手机端-主界面</title>
+		<link rel="stylesheet" type="text/css" href="../../../css/aui_css_new/aui.css"/>
+		<link rel="stylesheet" type="text/css" href="../../../css/aui/aui.css" />
+		<link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+		
+		<link id="j_theme" rel="stylesheet" type="text/css" href="" />
+		<style>
+			.zhanwei{height:100%;display: inline-block;float:left;}
+			.aui-bar-tab li p{margin-top:32px;}
+			.aui-bar-tab li.active{background-color:#eaf6fd;}
+			.btn-title{width:80%;margin:0 auto;margin-top:7px;}
+			.aui-icon-person-self{background:url(../../../image/common/add-person.png) center center no-repeat;background-size:20px auto;display:inline-block;width:25px;height:100%;}
+		</style>
+	</head>
+	<body class="index-iphone">
+		<header class="aui-bar aui-bar-nav aui-bar-primary" id="aui-header">
+			<div class="topbar activebar">
+				<a class="zhanwei">&nbsp;</a>
+				<div class="aui-title" id="mTitle"></div>
+				<div id="back" class="back-none back aui-hide" onclick="back();">
+					<i class="aui-iconfont aui-icon-left"></i>返回
+				</div>
+				<!--消息-->
+				<a class="aui-btn aui-btn-primary aui-pull-right aui-hide" id="j_infor_add" href="javascript:openAddWindow('txl_addfriends_window');"> 
+					<span class="aui-iconfont aui-icon-person-self"></span> 
+				</a>
+				<!--//消息-->
+				<!--教师/学生圈子下拉菜单-->
+				<a id='j_quanzi_menu' class="aui-iconfont aui-icon-menu aui-pull-right back aui-hide" onclick="openScreenWindow();"></a>
+				<!--//教师/学生圈子下拉菜单-->
+				<!--教师/学生/家长圈子添加-->
+				<a id='j_quanzi_add' class="aui-pull-right aui-iconfont aui-icon-add back aui-hide" onclick="clickAddQuanzi()"></a>
+				<!--//教师/学生/家长圈子添加-->
+				<!--教师-->
+				<!--//教师-->
+				<!--学生-->
+				<!--//学生-->
+				<!--家长-->
+				<!--//家长-->
+				<!--管理-->
+				<!--<a id='j_xwzx_add' class="aui-iconfont aui-icon-add aui-pull-right aui-hide" onclick="openTongzhiAddFrame();"></a>-->
+				<!--//管理-->
+			</div>
+		</header>
+		<footer class="aui-nav" id="aui-footer">
+			<ul id="j_nav" class="aui-bar-tab">
+			</ul>
+			<script type="text/html" id="nav_script">
+				<%for(var i = 0; i < module.length; i++) {%>
+					<%if(i==2){%>
+						<li id="j_nav_<%=i%>" class="module_<%=i%> active" tapmode onclick="randomSwitchBtn(<%=i%>,'<%=module[i].title%>')">
+						</li>
+					<%}else{%>
+						<li id="j_nav_<%=i%>" class="module_<%=i%>" tapmode onclick="randomSwitchBtn(<%=i%>,'<%=module[i].title%>')">
+							<p>
+								<%=module[i].title%>
+								<%if(i == 0){%>
+									<font id="hh_a"></font>
+								<%}%>
+							</p>
+						</li>
+					<% } %>
+				<% } %>
+			</script>
+		</footer>
+	</body>
+	<script type="text/javascript" src="../../../script/api.js"></script>
+	<script type="text/javascript" src="../../../script/plug-in/template.js" ></script>
+	<script type="text/javascript" src="../../../script/base_config.js"></script>
+	<script type="text/javascript" src="../../../script/common/common.js"></script>
+	<script type="text/javascript" src="../../../script/init/init_config.js"></script>
+	<script type="text/javascript" src="../../../script/init/iphone/index.js"></script>
+	<script type="text/javascript" src="../../../script/common/iphone/dcwj_common.js"></script>
+	<script type="text/javascript" src="../../../script/assembly/tongjiData.js"></script>
+	<script type="text/javascript" src="../../../script/plug-in/base64.js" ></script>
+	<script type="text/javascript" src="../../../script/tongxunlu/txl_addfriendsgo_frame.js"></script>
+	<script type="text/javascript" src="../../../script/init/common/quanzi/init_getClassify.js"></script>
+	<script type="text/javascript" src="../../../script/common/appintentForScanner.js"></script>
+	<script type="text/javascript">
+		var param_json={"header_h":"","footer_h":"","rect_h":"","is_first":1,"hsh_is_first":1,"is_class":false};//初始化全局参数
+		var from_html = '';//从哪个页面打开index
+		var header_h = 0;
+		//从哪个页面退出
+		var back_type = '';
+		//是否开启滑动条
+		var Navigation_isOpen = false;
+		var jz_onclick_menu = 0;
+		var org_id = 0;
+		var org_name = "";
+		var bj_name = "";
+		var bj_id = 0;
+		var is_change = false;
+		apiready = function() {
+			addAppintentEvent();
+			commonSetTheme({"level":3,"type":1});
+			var idy_type = $api.getStorage('idy_type');
+			var jsonPath = "widget://res/json/index_iphone.json";
+			commonBaseConfig(jsonPath,function(data) {
+				param_json.module = data[idy_type].module;
+				commonSetWindowName(data[idy_type].module[2].title);
+				commonAddOnceHtml('j_nav','nav_script', data[idy_type]);
+				openFrameGroup();
+			});
+			initHeight();//初始化高度
+			commonDownNav(2);
+			from_html = api.pageParam.from_html;//通讯录添加好友需要的参数
+			//第一次登录时，需要传参，进行通讯录初始化操作
+			param_json.from_html = from_html;
+			renrenTongLogCount();
+			setBack("index");//设置页面返回
+		}
+
+		/**
+		 * 退出到首页
+		 * 周枫
+		 * 2015.10.23
+		 */
+		function goLogin() {
+			api.openWin({
+				name : 'login',
+				url : 'login.html',
+				bounces : false,
+				opaque : false,
+				showProgress : false,
+				vScrollBarEnabled : false,
+				hScrollBarEnabled : false,
+				slidBackEnabled : false,
+				delay : 0,
+				animation : {
+					type : "reveal", //动画类型（详见动画类型常量）
+					subType : "from_left", //动画子类型（详见动画子类型常量）
+					duration : 300
+				},
+			});
+			$api.val($api.byId('login_name_input'), '');
+			$api.val($api.byId('login_pas_input'), '');
+		}
+		/**
+		 * 打开menu选择页面
+		 * 周枫
+		 * 2016.3.16
+		 */
+		function openMenuFrame() {
+			api.openFrame({
+				name : 'txl_menu_frame',
+				url : 'html/tongxunlu/txl_menu_frame.html',
+				bounces : false,
+				rect : {
+					x : 0,
+					y : 0,
+					w : 'auto',
+					h : 'auto'
+				},
+				bgColor : 'rgba(0,0,0,0)',
+				pageParam : {
+					header_h : header_h,
+					'from_name' : 'root'
+				},
+				reload : true
+			});
+		}
+		
+		 /*
+        *author:张自强
+        *function:扫一扫判断身份
+        *date：20170413
+        */
+        function openSysPhone(){
+            var check_idy_id = $api.getStorage('idy_id')*1;
+            switch(check_idy_id){
+                case 0:
+                    openModule({"win_url":"","type":"7","code":"hbg_rcbg_sys"});
+                    break;
+                case 1:
+                    openModule({"win_url":"","type":"7","code":"hsh_sys"});
+                    break;
+                case 2:
+                    openModule({"win_url":"","type":"7","code":"hsh_sys"});
+                    break;
+                case 3:
+                    openModule({"win_url":"","type":"7","code":"rcbg_sys"});
+                    break;
+            }
+        }
+	</script>
+</html>

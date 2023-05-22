@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<!-- html5：在创建html时为了防止页面缩放等不兼容效果，要创建个viewport  -->
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<!-- 在IOS设备上，有时会将数字转为手机号，这里也要禁止下 -->
+		<meta name="format-detection" content="telephone=no"/>
+		<title>个人信息列表frame</title>
+		<link rel="stylesheet" type="text/css" href="../../css/aui/aui.css" />
+		<link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+		<style>
+			body, html {
+			}
+			.header {
+				display: -webkit-box;
+				display: -webkit-flex;
+				display: flex;
+			}
+			.title {
+				-webkit-box-flex: 1;
+				-webkit-flex: 1;
+				flex: 1;
+			}
+			.login-header a {
+				padding: 30px;
+				background-size: 50px;
+			}
+			.index-header a, .detail-header a {
+				display: block;
+				background-size: 30px;
+				padding: 20px;
+			}
+			.header a {
+				background-repeat: no-repeat;
+				background-position: center;
+			}
+			.close {
+				background-image: url("../../image/close_icon_normal@2x.png");
+			}
+			.setting {
+				background-image: url("../../image/setting_icon_normal@2x.png");
+			}
+			.login-header .nologin-user {
+				-webkit-transform: rotateY(0deg);
+			}
+			.login-header {
+				height: 100%;
+				/*background-color: #6ab494;*/
+			}
+			.title {
+				text-align: center;
+				padding-top: 15px;
+				padding-bottom: 15px;
+				display: -webkit-box;
+				display: -webkit-flex;
+				display: flex;
+				-webkit-box-orient: vertical;
+				-webkit-flex-flow: column;
+				flex-flow: column;
+			}
+			.name {
+				color: #323237;
+				font-size: 18px;
+				padding-top: 10px;
+			}
+			.login {
+				color: #323237;
+				font-size: 14px;
+			}
+			.bottom li {
+				width: 18.89%;
+				background-size: 30px;
+			}
+			.bottom li a {
+				margin: 15px 10px 0 10px;
+				color: #737377;
+				font-size: 12px;
+			}
+			.plugin {
+				background-image: url("../../image/plugin_icon_setting@2x.png");
+			}
+			.offline {
+				background-image: url("../../image/pluginboard_icon_offline@2x.png");
+			}
+			.night {
+				background-image: url("../../image/pluginboard_icon_night@2x.png");
+			}
+			.search {
+				background-image: url("../../image/pluginboard_icon_search@2x.png");
+			}
+			.more {
+				background-image: url("../../image/pluginboard_icon_more@2x.png");
+			}
+			.h10 {
+				height: 10px;
+				background: #f0f0f0;
+			}
+			.h1 {
+				height: 1px;
+				margin-left: 15px;
+				background: #f0f0f0;
+			}
+			.fr {
+				float: right;
+			}
+			.hint {
+				color: #666;
+				font-size: 12px;
+				margin-right: 5px;
+			}
+			.firstblock, .secondblock, .thirdblock {
+				background-color: #fff;
+			}
+			/* 头部登陆 */
+			/*.login {position:relative;background-image: url(../../image/api_31.png);background-repeat: no-repeat; background-size: contain;}	*/
+			.loginbg {
+				width: 100%;
+			}
+			.login .personal_logo {
+				position: absolute;
+				left: 0;
+				top: 55px;
+				width: 70px;
+				margin-left: 20px;
+			}
+			.person_arrow {
+				position: absolute;
+				height: 20px;
+				right: 10px;
+				top: 90px;
+			}
+			.login .userinfo {
+				position: absolute;
+				top: 60px;
+				margin-left: 100px;
+			}
+			.login .userinfo .title {
+				font-size: 20px;
+				color: #fff;
+			}
+			.login .userinfo .subtitle {
+				font-size: 14px;
+				color: #fff;
+				border: 1px solid #fff;
+				display: inline-block;
+				padding: 3px;
+				border-radius: 4px;
+				margin-top: 5px;
+			}
+			.login_user dl {
+				position: relative;
+				text-align: left;
+				height: 60px;
+			}
+			.login_user dl dt {
+				width: 66px;
+				position: absolute;
+			}
+			.login_user dd {
+				margin-left: 85px;
+			}
+			.login_user dd span {
+				display: block;
+			}
+			/* 设置条目 */
+			.item {
+				height: 50px;
+				line-height: 50px;
+				padding-left: 15px;
+				background-color: #fff;
+			}
+			.item_ico {
+				float: left;
+				width: 30px;
+				padding: 10px 10px 10px 0;
+			}
+			.item_arrow {
+				float: right;
+				width: 16px;
+				padding: 17px 15px 15px 0;
+			}
+			.presshover {
+				background-color: #FAFAFA;
+			}
+			.item_right {
+				color: #696969;
+				font-size: 14px;
+				padding-right: 15px;
+			}
+			#class_div,#addFriend,#friendMenu{
+				display: none;
+			}
+		</style>
+	</head>
+	<body class="huihua-commont">
+		<div id="top-div" class="h10"></div>
+		<header>
+			<div class="login-header header ">
+				<!--<a class="close" tapmode="" onclick=""></a>-->
+				<div class="hidden title login_user" stlye="position:relative" tapmode="presshover">
+					<dl>
+						<dt>
+							<img onerror="this.src='../../image/common/header.png'" src='' id="user" style="margin-left:15px;vertical-align: middle;" width="64" height="64" />
+						</dt>
+						<dd>
+							<span class="name" id="name"></span>
+						</dd>
+					</dl>
+				</div>
+				<!--<a class="setting" tapmode=""></a>-->
+			</div>
+		</header>
+		<div class="h10"></div>
+		<!--<div class="firstblock">
+			<div class="item" tapmode="presshover">
+				<span>账号</span><span id="login" class="item_right aui-pull-right"></span>
+			</div>
+		</div>-->
+		<div class="h1"></div>
+		<div class="firstblock">
+			<div class="item">
+				<span>手机号</span><span id="tel" class="item_right aui-pull-right"></span>
+			</div>
+		</div>
+		<div class="h1"></div>
+		<div class="firstblock">
+			<div class="item">
+				<span>邮箱地址</span><span id="email" class="item_right aui-pull-right"></span>
+			</div>
+		</div>
+		<div class="h1"></div>
+		<div class="firstblock">
+			<div class="item">
+				<span>机构名称</span><span id="bureau_name" class="item_right aui-pull-right"></span>
+			</div>
+		</div>
+		<div id="class_div">
+			<div class="h1"></div>
+			<div class="firstblock">
+				<div class="item">
+					<span>所在班级</span><span id="class" class="item_right aui-pull-right"></span>
+				</div>
+			</div>
+		</div>
+		<div class="h10"></div>
+		<div id="friendMenu" style="padding:10% 20px">
+			<input tapmode type="button"  onclick="readyHhList();" value="发消息" class="aui-btn aui-btn-block aui-btn-primary"/>
+			<input id="fdx_div" tapmode type="button"  onclick="tesSendMsg();" value="发短信" class="aui-btn aui-btn-block aui-btn-primary"/>
+			<input id="ddh_div" tapmode type="button"  onclick="telCall();" value="打电话" class="aui-btn aui-btn-block aui-btn-primary"/>
+		</div>
+		<div id="addFriend" style="padding:10% 20px">
+			<input tapmode type="button"  onclick="addFriendClick();" value="加为好友" class="aui-btn aui-btn-block aui-btn-primary"/>
+		</div>
+		<input type="hidden" id="tel_hid" />
+	</body>
+	<script type="text/javascript" src="../../script/api.js"></script>
+	<script type="text/javascript" src="../../script/plug-in/zepto.min.js"></script>
+	<script type="text/javascript" src="../../script/huihua/sqlite_db.js"></script>
+	<script type="text/javascript" src="../../script/common/common.js"></script>
+	<script type="text/javascript" src="../../script/huihua/hh_db.js"></script>
+	<script type="text/javascript" src="../../script/base_config.js"></script>
+	<script type="text/javascript" src="../../script/tongxunlu/txl_addfriendsgo_frame.js"></script>
+	<script type="text/javascript" src="../../script/tongxunlu/txl_index_window.js"></script>
+	<script type="text/javascript">
+		var header_h;
+		var targetId;
+		var old_msg_id;
+		var conver_type;
+		var person_name;
+		var h_from;
+		var avatar_url;
+		var BASE_URL_ACTION;
+		var fperson_id;
+		var fidentity_id;
+		var isFromQuanzi = false;//是否是从圈子界面跳转过来
+		var isfriend = true;//是否是好友关系
+		var flogin_name_rong;
+		apiready = function() {
+			commonSetTheme({"level":2,"type":0});
+			header_h = api.pageParam.header_h;
+			targetId = api.pageParam.targetId;
+			old_msg_id = api.pageParam.old_msg_id;
+			conver_type = api.pageParam.conver_type;
+			person_name = api.pageParam.person_name;
+			h_from = api.pageParam.h_from;
+			avatar_url = api.pageParam.avatar_url;
+			fperson_id = api.pageParam.person_id;
+			fidentity_id = api.pageParam.identity_id;
+			BASE_URL_ACTION = $api.getStorage('BASE_URL_ACTION');
+			if (fperson_id && fidentity_id){
+				flogin_name_rong = fperson_id+"_"+fidentity_id+"_"+$api.getStorage("BASE_SERVER_NAME");
+			}else{
+				flogin_name_rong = targetId;
+			}
+			
+//			loadData();
+			if (api.pageParam.ishideTop){//平板端隐藏间距
+				$api.addCls($api.byId('top-div'), 'aui-hide');
+			}
+			if (h_from == 'center_index'){
+				isFromQuanzi = true;
+				if (fidentity_id == 6){//学生显示班级信息
+					$api.byId('class_div').style.display = 'block';
+				}
+				
+				if (fperson_id != $api.getStorage('person_id')){
+					judgeHasFriend();
+				}
+				else {
+					$api.byId('friendMenu').style.display = 'block';
+				}
+//				if(api.uiMode == 'pad'){
+//				    commonAddOrRemoveHideCss('ddh_div',0);
+//				    commonAddOrRemoveHideCss('fdx_div',0);
+//				}
+			}
+			else {
+				$api.byId('friendMenu').style.display = 'block';
+			}
+			
+			//获取个人信息
+			getPersonInfo();
+		}
+		
+		/**
+		 * 加载个人信息
+		 * 周枫
+		 * 2015.12.05
+		 */
+		function loadMyself() {	
+			//头像
+			var user = document.getElementById("user");
+			user.src = avatar_url;
+			//姓名
+			$api.html($api.byId('name'), person_name);
+			//登录名
+//			var login_name_ypt = commonNewParamToOldParam(targetId);
+//			$api.html($api.byId('login'), login_name_ypt);
+
+		}
+		
+		/**
+		 * 获取个人信息
+		 * 周枫
+		 * 2016.1.16
+		 */
+		function getPersonInfo() {
+			var ypt_targetId = commonNewParamToOldParam(targetId);
+			api.ajax({
+				url : BASE_URL_ACTION + '/person/getPersonInfoByLoginName?login_name=' + ypt_targetId,
+				method : 'get',
+				dataType : 'json',
+				timeout : 30,
+				cache : false
+			}, function(ret, err) {
+				if (ret) {
+					if (ret.success) {
+						var tel = ret.table_List.TEL;
+						if(isNaN(tel) || tel == '' || tel == -1 || isEmptyString(tel)){
+							tel = '暂无信息';
+						}
+						var email = ret.table_List.EMAIL;
+						if(email == '' || email == -1 || isEmptyString(email) || email == 0 || email == "0"){
+							email = '暂无信息';
+						}
+						var bureau_name = ret.table_List.bureau_name;
+						if(bureau_name == ''|| isEmptyString(bureau_name)){
+							bureau_name = '暂无信息';
+						}
+						
+						var className = ret.table_List.class_name;
+						if(className == ''|| isEmptyString(className)){
+							className = '暂无信息';
+						}
+						//电话
+						$api.html($api.byId('tel'), tel);
+						$api.val($api.byId('tel_hid'), tel);
+						//邮件
+						$api.html($api.byId('email'), email);
+						//机构名称
+						$api.html($api.byId('bureau_name'), bureau_name);
+						
+						//班级名称
+						$api.html($api.byId('class'), className);
+						loadMyself();
+					} else {
+						api.alert({
+							msg : '对不起，获取个人信息失败'
+						});
+					}
+				} else {
+					api.alert({
+						msg : '对不起，获取个人信息失败'
+					});
+				}
+			});
+		}
+
+		function readyHhList() {
+			api.closeWin({
+				name : 'hh_chat_window'
+			});
+			setTimeout(function() {
+				execHhList()
+			}, 100);
+		}
+
+		function execHhList() {
+			api.execScript({
+				name : 'root',
+				frameName : 'hh_index',
+				script : 'openHhList("' + flogin_name_rong + '",' + old_msg_id + ',"' + person_name + '","' + conver_type + '","' + h_from + '","' + avatar_url + '\");'
+			});
+		}
+		
+		/**
+		 * 打电话
+		 * 周枫
+		 * 2016.10.06
+		 */
+		function telCall(){
+			var tel_no = parseInt($api.val($api.byId('tel_hid')));
+			if(isNaN(tel_no) || tel_no == '' || typeof(tel_no) == 'undefined') {
+				api.alert({
+					msg :'对不起，对方未设置个人电话信息'
+	            },function(ret,err){
+	            	//coding...
+	            });
+			} else {
+				api.call({
+				    type: 'tel_prompt',
+				    number: tel_no
+				});
+			}
+			
+		}
+		
+		/**
+		 * 发送短信
+		 * 周枫
+		 * 2016.10.19
+		 */
+		function tesSendMsg(){
+			var tel_no = $api.val($api.byId('tel_hid'));
+			if(isNaN(tel_no) || tel_no == '' || typeof(tel_no) == 'undefined') {
+				api.alert({
+					msg :'对不起，对方未设置个人电话信息'
+	            },function(ret,err){
+	            	//coding...
+	            });
+			} else {
+				var num_attrs = [];
+				num_attrs[0] = tel_no.toString();
+				api.sms({
+				    numbers: num_attrs,
+				    text: ''
+				}, function(ret, err) {
+				    
+				});
+			}
+		}
+		
+		/**
+		 * 添加好友
+		 * 王俭
+		 * 2018.4.24
+		 */
+		function addFriendClick(){
+			
+			getGroupsInfo(function(is_true, data) {
+				if (is_true) {
+					applyFriend(data, fperson_id, fidentity_id, function(is_true, msg) {
+						if (is_true) {
+							popAlert(msg);
+							sendSysMsgToFriend(flogin_name_rong);
+						} else {
+							popAlert(msg);
+							sendSysMsgToFriend(flogin_name_rong);
+						}
+
+					});
+				} else {
+					popAlert(msg);
+				}
+			});
+		}
+		
+		/**
+		 * 判断是否已经成为好友
+		 * 王俭
+		 * 费丽明
+		 * 2018.4.24
+		 */
+		function judgeHasFriend(){
+			api.ajax({
+				url : BASE_URL_ACTION + '/space/attention/get?personid=' + $api.getStorage('person_id') + '&identityid=' + $api.getStorage('identity')+ '&b_identityid=' + fidentity_id+ '&b_personid=' + fperson_id + '&type=space'+ '&random_num=' + creatRandomNum(),
+				method : 'get',
+				dataType : 'json',
+				timeout : 30,
+				cache : false,
+				headers : {
+					'Cookie' : 'person_id=' + $api.getStorage('person_id') + '; identity_id=' + $api.getStorage('identity') + '; token=' + $api.getStorage("token_ypt") + ';'
+				}
+			}, function(ret, err) {
+				if (err) {
+					popToast('获取好友关系失败');
+					isfriend = false;
+				} else {
+					if (ret) {
+						isfriend = ret.isFriend;
+						if (!isfriend){
+							$api.byId('addFriend').style.display = 'block';
+						}
+						else {
+							$api.byId('friendMenu').style.display = 'block';
+						}
+					} else {
+						popToast('获取好友关系失败');
+						isfriend = false;
+					}
+				}
+			});
+		}
+		
+		/**
+ * 加载通讯录列表
+ * 周枫
+ * 2015.08.18
+ */
+function loadData() {
+    var person_id = $api.getStorage('person_id');
+    var person_identity = $api.getStorage('identity');
+    //根据用户ID获取通讯录数据
+    getTongXunluByUserId(person_id, person_identity, false, function(txl_data) {
+        console.log(JSON.stringify(txl_data));
+        api.hideProgress();
+        var w_num;
+        if(api.systemType = 'ios') {
+             w_num = api.winWidth;
+        } else {
+            w_num = 'auto';
+        }
+    });
+}
+	</script>
+</html>

@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+		<title>游戏菜单</title>
+		<link rel="stylesheet" type="text/css" href="../../../../../css/aui/aui.css"/>
+		<link rel="stylesheet" type="text/css" href="../../../../../css/module/ipad/gameAndZhuanti.css"/>
+		<link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+		<style>
+			.menu-ul li span{font-size:18px;height:30px;line-height:29px;padding:0 15px;border-radius:15px;border:1px solid #fff;}
+			.menu-title span{font-size:18px;padding-left:15px;line-height:18px;}
+			.menu-title{padding:20px;}
+			.menu-ul li{min-width:20%;}
+		</style>
+	</head>
+	<body class="common-ipad-gameIpad">
+		<!--学科-->
+		<div class="menu-title">
+			<span>学科</span>
+		</div>
+		<ul id="j_stage" class="menu-ul"></ul>
+		<!--//学科-->
+		<!--排序方式-->
+		<div class="menu-title ptn">
+			<span>排序</span>
+		</div>
+		<ul id="j_order" class="menu-ul">
+			<li id="j_new" onclick="changeType(this,2,1)">
+				<span>最新</span>
+			</li>
+			<li id="j_hot" onclick="changeType(this,2,2)">
+				<span>最热</span>
+			</li>
+		</ul>
+		<!--//排序方式-->
+	</body>
+	<script type="text/javascript" src="../../../../../script/api.js"></script>
+	<script type="text/javascript" src="../../../../../script/base_config.js" ></script>
+	<script type="text/javascript" src="../../../../../script/plug-in/template.js" ></script>
+	<script type="text/javascript" src="../../../../../script/common/common.js"></script>
+	<script type="text/javascript" src="../../../../../script/module/common/game.js"></script>
+	<script type="text/javascript">
+		var BASE_URL_ACTION;
+		var subject_id;//学科id
+		var order_type;//排序方式，1最新，2最热
+		apiready = function() {
+			commonSetTheme({"level":5,"type":0});
+			BASE_URL_ACTION = $api.getStorage('BASE_URL_ACTION');
+			subject_id= api.pageParam.subject_id;
+			order_type = api.pageParam.order_type;
+			order_type == 1 ? $api.addCls($api.byId('j_new'), 'active') : $api.addCls($api.byId('j_hot'), 'active');
+			$api.html($api.byId('j_stage'), api.pageParam.li_html);
+		};
+		/*
+		 *author:zhaoj
+		 *function:切换学科和排序
+		 *date：20161224
+		 */
+		function changeType(self, type, id) {
+			if (type == 1) {
+				//学科
+				liArray = $api.domAll($api.byId('j_stage'), 'li');
+				subject_id = id;
+			} else {
+				//排序
+				liArray = $api.domAll($api.byId('j_order'), 'li');
+				order_type = id;
+			}
+			//切换列表页面中的数据
+			for (var i = 0; i < liArray.length; i++) {
+				$api.removeCls(liArray[i], 'active');
+			}
+			$api.addCls(self, 'active');
+		}
+		/*
+		*author:zhaoj
+		*function:切换学科和排序
+		*date：20161226
+		*/
+		function setSubjectOrder(){
+			api.execScript({
+				name : 'gameIpad_index_window',
+				frameName : 'gameIpad_index_frame',
+				script : 'changeType('+subject_id+','+order_type+');'
+			});
+		}
+	</script>
+</html>

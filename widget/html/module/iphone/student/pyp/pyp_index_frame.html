@@ -1,0 +1,345 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <!-- 在IOS设备上，有时会将数字转为手机号，这里也要禁止下 -->
+	<meta name="format-detection" content="telephone=no"/>
+    <title>圈子</title>
+    <link rel="stylesheet" type="text/css" href="../../../../../css/aui_css_new/aui.css" />
+    <link rel="stylesheet" type="text/css" href="../../../../../css/module/common/img-auto.css" />
+    <link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+</head>
+<style type="text/css">
+body { background: #efeff4;}
+/*重新定义*/
+.aui-user-view-cell:after {left: 0;}
+/*自定义*/
+.content {font-size: 16px; color: #3498db; white-space:nowrap;width:100%;overflow:auto;}
+.otherinfo p { font-size: 12px; margin-bottom: 5px;}
+.no-quanzi{position:absolute;width: 100%;text-align:center;color:#666;padding-top:15px;}
+.pinglun-liulan-pinglun-back{position:absolute;bottom:3px;right:0px;background:url(../../../../../image/ipad/praise-comment.png) 0 3px no-repeat;background-size:auto 35px;width:60px;padding-left:20px;color:#8f8f94;}
+.pinglun-liulan-dianzan-back{position:absolute;bottom:3px;right:55px;background:url(../../../../../image/ipad/praise-comment.png) 0 -16px  no-repeat;background-size:auto 35px;width:60px;padding-left:20px;color:#8f8f94;}
+.aui-ellipsis-1{padding-top:2px;}
+.aui-img-body{padding-top:2px}
+.aui-user-view-cell:after{border-bottom: 1px solid #ffffff;}
+.quanzi-content-div{padding-left:21%}
+.quanzi-content{font-size: 16px;display: -webkit-box;-webkit-box-orient: vertical;-webkit-line-clamp:3;overflow: hidden;width:95%}
+.content-border{border:5px solid #ffffff}
+.person-name{color:#3498db}
+.quanzi-title-left{width:5%;display:inline-block;float:left;text-align: center}
+.quanzi-title-middle{max-width:80%;display:inline-block;float:left;}
+.quanzi-title-right{width:5%;display:inline-block;float:left;text-align: center}
+.aui-list-view.aui-grid-view {
+	padding: 0 10px 0 0;
+	margin-bottom:0;
+}
+.tip{float:right;top:10px;width:20px;height:20px;background:#f00;color:#fff;line-height:20px;text-align:center;border-radius:50%;font-size:14px;}
+.aui-content-padded{position:relative;}
+.aui-content-padded .cl_state_0{position:absolute;right:0;top:0;width:50px;height:50px;background:url(../../../../../image/yingyong/pyp/wcl.png) center center no-repeat;background-size:50px auto;z-index:999;}
+.aui-content-padded .cl_state_2{position:absolute;right:0;top:0;width:50px;height:50px;background:url(../../../../../image/yingyong/pyp/ycl.png) center center no-repeat;background-size:50px auto;z-index:999;}
+.aui-content-padded .cl_state_1{position:absolute;right:0;top:0;width:50px;height:50px;background:url(../../../../../image/yingyong/pyp/clz.png) center center no-repeat;background-size:50px auto;z-index:999;}
+</style>
+<body class="common-iphone-pyp">
+	<div id="no_quanzi" class="no-quanzi aui-hide">暂无拍一拍</div>
+	<div id="quanzi_div"></div>
+		<script id="quanzi_script" type="text/html">
+		<div class="aui-content-padded" style="margin:0">
+			<ul id="abc">
+				<%for(var i=0;i<list.length;i++){%>
+				    <li class="aui-list-view" style="margin-bottom:0;border-bottom:1px solid #e0e0e0" onclick="openContent(event,'<%=list[i].affair_id%>',<%=list[i].deal_state%>,'<%=list[i].person_id%>','<%=list[i].person_name%>','<%=list[i].avatar_fileid%>');">
+				    	<%if(list[i].deal_state == 1){%>
+				    		<div id="cl_state" class="cl_state_0">&nbsp;&nbsp;</div>
+				    	<%}else if(list[i].deal_state == 2){%>
+				    		<div id="cl_state" class="cl_state_1">&nbsp;&nbsp;</div>
+				    	<%}else if(list[i].deal_state == 3){%>
+				    		<div id="cl_state" class="cl_state_2">&nbsp;&nbsp;</div>
+				    	<%}%>
+				        <div class="aui-user-view-cell aui-img quanzi_header">						
+				            <img class="aui-img-object aui-pull-left" style="border-radius:8px" onerror="this.src='../../../../../image/header.png'" src='<%=list[i].avatar_fileid%>'>
+				            <div class="aui-img-body">
+				                <span class="person-name" style="color:#3498db"><%=list[i].person_name%></span>
+				                <p class='aui-ellipsis-1'><em><%=list[i].create_time.substring(0,10)%></em></p>
+				            </div>
+				        </div>
+				        <div class="quanzi-content-div">
+				        	<div class="quanzi-content">
+					       		<%=list[i].describe_txt%>
+					        </div>
+				        </div>					        
+					       <div>
+							<ul class="aui-list-view aui-grid-view zoomImage-full-4-3" style="padding-left:19%;padding-right:20px">
+					            <%for(var j=0;j<list[i].thumbs.length;j++){%>
+					            	<%if(list[i].thumbs.length > 9 && j>8 || list[i].thumbs[j].image_url == ""){%>
+					            	<%}else{%>
+					            		<li class="aui-list-view-cell aui-img aui-col-xs-4" onclick="openAttachment('<%=list[i].thumbs[j].resource_id_int%>','<%=list[i].thumbs[j].resource_format%>',this,event)" attachment="<%=list[i].thumbs[j].file_id%>" ext="<%=list[i].thumbs[j].ext%>">
+							                <img class="aui-img-object" onerror="this.src='../../../../../image/tpsx.png'" src="<%=list[i].thumbs[j].image_url%>" style="height:60px">
+							            </li>
+					            	<%}%>								      
+							     <%}%>
+					         <ul class="aui-list-view aui-grid-view">
+					        </div>
+				        	<div class="content-border"></div>
+				        <div>
+				       		<div class="pinglun-liulan-dianzan-back ellipsis"><span><%=list[i].comment_num%></span></div>		    				
+							<div class="pinglun-liulan-pinglun-back ellipsis"><span><%=list[i].praise_num%></span></div> 
+						</div>
+						 <div style="height:30px"></div>  	
+				    </li>
+				 <%}%>
+			</ul>
+		</div>
+		</script>
+</body>
+<script type="text/javascript" src="../../../../../script/api.js"></script>
+<script type="text/javascript" src="../../../../../script/base_config.js" ></script>
+<script type="text/javascript" src="../../../../../script/plug-in/template.js" ></script>
+<script type="text/javascript" src="../../../../../script/common/common.js"></script>
+<script type="text/javascript" src="../../../../../script/assembly/UIAlbumBrowser.js"></script>
+<script type="text/javascript" src="../../../../../script/assembly/getPicture.js"></script>
+<script type="text/javascript" src="../../../../../script/assembly/photoBrowser.js"></script>
+<script type="text/javascript" src="../../../../../script/plug-in/base64.js" ></script>
+<script type="text/javascript" src="../../../../../script/assembly/openResource.js" ></script>
+<script type="text/javascript">
+    var currentPage = 1;//当前分页数
+	var totalPages = 0;//总页数
+	var totalData = 0;//定义一个变量存储第一次加载返回来的总记录数
+	var header_h = 0;//定义头高度
+	var picture_sz = [];
+	var mode_type = 0;//拍一拍类型：0：全部，1：我创建的，2：我处理的
+	var deal_state = 0;//拍一片处理状态：0：所有，1：未处理；2：已处理；3：处理中；
+	var is_turn = false;//是否跳转到页面头
+    apiready = function () {
+        commonSetTheme({"level":5,"type":0});
+		header_h = api.pageParam.header_h;
+		commonScrollBottomReload();
+		commonRefreshHeaderInfo();
+		initData(1);
+    }
+    
+     /*
+     * 加载数据
+     * 张自强
+     * 20170725
+     * 接口提供人：张海
+     */
+    function initData(current_page){
+    	commonShowProgress('加载中...',false);
+		currentPage = current_page;
+		 api.ajax({
+			url : BASE_URL_ACTION + '/takephoto/space/showAllAffairs',
+			method : 'post',
+			timeout : 0,
+			dataType : 'json',
+			data : {
+				values : {
+					'deal_state' :deal_state,
+					'deal_type' : mode_type,
+					'identity_id' : $api.getStorage('identity'),
+					'org_id' : $api.getStorage('school_id'),
+					'org_type':104,
+					'page_num':currentPage,
+					'page_size' : BASE_PAGE_SIZE,
+					'person_id':$api.getStorage('person_id')
+				}
+			},
+		headers : {
+		'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+		}
+		}, function(ret, err) {
+			totalPages = ret.total_page;
+			if(err){
+				popToast('获取活动作品列表失败，请稍候重试');
+			}else{
+				if(ret.list.length>0){
+					commonAddOrRemoveHideCss('no_quanzi',0);
+					commonAddOrRemoveHideCss('quanzi_div',1);
+					for(var i = 0; i < ret.list.length; i++){
+						var img_url="";
+						var format = "";
+						if(ret.list[i].head_photo.length>0){
+							format = ret.list[i].head_photo.substring(ret.list[i].head_photo.indexOf('.')+1,ret.list[i].head_photo.length);
+						}
+				    	if (BASE_APP_TYPE == 1) {
+							img_url = BASE_IMAGE_PRE+"down/Material/" + ret.list[i].head_photo.substring(0, 2) + "/" + ret.list[i].head_photo+ commonReturnPhotoCutSize(0);		
+						} else {
+							img_url = BASE_URL_ACTION + "/html/thumb/Material/" + ret.list[i].head_photo.substring(0, 2) + "/" + ret.list[i].head_photo + commonReturnPhotoCutSize(0);
+						}
+						ret.list[i].avatar_fileid = img_url;
+						ret.list[i].thumbs=[];
+						//附件
+						if(!isEmptyString(ret.list[i].pic_list)){
+	              			var attachment=ret.list[i].pic_list;
+	                        for(var j = 0; j < attachment.length; j++){
+	                            var ext = attachment[j].resource_format;
+	                            var oparam = new Object();
+	                            oparam.file_id = attachment[j].file_id;
+	                            oparam.resource_id_int = attachment[j].resource_id_int;
+	                            oparam.resource_format = attachment[j].resource_format;
+	                            oparam.image_url = gertImageUrl(attachment[j].file_id,ext,1);
+	                            oparam.image_url_yt = gertImageUrl(attachment[j].file_id,ext,0);
+	                            oparam.ext=ext.toLowerCase();;
+	                            ret.list[i].thumbs.push(oparam);
+							}
+						}
+					}
+					commonAddManyHtml('quanzi_div','quanzi_script',ret);
+					if(is_turn){
+						turnToBottom();
+					}
+					is_turn = false;
+				}else{
+					commonAddOrRemoveHideCss('no_quanzi',1);
+					commonAddOrRemoveHideCss('quanzi_div',0);
+				}
+			}
+			//通知顶部下拉刷新数据加载完毕，组件会恢复到默认状态
+			api.refreshHeaderLoadDone();
+			api.hideProgress();
+		});
+    }
+    
+       /*
+	    *author:zhaoj
+	    *function:打开附件
+	    *date：20171023
+	    */
+	    function openAttachment(resource_id_int,resource_format,self,e){
+	        var param_json = {"is_show_tip":1,"resource_id_int":resource_id_int};
+	        commonGetResInfo(param_json,function(flag,ret){
+	            api.hideProgress();
+	            if(flag){
+	                    var oparam ={"res_type":ret.resource_format, "res_path":ret.file_id, "res_title":ret.resource_title,"m3u8_status":ret.m3u8_status,"winName":'pyp_index_window',"setBackFun":'reBackType("pyp_picture");',"backFun":'back();',"res_id":'open_picture',"pic_back":'pyp_picture'};
+	                     common_openResource.open_new(JSON.stringify(oparam));
+	            }else{
+	                popToast('打开失败，请稍候重试');
+	            }
+	        });
+	        e.stopPropagation();
+	    }
+    
+       /*
+	    *author:zhaoj
+	    *function:获取缩率图路径
+	    *date：20171023
+	    */
+		function gertImageUrl(file_id,ext,type){
+			var img_url='';//图片路径
+				image_hz = type?commonReturnPhotoCutSize(0):'';
+				if(file_id){
+					if (BASE_APP_TYPE == 1) {
+						img_url = BASE_IMAGE_PRE+"down/Material/" + file_id.substring(0, 2) + "/" + file_id+'.'+ext+ image_hz;		
+					} else {
+						img_url = BASE_URL_ACTION + "/html/thumb/Material/" + file_id.substring(0, 2) + "/" + file_id+'.'+ext+image_hz;
+					}
+				}
+			return img_url;
+		}
+	
+		/*
+		 * 功能：修改当前查看拍一拍的分类
+		 * 作者：张自强
+		 * 时间：20171120
+		 * mode_type:0：全部，1：我创建的，2：我处理的
+		 */
+		function changeStatu(type){
+			commonExecScript('pyp_index_window','','changeStatu('+type+');',0);
+			mode_type = type;
+			is_turn = true;
+			initData(1);
+		}
+		
+		
+		/*
+		 * 功能：修改当前拍一拍的处理状态
+		 * 作者：张自强
+		 * 时间：20171120
+		 */
+		function changeDealState(type){
+			deal_state=type;
+			is_turn = true;
+			initData(1);
+		}
+		
+		/*
+		 * 功能：打开详情页面
+		 * 作者：张自强
+		 * 时间：20171120
+		 */
+		function openContent(e,id,deal_state,person_id,name,avatar_fileid){
+			var buttons_arra = [];
+			var is_delet = false;//是否有删除的权限
+			if(person_id == $api.getStorage('person_id') && deal_state == 1){
+				is_delet = true;
+				buttons_arra = ['查看','删除'];
+			}else{
+				buttons_arra = ['查看'];
+			}
+			commonOpenActionSheet('', '取消', '', buttons_arra,function(index){
+				switch(index){
+					case 1:
+						var pageParamJson={"header_h":header_h,"id":id,"name":name,'avatar_fileid':avatar_fileid};
+						commonOpenWin('pyp_content_window', 'pyp_content_window.html', false, false, pageParamJson);
+						break;
+					case 2:
+						if(is_delet){
+							popTwoBtnConfirm('提示', '确定删除该拍一拍', 'deletePyp('+id+',"'+person_id+'");');
+						}
+						break;
+				}
+				e.stopPropagation();
+			});
+			
+		}
+		
+		
+		/*
+		 * 功能：删除自己上传的拍一拍
+		 * 作者：张自强
+		 * 时间：20171122
+		 * 接口提供人：刘鑫
+		 */
+		function deletePyp(affairId,personId){
+			api.ajax({
+				url : BASE_URL_ACTION + '/takephoto/space/removeMyAffair',
+				method : 'post',
+				timeout : 0,
+				dataType : 'json',
+				data : {
+					values : {
+						'affair_id' :affairId,
+						'org_id' :$api.getStorage('school_id'),
+						'org_type':104,
+						'person_id1': $api.getStorage('person_id'),
+						'person_id2':personId
+					}
+				},
+			headers : {
+			'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+			}
+			}, function(ret, err) {
+				if(err){
+					popToast('删除失败，请稍候重试');
+				}else{
+					if(ret){
+						if(ret.result){
+							popToast('删除成功');
+							initData(1);
+						}else{
+							popToast('删除失败，请稍候重试');
+						}
+					}
+				}
+			});
+		}
+		
+	    /*
+		 * 功能：跳转到页面下方评论点赞的区域
+		 * 作者：张自强
+		 * 时间：20170919
+		 */
+		function turnToBottom(){
+			document.getElementById("abc").scrollIntoView();
+		}
+</script>
+</html>

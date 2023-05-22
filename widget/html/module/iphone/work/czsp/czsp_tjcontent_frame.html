@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<!-- html5：在创建html时为了防止页面缩放等不兼容效果，要创建个viewport  -->
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<!-- 在IOS设备上，有时会将数字转为手机号，这里也要禁止下 -->
+		<meta name="format-detection" content="telephone=no"/>
+		<title>金额统计</title>
+		<link rel="stylesheet" type="text/css" href="../../../../../css/aui/aui.css" />
+		<link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+		<style>
+			.clearfix:after {content: ' ';display: block;clear: both;visibility: hidden;line-height: 0;height: 0;}
+			.ellipsis {white-space: nowrap;overflow: hidden;text-overflow: ellipsis;}
+			.title {font-size: 20px;padding: 5px 0 15px 0;line-height: 30px;color: #1abc9c;word-break: break-all;word-wrap:break-word;}
+			.aui-content{padding:10px 15px;}
+			.detail_list li{position:relative;line-height: 22px;padding:5px 0px 10px 0;}
+			.detail_list li em{position:absolute; color:#595757;}
+			.detail_list li > span{padding-left: 45px;color: #aaaaaa;display: block;padding-top:1px;}
+			.detail_list li > span a{display:block; float:left; margin-right:8px;padding:2px 8px;margin-top: -3px;color:#666 !important;}
+			.detail_list li > span a.active{background:#1abc9c;color:#fff !important;}
+			.pl120{padding-left:132px !important;}
+			.red{color:#e60012 !important;}
+			.clear{clear:both;}
+			.zdy_time{margin-top:10px;}
+			.zdy_time div{width:45%;float:left;}
+			.zdy_time div input{margin-bottom:0;}
+			.zdy_time span{display:block;width:10%;text-align:center;float:left;padding:10px 0;}
+			.none{display:none;}
+			.pl0{padding-left:0 !important;}
+		</style>
+	</head>
+	<body id="j_body">
+		<div id="j_shadow" class="shadow"></div>
+		<div class="aui-content">
+			<div id="j_content" class="clearfix">
+				<!--<div id="title_div" class="title">&nbsp;</div>-->
+				<ul class="detail_list">
+					<li>
+						<em>日期：</em>
+						<span id="id_data" class="clearfix">
+							<a href="javascript:;" onclick="seleteData(1,this);" class="active">本学期</a>
+							<a href="javascript:;" onclick="seleteData(2,this);">本年度</a>
+							<a href="javascript:;" onclick="seleteData(3,this);">自定义</a>
+						</span>
+						<div class="clear"></div>
+						<div class="clearfix zdy_time none" id="zdy_time">
+							<div onclick="openTime(0);">
+								<input id="j_time_0" type="text" disabled="true" placeholder="开始时间"/>
+							</div>
+							
+							<span>至</span>
+							<div onclick="openTime(1);">
+								<input id="j_time_1" type="text" disabled="true" placeholder="结束时间" />
+							</div>
+							
+						</div>
+					</li>
+					<li id="total" class="none">
+						<div id="office_name"></div>
+						<div id="total_money" class="red pl0">
+							&nbsp;
+						</div>
+					</li>
+					<li>
+						<div id="org_name"></div>
+						<div id="sch_total_money" class="red">
+							&nbsp;
+						</div>
+					</li>
+					<li>
+						
+					</li>
+					
+				</ul>
+				
+			</div>
+			
+		</div>
+		
+	</body>
+	<script type="text/javascript" src="../../../../../script/api.js" ></script>
+	<script type="text/javascript" src="../../../../../script/base_config.js" ></script>
+	<script type="text/javascript" src="../../../../../script/plug-in/template.js" ></script>
+	<script type="text/javascript" src="../../../../../script/common/common.js" ></script>
+	<script type="text/javascript" src="../../../../../script/plug-in/base64.js" ></script>
+	<script type="text/javascript" src="../../../../../script/assembly/photoBrowser.js"></script>
+	<script type="text/javascript" src="../../../../../script/assembly/openPicker.js"></script>
+	<script type="text/javascript">
+		var BASE_URL_ACTION;
+		var BASE_APP_TYPE;
+		var lobal_variable={};//全局变量json
+		var index;  //1 本学期 2 本学年 3 自定义
+		var end_time;
+		var start_time;
+		var office_id;
+		var org_id;
+		var org_type;
+		var sp_level;
+		var title;
+		var org_name;
+		var office_name;
+		var cur_office_id;
+		apiready = function() {
+			commonSetTheme({"level":5,"type":0});
+			BASE_URL_ACTION = $api.getStorage('BASE_URL_ACTION');
+			BASE_APP_TYPE = $api.getStorage('BASE_APP_TYPE');
+			org_id = api.pageParam.cur_org_id;
+			org_type = api.pageParam.cur_org_type;
+			office_id = api.pageParam.office_id;
+			cur_office_id = api.pageParam.cur_office_id;
+			title = api.pageParam.title;
+			sp_level = api.pageParam.sp_level;
+			org_name = api.pageParam.cur_org_name;
+			office_name = api.pageParam.cur_office_name;
+			$api.text($api.byId('office_name'),office_name+'累计审批金额（元）：');
+			$api.text($api.byId('org_name'),org_name+'累计审批金额（元）：');
+			$api.text($api.byId('title_div'),title);
+			getSumMoney(1);
+		};
+		
+		function getSumMoney(index){
+			if(sp_level==3){
+				office_id = cur_office_id;
+			}
+			showSelfProgress('加载中...');
+			api.ajax({
+				url : BASE_URL_ACTION + '/ypt/space/examine/findTotalAndSchool?time_index='+index+'&end_time='+end_time+'&office_id='+office_id+'&org_id='+org_id+'&org_type='+org_type+'&start_time='+start_time+'&index='+sp_level,
+				method : 'get',
+				timeout : 30,
+				dataType : 'json',
+				headers : {
+	'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+}
+				}, function(ret, err) {
+					api.hideProgress();
+					if (err) {
+						popToast('获取信息失败');
+					} else {
+						if(ret.success){
+							if(sp_level==1){
+								$api.addCls($api.byId('total'),'none');
+								$api.text($api.byId('sch_total_money'),ret.list.schoolMoney[0].money);
+							}else{
+								$api.removeCls($api.byId('total'),'none');
+								$api.text($api.byId('sch_total_money'),ret.list.schoolMoney[0].money);
+								$api.text($api.byId('total_money'),ret.list.totalMoney[0].money);
+							}
+							
+						}else{
+							popToast('获取信息失败');
+						}
+					}
+					//通知顶部下拉刷新数据加载完毕，组件会恢复到默认状态
+					api.refreshHeaderLoadDone();
+			});
+		}
+		
+		/*
+		*author:zhaoj
+		*function:活动时间选择
+		*param:type=0:活动开始时间；type=1：活动结束时间（必填）；
+		*date：201701019
+		*/
+		function openTime(type){
+			var now_time = $api.val($api.byId('j_time_'+type));
+			if(now_time){
+				setTime(type,now_time);
+			}else{
+				getCurrentData(function(time){
+				     lobal_variable.now_time = time;
+					 setTime(type,time);
+				});
+			}
+			
+		}
+		/*
+		*author:zhaoj
+		*function:获取当前服务器时间
+		*date：201701019
+		*/
+		function getCurrentData(callback){
+			commonGetCurrentDate(function(nowTime,nowMillisecond){
+				var year = nowTime.getFullYear();    //获取完整的年份(4位,1970-????)
+				var month = nowTime.getMonth()*1+1;       //获取当前月份(0-11,0代表1月)
+				month = month < 10?'0'+month:month;
+				var day = nowTime.getDate();        //获取当前日(1-31)
+				day = day < 10?'0'+day:day;
+				var hour = nowTime.getHours();       //获取当前小时数(0-23)
+				hour = hour < 10?'0'+hour:hour;
+				var minutes = nowTime.getMinutes();     //获取当前分钟数(0-59)
+				minutes = minutes < 10?'0'+minutes:minutes;
+				var time = year+'-'+month+'-'+day+' '+hour+':'+minutes;
+				callback(time);
+			});
+		}
+		/*
+		 *author:zhaoj
+		 *function:获取服务器当前时间
+		 *date：20170215
+		 */
+		function commonGetCurrentDate(callback) {
+			api.ajax({
+				url : BASE_URL_ACTION + '/xx/getCurrentDate',
+				method : 'get',
+				timeout : 30,
+				dataType : 'json',
+				returnAll : false,
+				data : {
+					values : {
+						"random_num" : creatRandomNum()
+					}
+				}
+			}, function(ret, err) {
+				if (err) {
+					nowTime = new Date();
+					nowMillisecond = Date.parse(nowTime);
+				} else {
+					if (ret.success) {
+						nowTime = new Date(ret.dateStr2.replace(/\-/g, "/"));
+						nowMillisecond = Date.parse(new Date(ret.dateStr2.replace(/\-/g, "/")));
+					} else {
+						nowTime = new Date();
+						nowMillisecond = Date.parse(nowTime);
+					}
+				}
+				callback(nowTime, nowMillisecond);
+			});
+		}
+		/*
+		*author:zhaoj
+		*function:获取当前服务器时间
+		*date：201701019
+		*/
+		function setTime(type,nowTime){
+			if(type){
+				if($api.val($api.byId('j_time_0'))==""){
+					popAlert('请先选择开始时间！');
+					return;
+				}
+			}
+			openPicker.open({"type":0,"time":nowTime},function(time){
+				if(type){
+					//结束时间
+					if(Date.parse($api.val($api.byId('j_time_0')).replace(/-/g,'\/'))<=Date.parse(time.replace(/-/g,'\/'))){
+						$api.val($api.byId('j_time_'+type), time);
+						end_time = time;
+						getSumMoney(3);
+					}else{
+						popAlert('结束时间不能小于开始时间！');
+					}
+				}else{
+					//开始时间
+	                start_time = time;
+					if(Date.parse(start_time.replace(/-/g,'\/'))>Date.parse($api.val($api.byId('j_time_1')).replace(/-/g,'\/'))){
+						popAlert('开始时间不能大于结束时间！');
+					}else{
+						 $api.val($api.byId('j_time_'+type), time);
+					}
+	                if(end_time){
+						getSumMoney(3);
+	                }
+				}
+			});
+		}
+		
+		/*
+		*author:zfz
+		*function:选择按哪种方式查询
+		*date：20171121
+		*/
+		function seleteData(type,self){
+			index = type;
+			$api.removeCls($api.dom($api.byId('id_data'), '.active'), 'active');
+			$api.addCls(self, 'active');
+			if(type==3){  //显示选择时间插件
+				$api.removeCls($api.byId('zdy_time'),'none');
+				$api.text($api.byId('total_money'),'--');
+				$api.text($api.byId('sch_total_money'),'--');
+				$api.val($api.byId('j_time_0'), '');
+				$api.val($api.byId('j_time_1'), '');
+				end_time = '';
+				start_time = '';
+			}else{
+				$api.addCls($api.byId('zdy_time'),'none');
+				getSumMoney(index);
+			}	
+		}
+		
+		
+		
+		
+	</script>
+</html>

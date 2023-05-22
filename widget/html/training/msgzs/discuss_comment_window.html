@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<!-- html5：在创建html时为了防止页面缩放等不兼容效果，要创建个viewport  -->
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<!-- 在IOS设备上，有时会将数字转为手机号，这里也要禁止下 -->
+		<meta name="format-detection" content="telephone=no"/>
+		<title>评论页面</title>
+		<link rel="stylesheet" type="text/css" href="../../../css/aui/aui.css" />
+		<style>
+			.history-date {
+				font-size: 12px;
+			}
+			#message-content {
+				overflow-y: auto;
+				display: none;
+			}
+			.t_display_n {
+				display: none;
+			}
+			.t_display_b {
+				display: block;
+			}
+			.back img{width:20px;margin-top:11px;}
+			.win-menu{font-size:15px;line-height:48px;width:40px;}
+			.shadow{position:absolute;left:0;top:0;width:100%;height:100%;z-index: -1;background:#000000;opacity:0;}
+		</style>
+	</head>
+	<body>
+		<div id="shadow" class="shadow"></div>
+		<div id="wrap">
+			<header class="aui-bar aui-bar-nav aui-bar-primary" id="aui-header">
+				<div id="cloud" class="topbar activebar">
+					<div id="back" class="back" onclick="back();" tapmode="">
+						<i class="aui-iconfont aui-icon-left"></i>返回
+					</div>
+					<div  class="mTitle" id="mTitle">
+						<div id="btn_title" class="btn-title">
+						</div>	
+					</div>
+					<div class="win-menu" onclick="replay();">
+						发布
+					</div>
+				</div>
+			</header>
+			<div  class="aui-content aui-content-padded" id="message-content">
+				<p class="aui-text-center history-date"></p>
+			</div>
+		</div>
+	</body>
+	<script type="text/javascript" src="../../../script/api.js"></script>
+	<script type="text/javascript">
+		var header_h;//顶部header高度
+		apiready = function() {
+			header_h = api.pageParam.header_h;
+			$api.text($api.byId('btn_title'), '写评论');
+			
+			//打开文章列表frame
+			openCommentFrame();
+			//定位header位置，留出上面电池等空隙，苹果需要
+			var header = $api.byId('aui-header');
+			$api.fixStatusBar(header);
+			var headerPos = $api.offset(header);
+			//安卓关闭
+			if (api.systemType == 'android') {
+				backForAndroid();
+			}
+		};
+		/*
+		*author:zhaoj
+		*function:打开添加文章页面的frame
+		*date：20160314
+		*/
+		function openCommentFrame(){
+			api.openFrame({
+				name : 'discuss_comment_frame',
+				scrollToTop : true,
+				allowEdit : true,
+				url : 'discuss_comment_frame.html',
+				rect : {
+					x : 0,
+					y : header_h,
+					w : api.winWidth,
+					h : api.winHeight - header_h,
+				},
+				pageParam : {
+					header_h : header_h,
+					id : api.pageParam.id,
+					
+				},
+				vScrollBarEnabled : true,
+				hScrollBarEnabled : true,
+				//页面是否弹动 为了下拉刷新使用
+				bounces : false
+			});
+		}
+		/*
+		*author:zhaoj
+		*function:打开添加文章页面的frame
+		*date：20160314
+		*/
+		function replay(){
+			api.execScript({
+				name : 'discuss_comment_window',
+				frameName :'discuss_comment_frame',
+				script : 'messageBoard_addDialog();'
+			});
+		}
+		/*
+		*author:zhaoj
+		*function:遮罩层
+		*date：20160319
+		*/
+		function shadow(){
+			$api.css($api.byId('shadow'),"z-index:2;");
+		}
+		/**
+		 * 安卓点击返回的时候
+		 * 周枫
+		 * 2015.10.14
+		 */
+		function backForAndroid() {
+			api.addEventListener({
+				name : "keyback"
+			}, function(ret, err) {
+				back(0);
+			});
+		}
+
+		/**
+		 * 返回应用页面
+		 * 周枫
+		 * 2015.10.11
+		 */
+		function back(type) {
+			if(type){
+				setTimeout(function() {
+					api.execScript({
+						name : 'discuss_content_window',
+						frameName :'discuss_content_frame',
+						script : 'getCommentInfo(1);'
+					});
+				}, 2800);
+				setTimeout(function() {
+					api.closeWin();
+				}, 2900);
+			}else{
+				api.closeWin();
+			}
+			
+		}
+	</script>
+</html>

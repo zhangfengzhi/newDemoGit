@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<title>答题页面</title>
+		<link rel="stylesheet" type="text/css" href="../../../../../css/aui/aui.css" />
+		<link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+		<style>
+			body {
+				margin: 0;
+				background: rgba(0,0,0,0);
+			}
+			.zuoye-name {
+				
+				line-height: 55px;
+				width: 100%;
+			}
+			.answer-title {
+				border-top: 1px solid #f1f1f1;
+				height: 55px;
+				width: 100%;
+				margin-bottom: 20px;
+			}
+			.title {
+				border-left:0px !important;
+				width: 50%;
+				float: left;
+			}
+			.answer-title div {
+				height: 35px;
+				display: inline-block;
+				line-height: 35px;
+				margin-top: 13px;
+				padding: 0 15px;
+				color: #ffffff;
+			}
+			.seleted {
+				width: 20%;
+				float: right;
+				text-align: right;
+			}
+			.seleted .num {
+				font-size: 22px;
+			}
+			.stem {
+				padding: 20px 5%;
+				max-width:100%;
+				word-wrap: break-word;
+				word-break:break-all;
+			}
+			.option dl {
+				position:relative;
+				border-radius: 5px;
+				min-height: 55px;
+				border: 2px solid #EFF1F1;
+				margin-bottom: 20px;
+			}
+			.option dl dt {
+				position:absolute;
+				top:0px;
+				bottom:-1px;
+				display:block;
+				font-size: 22px;
+				font-weight: 600;
+				width: 12%;
+				height:100%;
+				float: left;
+				background: #EFF1F1;
+		/*		line-height: 53px;*/
+				border-radius: 1px 0 0 1px;
+				text-align: center;
+				color: #666;
+			}
+			.option dl dt div{
+				position:absolute;
+				top:50%;
+				margin-top:-10px;
+				height:20px;
+				width:100%;
+			}
+			.option dl dd {
+				width: 75%;
+				float: right;
+				margin-right:30px;
+				min-height: 55px;
+				line-height: 25px;
+				padding:15px 0;
+				color:#98979D;
+				word-wrap: break-word;
+				word-break: normal; 
+			}
+			.option dl dd div p img{
+				vertical-align: middle;
+				margin:10px 0;
+			}
+			.option dl dd img {
+				max-width: 85%;
+			}
+			.option dl dd .judge{position:absolute;right:4%;top:50%;margin-top:-9px;width:18px;height:15px;display:inline-block;border:none !important;}
+			.option .active dt {
+				color: #ffffff !important;
+			}
+	
+			.next {
+				line-height: 55px;
+				text-align: right;
+			}
+			.plr15 {
+				padding: 0 15px;
+			}
+			.footer-div{
+				position:fixed;
+				height:55px;
+				background:#ffffff;
+				display: block;
+				bottom: 0px;
+				width:100%;
+				box-shadow:3px 0 4px #aaaaaa;
+				z-index: 9999;
+			}
+			.footer-div .prevQ,.footer-div .nextQ{display: inline-block;width:50%;float: left;}
+			.footer-div .prevQ{text-align: left;}
+			.footer-div .nextQ{text-align: right;}
+			.footer_div{height:70px;}
+			.no-question-data{text-align:center;color:#666;height:50px;line-height:50px;}
+			.right-answer span{z-index: 0 !important;}
+			.text-answer{text-indent:2em;color:#333;line-height:25px;word-wrap: break-word;word-break: normal;}
+		</style>
+	</head>
+	<body class="common-Iphone-dcwjIphone-common">
+		<div class="q_div" id="q_div">
+<!--			<div class="zuoye-name plr15 clearfix">
+				<div class="title">单选题</div>              
+				<div class="seleted"><font class="num">1</font>/3</div>
+			</div>
+			<div class="stem clearfix">
+				单选题
+			</div>
+			<div id="j_option" class="option plr15 clearfix">
+				<dl class="clearfix">
+					<dt><div>1</div></dt>
+					<dd>
+						选项1
+					</dd>
+				</dl>
+				<dl id="j_option_1" class="clearfix">
+					<dt><div>2</div></dt>
+					<dd>
+						选项2
+					</dd>
+				</dl>
+				<dl class="clearfix">
+					<dt><div>3</div></dt>
+					<dd>
+						选项3
+					</dd>
+				</dl>
+				<dl class="clearfix">
+					<dt><div>4</div></dt>
+					<dd>
+						选项4
+					</dd>
+				</dl>
+			</div>-->
+			<!--多选题-->
+<!--			<div class="zuoye-name plr15 clearfix">
+				<div class="title">多选题</div>
+				<div class="seleted"><font class="num">2</font>/3</div>
+			</div>
+			<div class="stem clearfix">
+				多选题
+			</div>
+			<div id="j_option" class="option plr15 clearfix">
+				<dl id="j_option_2" class="clearfix">
+					<dt><div>1</div></dt>
+					<dd>
+						选项1
+					</dd>
+				</dl>
+				<dl class="clearfix">
+					<dt><div>2</div></dt>
+					<dd>
+						选项2
+					</dd>
+				</dl>
+				<dl id="j_option_3" class="clearfix">
+					<dt><div>3</div></dt>
+					<dd>
+						选项3
+					</dd>
+				</dl>
+				<dl class="clearfix">
+					<dt><div>4</div></dt>
+					<dd>
+						选项4
+					</dd>
+				</dl>
+			</div>-->
+			<!--主观题-->
+<!--			<div class="zuoye-name plr15 clearfix">
+				<div class="title">主观题</div>
+				<div class="seleted"><font class="num">3</font>/3</div>
+			</div>
+			<div class="stem clearfix">
+				主观题
+			</div>
+			<div id="j_answer_title" class="answer-title clearfix" style="display:none">
+				<div>
+					我的作答
+				</div>
+			</div>
+			<div id="j_answer_content" class="text-answer plr15" style="display:none">
+				以生物资源调查为例，我们想要知道某地区有哪些生物？这些生物随著季节的消长？哪些生物近年来逐渐减少？种种的问题都必需经过一连串的调查来获得结果，随著目的的不同，就必须选用适当的调查方法。通常整个调查过程中，几乎不只调查一次而已，所以为了使得每次的调查结果都能够进行比较，研究者必须选定一标准的调查方式，从一而终的采用相同方法，并且具体的描述方法过程，以便后人能够依循此法进行重复。
+			</div>-->
+			<!--下一题-->
+			<!--<div id="j_footer" class="footer-div next clearfix">
+				<div class="prevQ" onclick="enterPreQuestion();"><span class="aui-iconfont aui-icon-left"></span>上一题</div>
+				<div class="nextQ" onclick="goNextQuestion();">下一题<span class="aui-iconfont aui-icon-right"></span></div>
+			</div>-->
+		</div>
+		<script type="text/html" id="q_script">
+			<%if(q_typeid == 1){%>
+				<!--单选题-->
+				<div class="zuoye-name plr15 clearfix">
+					<%if(answer_show == 0){%>
+						<div class="title">单选题</div> 
+					<%}else{%> 
+						<%if(is_anonymous == 1){%> 
+							<div class="title">单选题[匿名]</div>  
+						<%}else{%>
+							<div class="title">单选题[<%=person_name%>]</div>  
+						<%}%>
+					<%}%>            
+					<div class="seleted"><font class="num"><%=sort%></font>/<%=length%></div>
+				</div>
+				<div id="j_title" class="stem clearfix">
+					<%=title%>
+				</div>
+				<%if(option.length > 0){%>
+					<div id="j_option" class="option plr15 clearfix">
+						<%for(var i = 0; i < option.length; i++){%>
+							<dl id="j_option_<%=option[i].id%>" class="clearfix">
+								<dt><div><%=i+1%></div></dt>
+								<%if(option[i].http_action == 0){%>
+									<dd>
+										<%=option[i].title%>
+									</dd>
+								<%}else{%>
+									<dd>
+										<a href="javascript:openHref('<%=option[i].href%>');"><%=option[i].description%>(点击查看)</a>
+									</dd>
+								<%}%>
+							</dl>
+						<%}%>
+					</div>
+				<%}%>
+			<%}else if(q_typeid == 2){%>
+				<!--多选题-->
+				<div class="zuoye-name plr15 clearfix">
+					<%if(answer_show == 0){%>
+						<div class="title">复选题</div> 
+					<%}else{%> 
+						<%if(is_anonymous == 1){%> 
+							<div class="title">复选题[匿名]</div>  
+						<%}else{%>
+							<div class="title">复选题[<%=person_name%>]</div>  
+						<%}%>
+					<%}%>            
+					<div class="seleted"><font class="num"><%=sort%></font>/<%=length%></div>
+				</div>
+				<div id="j_title" class="stem clearfix">
+					<%=title%>
+				</div>
+				<%if(option.length > 0){%>
+					<div class="option plr15 clearfix">
+						<%for(var i = 0; i < option.length; i++){%>
+							<dl id="j_option_<%=option[i].id%>" class="clearfix">
+								<dt><div><%=i+1%></div></dt>
+								<%if(option[i].http_action == 0){%>
+									<dd>
+										<%=option[i].title%>
+									</dd>
+								<%}else{%>
+									<dd>
+										<a href="javascript:openHref('<%=option[i].href%>');"><%=option[i].description%>(点击查看)</a>
+									</dd>
+								<%}%>
+							</dl>
+						<%}%>
+					</div>
+				<%}%>
+			<%}else{%>
+				<!--简答题-->
+				<div class="zuoye-name plr15 clearfix">
+					<%if(answer_show == 0){%>
+						<div class="title">简答题</div> 
+					<%}else{%> 
+						<%if(is_anonymous == 1){%> 
+							<div class="title">简答题[匿名]</div>  
+						<%}else{%>
+							<div class="title">简答题[<%=person_name%>]</div>  
+						<%}%>
+					<%}%>            
+					<div class="seleted"><font class="num"><%=sort%></font>/<%=length%></div>
+				</div>
+				<div id="j_title" class="stem clearfix">
+					<%=title%>
+				</div>
+				<div id="j_answer_title" class="answer-title clearfix" style="display:none">
+					<div>
+						简答题答案
+					</div>
+				</div>
+				<div id="j_answer_content" class="text-answer plr15" style="display:none">
+				</div>
+			<%}%>
+			<!--下一题-->
+			<div id="j_footer" class="footer-div next clearfix">
+				<div class="prevQ" onclick="enterPreQuestion();"><span class="aui-iconfont aui-icon-left"></span>上一题</div>
+				<div class="nextQ" onclick="goNextQuestion();">下一题<span class="aui-iconfont aui-icon-right"></span></div>
+			</div>
+		</script>
+		<div id="footer_div" class="footer_div">
+			&nbsp;
+		</div>
+	</body>
+	<script type="text/javascript" src="../../../../../script/api.js"></script>
+	<script type="text/javascript" src="../../../../../script/base_config.js" ></script>
+	<script type="text/javascript" src="../../../../../script/plug-in/template.js" ></script>
+	<script type="text/javascript" src="../../../../../script/plug-in/base64.js" ></script>
+	<script type="text/javascript" src="../../../../../script/common/common.js" ></script>
+	<script type="text/javascript" src="../../../../../script/common/iphone/dcwj_common.js" ></script>
+	<script type="text/javascript">
+		var header_h;
+		var BASE_URL_ACTION;
+		var id;//调查问卷id
+		var answer_show = 0;//是否显示当前人员的作答答案
+		var answer_json;//当前人员的作答答案的json数据
+		var person_name;//答题人的姓名
+		var q_cur_num = 0;//当前试题
+		var q_sum = 0;//试题总数
+		var q_json;//试题json
+		var type;//判断是查看自己的答题情况还是统计答卷详情进入的
+		apiready = function() {
+			commonSetTheme({"level":5,"type":0});
+			header_h = api.pageParam.header_h;
+			id = api.pageParam.id;
+			BASE_URL_ACTION = $api.getStorage('BASE_URL_ACTION');
+			var answer_id = api.pageParam.answer_id;
+			type = api.pageParam.type;
+			showSelfProgress('加载中...');
+			if(!isEmptyString(answer_id)){
+				answer_show = 1;
+				getSurveyUserInfoById(answer_id,function(flag,ret){
+					if(flag){
+						person_name = api.pageParam.person_name;
+						answer_json=ret;
+						initData();
+					}else{
+						api.hideProgress();
+						popToast('获取答案失败，请稍候再试！');
+					}
+				})	
+			}else{
+				initData();
+			}
+			//下一题
+			nextQuestion();
+			//上一题
+			preQuestion();
+		}
+		/*
+		*作者:zhaoj
+		*功能:获取题目接口
+		*日期：20161107
+		*/
+		function initData(){
+			getSurveyById(id,function(flag,ret){
+				if(flag){
+					q_sum = ret.item.length;
+					q_json = ret;
+					var answer_json={"items":[]};
+					for(var i = 0; i < ret.item.length; i++){
+						var oparam = new Object();
+						oparam.item_id=ret.item[i].id;
+						oparam.q_type=ret.item[i].q_type;
+						oparam.q_typeid=ret.item[i].q_typeid;
+						answer_json.items.push(oparam);
+					}
+					var answer_str = Base64.encode(JSON.stringify(answer_json));
+					api.execScript({
+						name : 'dcwj_preview_window',
+						script : 'setDktValue("'+answer_str+'")'
+					});
+					reWriteQuestion(0);
+				}else{
+					api.hideProgress();
+					popToast('获取试题失败，请稍候再试！');
+				}
+			});
+		}
+		/*
+		*作者:zhaoj
+		*功能:进入下一道题
+		*日期：20161101
+		*/
+		function goNextQuestion(){
+			q_cur_num++;
+			if (q_cur_num < q_sum) {
+				reWriteQuestion(q_cur_num);
+			} else {
+				q_cur_num = q_sum-1;
+				popToast('已经到最后一题');
+			}
+		}
+		/*
+		*作者:zhaoj
+		*功能:进入上一道题
+		*日期：20161101
+		*/
+		function enterPreQuestion(){
+			if (q_cur_num > 0) {
+				q_cur_num--;
+			} else {
+				popToast('已经到第一题');
+				q_cur_num = 0;
+			}
+			reWriteQuestion(q_cur_num);
+		}
+		/*
+		*作者:zhaoj
+		*功能:重写问题题目
+		*日期：20161102
+		*/
+		function reWriteQuestion(q_cur) {
+			q_cur_num = q_cur;
+			api.hideProgress();
+			var length = q_json.item.length;
+			if(length>0){
+				q_json.item[q_cur].sort=q_cur+1;
+				q_json.item[q_cur].length = length;
+				//如果查看具体某人的答题详情，将不是密名的人名显示在页面中
+				if(answer_show && type){
+					q_json.item[q_cur].answer_show = 1;
+					if(person_name=='--'){
+						q_json.item[q_cur].is_anonymous = 1;
+					}else{
+						q_json.item[q_cur].is_anonymous = 0;
+						q_json.item[q_cur].person_name = person_name;
+					}
+				}else{
+					q_json.item[q_cur].answer_show = 0;
+				}
+				
+				var q_type = q_json.item[q_cur].q_typeid;
+				//如果是单选和多选题，需要判断是否有外部链接页面，需要跳转
+				if(q_type == 1 || q_type == 2) {
+					var option_attr =  q_json.item[q_cur].option;
+					var o_l = option_attr.length;
+					for(var i=0; i<o_l; i++){
+						var q_title = option_attr[i].title;
+						//http打开
+						var option = q_title;//选项内容
+						var flagE = option.charAt(option.length-1)==")";
+						var flagC = option.charAt(option.length-1)=="）";
+						var pECenter = option.lastIndexOf('](');
+						var pCCenter = option.lastIndexOf('】（');
+						var pELeft = option.lastIndexOf('[');
+						var pCLeft = option.lastIndexOf('【');
+						//是否存在http链接,1:有链接，0:无链接
+						var http_action = 0;
+						//教师名
+						var description='';
+						//http地址
+						var href =''
+						//没有http的内容
+						var title =''
+						if(flagE && pECenter>=0 && pELeft>=0){
+							title = option.substring(0,pELeft);   //去除超链接后显示的选项内容
+							description = title + "[" + option.substring(pELeft+1,pECenter) + "]";  //超链接内容
+							href = option.substring(pECenter+2,option.length-1);  //超链接路径
+							http_action = 1;
+						}else if(flagC && pCCenter>=0 && pCLeft>=0){
+							title = option.substring(0,pCLeft);
+							description = title + "【" + option.substring(pCLeft+1,pCCenter)+ "】";
+							href = option.substring(pCCenter+2,option.length-1);
+							http_action = 1;
+						}else{
+							title = q_title;
+							http_action = 0;
+						}
+						
+	//					q_title = changeAnswerForKaiping(q_title);
+						option_attr[i]["title"] = q_title;
+						option_attr[i]["http_action"] = http_action;
+						option_attr[i]["description"] = description;
+						option_attr[i]["href"] = href;
+					}
+				}
+				
+				addSingleTemplateHtml('q_div', 'q_script', q_json.item[q_cur])
+				//判断是最后一题还是第一题
+				judgeLastOrFirst(q_cur+1,length);
+				api.execScript({
+					name : 'dcwj_preview_window',
+					script : 'setSortValue('+q_json.item[q_cur].sort+')'
+				});
+				if(answer_show){
+					getAnswer(q_cur,q_json.item[q_cur].q_typeid);
+				}
+			}else{
+				$api.html($api.byId('q_div'), '<div class="no-data">暂无题目</div>');
+			}
+		}
+		/*
+		*作者:zhaoj
+		*功能:获取答题答案
+		*日期：20161031
+		*/
+		function getAnswer(q_cur,q_typeid){
+			if(q_typeid == 3){
+				var content = commonTransferBrStr(answer_json.item[q_cur].context);
+				$api.html($api.byId('j_answer_content'),content);
+				$api.css($api.byId('j_answer_title'),'display:block;');
+				$api.css($api.byId('j_answer_content'),'display:block;');
+			}else{
+				var option = answer_json.item[q_cur].option;
+				for(var i = 0; i < option.length; i++){
+					if(option[i].checked){
+						$api.addCls($api.byId('j_option_'+option[i].id), 'active');
+					}
+				}
+			}
+		}
+		/*
+		*作者:zhaoj
+		*功能:判断是第一题还是最后一题
+		*日期：20161102
+		*/
+		function judgeLastOrFirst(q_cur,length){
+			if(q_cur == 1 && length != 1){
+				$api.css($api.dom('.prevQ'),'display:none;');
+				$api.css($api.dom('.nextQ'),'float:right;');
+			}else if(q_cur == length && length != 1){
+				$api.css($api.dom('.prevQ'),'float:left;');
+				$api.css($api.dom('.nextQ'),'display:none;');
+			}else if(q_cur == 1 && length == 1){
+				$api.css($api.dom('.footer-div'),'display:none;');
+				$api.css($api.byId('footer_div'),'display:none;');
+			}
+		}
+	</script>
+</html>

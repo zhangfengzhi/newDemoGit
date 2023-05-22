@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<!-- html5：在创建html时为了防止页面缩放等不兼容效果，要创建个viewport  -->
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<!-- 在IOS设备上，有时会将数字转为手机号，这里也要禁止下 -->
+		<meta name="format-detection" content="telephone=no"/>
+		<title>学生菁优导学</title>
+		<link rel="stylesheet" type="text/css" href="../../../../../css/aui/aui.css" />
+		<link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+		<style>
+		</style>
+	</head>
+	<body class="common-iphone-daoxueNewXs">
+		<div id="wrap">
+			<header class="aui-bar aui-bar-nav aui-bar-primary" id="aui-header">
+				<div id="cloud" class="topbar activebar">
+					<div id="back" class="back" onclick="back();" tapmode="">
+						<i class="aui-iconfont aui-icon-left"></i>返回
+					</div>
+					<div  class="mTitle" id="mTitle">
+						导学详情
+					</div>
+					<!--<div class="win-menu">
+                        <a id='menu' class="aui-iconfont aui-icon-menu back" tapmode="tap-active" onclick="openMenu();">&nbsp;</a>
+                    </div>-->
+				</div>
+			</header>
+			<div  class="aui-content aui-content-padded" id="message-content">
+				<p class="aui-text-center history-date"></p>
+			</div>
+		</div>
+	</body>
+	<script type="text/javascript" src="../../../../../script/api.js"></script>
+	<script type="text/javascript" src="../../../../../script/base_config.js" ></script>
+	<script type="text/javascript" src="../../../../../script/common/common.js"></script>
+	<script type="text/javascript">
+		var back_type ="index";//返回参数
+		var picture_type = 1;//默认是详情页面打开图片，2代表是练习页面打开图片
+		apiready = function() {
+		    commonSetTheme({"level":5,"type":0});
+			var header_h = api.pageParam.header_h;
+			var id = api.pageParam.id;
+			var is_read = api.pageParam.is_read;
+			var pageParamJson={"header_h":header_h,"id":id,"is_read":is_read};//打开frame页面所需参数
+			commonOpenFrame('daoxueNewXs_detail_frame','daoxueNewXs_detail_frame.html',header_h, true, false,"#ffffff",pageParamJson);	//打开index页面
+			commonBackForAndroid();//安卓关闭
+			commonIosAuiHeader();//定位header位置，留出上面电池等空隙，苹果需要
+		};
+		/*
+		*author:zhaoj
+		*function:返回页面
+		*date：20160307
+		*/
+		/**
+		 * 返回应用页面
+		 * 周枫
+		 * 2015.10.11
+		 */
+		function back() {
+			switch(back_type) {
+				case 'index':
+					commonExecScript('daoxueNewXs_index_window','daoxueNewXs_index_frame','initData(2)',1);
+					api.closeWin();
+					break;
+				case 'content':
+					commonCloseFrame('daoxueNewXs_ziyuan_frame');
+					reBackType('index');
+					break;
+				case 'practice':
+					commonCloseFrame('daoxueNewXs_practice_frame');
+					reBackType('index');
+					break;
+				case 'voice':
+					commonCloseFrame('common_playaudio_frame');
+					reBackType('index');
+					break;
+				case 'voice_zy':
+					commonCloseFrame('common_playaudio_frame');
+					reBackType('content');
+					break;
+				case 'voice_c':
+					commonCloseFrame('common_playaudio_frame');
+					reBackType('index');
+					break;
+				case 'dtk':
+					commonCloseFrame('daoxueNewXs_dtk_frame');
+					reBackType('practice');
+					break;
+				case 'wk':
+					commonCloseFrame('daoxueNewXs_wk_frame');
+					reBackType('index');
+					break;
+				case 'picture':
+					if(picture_type == 1){
+						reBackType('index');
+						commonExecScript('daoxueNewXs_detail_window','daoxueNewXs_detail_frame','commonCloseImage()',1);
+					}else{
+						reBackType('practice');
+						commonExecScript('daoxueNewXs_detail_window','daoxueNewXs_practice_frame','commonCloseImage()',1);
+					}
+					commonExecScript('daoxueNewXs_detail_window','daoxueNewXs_ziyuan_frame','commonCloseImage()',1);
+					break;	
+				case 'txt':
+					api.execScript({
+					    name: api.winName,
+					    frameName:'daoxueNewXs_detail_frame',
+					    script: 'common_openDocument.closeTxt()'
+					});
+					reBackType('index');
+					break;
+			}
+		}
+		/*
+		*author:zhaoj
+		*function:切换图片类型
+		*date：20170818
+		*/
+		function changePictureType(type){
+			picture_type = type;
+		}
+		/**
+		 * 重置window标题
+		 * 周枫
+		 * 2015.12.17
+		 */
+		function reWindowName(win_name) {
+			$api.html($api.byId('mTitle'), win_name);
+		}
+		/**
+		 * 重置从哪个页面退出
+		 * 周枫
+		 * 2015.12.17
+		 */
+		function reBackType(type) {
+			switch(type) {
+				//如果列表页面退出
+				case 'index':
+					back_type = 'index';
+					reWindowName('导学详情');
+					break;
+				//从练习页面退出
+				case 'practice':
+					reWindowName('练习');
+					back_type = 'practice';
+					break;
+				//如果导学详情页面退出
+				case 'content':
+					reWindowName('资源');
+					back_type = 'content';
+					break;
+				//如果播放声音页面退出
+				case 'voice':
+					back_type = 'voice';
+					break;
+				//如果播放声音页面退出
+				case 'voice_zy':
+					back_type = 'voice_zy';
+					break;
+				//如果播放声音页面退出
+				case 'voice_c':
+					back_type = 'voice_c';
+					break;
+				//如果答题卡页面退出
+				case 'dtk':
+					reWindowName('答题卡');
+					back_type = 'dtk';
+					break;
+				//如果微课详情页面退出
+				case 'wk':
+					reWindowName('微课');
+					back_type = 'wk';
+					break;
+				//打开照片
+				case 'picture':
+					back_type = 'picture';
+					break;
+				case 'txt':
+					back_type = 'txt';
+					break;
+			}
+		}
+        
+        /*
+        *author:zhaoj
+        *function:打开下拉菜单
+        *date：20160328
+        */
+        function openMenu(){
+            var header_h = api.pageParam.header_h;
+            var pageParamJson={"header_h":api.pageParam.header_h,"id":api.pageParam.id,'name':api.pageParam.name};//打开frame页面所需参数
+            commonOpenFrame('daoxueNewXs_menu_frame', 'daoxueNewXs_menu_frame.html',0, false, false,"rgba(0,0,0,0)",pageParamJson);   //打开index页面
+        }
+	</script>
+</html>

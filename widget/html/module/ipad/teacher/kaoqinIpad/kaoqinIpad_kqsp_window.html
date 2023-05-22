@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<!-- html5：在创建html时为了防止页面缩放等不兼容效果，要创建个viewport  -->
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<!-- 在IOS设备上，有时会将数字转为手机号，这里也要禁止下 -->
+		<meta name="format-detection" content="telephone=no"/>
+		<title>考勤审批</title>
+		<link rel="stylesheet" type="text/css" href="../../../../../css/aui/aui.css" />
+		<link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+		<style>
+			.history-date {
+				font-size: 12px;
+			}
+			#message-content {
+				overflow-y: auto;
+				display: none;
+			}
+			
+			
+			.t_display_n {
+				display: none;
+			}
+			.t_display_b {
+				display: block;
+			}
+			.tag-title{height:65px; line-height:63px;background:#ffffff ;}
+			.tag-title div{width:50%;text-align:center;color:#62656A;}
+			.fl{float:left;}
+			.fr{float:right;}
+			.nav{display:block;}
+			.nav li{display:inline-block;float:left;}
+			.nav li span{display:inline-block;color:#262626;}
+			.nav li span.active{height:65px;border-bottom:2px solid #f00; color:#f00;}
+			.plr20{padding:0 20px;}
+		</style>
+	</head>
+	<body class="common-ipad-kaoqinIpad-tea">
+		<div id="wrap">
+			<header class="aui-bar aui-bar-nav aui-bar-primary" id="aui-header">
+				<div id="cloud" class="topbar activebar">
+					<div id="back" class="back" onclick="back();" tapmode="">
+						<i class="aui-iconfont aui-icon-left"></i>返回
+					</div>
+					<div  class="mTitle" id="mTitle">
+						<div id="btn_title" class="btn-title">
+							<div id="j_btn_2" class="btn-l btn-top-active btn-top" onclick="changeBtnTitle(this,2);">待审批</div>
+							<div id="j_btn_1" class="btn-r btn-top" onclick="changeBtnTitle(this,1);">全部</div>
+						</div>
+					</div>
+					<div class="win-menu">
+					</div>
+				</div>
+				<div class="tag-title">
+					<ul class="nav clearfix">
+						<li class="plr20 " onclick="openQjListFrame();">
+							<span id="qingjia" class="active">请假</span>
+						</li>
+						<li class="plr20" onclick="openGcListFrame();">
+							<span id="gongchu">公出</span>
+						</li>
+					</ul>
+					<!--<div id="qingjia" class="fl active" onclick="openQjListFrame();">请假</div>
+					<div id="gongchu" class="fr" onclick="openGcListFrame();">公出</div>-->
+				</div>
+			</header>
+			<div  class="aui-content aui-content-padded" id="message-content">
+				<p class="aui-text-center history-date"></p>
+			</div>
+		</div>
+	</body>
+	<script type="text/javascript" src="../../../../../script/api.js"></script>
+	<script type="text/javascript" src="../../../../../script/base_config.js" ></script>
+	<script type="text/javascript" src="../../../../../script/common/common.js"></script>
+	<script type="text/javascript" src="../../../../../script/assembly/tongjiData.js"></script>
+	<script type="text/javascript" src="../../../../../script/common/kaoqinIpad_common.js"></script>
+	<script type="text/javascript">
+		//顶部header高度
+		var header_h;
+		var type = 2;//type =1 全部，type = 2待审批
+		var BASE_URL_ACTION;
+		var qj_count = 0;
+		var wc_count = 0;
+		apiready = function() {
+			commonSetTheme({"level":5,"type":0});
+			//定位header位置，留出上面电池等空隙，苹果需要
+			var header = $api.byId('aui-header');
+			header_h = api.pageParam.header_h;
+			BASE_URL_ACTION = $api.getStorage('BASE_URL_ACTION');
+			getCheckLeaveCountByType(1,function(flag,data){
+				qj_count = data.qj_count;
+				wc_count = data.wc_count;
+				if(qj_count == 0 && wc_count > 0){
+					 openGcListFrame();
+				}else{
+					//打开我的考勤请假list页面
+					openQjListFrame();
+				}
+				setTagName(data.qj_count,data.wc_count);
+			})
+			$api.fixStatusBar(header);
+			//安卓关闭
+			commonBackForAndroid();
+			commonOpenTjData($api.getStorage("identity")+'_'+api.winName);//记录统计
+		};
+		function changeBtnTitle(self,num){
+			if(num == 1){
+				$api.removeCls($api.byId('j_btn_2'),'btn-top-active');
+				$api.addCls($api.byId('j_btn_1'),'btn-top-active');
+				type = num;
+				openQjListFrame();
+				setTagName(0,0);
+			}else{
+				$api.removeCls($api.byId('j_btn_1'),'btn-top-active');
+				$api.addCls($api.byId('j_btn_2'),'btn-top-active');
+				type = num;
+				openQjListFrame();
+				setTagName(qj_count,wc_count);
+			}
+		}
+		/*
+		*author:zhaoj
+		*function:设置tag的名字和数量
+		*date：20160706
+		*/
+		function setTagName(qj,wc){
+			if(qj > 0){
+				$api.text($api.byId('qingjia'), '请假('+qj+')');
+			}else{
+				$api.text($api.byId('qingjia'),'请假');
+			}
+			if(wc > 0){
+				$api.text($api.byId('gongchu'), '公出('+wc+')');
+			}else{
+				$api.text($api.byId('gongchu'), '公出');
+			}
+		}
+		/*
+		*author:zhaoj
+		*function:设置请假或公出数目减一
+		*date：20160706
+		*/
+		function setSubCount(type){
+			type == 1 ? qj_count-- : wc_count--;
+			setTagName(qj_count,wc_count);
+		}
+		/*
+		*author:zhaoj
+		*function:打开我的考勤请假list页面
+		*date：20160620
+		*/
+		function openQjListFrame(){
+			$api.removeCls($api.byId('gongchu'),'active');
+			$api.addCls($api.byId('qingjia'),'active');
+			if(type == 1){
+				commonOpenFrame('kaoqinIpad_kqspAllQjlist_frame','kaoqinIpad_kqspAllQjlist_frame.html', header_h+65, true, false, '#ffffff', {header_h : header_h});
+			}else{
+				commonOpenFrame('kaoqinIpad_kqspQjlist_frame','kaoqinIpad_kqspQjlist_frame.html', header_h+65, true, false, '#ffffff', {header_h : header_h});
+			}
+		}
+		/*
+		*author:zhaoj
+		*function:打开我的考勤公出list页面
+		*date：20160620
+		*/
+		function openGcListFrame(){
+			$api.removeCls($api.byId('qingjia'),'active');
+			$api.addCls($api.byId('gongchu'),'active');
+			if(type == 1){
+				commonOpenFrame('kaoqinIpad_kqspAllGclist_frame','kaoqinIpad_kqspAllGclist_frame.html', header_h+65, true, false, '#ffffff', {header_h : header_h});
+			}else{
+				commonOpenFrame('kaoqinIpad_kqspGclist_frame','kaoqinIpad_kqspGclist_frame.html', header_h+65, true, false, '#ffffff', {header_h : header_h});
+			}
+		}
+		/*
+		*author:zhaoj
+		*function:打开申请考勤或考勤统计window页面
+		*date：20160620
+		*/
+		function openWindow(win_name){
+			api.openWin({
+				name : win_name,
+				url : win_name + '.html',
+				pageParam : {
+					header_h : header_h
+				},
+				bounces : false,
+				opaque : false,
+				showProgress : false,
+				bgColor : '#f7f9f8',
+				vScrollBarEnabled : false,
+				hScrollBarEnabled : false,
+				slidBackEnabled : false,
+				delay : 0,
+				animation : {
+					type : "reveal", //动画类型（详见动画类型常量）
+					subType : "from_right", //动画子类型（详见动画子类型常量）
+					duration : 300
+				},
+			});
+		}
+		/*
+		*author:zhaoj
+		*function:返回页面
+		*date：20160307
+		*/
+		function back() {
+			commonCloseTjData($api.getStorage("identity")+'_'+api.winName);//记录统计
+			api.closeWin();
+			commonExecScript('root','cshym_hbg_frame','getKaoqinMenu1(2)',1);
+		}
+	</script>
+</html>

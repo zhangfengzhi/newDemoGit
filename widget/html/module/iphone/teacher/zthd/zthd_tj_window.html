@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<!-- html5：在创建html时为了防止页面缩放等不兼容效果，要创建个viewport  -->
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<!-- 在IOS设备上，有时会将数字转为手机号，这里也要禁止下 -->
+		<meta name="format-detection" content="telephone=no"/>
+		<title>教师端主题活动</title>
+		<link rel="stylesheet" type="text/css" href="../../../../../css/aui/aui.css" />
+		<link id="j_theme_base" rel="stylesheet" type="text/css" href="" /><style>
+			.tag-title{height:45px; line-height:43px;border-bottom:2px solid #E6E6E6;width:100%;background:#fff;color:#CDCDCD;font-size:14px;}
+			.tag-title div{width:50%;float:left;padding-left:10px;}
+			.menu-zthd{
+			  background:url(../../../../../image/fun-module/ipad/zthd/tj-type.png) center center no-repeat;
+              background-size:20px 20px;
+              width:20px;
+              height:45px;
+              }
+		</style>
+	</head>
+	<body class="common-iphone-zthd-tea">
+		<div id="wrap">
+			<header class="aui-bar aui-bar-nav aui-bar-primary" id="aui-header">
+				<div id="cloud" class="topbar activebar">
+					<div id="back" class="back" onclick="back();" tapmode="">
+						<i class="aui-iconfont aui-icon-left"></i>返回
+					</div>
+					<div  class="mTitle" id="mTitle">
+						主题活动统计
+					</div>
+					<div id="j_add" class="win-menu menu-zthd" onclick="openMenuFrame();">
+						&nbsp;
+					</div>
+				</div>
+				<div class="tag-title">
+                    <div onclick="openTime(0);">开始日期：<span id="j_time_0">--</span></div>
+                    <div onclick="openTime(1);">结束日期：<span id="j_time_1">--</span></div>
+                </div>
+			</header>
+			<div  class="aui-content aui-content-padded" id="message-content">
+				<p class="aui-text-center history-date"></p>
+			</div>
+		</div>
+	</body>
+	<script type="text/javascript" src="../../../../../script/api.js"></script>
+	<script type="text/javascript" src="../../../../../script/base_config.js" ></script>
+	<script type="text/javascript" src="../../../../../script/common/common.js"></script>
+	<script type="text/javascript" src="../../../../../script/assembly/tongjiData.js"></script>
+	<script type="text/javascript" src="../../../../../script/assembly/openPicker.js"></script>
+	<script type="text/javascript" src="../../../../../script/module/iphone/common/zthd/zthd.js"></script>
+	<script type="text/javascript">
+        var start_time = '';
+        var end_time = '';
+        var first_check_time = true;//第一次选择时间
+        var now_fw_time = '';
+        var sort_column = 1;//排序类型，1：活动数量，2：参与人数，3：作品数量
+        var sort_type = 'desc';//排序方式
+        var fromType = 1;
+		apiready = function() {
+			commonSetTheme({"level":5,"type":0});
+			var header_h = api.pageParam.header_h;
+			var pageParamJson={"header_h":header_h};//打开frame页面所需参数
+			commonOpenFrame('zthd_tj_frame', 'zthd_tj_frame.html',header_h+45, true, false,"#ffffff",pageParamJson);	//打开index页面
+			commonBackForAndroid();//安卓关闭
+			commonIosAuiHeader();//定位header位置，留出上面电池等空隙，苹果需要
+			commonOpenTjData($api.getStorage("identity")+'_'+api.winName);//记录统计
+		};
+		
+		/*
+		 * 功能：返回页面
+		 * 作者：张自强
+		 * 时间：20171019
+		 */
+		function back() {
+		   api.closeWin();
+		}
+		
+		/*
+		 * 功能：打开menu页
+		 * 作者：张自强
+		 * 时间：20171020
+		 */
+		function openMenuFrame(){
+			var header_h = api.pageParam.header_h;
+			api.openFrame({
+	            name: 'zthd_tjmenu_frame',
+	            url: 'zthd_tjmenu_frame.html',
+	            bounces: false,
+	            rect: {
+	                x: 0,
+	                y: 0,
+	                w: 'auto',
+	                h: 'auto'
+	            },
+	            bgColor : 'rgba(0,0,0,0)',
+	            pageParam : {
+					'header_h' : header_h,
+					'sort_type' : sort_type,
+					'sort_column':sort_column,
+					'fromType':1
+				},
+	            reload: true
+	        });  
+		}
+	</script>
+</html>

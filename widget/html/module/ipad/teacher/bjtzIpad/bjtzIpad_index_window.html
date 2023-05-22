@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+		<title>班级通知</title>
+		<link rel="stylesheet" type="text/css" href="../../../../../css/aui/aui.css"/>
+		<link rel="stylesheet" type="text/css" href="../../../../../css/module/ipad/left-right-layout.css"/>
+		<link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+		<style>
+        	.icon{
+				border-radius: 0px !important;
+				width: 100px  !important;
+				height: 50px  !important;
+			}
+        	.school-icon{
+				width: 100px;
+				height: 73px;
+				margin: 0 auto;
+			}
+			.class-icon{
+				width: 100px;
+				height: 74px;
+				margin: 0 auto;
+			}
+        </style>
+	</head>
+	<body id="j_body" class="left-layout-body common-ipad-bjtzIpad-tea">
+		<div id="wrap">
+			<header class="aui-bar aui-bar-nav aui-bar-primary" id="aui-header">
+				<div id="cloud" class="topbar activebar">
+					<div id="back" class="back" onclick="back();" tapmode="">
+						<i class="aui-iconfont aui-icon-left"></i>返回
+					</div>
+					<div  class="mTitle" id="mTitle">
+						
+					</div>
+					<div class="win-menu">
+						<a id="j_add" class="aui-iconfont aui-icon-add btn-new"  onclick="openAddFrame();"></a>
+					</div>
+				</div>
+			</header>
+		</div>
+		<!--左侧导航-->
+		<div id="j_left_tag" class="left-tag">
+			<!--<div class="tag-item">
+				<div class="icon class-icon"></div>
+				<div id="j_class_name" class="name">班级</div>
+				<div class="parting-line">
+					<div class="left-rectangle fl"></div>
+					<div class="right-rectangle fr"></div>
+					<hr />
+				</div>
+			</div>
+			<div id="j_school" class="tag-item">
+				<div class="icon school-icon"></div>
+				<div class="name">学校</div>
+				<div class="parting-line">
+					<div class="left-rectangle fl"></div>
+					<div class="right-rectangle fr"></div>
+					<hr />
+				</div>
+			</div>-->
+		</div>
+		<script id="div_script" type="text/html">
+			<%for(var i=0;i<list.length;i++){%>
+				<div class="tag-item" onclick="changeTagItem('<%=list[i].title%>',<%=list[i].org_type%>,<%=list[i].id%>,<%=i%>);">
+					<div class="icon <%if(list[i].org_type == 105){%> class-icon <%}else{%> school-icon <%}%>"></div>
+					<div id="j_class_name" class="name"><%=list[i].title%></div>
+					<!--<div class="parting-line">
+						<div class="left-rectangle fl"></div>
+						<div class="right-rectangle fr"></div>
+						<hr />
+					</div>-->
+				</div>
+			<%}%>	
+		</script>	
+		<!--//左侧导航-->
+		<div id="j-right" class="win-right bjtz-right fr"></div>
+	</body>
+	<script type="text/javascript" src="../../../../../script/api.js"></script>
+	<script type="text/javascript" src="../../../../../script/base_config.js" ></script>
+	<script type="text/javascript" src="../../../../../script/common/common.js"></script>
+	<script type="text/javascript" src="../../../../../script/plug-in/template.js" ></script>
+	<script type="text/javascript" src="../../../../../script/assembly/tongjiData.js"></script>
+	<script type="text/javascript" src="../../../../../script/plug-in/base64.js" ></script>
+	<script type="text/javascript">
+		var back_type ="index";//返回参数
+		apiready = function(){
+			commonSetTheme({"level":5,"type":0});
+			commonIosAuiHeader();//定位header位置，留出上面电池等空隙，苹果需要
+			commonBackForAndroid();//安卓关闭
+			$api.css($api.byId('j_left_tag'),'top:'+api.pageParam.header_h+'px;max-height:'+(api.winHeight*1-api.pageParam.header_h*1)+'px;height:'+(api.winHeight*1-api.pageParam.header_h*1)+'px;');//设置左侧导航的样式
+			openIndexFrame();
+			commonOpenTjData($api.getStorage("identity")+'_'+api.winName);
+		};
+		/*
+		*author:zhaoj
+		*function:返回页面
+		*date：20161220
+		*/
+		function back() {
+			switch(back_type) {
+				case 'index':
+				  	commonCloseTjData($api.getStorage("identity")+'_'+api.winName);
+					api.closeWin();
+					break;
+				case 'detail':
+					commonExecScript('bjtzIpad_index_window','bjtzIpad_index_frame','isShowBoxShow(0);',1);//隐藏虚线
+				  	commonCloseFrame('bjtzIpad_detail_frame');
+				  	reBackType('index');
+					break;
+				case 'add':
+				  	commonCloseFrame('bjtzIpad_add_frame');
+				  	reBackType('index');
+					break;
+				case 'picture':
+				  	commonExecScript('bjtzIpad_index_window','bjtzIpad_add_frame','closePicture();',1);
+				  	reBackType('add');
+					break;
+				case 'open_picture':
+				  	reBackType('add');
+					break;
+				case 'picture_detail':
+				  	reBackType('detail');
+					break;
+			}
+		}
+		/**
+		 * 重置从哪个页面退出
+		 * 周枫
+		 * 2015.12.17
+		 */
+		function reBackType(type) {
+			switch(type) {
+				//如果列表页面退出
+				case 'index':
+					back_type = 'index';
+					break;
+				//如果详情页面退出
+				case 'detail':
+					back_type = 'detail';
+					break;
+				//如果添加页面退出
+				case 'add':
+					back_type = 'add';
+					break;
+				//如果添加页面退出
+				case 'picture':
+					back_type = 'picture';
+					break;
+				//如果打开图片退出
+				case 'open_picture':
+					back_type = 'open_picture';
+					break;
+				//如果打开图片退出
+				case 'picture_detail':
+					back_type = 'picture_detail';
+					break;
+			}
+		}
+		/*
+		*author:zhaoj
+		*function:打开详情页面
+		*date：20170911
+		*/
+		function openDetailFrame(oparam){
+			reBackType('detail');
+			var header_h = api.pageParam.header_h;//顶部高度
+			var frame_w = Math.floor(api.winWidth*0.4);
+			var frame_x = Math.floor(api.winWidth*0.6);
+			pageParamJson={"header_h":header_h,'x':frame_x,'w':frame_w,"oparam":oparam};//打开frame页面json数据
+			//打开frame页面
+			commonOpenFrame("bjtzIpad_detail_frame","bjtzIpad_detail_frame.html",header_h,false,false,"rgba(0,0,0,0)",pageParamJson);
+			commonExecScript('bjtzIpad_index_window','bjtzIpad_index_frame','isShowBoxShow(1);',1);//显示虚线
+		}
+		/*
+		*author:zhaoj
+		*function:打开列表页面
+		*date：20170912
+		*/
+		function openIndexFrame(){
+			var header_h = api.pageParam.header_h;//顶部高度
+			var frame_w = Math.floor(api.winWidth*0.6);
+			var frame_x = 0;
+			if(frame_w <= 614){
+				frame_w=frame_w-150;
+				frame_x = 150;
+			}else{
+				frame_w=frame_w-180;
+				frame_x = 180;
+			}
+			pageParamJson={"header_h":header_h,'w':frame_w,"x":frame_x};//打开frame页面json数据
+			//打开frame页面
+			commonOpenFrame("bjtzIpad_index_frame","bjtzIpad_index_frame.html",header_h,false,false,"rgba(0,0,0,0)",pageParamJson);
+		}
+		/*
+		*author:zhaoj
+		*function:获取左侧班级学校数据
+		*date：20170915
+		*/
+		function getTagData(){
+			//获取任教班级
+			commonloadClassListData(2, function(is_true, class_list_attr) {
+				if (is_true) {
+					bar_items = [];
+					//遍历班级存入
+					for (var i = 0; i < class_list_attr.length; i++) {
+						var arr_class = {
+							title : class_list_attr[i].class_name,
+							id : class_list_attr[i].class_id,
+							org_type:105
+						};
+						bar_items.push(arr_class);
+					}
+					if(bar_items.length == 0){
+						popAlertAndShowTitle('提示',Base64.encode('您目前没有任教班级，暂不支持查看'),'back()');
+					}else{
+						commonAddOnceHtml('j_left_tag','div_script',{"list":bar_items});
+						changeTagItem(bar_items[0].title,bar_items[0].org_type,bar_items[0].id,0);
+					}
+				}
+			});
+		}
+		/*
+		*author:zhaoj
+		*function:切换左侧导航
+		*date：20170915
+		*/
+		function changeTagItem(title,org_type,id,index){
+			var items = document.getElementsByClassName('tag-item');
+	    	for (var i = 0; i < items.length; i++){
+	    		if (i == index || bar_items[i].title == title){
+	    			$api.css(items[i],'background-color:#003476');
+	    		}else{
+	    			$api.css(items[i],'background-color:#004EA2');
+	    		}
+	    	}
+        
+			commonCloseFrame('bjtzIpad_detail_frame');
+			commonSetWindowName(title);//重新给window页面命名
+			commonExecScript('bjtzIpad_index_window','bjtzIpad_index_frame','changeOrgId(1,'+id+','+org_type+');',1);//切换index列表数据
+		}
+		/*
+		*author:zhaoj
+		*function:打开添加页面
+		*date：20170912
+		*/
+		function openAddFrame(){
+			reBackType('add');
+			commonExecScript('bjtzIpad_index_window','bjtzIpad_index_frame','openAddFrame();',1);//切换index列表数据
+		}
+	</script>
+</html>

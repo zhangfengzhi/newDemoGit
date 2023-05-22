@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>导学统计</title>
+    <link rel="stylesheet" type="text/css" href="../../../../../css/aui/aui.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../../../css/module/common/daoxueJyJs.css" />
+    <link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+    <style>
+    </style>
+</head>
+<body class="common-ipad-daoxueIpad common-ipad-daoxueIpad-jczy">
+	<ul id="tj_body" class="tj_ul"></ul>
+	<script type="text/html" id="tj_script">
+		<%if(list.length == 0){%>
+			<div class="no-data">暂无统计</div>
+		<%}else{%>
+			<% for( var i = 0; i < list.length; i++){ %>
+                <li class="clearfix" onclick="openResFrame(<%=list[i].student_id%>,'<%=list[i].person_name%>');">
+                    <img src="<%=list[i].img_src%>" onerror="this.src='../../../../../image/fun-module/common/wk_default.png'" />
+                    <div class="tj-info">
+                        <div><%=list[i].person_name%></div>
+                        <div class="tj-num">导学学习次数：<%=list[i].read_num%>&nbsp;&nbsp;资源学习次数：<%=list[i].r_material_num%></div>
+                    </div>
+                </li>
+            <% } %>
+		<%}%>
+	</script>
+</body>
+<script type="text/javascript" src="../../../../../script/api.js"></script>
+<script type="text/javascript" src="../../../../../script/base_config.js" ></script>
+<script type="text/javascript" src="../../../../../script/plug-in/template.js" ></script>
+<script type="text/javascript" src="../../../../../script/common/common.js" ></script>
+<script type="text/javascript" src="../../../../../script/module/common/daoxueJyJs.js" ></script>
+<script type="text/javascript">
+	var currentPage=1;//当前页码
+	var totalPages;//总页数
+	var BASE_URL_ACTION;
+	var org_id;//班级id
+	var org_type_array=[];//班级type数组
+	var org_type;//班级type
+	apiready = function(){
+		commonSetTheme({"level":5,"type":0});
+		BASE_URL_ACTION = $api.getStorage('BASE_URL_ACTION');
+		showSelfProgress('加载中...');
+		getPubOrgListByLeadId();
+		commonRefreshHeaderInfo();//下拉刷新
+		commonScrollBottomReload();//上拉加载更多数据
+	};
+	/*
+	*author:zhaoj
+	*function:获取滑动条的数据
+	*date：20160331
+	*/
+	function openNavigationBar(class_items) {
+		//关闭滑动条
+		commonCloseNavigationBar();
+		var params = {
+			y : api.pageParam.header_h-1,
+			file_level:2,
+			items : class_items,//按钮项
+			winName:'daoxueIpad_tj_window',
+			frameName:'daoxueIpad_tj_frame'
+		};
+		commonMyNavigationBar(params);
+	}
+	/*
+	*author:zhaoj
+	*function:滑动条点击回调函数
+	*date：20160331
+	*/
+	function callBackNew(id, index) {
+		org_id = id;
+		org_type = org_type_array[index];
+		currentPage = 1;
+		initData();
+	}
+	/*
+	*author:zhaoj
+	*function:获取相册列表数据
+	*date：20170119
+	*/
+	function initData(){
+		getStudyLeadStatList();
+	}
+	/*
+	*author:zhaoj
+	*function:返回页面
+	*date：20170118
+	*/
+	function openResFrame(student_id,student_name){
+		api.execScript({
+			name : 'daoxueIpad_tj_window',
+			script : 'reBackType("res");'
+		});
+		var header_h = api.pageParam.header_h;
+		var pageParamJson={"header_h":header_h,lead_id:api.pageParam.lead_id,"student_id":student_id,"student_name":student_name};//打开frame页面所需参数
+		commonOpenFrame('daoxueIpad_res_frame', 'daoxueIpad_res_frame.html',header_h, false, false,"#ffffff",pageParamJson);	//打开index页面
+	}
+</script>
+</html>

@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>检测选用</title>
+    <link rel="stylesheet" type="text/css" href="../../../../../css/aui/aui.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../../../css/module/ipad/popup-body.css"/>
+    <link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+    <link id="j_theme_base" rel="stylesheet" type="text/css" href="" /><style>
+    	.popup-body-new	.commont-content{padding:52px 0 50px 0;width:470px;height:230px;margin-top:-115px;margin-left:-235px;}
+    	.content-name{height:60px;}
+    	input[type='text']{height:45px;border-bottom:1px dashed #aaaaaa;padding:10px 0;}
+    	textarea{height:165px;padding:20px;max-height:165px;overflow-y: auto;}
+    	.popup-body-new .commont-content .position{font-size:16px;padding:20px 0 0 30px;}
+    	.zy-name{float:left;top:29px;padding-left:5%;padding-top:15px;min-width:80px;width:30%;}
+    	.input-div{position:relative;display:inline-block;margin-right:5%;float:right;padding-top:12px;width:90%;}
+    	.input-div input{border:1px solid #cccccc;border-radius:3px;line-height:16px;padding:9px 5px;width:100%;}
+    	.tip{position:absolute;right:0;bottom:-12px;height:20px;line-height:20px;font-size:14px;color:#f00;}
+    </style>
+</head>
+<body class="popup-body-new common-ipad-zuoyeIpad-tea">
+	<div class="commont-content">
+		<div class="top fl">
+			<div class="name">选用</div>
+			<div class="close fr" onclick="closeFrame();"></div>
+		</div>
+		<div class="content">
+			<div class="zy-name">修改检测名称</div>
+			<div class="input-div">
+				<input id="fl_val" type="text" oninput='showTip(this.value.length,this);'placeholder="剩余100个字符" maxlength="100" />
+			</div>
+		</div>
+		<div class="btn" onclick="saveAsLead();">保存</div>
+	</div>
+</body>
+<script type="text/javascript" src="../../../../../script/api.js"></script>
+<script type="text/javascript" src="../../../../../script/base_config.js" ></script>
+<script type="text/javascript" src="../../../../../script/plug-in/base64.js" ></script>
+<script type="text/javascript" src="../../../../../script/common/common.js"></script>
+<script type="text/javascript">
+	apiready = function(){
+		commonSetTheme({"level":5,"type":0});
+		$api.val($api.byId('fl_val'), Base64.decode(api.pageParam.zy_name_base64));
+		showTip(Base64.decode(api.pageParam.zy_name_base64).length,"");
+	};
+	/*
+	*author:zhaoj
+	*function:关闭页面
+	*date：20170912
+	*/
+	function closeFrame(){
+		commonExecScript('zuoyeIpad_index_window','','back();',0);
+	}
+	/*
+	*author:zhaoj
+	*function:提示问题描述或课堂评价描述剩余多少字符
+	*date：20160315
+	*/
+	function showTip(length,self){
+        var count = 100 - length;
+        $api.text($api.byId('tip'),'剩余'+count+'个字符');
+        if(self !=""){
+            commonRemoveExpression(self);
+        }
+    }
+    /*
+	*author:zhaoj
+	*function:选用检测
+	*date：20171014
+	*/
+	function saveAsLead(){
+		showSelfProgress('保存中...'); 
+		var value = $api.trimAll($api.val($api.byId('fl_val')));
+		if(value.length == 0){
+			popAlert('检测名称不可以为空');
+			return;
+		}
+		api.ajax({
+			url : BASE_URL_ACTION + '/xx/saveAsZy',
+			method : 'post',
+			timeout : 0,
+			dataType : 'json',
+			data : {
+				values : {
+					"random_num" : creatRandomNum(),
+					"identity_id" : $api.getStorage("identity"),
+					"person_id" : $api.getStorage("person_id"),
+					"zy_id" : api.pageParam.zy_id,
+					"zy_name":value,
+					"zy_type":1,
+				}
+			},
+			headers : {
+	'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+	}
+			}, function(ret, err) {
+				if(err){
+					api.hideProgress();
+					popToast('选用失败');
+				}else{
+					if(ret.success){
+						saveResource(0,ret.zy_id,'');
+					}else{
+						api.hideProgress();
+						popToast('选用失败');
+					}
+				}
+			});
+	}
+	/*
+*author:zhaoj
+*function:课程包中保存/替换资源
+*date：20170401
+*/
+function saveResource(type,id,callback){
+	var lobal_variable = JSON.parse(Base64.decode(api.pageParam.lobal_variable));
+	var res_array = [{"res_id":id,"is_cloud":0}];
+	getCurrentTerm(function(xq_id){
+		api.ajax({
+			url : BASE_URL_ACTION + '/ypt/space/course_package/save_resource',
+			method : 'post',
+			timeout : 0,
+			dataType : 'json',
+			data : {
+				values : {
+					"random_num" : creatRandomNum(),
+					"add_res_m" : 1,
+					"identity_id" : $api.getStorage("identity"),
+					"issue_id" : xq_id,
+					"material_type" : 1,
+					"package_id" : lobal_variable.package_id,
+					"res_ids" : JSON.stringify(res_array),
+					"res_type_id" : lobal_variable.res_type_id,
+					"scheme_id" : lobal_variable.scheme_id,
+					"stage_id" : lobal_variable.stage_id,
+					"structure_id" : lobal_variable.structure_id,
+					"subject_id" : lobal_variable.subject_id,
+					"volume_id" : lobal_variable.volume_id,
+					"person_id" : $api.getStorage("person_id")
+				}
+			},
+			headers : {
+	'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+	}
+			}, function(ret, err) {
+				api.hideProgress();
+				if(err){
+					popToast('选用失败');
+				}else{
+					if(ret.success){
+						commonExecScript('zuoyeIpad_index_window','zuoyeIpad_index_frame','updataList();',1);//切换index列表数据
+						setTimeout(function(){
+							closeFrame();
+						},100);
+						popToast('选用成功');
+					}else{
+						popToast('选用失败');
+					}
+				}
+			});
+		});
+}
+/*
+ * author:zhaoj
+ * function:获取当前学期id及名称
+ * data:20171014
+ */
+function getCurrentTerm(callback){
+	api.ajax({
+		url : BASE_URL_ACTION + '/xx/getCurrentTerm',
+		method : 'post',
+		timeout : 30,
+		dataType : 'json',
+		headers : {
+'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+}
+		}, function(ret, err) {
+			if (err) {
+				popToast('对不起，获取学期信息失败');
+		} else {
+			if(ret.success){
+				callback(ret.XQ_ID);
+			}else{
+				popToast('对不起，获取学期信息失败');
+			}
+		}
+	});
+}
+</script>
+</html>

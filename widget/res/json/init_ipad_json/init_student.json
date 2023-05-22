@@ -1,0 +1,22 @@
+{        
+"list":[
+	{"id":0,"win_name":"导学","win_url":"daoxueNew_index_window","type":"5","config_type":0,"icon_css":"daoxue","code":"hxx_dx"},
+	{"id":1,"win_name":"课件","win_url":"kejianNew_index_window","type":"5","config_type":0,"icon_css":"kejian","code":"hxx_kj"},
+	{"id":2,"win_name":"检测","win_url":"zuoyeIpad_index_window","type":"5","config_type":0,"icon_css":"zuoye","code":"hxx_zy"},
+	{"id":3,"win_name":"主题活动","win_url":"zthdIpad_index_window","type":5,"config_type":0,"icon_css":"huodong","code":"hxx_zthd"},
+	{"id":4,"win_name":"互动精灵","win_url":"","type":"8","config_type":0,"icon_css":"jingling","code":"ydkthd"},
+	{"id":5,"win_name":"题本","win_url":"tibenJy_index_window","type":"1","config_type":0,"icon_css":"tiben","code":"hxx_tb"},
+	{"id":6,"win_name":"名师云课","win_url":"wf_index_window","type":"1","config_type":0,"icon_css":"msyk","code":"yunke"},
+	{"id":7,"win_name":"理想生涯","win_url":"lxsyIpad_index_window","type":6,"config_type":0,"icon_css":"lxsy","code":"zysygh"},
+	{"id":9,"win_name":"新闻资讯","win_url":"xwzxIpad_index_window","type":"5","config_type":1,"icon_css":"tongzhi","code":"hsh_xwzx"},
+	{"id":10,"win_name":"班级通知","win_url":"bjtzIpad_index_window","type":"5","config_type":1,"icon_css":"bjtz","code":"hsh_bjtz"},
+	{"id":11,"win_name":"课程表","win_url":"kcb_index_window","type":"9","config_type":1,"icon_css":"kebiao","code":"hsh_kcb"},
+    {"id":12,"win_name":"校园食谱","win_url":"cpIpad_index_window","type":"6","config_type":1,"icon_css":"shipu","code":"hsh_xysp"},
+    {"id":13,"win_name":"校园广播","win_url":"guangboIpad_index_window","type":"6","config_type":1,"icon_css":"guangbo","code":"hsh_xygb"},
+    {"id":14,"win_name":"问卷调查","win_url":"dcwjIpad_index_window","type":"5","config_type":1,"icon_css":"wenjuan","code":"hsh_wjgl"},
+    {"id":15,"win_name":"启智游戏","win_url":"gameIpad_index_window","type":"5","config_type":0,"icon_css":"qzyx","code":"hxx_tzxx_yx"},
+    {"id":16,"win_name":"专题学习","win_url":"zhuantiIpad_index_window","type":"5","config_type":0,"icon_css":"ztxx","code":"hxx_tzxx_zt"},
+    {"id":18,"win_name":"电子书","win_url":"dzsIpad_index_window","type":"5","config_type":0,"icon_css":"dzs","code":"hxx_tzxx_dzs"},
+	{"id":19,"win_name":"圈子","win_url":"quanziIpad_index_window","type":"4","config_type":1,"icon_css":"quanzi","code":"hsh"},
+	{"id":27,"win_name":"电子课文","win_url":"ywxyd_index_window","type":"9","config_type":0,"icon_css":"ywyxd","code":"zdy_ywxyd"}
+]}

@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <!-- html5：在创建html时为了防止页面缩放等不兼容效果，要创建个viewport  -->
+        <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+        <!-- 在IOS设备上，有时会将数字转为手机号，这里也要禁止下 -->
+        <meta name="format-detection" content="telephone=no"/>
+        <title>新闻资讯</title>
+        <link rel="stylesheet" type="text/css" href="../../../../../css/aui/aui.css" />
+        <link rel="stylesheet" type="text/css" href="../../../../../css/module/ipad/left-right-layout.css"/>
+        <link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+        <style>
+        	.icon{
+				border-radius: 0px !important;
+				width: 100px  !important;
+				height: 50px  !important;
+			}
+        	.school-icon{
+				width: 100px;
+				height: 73px;
+				margin: 0 auto;
+			}
+			.class-icon{
+				width: 100px;
+				height: 74px;
+				margin: 0 auto;
+			}
+        </style>
+    </head>
+    <body class="left-layout-body common-ipad-xwzxIpad-tea">
+        <div id="wrap">
+            <header class="aui-bar aui-bar-nav aui-bar-primary" id="aui-header">
+                <div id="cloud" class="topbar activebar">
+                    <div id="back" class="back" onclick="back();" tapmode="">
+                        <i class="aui-iconfont aui-icon-left"></i>返回
+                    </div>
+                    <div  class="mTitle" id="mTitle">
+                        新闻资讯
+                    </div>
+                    <div class="win-menu">
+                        <a id='menu' class="aui-iconfont aui-icon-add btn-new aui-hide"  onclick="openTongzhiAddFrame();"></a>
+                        <a id='save' class="aui-iconfont aui-icon-check btn-new aui-hide"  onclick="save();"></a>
+                    </div>
+                </div>
+            </header>
+        </div>
+        <!--<div  class="aui-content aui-content-padded" id="message-content">
+            <p class="aui-text-center history-date"></p>
+        </div>-->
+        <!--左侧导航-->
+        <div id="j_left_tag" class="left-tag"></div>
+        <script id="div_script" type="text/html">
+        <%for(var i=0;i<list.length;i++){%>
+            <div class="tag-item" onclick="changeTagItem('<%=list[i].title%>',<%=list[i].org_id%>,<%=list[i].org_level%>,1,<%=i%>);">
+                <div class="icon <%if(list[i].org_level == 105){%> class-icon <%}else if(list[i].org_level == 102){%> jigou-icon <%}else{%> school-icon <%}%>"></div>
+                <div id="j_class_name" class="name"><%=list[i].title%></div>
+                <!--<div class="parting-line">
+                    <div class="left-rectangle fl"></div>
+                    <div class="right-rectangle fr"></div>
+                    <hr />
+                </div>-->
+            </div>
+        <%}%>   
+    </script>
+    <div id="j-right" class="win-right xwzx-right fr"></div>    
+    </body>
+    <script type="text/javascript" src="../../../../../script/api.js"></script>
+    <script type="text/javascript" src="../../../../../script/base_config.js" ></script>
+    <script type="text/javascript" src="../../../../../script/plug-in/base64.js" ></script>
+    <script type="text/javascript" src="../../../../../script/common/common.js" ></script>
+    <script type="text/javascript" src="../../../../../script/plug-in/template.js" ></script>
+    <script type="text/javascript" src="../../../../../script/assembly/tongjiData.js"></script>
+    <script type="text/javascript" src="../../../../../script/assembly/voicePlayer.js" ></script>
+    <script type="text/javascript">
+        var header_h;//顶部header高度
+        var voice_content;//播放内容
+        var back_type = 'index';//返回参数
+        var voice_type = 2;//朗读页面显示隐藏判断参数，2是打开，1是隐藏
+        var bar_items;  //左侧导航
+        //定义区域
+        var bur_ids = [];
+        //定义区域
+        var bur_level_ids = [];
+        //定义区域名称
+        var bur_names = [];
+        //定义区域id
+        var org_id = 0;
+        //定义区域等级
+        var org_level = 0;
+        //定义区域名称
+        var org_name = '';
+        apiready = function() {
+        	commonSetTheme({"level":5,"type":0});
+            //定位header位置，留出上面电池等空隙，苹果需要
+            var header = $api.byId('aui-header');
+            $api.fixStatusBar(header);
+            header_h = api.pageParam.header_h;
+            $api.css($api.byId('j_left_tag'),'top:'+api.pageParam.header_h+'px;max-height:'+(api.winHeight*1-api.pageParam.header_h*1)+'px;height:'+(api.winHeight*1-api.pageParam.header_h*1)+'px;');//设置左侧导航的样式
+            //打开新闻资讯列表frame
+            openTongzhiListFrame();
+            //安卓关闭
+            commonBackForAndroid();
+            commonOpenTjData($api.getStorage("identity")+'_'+api.winName);
+        };
+        /**
+         * 打开新闻资讯列表frame
+         * 周枫
+         * 2015.11.20
+         */
+        function openTongzhiListFrame() {
+            reBackType('index');
+            var frame_w = Math.floor(api.winWidth*0.6);
+            var frame_x = 0;
+            if(frame_w <= 614){
+                frame_w=frame_w-150;
+                frame_x = 150;
+            }else{
+                frame_w=frame_w-180;
+                frame_x = 180;
+            }
+            pageParamJson={"header_h":header_h,'w':frame_w,"x":frame_x};//打开frame页面json数据
+            //打开新闻资讯frame页面
+            commonOpenFrame("xwzxIpad_index_frame","xwzxIpad_index_frame.html",header_h,false,false,"rgba(0,0,0,0)",pageParamJson);
+        }
+
+        /**
+         * 返回应用页面
+         * 周枫
+         * 2015.10.11
+         */
+        function back() {
+        $api.css($api.byId('play'), 'display:none;');
+            switch(back_type) {
+                case 'index':
+                    $api.rmStorage('gxdq_area_id');
+                    $api.rmStorage('gxdq_area_name');
+                    $api.rmStorage('is_add_notice');
+                    $api.rmStorage('navbar_selected');
+                    commonCloseTjData($api.getStorage("identity")+'_'+api.winName);
+                    api.closeWin();
+                    reBackType('index');
+                    break;
+                case 'content':
+                    commonExecScript('xwzxIpad_index_window','xwzxIpad_index_frame','isShowBoxShow(0);',1);//隐藏虚线
+                    commonCloseFrame('common_voiceplay_frame');
+                    commonCloseFrame('xwzxIpad_content_frame');
+                    reBackType('index');
+                    break;
+                case 'add':
+                    api.closeFrame({
+                        name : 'xwzxIpad_add_frame'
+                    });
+                    reBackType('index');
+                    break;
+                case 'record':
+                    api.execScript({
+                        name : 'xwzxIpad_index_window',
+                        script : 'openTongzhiAddFrame() ;'
+                    });
+                    api.closeFrame({
+                        name : 'xwzxIpad_record_frame'
+                    });
+                    break;
+                case 'picture_sel':
+                    commonExecScript('xwzxIpad_index_window','xwzxIpad_add_frame','closePicture();',1);
+                    reBackType('add');
+                    break;
+                case 'open_picture':
+                    
+                    reBackType('add');
+                    break;
+                case 'picture_detail':
+                    
+                    reBackType('content');
+                    break;
+            }
+        }
+        /**
+         * 重置从哪个页面退出，是新闻资讯内容页面还是新闻资讯列表页面
+         * 周枫
+         * 2015.10.14
+         */
+        function reBackType(type) {
+            switch(type) {
+                //如果新闻资讯列表页面退出
+                case 'index':
+                    //$api.html($api.byId('mTitle'), "新闻资讯");
+                    if ($api.getStorage('is_add_notice') == 1) {
+                        isAddDisplay(true);
+                        isSaveDisplay(false);
+                    }
+                    back_type = 'index';
+                    commonCloseFrame('common_voiceplay_frame');
+                    break;
+                //如果新闻资讯内容页面退出
+                case 'content':
+                    //$api.html($api.byId('mTitle'), "新闻资讯");
+                    //isAddDisplay(false);
+                    isSaveDisplay(false);
+                    back_type = 'content';
+                    voice_type = 2;
+                    break;
+                //如果新闻资讯内容页面退出
+                case 'add':
+                    //$api.html($api.byId('mTitle'), "发布新闻资讯");
+                    isAddDisplay(true);
+                    isSaveDisplay(false);
+                    back_type = 'add';
+                    break;
+                case 'record':
+                    //$api.html($api.byId('mTitle'), "语音录入");
+                    isAddDisplay(true);
+                    isSaveDisplay(false);
+                    back_type = 'record';
+                    break;
+                case 'picture_sel':
+                    isAddDisplay(true);
+                    isSaveDisplay(false);
+                    back_type = 'picture_sel';
+                    break;
+                case 'open_picture':
+                    back_type = 'open_picture';
+                    break;
+                case 'picture_detail':
+                    back_type = 'picture_detail';
+                    break;
+            }
+        }
+
+        /**
+         * 发布新闻资讯
+         * 周枫
+         * 2015.11.21
+         */
+        function openTongzhiAddFrame() {
+            reBackType('add');
+            //打开新闻资讯内容frame页面
+            var pageParamJson={"header_h":header_h};
+            commonOpenFrame('xwzxIpad_add_frame', 'xwzxIpad_add_frame.html',0, false, true,"rgba(0,0,0,0)", pageParamJson);
+        }
+
+        /**
+         * 判断发送新闻资讯是否显示
+         * 周枫
+         * 2015.11.25
+         */
+        function isAddDisplay(flag) {
+            if (flag) {
+                $api.removeCls($api.byId('menu'), 'aui-hide');
+            } else {
+                $api.addCls($api.byId('menu'), 'aui-hide');
+            }
+        }
+
+        /*
+         *author:zhaoj
+         *function:判断保存是否显示
+         *date：20160111
+         */
+        function isSaveDisplay(flag) {
+            if (flag) {
+                $api.css($api.byId('save'), 'display:inline;');
+            } else {
+                $api.css($api.byId('save'), 'display:none;');
+            }
+        }
+
+        /*
+         *author:zhaoj
+         *function:点击保存按钮的点击事件
+         *date：20160111
+         */
+        function save() {
+            api.execScript({
+                name : 'xwzxIpad_index_window',
+                frameName : 'xwzxIpad_record_frame',
+                script : 'save()'
+            });
+        }
+
+        /*
+         *作者:wangshuai
+         *功能:开始搜索
+         *日期：20161024
+         */
+        function startSearch(type) {
+            commonSearch(type, function(data) {
+                api.execScript({
+                    name : 'xwzxIpad_index_window',
+                    frameName : 'xwzxIpad_index_frame',
+                    script : 'setKeyword("' + data + '");'
+                });
+            })
+        }
+        
+        function getOrgList(type){
+            bar_items = [];
+              var org_level = parseInt($api.getStorage('org_level'));
+            getSpaceMenu(function(flag,ret){
+                if(flag){
+                    for(var i = 0; i < ret.org_list.length; i++){
+                        if(ret.org_list[i].org_level >= org_level){
+                            var oparam = new Object();
+                            oparam.id = ret.org_list[i].org_id;
+                            oparam.org_id = ret.org_list[i].org_id;
+                            if(ret.org_list[i].flag == 0 && (ret.org_list[i].org_level == 101 || ret.org_list[i].org_level == 102||ret.org_list[i].org_level == 103)){
+                                oparam.title = ret.org_list[i].org_name+'教育局';
+                            }else{
+                                oparam.title = ret.org_list[i].org_name;
+                            }
+                            oparam.org_level = ret.org_list[i].org_level;
+                            bar_items.push(oparam); 
+                        }
+                    }
+                    var _org_name = bar_items[0].title;
+                    var _org_id = bar_items[0].org_id;
+                    var _org_level = bar_items[0].org_level;
+                    if(type==1){  //添加新闻页面保存后刷新列表，需要保持原有的机构刷新
+                        _org_name = $api.getStorage('xwzx_org_name');
+                        _org_id = $api.getStorage('xwzx_org_id');
+                        _org_level = $api.getStorage('xwzx_org_type');
+                    }
+                    bar_items.sort(desc); //降序排序 
+                    commonAddOnceHtml('j_left_tag','div_script',{"list":bar_items});
+                    changeTagItem(_org_name,_org_id,_org_level,1,-1);
+                }
+            });
+        }
+        /*
+        *作者:zhaoj
+        *功能:获取这个人所在的机构
+        *日期：20161121
+        */
+        function getSpaceMenu(callback){
+            api.ajax({
+                url :BASE_URL_ACTION + '/space/common/getSpaceMenu?random_num='+creatRandomNum()+'&person_id='+$api.getStorage("person_id")+'&identity_id='+$api.getStorage("identity"),
+                method : 'get',
+                timeout : 30,
+                dataType : 'json',
+                headers : {
+        'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' +$api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+            }
+            }, function(ret, err) {
+                if (err) {
+                    callback(false,0);
+                } else {
+                    if(ret.success){
+                        callback(true,ret);
+                    }else{
+                        callback(false,0);
+                    }
+                }
+            });
+        }
+        /*
+        *作者:zhaoj
+        *功能:json数据排序
+        *日期：20161121
+        */
+        var colId="org_level"  
+        var desc = function(x,y)  {  
+            return (x[colId] < y[colId]) ? 1 : -1  
+        } 
+        
+        /*
+        *author:zfz
+        *function:切换左侧导航
+        *date：20171013
+        */
+        function changeTagItem(title,org_id,org_level,currentPage,index){
+        	var items = document.getElementsByClassName('tag-item');
+	    	for (var i = 0; i < items.length; i++){
+	    		if (i == index || bar_items[i].title == title){
+	    			$api.css(items[i],'background-color:#003476');
+	    		}else{
+	    			$api.css(items[i],'background-color:#004EA2');
+	    		}
+	    	}
+        
+        	commonCloseFrame('xwzxIpad_content_frame');
+            commonSetWindowName(title);//重新给window页面命名
+            commonExecScript('xwzxIpad_index_window','xwzxIpad_index_frame','getOrgLevel('+org_level+','+org_id+','+currentPage+','+true+',"'+title+'");',1);//切换index列表数据
+            
+            
+        }
+        
+        /*
+        *author:zfz
+        *function:打开详情页面
+        *date：20171013
+        */
+        function openDetailFrame(notice_id){
+            reBackType('content');
+            var header_h = api.pageParam.header_h;//顶部高度
+            var frame_w = Math.floor(api.winWidth*0.4);
+            var frame_x = Math.floor(api.winWidth*0.6);
+            pageParamJson={"header_h":header_h,'x':frame_x,'w':frame_w,"notice_id":notice_id};//打开frame页面json数据
+            //打开frame页面
+            commonOpenFrame("xwzxIpad_content_frame","xwzxIpad_content_frame.html",header_h,false,false,"rgba(0,0,0,0)",pageParamJson);
+            commonExecScript('xwzxIpad_index_window','xwzxIpad_index_frame','isShowBoxShow(1);',1);//显示虚线
+        }
+    </script>
+</html>

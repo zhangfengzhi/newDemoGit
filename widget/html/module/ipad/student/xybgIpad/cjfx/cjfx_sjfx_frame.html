@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <!-- 在IOS设备上，有时会将数字转为手机号，这里也要禁止下 -->
+    <meta name="format-detection" content="telephone=no"/>
+    <title>考试成绩详情页面</title>
+    <link rel="stylesheet" type="text/css" href="../../../../../../css/aui/aui.css" />
+    <link rel="stylesheet" type="text/css" href="../../../../../../css/module/common/cjfxXs.css" />
+    <link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+</head>
+<body class="sjfx-body common-ipad-cjfx" >
+	<ul id="j_sjfx">
+	</ul>
+	<script type="text/html" id="sjfx_script">
+		<%if(data.length == 0){%>
+			<div class="no-data bg6">暂无试题</div>
+		<%}else{%>
+			<%for(var i=0; i<data.length; i++) {%>
+				<li>
+					<div class="top clearfix">
+						<span class="<%if(data[i].score*1 == data[i].totalScore){%>mf<%}else if(data[i].score*1 == 0){%>lf<%}else{%>bd<%}%>">第<%=data[i].questionName%>题(<%=data[i].score*1%>分/<%=data[i].totalScore*1%>分)</span>
+						<span onclick="openStfxWin(<%=i%>)">查看解析</span>
+					</div>
+					<span>班均分：<%=data[i].classAvg%>分</span>
+					<span>校均分：<%=data[i].schoolAvg%>分</span>
+					<span>难&nbsp;&nbsp;&nbsp;&nbsp;度：<%=data[i].difficulty%></span>
+					<%if(data[i].ability){%>
+						<span>考察能力：<%=data[i].ability%></span>
+					<%}%>
+					<%if(data[i].knowledgePoint){%>
+						<div class="zsd">知识点：<%=data[i].knowledgePoint%></div>
+					<%}%>
+					
+				</li>
+			<%}%>
+		<%}%>
+	</script>
+</body>
+<script type="text/javascript" src="../../../../../../script/api.js"></script>
+<script type="text/javascript" src="../../../../../../script/base_config.js" ></script>  
+<script type="text/javascript" src="../../../../../../script/plug-in/template.js" ></script>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 
+<script type="text/javascript" src="../../../../../../script/common/common.js" ></script>
+<script type="text/javascript" src="../../../../../../script/module/common/cjfxXs.js"></script>
+<script type="text/javascript">
+	var subjectId;//学科id
+	var testId;//考试id
+	var student_id;//学生id
+    apiready = function(){
+        commonSetTheme({"level":6,"type":0});
+    	subjectId = api.pageParam.subjectId;
+    	testId = api.pageParam.testId;
+    	student_id = student_id_mr;
+    	showSelfProgress('加载中...');
+     	getPaperAnalysisInfo(function(data){
+     		api.hideProgress();
+     		for(var i = 0; i < data.data.length; i++){
+	    		data.data[i].classAvg = data.data[i].classAvg*1;
+	    		data.data[i].classAvg = data.data[i].classAvg.toFixed(2);
+	    		data.data[i].schoolAvg = data.data[i].schoolAvg*1;
+	    		data.data[i].schoolAvg = data.data[i].schoolAvg.toFixed(2);
+	    		if(data.data[i].difficulty == "中"){
+	    			data.data[i].difficulty = "中等题";
+	    		}
+	    		if(data.data[i].difficulty == "易"){
+	    			data.data[i].difficulty = "简单题";
+	    		}
+	    		if(data.data[i].difficulty == "难"){
+	    			data.data[i].difficulty = "难题";
+	    		}
+    		}
+    		commonAddOnceHtml('j_sjfx','sjfx_script',data);
+     	});
+    };
+	/*
+    *author:zhaoj
+    *function:打开试题分析window页面
+    *date：20170418
+    */
+    function openStfxWin(questionName){
+    	commonOpenWin('cjfx_stfx_window', 'cjfx_stfx_window.html', false, false, {'header_h':api.pageParam.header_h,"subjectId":subjectId,"questionName":questionName,"testId":api.pageParam.testId})
+    }
+</script>
+</html>

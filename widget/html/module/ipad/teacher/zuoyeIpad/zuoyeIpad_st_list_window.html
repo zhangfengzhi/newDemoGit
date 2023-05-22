@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<!-- html5：在创建html时为了防止页面缩放等不兼容效果，要创建个viewport  -->
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<!-- 在IOS设备上，有时会将数字转为手机号，这里也要禁止下 -->
+		<meta name="format-detection" content="telephone=no"/>
+		<title>检测详情页面</title>
+		<link rel="stylesheet" type="text/css" href="../../../../../css/aui/aui.css" />
+		<link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+		<style>
+			.history-date {
+				font-size: 12px;
+			}
+			#message-content {
+				overflow-y: auto;
+				display: none;
+			}
+			
+			
+			.t_display_n {
+				display: none;
+			}
+			.t_display_b {
+				display: block;
+			}
+			.zw-content{position:relative;height:180px;}
+		    .zw-detail{position:absolute;left:50%;top:20px;width:100px;height:100px;border-radius:60px;border:2px solid #ffffff;margin-left:-50px;text-align:center;}
+		    .stu-person-name{position:absolute;color:#ffffff;text-align:center;top:137px;width:100%;font-size:22px;}
+		    .zw-detail img{width:96px;height:96px;border-radius:48px;width:100%;}
+		    .footer-div{position:fixed;height:55px;background:#F6F6F6;display: block;bottom: 0px;width:100%;border-top:1px solid #E2E2E2;font-size:14px;z-index: 999999;}
+			.footer-div .wid{width:92%;line-height:36px;text-align:center;color:#ffffff;margin-top:9px;border-radius:2px;margin-left:4%;}
+		</style>
+	</head>
+	<body class="common-ipad-zuoyeIpad-tea">
+		<div id="wrap">
+			<header class="aui-bar aui-bar-nav aui-bar-primary" id="aui-header">
+				<div id="cloud" class="topbar activebar">
+					<div id="back" class="back" onclick="back();" tapmode="">
+						<i class="aui-iconfont aui-icon-left"></i>返回
+					</div>
+					<div  class="mTitle" id="mTitle">
+						检测详情
+					</div>
+					<div class="win-menu">
+					
+					</div>
+				</div>
+			</header>
+			<div class="zw-content">
+				<div class="zw-detail">
+					<img id="head_img" src="" onerror="this.src='../../../../../image/common/header.png'" />
+				</div>
+				<div id="person_name" class="stu-person-name eclipse"></div>
+			</div>
+			<div class="footer-div">
+			 	<div class="wid" onclick="openWriteWin(2,1);">逐题查看</div>
+			</div>
+			<div  class="aui-content aui-content-padded" id="message-content">
+				<p class="aui-text-center history-date"></p>
+			</div>
+		</div>
+	</body>
+	<script type="text/javascript" src="../../../../../script/api.js"></script>
+	<script type="text/javascript" src="../../../../../script/plug-in/base64.js" ></script>
+	<script type="text/javascript" src="../../../../../script/common/jszy_jy_common.js" ></script>
+	<script type="text/javascript" src="../../../../../script/common/common.js" ></script>
+	<script type="text/javascript">
+		var header_h;//定位header位置，留出上面电池等空隙，苹果需要
+		var zy_id;
+		var student_id;
+		apiready = function() {
+			commonSetTheme({"level":5,"type":0});
+			header_h = api.pageParam.header_h;
+			zy_id = api.pageParam.zy_id;
+			student_id = api.pageParam.student_id;
+			openStListFrame();
+			$api.text($api.byId('mTitle'), Base64.decode(api.pageParam.zy_name_base64));
+			$api.text($api.byId('person_name'), api.pageParam.student_name);
+			$api.attr($api.byId('head_img'), 'src',api.pageParam.head_img);
+			//安卓关闭
+			if (api.systemType == 'android') {
+				backForAndroid();
+			}
+			//定位header位置，留出上面电池等空隙，苹果需要
+			var header = $api.byId('aui-header');
+			$api.fixStatusBar(header);
+		};
+
+		/*
+		*author:zhaoj
+		*function:打开检测试题的frame
+		*date：20160914
+		*/
+		function openStListFrame(){
+			api.openFrame({
+				name : 'zuoyeIpad_st_list_frame',
+				scrollToTop : true,
+				allowEdit : false,
+				url : 'zuoyeIpad_st_list_frame.html',
+				rect : {
+					x : 0,
+					y : header_h+182,
+					w : 'auto',
+					h : api.winHeight - header_h-182-55,
+				},
+				pageParam : {
+					header_h : header_h,
+					zy_name_base64 : api.pageParam.zy_name_base64,
+					zy_id : zy_id,
+					student_id: student_id
+				},
+				vScrollBarEnabled : true,
+				hScrollBarEnabled : true,
+				//页面是否弹动 为了下拉刷新使用
+				bounces : false
+			});
+		}
+		/*
+		*author:zhaoj
+		*function:返回页面
+		*date：20160307
+		*/
+		function back() {
+			api.closeWin();
+		}
+
+		/**
+		 * 安卓点击返回的时候
+		 * 周枫
+		 * 2015.10.14
+		 */
+		function backForAndroid() {
+			api.addEventListener({
+				name : "keyback"
+			}, function(ret, err) {
+				back();
+			});
+		}
+
+	</script>
+</html>

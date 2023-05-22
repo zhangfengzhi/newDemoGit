@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>学生考勤统计frame页</title>
+    <link rel="stylesheet" type="text/css" href="../../../../../css/aui/aui.css"/>
+    <link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+    <style>
+    	body{background:#F2F2F2;}
+    	.time-content,.time-contents{height: 54px;line-height: 44px;padding: 5px 15px 0 15px;background: #ffffff;border-bottom:1px solid #E5E5E5;color:#595758;}
+    	.time-contents{position:relative;padding-left:50px;}
+		.time-content div {display: inline-block;float: right;color: #666666;}
+		.content-detail{margin-top:10px;border-top:1px solid #E5E5E5;}
+		.zhankai{float:right;right:0;background:url(../../../../../image/fun-module/iphone/morea.png) 45px 18px  no-repeat;background-size:auto 5px;padding-right:20px;}
+		.header-pic{width:40px;height:40px;position:absolute;left:8px;border-radius:50%;}
+		.names{width:100%;color:#666666;float:left;font-size:14px;line-height:25px;}
+		.class-number{font-size:14px;color:#666666;line-height:25px;}
+		.shouqi{float:right;right:0;background:url(../../../../../image/fun-module/iphone/less.png) 45px 18px  no-repeat;background-size:auto 5px;padding-right:20px;}
+		.no-data{height:54px;background:#FFFFFF;border-bottom:1px solid #E5E5E5;font-size:16px;}
+    </style>
+</head>
+<body>
+	<div class="time-content" onclick="chooseData()">
+		选择日期 <div id="select_time"></div>
+	</div>
+	<div class="content-detail">
+		<div class="time-content"onclick="getNRXQ(1)"> 
+			请假<div class="zhankai" id="1" ><span id="work_off_count" style="width:20px;display: inline-block">0</span>人</div>
+		</div>
+		<div class="aui-hide" id="1-person" ></div>
+			<script type="text/html" id="1_id">
+				<%if(list.length == 0){%>
+						<div class="no-data">暂无学生</div>
+				<%}else{%>
+					<%for(var i=0;i<list.length;i++){%>
+						<div class="time-contents ">
+						<img onerror="this.src='../../../../../image/common/header.png'" src="<%=list[i].avatar_fileid%>" alt=""  class="header-pic">
+						<div class="names"><%=list[i].d_person_name%></div>			
+						<div class="class-number">请假课节：第&nbsp;<%=list[i].lesson_nums%>&nbsp;节课</div>
+						</div>
+					<%}%>
+				<%}%>
+			</script>
+						
+		<div class="time-content"onclick="getNRXQ(2)"> 
+			迟到<div class="zhankai" id="2" ><span id="late_count" style="width:20px;display: inline-block">0</span>人</div>
+		</div>
+		<div class="aui-hide" id="2-person" ></div>
+			<script type="text/html" id="2_id">
+				<%if(list.length == 0){%>
+						<div class="no-data">暂无学生</div>
+				<%}else{%>
+					<%for(var i=0;i<list.length;i++){%>
+						<div class="time-contents ">
+						<img onerror="this.src='../../../../../image/common/header.png'" src="<%=list[i].avatar_fileid%>" alt=""  class="header-pic">
+						<div class="names"><%=list[i].d_person_name%></div>			
+						<div class="class-number">迟到课节：第&nbsp;<%=list[i].lesson_nums%>&nbsp;节课</div>
+						</div>
+					<%}%>	
+				<%}%>		
+			</script>	
+		<div class="time-content"onclick="getNRXQ(3)">
+			旷课<div class="zhankai" id="3" ><span id="kuangke_num" style="width:20px;display: inline-block">0</span>人</div>
+		</div>
+		<div class="aui-hide" id="3-person" >
+		</div>
+			<script type="text/html" id="3_id">
+				<%if(list.length == 0){%>
+						<div class="no-data">暂无学生</div>
+				<%}else{%>
+					<%for(var i=0;i<list.length;i++){%>
+						<div class="time-contents ">
+						<img onerror="this.src='../../../../../image/common/header.png'" src="<%=list[i].avatar_fileid%>" alt=""  class="header-pic">
+						<div class="names"><%=list[i].d_person_name%></div>			
+						<div class="class-number">旷课课节：第&nbsp;<%=list[i].lesson_nums%>&nbsp;节课</div>
+						</div>
+					<%}%>
+				<%}%>
+			</script>
+	
+</body>
+<script type="text/javascript" src="../../../../../script/api.js"></script>
+<script type="text/javascript" src="../../../../../script/base_config.js" ></script>
+<script type="text/javascript" src="../../../../../script/assembly/log-current-time.js"></script>
+<script type="text/javascript" src="../../../../../script/common/common.js"></script>
+<script type="text/javascript" src="../../../../../script/plug-in/template.js" ></script>
+<script type="text/javascript">
+	var frameNameLog = 'xskq_tj_frame';////打开插件的frame
+	var winNameLog = 'xskq_tj_window';//打开插件的window
+	var currentPage = 1;//当前页
+	var daily_time = '';//当前时间
+	var index_id = -1;//当前展开类型
+	apiready = function(){
+		commonSetTheme({"level":5,"type":0});
+		daily_time = api.pageParam.daily_time;
+		//获取时间
+		setCurrentTime();
+		judgeMonth = 1;
+		timeParam = todayTime();
+		getTjXq();
+	};
+
+	/*
+	 *author:ws
+	 *function:打开日期选项
+	 *date：20170222
+	 */
+	function chooseData() {
+		var time = $api.text($api.byId('select_time'));
+		api.openPicker({
+	        type: 'date',
+			date: time,
+	        title:'选择日期'
+	    },function(ret,err){
+			if(err){
+				popToast('网络繁忙，请稍候重试');
+			}else if(ret){
+				var year = ret.year;
+		        var month = ret.month;
+				month = month > 9 ? month : '0'+month;
+		        var day = ret.day;
+				day = day > 9 ? day : '0'+day;
+		        //这是选择的是日期
+				var value=year+'-'+month+'-'+day;
+				setTime(value);
+			}
+	    });
+
+	}
+	/*
+	 *author:zhaoj
+	 *function:获取时间(设置时间格式2017年3月)
+	 *date：20160803
+	 */
+	function setTimeValue(year, month) {
+		var Month = month > 9 ? month : '0' + month;
+		var setDateValue = year + '年' + Month + '月';
+		var today = document.getElementById('select_time');
+		yearValue = year;
+		monthValue = Month;
+		judgeMonth = 2;
+		timeParam = Month;
+		$api.html(today, setDateValue);
+	}
+	/*
+	 *author:ws
+	 *function:设置时间格式2017-03-07
+	 *date：20170315
+	 */
+	function setTime(time) {
+		for(var i=1;i<=3;i++){
+			if(!$api.hasCls($api.byId(i+'-person'),'aui-hide')){
+				commonAddOrRemoveHideCss(i+'-person',0);
+			}
+		}
+		var current = document.getElementById('select_time');
+		timeParam = time;
+		judgeMonth = 1;
+		$api.text(current, time);
+		daily_time = time;
+    	getTjXq();
+    	showOrHide(1,0);
+    	showOrHide(2,0);
+    	showOrHide(3,0);
+	}
+	/*
+	 *author:ws
+	 *function:事件返回window页
+	 *date：20170318
+	 */
+	function getLogData(type, time, year) {
+		for(var i=1;i<=3;i++){
+			if(!$api.hasCls($api.byId(i+'-person'),'aui-hide')){			
+				commonAddOrRemoveHideCss(i+'-person',0);				
+			}
+			
+		}
+		timeParam = time;
+		judgeMonth = type;
+		yearDay = year;
+		daily_time = time;
+    	getTjXq();
+	}
+	/*
+	 * 功能：收起或展开
+	 * 作者：cui
+	 * 时间：20180316
+	 */
+	function showOrHide(id,type){
+		index_id = id;
+		if($api.hasCls($api.byId(id),'zhankai') && type == 1){
+			$api.removeCls($api.byId(id), 'zhankai');
+			$api.addCls($api.byId(id), 'shouqi');
+			commonAddOrRemoveHideCss(id+'-person',1);
+		}else{
+			$api.removeCls($api.byId(id), 'shouqi');
+			$api.addCls($api.byId(id),'zhankai');
+			commonAddOrRemoveHideCss(id+'-person',0);
+		}
+		
+	}
+	/*
+	 *author:cui
+	 *function:获取请假、旷课、迟到总数
+	 *date：20170222
+	 */
+	function getTjXq(){
+		console.log( BASE_URL_ACTION + '/space/daily_time/get_daily_time_statistics?class_id='+ api.pageParam.class_id+'&class_type='+api.pageParam.class_type+'&status='+-1+'&lesson_num='+-1+'&query_type='+2+'&start_time='+daily_time+'&end_time='+daily_time)
+		api.ajax({			
+            url : BASE_URL_ACTION + '/space/daily_time/get_daily_time_statistics?class_id='+ api.pageParam.class_id+'&class_type='+api.pageParam.class_type+'&status='+-1+'&lesson_num='+-1+'&query_type='+2+'&start_time='+daily_time+'&end_time='+daily_time,
+            method : 'get',
+            dataType : 'json',
+            timeout : 30,
+            headers : {
+	'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+}
+        }, function(ret, err) {
+            if (err) {
+              popToast('对不起，获取考勤信息失败');
+            } else {
+               if(ret.success){
+					$api.html($api.byId('work_off_count'), ret.list[1].count);
+            		$api.html($api.byId('late_count'), ret.list[2].count);
+            		$api.html($api.byId('kuangke_num'), ret.list[3].count);
+               }
+            }
+        });
+	}
+	/*
+	 *author:cui
+	 *function:获取请假、旷课、迟到人员详情
+	 *date：20170222
+	 */
+	function getNRXQ(status){
+	console.log(BASE_URL_ACTION + '/space/daily_time/get_student_list_by_daily_time_status?daily_time='+daily_time+'&class_id='+ api.pageParam.class_id+'&status='+status+'&class_type='+api.pageParam.class_type+'&query_type='+2)
+		api.ajax({			
+	            url : BASE_URL_ACTION + '/space/daily_time/get_student_list_by_daily_time_status?daily_time='+daily_time+'&class_id='+ api.pageParam.class_id+'&status='+status+'&class_type='+api.pageParam.class_type+'&query_type='+2,
+	            method : 'get',
+	            dataType : 'json',
+	            timeout:30,
+	            headers : {
+	'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+}
+	        }, function(ret, err) {	   	      
+	            if (err) {
+	              popToast('对不起，获取考勤信息失败');
+	            } else {
+	               if(ret.success){
+	               		for(var i=0;i<ret.list.length;i++){
+            				if(BASE_APP_TYPE == 1){           			
+									ret.list[i].avatar_fileid = BASE_IMAGE_PRE + url_path_suffix + ret.list[i].avatar_fileid.substring(0, 2) + "/" +ret.list[i].avatar_fileid + commonReturnPhotoCutSize(1,96,96,ret.list[i].avatar_fileid.substring((ret.list[i].avatar_fileid.length)-3),0);
+								}else{							
+									ret.list[i].avatar_fileid = BASE_URL_ACTION + BASE_IMAGE_BEGIN + ret.list[i].avatar_fileid.substring(0, 2) + "/" + ret.list[i].avatar_fileid + commonReturnPhotoCutSize(1,96,96,ret.list[i].avatar_fileid.substring((ret.list[i].avatar_fileid.length)-3),0);
+								}
+            			}  
+            			commonAddOnceHtml(status+'-person',status+'_id', ret);
+	               		showOrHide(status,1);
+	               }else{
+	               		popToast('对不起，获取考勤信息失败');
+	               }
+	            }
+	        });
+	}
+</script>
+</html>

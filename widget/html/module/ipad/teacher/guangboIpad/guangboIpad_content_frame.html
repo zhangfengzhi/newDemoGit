@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<!-- 在IOS设备上，有时会将数字转为手机号，这里也要禁止下 -->
+		<meta name="format-detection" content="telephone=no"/>
+		<title>广播内容页面</title>
+		<link rel="stylesheet" type="text/css" href="../../../css/aui/aui.css" />
+		<link rel="stylesheet" type="text/css" href="../../../css/ipad/left-right-layout.css"/>
+		<style>
+			.right-layout-body .person-info .headset{width:45px;}
+	    	.right-layout-body .person-info .headset div{background-size:30px auto;height:30px;margin-top:0;}
+	    	.right-layout-body .person-info{padding:20px 145px 10px 92px;}
+    		.right-layout-body .person-info .header-img{width:58px;height:58px;border-radius: 5px;}
+	    	.right-layout-body .person-info .bofang div{background:url(../../../image/fun-module/common/xygb-icon.png) 10px 5px no-repeat;background-size: 23px auto;}
+	    	.right-layout-body .person-info .zanting div{background:url(../../../image/fun-module/common/xygb-icon.png) 10px -50px no-repeat;background-size: 23px auto;}
+	    	.right-layout-body .person-info .tingzhi div{background:url(../../../image/fun-module/common/xygb-icon.png) 10px -23px no-repeat;background-size: 23px auto;}
+	    	@media screen and (max-width: 464px) {
+	    		.right-layout-body .person-info{padding:20px 75px 10px 100px;}
+	    	}
+		</style>
+	</head>
+	<body class="right-layout-body">
+		<div class="top">
+			<div class="name">详情</div>
+			<div class="close" onclick="closeFrame();">关闭</div>
+		</div>
+		<div id="gbinfo_div"></div> 
+		<script type="text/html" id="gbinfo_script">
+			<div class="person-info">
+				<img class="header-img" onerror="this.src='../../../image/common/header.png'" src="../../../image/fun-module/common/xwzx-person.png" />
+				<div class="person-name ellipsis"><%=announcer %></div>
+				<div class="time"><%=create_time.substring(0,10) %></div>
+				<div class="top-opt">
+					<div class="headset fr bofang" onclick='netAudioPlay();'>
+						<div>&nbsp;</div>
+		           		播放
+					</div>
+					<div class="headset fr zanting" onclick='pause();'>
+						<div>&nbsp;</div>
+						暂停
+					</div>
+					<div class="headset fr tingzhi" onclick='stop();'>
+						<div>&nbsp;</div>
+						停止
+					</div>
+				</div>
+			</div>
+			<div class="detail-title word-wrap"><%=title %></div>
+			<div class="detail-content word-wrap">
+				<%=#description %>
+				<img class="ima_notice" onclick="openPicture(this);" src="<%=gb_img %>" onerror="this.src='../../../image/common/tpsx.png'" />
+			</div>
+		</script>
+	</body>
+	<script type="text/javascript" src="../../../script/api.js"></script>
+	<script type="text/javascript" src="../../../script/base_config.js" ></script>
+	<script type="text/javascript" src="../../../script/plug-in/template.js" ></script>
+	<script type="text/javascript" src="../../../script/plug-in/base64.js" ></script>
+	<script type="text/javascript" src="../../../script/common/common.js" ></script>
+	<script type="text/javascript" src="../../../script/netAudio.js" ></script>
+	<script type="text/javascript" src="../../../script/plug-in/photoBrowser.js"></script>
+	<script type="text/javascript">
+		var header_h;
+		var BASE_URL_ACTION;
+		var gb_id;//广播id
+		var gb_audio = '';
+		//播放录音对象
+		var first_pause = 0;
+		var type = true;//第一次点击播放时，显示加载提示框
+		var image_array=[];//所有图片路径
+		apiready = function() {
+			header_h = api.pageParam.header_h;
+			gb_id = api.pageParam.gb_id;
+			BASE_URL_ACTION = $api.getStorage('BASE_URL_ACTION');
+			VerificationNetwork();
+		};
+		/*
+		*作者:zhaoj
+		*功能:加载广播内容
+		*日期：20161020
+		*/
+		function loadGbInfo(gb_id) {
+			showSelfProgress('加载中...');
+			api.ajax({
+				url : BASE_URL_ACTION + '/space/broadcast/get_broadcastinfo_byid?id=' + gb_id,
+				method : 'get',
+				timeout : 30,
+				dataType : 'json'
+			}, function(ret, err) {
+				api.hideProgress();
+				if (err) {
+					popToast('广播内容获取失败，请稍候重试');
+				} else {
+					if (ret.success) {
+						//处理图片路径
+						var BASE_APP_TYPE = $api.getStorage('BASE_APP_TYPE');
+						var gb_img_id = ret.p_file_id;
+						var gb_img_con = gb_img_id.lastIndexOf(".");
+						var gb_img_ext = gb_img_id.substring(gb_img_con);
+						var bg_img_h = api.winWidth;
+						var gb_img = '';
+						if (BASE_APP_TYPE == 1) {
+							gb_img = BASE_IMAGE_PRE + BASE_MATERIAL_BEGIN + gb_img_id.substring(0, 2) + "/" + gb_img_id;
+						} else {
+							gb_img = BASE_URL_ACTION + BASE_IMAGE_BEGIN + gb_img_id.substring(0, 2) + "/" + gb_img_id;
+						}
+						ret["gb_img"] = gb_img;
+			  			image_array.push(gb_img);
+						//处理语音路径
+						var gb_audio_id = ret.r_file_id;
+						var gb_audio_con = gb_audio_id.lastIndexOf(".");
+						if (BASE_APP_TYPE == 1) {
+							//						a_avatar_url = BASE_IMAGE_PRE+"down/Material/" + a_id.substring(0, 2) + "/" + a_id + '.' + a_ext + "@96w_96h_100Q_1x." + a_ext;
+							gb_audio = BASE_IMAGE_PRE + BASE_MATERIAL_BEGIN + gb_audio_id.substring(0, 2) + "/" + gb_audio_id;
+						} else {
+							gb_audio = BASE_URL_ACTION + BASE_IMAGE_BEGIN + gb_audio_id.substring(0, 2) + "/" + gb_audio_id;
+						}
+						//downAudio(gb_audio,gb_audio_id,ret);
+						var html_type = template.render('gbinfo_script', ret);
+						document.getElementById('gbinfo_div').innerHTML = html_type;
+					} else {
+	                    popToast('广播内容获取失败，请稍候重试');
+					}
+				}
+			});
+		}
+		/*
+		*作者:zhaoj
+		*功能:验证网络
+		*日期：20161020
+		*/
+		function VerificationNetwork(){
+			isOnLineStatus(function(is_true, line_type) {
+				if (is_true) {
+					if (line_type == 'wifi') {
+							loadGbInfo(gb_id);
+					} else {
+						api.confirm({
+							title : "提示",
+							msg : "您当前正在使用" + line_type + "网络，建议您在wifi网络下使用，是否继续？",
+							buttons : ["继续", "取消"]
+						}, function(ret, err) {
+							var sourceType;
+							if (1 == ret.buttonIndex) {
+								loadGbInfo(gb_id);
+							} else {
+								return;
+							}
+						});
+					}
+				} else {
+					api.toast({
+						msg : '请连接网络后使用当前功能~'
+					});
+				}
+			});
+		}
+		/*
+		*作者:zhaoj
+		*功能:播放音频
+		*日期：20170609
+		*/
+		function netAudioPlay(){
+			if(type){showSelfProgress('加载中...')};
+			netAudio.open(gb_audio,function(flag,ret){
+				if(flag){
+					if(ret.current == 1){
+						api.hideProgress();
+					}else if(ret.complete){
+						popToast('播放结束');
+						commonCloseFrame('guangboIpad_content_frame');
+					}
+					first_pause = 1;
+				}else{
+					popToast('播放失败，请稍候重试');
+				}
+			});
+		}
+		/*
+		*作者:zhaoj
+		*功能:暂停播放
+		*日期：20170609
+		*/
+		function pause(){
+			if(first_pause == 0){
+				
+			}else{
+				type = false;
+				popToast('播放暂停');
+				netAudio.pause();
+			}
+		}
+		/*
+		*作者:zhaoj
+		*功能:停止播放
+		*日期：20170609
+		*/
+		function stop(){
+			popToast('播放停止');
+			netAudio.stop();
+		}
+		/*
+		*function:关闭页面
+		*author:zfz
+		*date：20170919
+		*/
+		function closeFrame(){
+			commonExecScript('guangboIpad_index_window','','back();',0);
+		}
+		
+		/*
+		*author:zhaoj
+		*function:打开图片预览
+		*date：20171026
+		*/
+		function openPicture(e){
+			//图片
+			var res_url=$api.attr(e, 'src');
+			//打开图片
+			var index = 0;
+			for(var i = 0; i <image_array.length;i++){
+				if(image_array[i] == res_url){
+					index = i;
+				}
+			}
+			photoBrowser.open(image_array, index);
+		}
+	</script>
+</html>

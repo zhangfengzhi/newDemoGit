@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>课件</title>
+    <link rel="stylesheet" type="text/css" href="../../../../../css/aui/aui.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../../../css/module/ipad/popup-body.css"/>
+    <link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+    <style>
+    	.popup-body-new	.commont-content{width:620px;height:210px;margin-top:-105px;}
+    	.content{padding: 20px;}
+    	.version,.book{width:47%;position:relative;padding-left:55px;}
+    	.version span,.book span{position:absolute;display:inline-block;line-height:45px;left:0;} 
+    	select{margin-bottom:0;background:rgba(0,0,0,0);position: relative;z-index: 99;}
+    	.version select,.book select{height:45px;}
+    	.drop-down{position:absolute;width:25px;height:43px;top:1px;right:1px;z-index:9;}
+    	.drop-down .triangle-down{position:absolute;top:19px;right:5px;display:inline-block;width: 0; height: 0;border-right: 6px solid transparent;border-top: 6px solid #fff;border-left: 6px solid transparent;z-index:9;}
+    </style>
+</head>
+<body class="popup-body-new common-ipad-daoxueNewstu">
+	<div class="commont-content">
+		<div class="top fl">
+			<div class="name">切换教材版本</div>
+			<div class="close fr" onclick="closeFrame();"></div>
+		</div>
+		<div class="content">
+			<div class="version fl">
+				<span>版本</span>
+				<select id="version_body" onchange="changeForm(this.value,this.id,1)">
+				</select>
+				<script type="text/html" id="version_script">
+					<%for(var i=0; i<version_list.length; i++) {%>
+						<%if(version_list[i].is_select){%>
+							<option  value = "<%=version_list[i].version_name%>" id="<%=version_list[i].version_id%>" selected = "selected" ><%=version_list[i].version_name%></option >
+						<%}else{%>
+							<option  value = "<%=version_list[i].version_name%>" id="<%=version_list[i].version_id%>"><%=version_list[i].version_name%></option >
+						<%}%>
+					<%}%>
+				</script>
+				<div class="drop-down">
+					<div class="triangle-down">&nbsp;</div>
+				</div>
+			</div>
+			<div class="book fr pl20">
+				<span>教材</span>
+				<select id="volume_body" onchange="changeForm(this.value,this.id,0)">
+				</select>
+				<script type="text/html" id="volume_script">
+					<%for(var i=0; i<volume_list.length; i++) {%>
+						<%if(volume_list[i].is_select){%>
+							<option  value = "<%=volume_list[i].structure_name%>" id="<%=volume_list[i].structure_id%>"  selected = "selected" ><%=volume_list[i].structure_name%></option >
+						<%}else{%>
+							<option  value = "<%=volume_list[i].structure_name%>" id="<%=volume_list[i].structure_id%>"><%=volume_list[i].structure_name%></option >
+						<%}%>
+					<%}%>
+				</script>
+				<div class="drop-down">
+					<div class="triangle-down">&nbsp;</div>
+				</div>
+			</div>
+		</div>
+		<div class="btn" onclick="setVersionTextbook();">确定</div>
+	</div>
+</body>
+<script type="text/javascript" src="../../../../../script/api.js"></script>
+<script type="text/javascript" src="../../../../../script/base_config.js" ></script>
+<script type="text/javascript" src="../../../../../script/common/common.js"></script>
+<script type="text/javascript" src="../../../../../script/plug-in/template.js" ></script>
+<script type="text/javascript">
+	var common_param;//缓存中的数据
+	apiready = function(){
+		commonSetTheme({"level":5,"type":0});
+		common_param = $api.strToJson(api.pageParam.common_param);
+		getStandardSchemeBySubject();
+	};
+	/*
+	*author:zhaoj
+	*function:关闭页面
+	*date：20170912
+	*/
+	function closeFrame(){
+		commonExecScript('daoxueNew_index_window','','back();',0);
+	}
+	/*
+	* 获取版本
+	* 赵静
+	* 20170918
+	*/
+	function getStandardSchemeBySubject(){
+		api.ajax({
+			url : BASE_URL_ACTION + '/ypt/schemeCtl/getStandardSchemeBySubject',
+			method : 'get',
+			timeout : 30,
+			dataType : 'json',
+			returnAll : false,
+			data : {
+				values : {
+					"random_num" : creatRandomNum(),
+					"subject_id" : common_param.subject_id
+				}
+			},
+			headers : {
+'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+}
+				}, function(ret, err) {
+					if (err) {
+						api.hideProgress();
+						popToast('获取版本失败，请稍候重试');
+				} else {
+					if(ret.success){
+						if(ret.version_list.length > 0){
+							for(var i = 0; i < ret.version_list.length; i++){
+								if(ret.version_list[i].version_id == common_param.version_id){
+									ret.version_list[i].is_select = 1;
+								}else{
+									ret.version_list[i].is_select = 0;
+								}
+							}
+							commonAddOnceHtml('version_body','version_script',ret);
+							getVolumeByScheme(0);
+						}
+					}else{
+						api.hideProgress();
+						popToast('获取版本失败，请稍候重试');
+					}
+				}
+		});
+	} 
+	/*
+	* 获取教材
+	* 赵静
+	* 20170918
+	*/
+	function getVolumeByScheme(type){
+		api.ajax({
+			url : BASE_URL_ACTION + '/ypt/bkCtl/getVolumeByScheme',
+			method : 'get',
+			timeout : 30,
+			dataType : 'json',
+			returnAll : false,
+			data : {
+				values : {
+					"random_num" : creatRandomNum(),
+					"scheme_id" : common_param.version_id
+				}
+			},
+			headers : {
+'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+}
+				}, function(ret, err) {
+				if (err) {	
+						api.hideProgress();
+						popToast('获取教材失败，请稍候重试');
+				} else {
+					if(ret.success){
+						if(ret.volume_list.length > 0){
+							for(var i = 0; i < ret.volume_list.length; i++){
+								if(type == 1){
+									common_param.structure_id =  ret.volume_list[0].structure_id;
+									common_param.structure_name =  ret.volume_list[0].structure_name;
+								}
+								if(ret.volume_list[i].structure_id == common_param.structure_id){
+									ret.volume_list[i].is_select = 1;
+								}else{
+									ret.volume_list[i].is_select = 0;
+								}
+								
+							}
+							commonAddOnceHtml('volume_body','volume_script',ret);
+							//initData(1);
+						}
+					}else{
+						api.hideProgress();
+						popToast('获取教材失败，请稍候重试');
+					}
+				}
+		});
+	}
+	/*
+	*author:zhaoj
+	*function:设置教材版本
+	*date：20170918
+	*/
+    function setVersionTextbook(){    	commonExecScript('daoxueNew_index_window','daoxueNew_index_frame','setVersionTextbook("'+common_param.version_id+'","'+common_param.version_name+'","'+common_param.structure_id+'","'+common_param.structure_name+'",1);',1);
+    }
+    /*
+	*author:zhaoj
+	*function:切换版本
+	*date：20170918
+	*/
+    function changeForm(value,id,type){
+    	if(type == 1){
+	    	var option_array_v = $api.domAll($api.byId('version_body'), 'option');
+	    	for(var i = 0; i < option_array_v.length; i++){
+	    		if($api.attr(option_array_v[i], 'value') == value){
+	    			common_param.version_id = $api.attr(option_array_v[i], 'id');
+	    			common_param.version_name = $api.attr(option_array_v[i], 'value');
+	    		}
+	    	}
+	    	getVolumeByScheme(1);
+	    }else{
+	    	var option_array_volume = $api.domAll($api.byId('volume_body'), 'option');
+	    	for(var i = 0; i < option_array_volume.length; i++){
+	    		if($api.attr(option_array_volume[i], 'value') == value){
+	    			common_param.structure_id = $api.attr(option_array_volume[i], 'id');
+	    			common_param.structure_name = $api.attr(option_array_volume[i], 'value');
+	    		}
+	    	}
+	    }
+    }
+</script>
+</html>

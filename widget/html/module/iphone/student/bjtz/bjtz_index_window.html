@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<!-- html5：在创建html时为了防止页面缩放等不兼容效果，要创建个viewport  -->
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<!-- 在IOS设备上，有时会将数字转为手机号，这里也要禁止下 -->
+		<meta name="format-detection" content="telephone=no"/>
+		<title>班级通知</title>
+		<link rel="stylesheet" type="text/css" href="../../../../../css/aui/aui.css" />
+		<link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+		<style>
+			.history-date {
+				font-size: 12px;
+			}
+			#message-content {
+				overflow-y: auto;
+				display: none;
+			}
+			#wrap {
+				height: 100%;
+				display: -webkit-box;
+				display: -webkit-flex;
+				display: flex;
+				-webkit-box-orient: vertical;
+				-webkit-flex-flow: column;
+				flex-flow: column;
+			}
+			.topbar {
+				height: 45px;
+				/*border-bottom: 1px solid #DDDFE3;*/
+				line-height: 45px;
+				text-align: center;
+				display: none;
+				color: #ffffff;
+				font-size: 18px;
+			}
+			.activebar {
+				display: block;
+			}
+			.mTitle {
+				width: 50%;
+				font-size: 18px;
+				text-align: center;
+				display: inline-block;
+				word-break: keep-all;
+				white-space: nowrap;
+				overflow: hidden;
+				text-overflow: ellipsis;
+			}
+			.save {
+				position: absolute;
+				right: 3px;
+				top: 0;
+				font-size: 16px !important;
+				height: 50px;
+				line-height: 50px;
+			}
+			.img_player_style {
+				width: 20px;
+				height: 20px;
+				vertical-align: middle;
+			}
+		</style>
+	</head>
+	<body class="common-iphone-bjtz">
+		<div id="wrap">
+			<header class="aui-bar aui-bar-nav aui-bar-primary" id="aui-header">
+				<div id="cloud" class="topbar activebar">
+					<div id="back" class="back" onclick="back();" tapmode="">
+						<i class="aui-iconfont aui-icon-left"></i>返回
+					</div>
+					<div class="mTitle" id="mTitle">
+						班级通知
+					</div>
+				</div>
+			</header>
+			<div  class="aui-content aui-content-padded" id="message-content">
+				<p class="aui-text-center history-date"></p>
+			</div>
+		</div>
+	</body>
+	<script type="text/javascript" src="../../../../../script/api.js"></script>
+	<script type="text/javascript" src="../../../../../script/plug-in/base64.js" ></script>
+	<script type="text/javascript" src="../../../../../script/common/common.js" ></script>
+	<script type="text/javascript" src="../../../../../script/assembly/tongjiData.js"></script>
+	<script type="text/javascript" src="../../../../../script/assembly/voicePlayer.js" ></script>
+	<script type="text/javascript">
+		var header_h;//顶部header高度
+		var voice_content;//播放内容
+		var back_type = 'index';//返回参数
+		var voice_type = 2;//朗读页面显示隐藏判断参数，2是打开，1是隐藏
+		var voice_content;//朗读内容
+		apiready = function() {
+			//定位header位置，留出上面电池等空隙，苹果需要
+			commonSetTheme({"level":5,"type":0});
+			commonIosAuiHeader();
+			header_h = api.pageParam.header_h;
+			//打开新闻资讯列表frame
+			openTongzhiListFrame();
+			//安卓关闭
+			commonBackForAndroid();
+			commonOpenTjData($api.getStorage("identity")+'_'+api.winName);
+		};
+		/**
+		 * 打开新闻资讯列表frame
+		 * 周枫
+		 * 2015.11.20
+		 */
+		function openTongzhiListFrame() {
+			reBackType('index');
+			//打开新闻资讯frame页面
+			var pageParamJson={"header_h":header_h};
+			commonOpenFrame('bjtz_index_frame', 'bjtz_index_frame.html',header_h, true, true,"#ffffff",pageParamJson);	
+		}
+
+		/**
+		 * 返回应用页面
+		 * 周枫
+		 * 2015.10.11
+		 */
+		function back() {
+			switch(back_type) {
+				case 'index':
+					commonCloseTjData($api.getStorage("identity")+'_'+api.winName);
+					api.closeWin();
+					reBackType('index');
+					break;
+			}
+		}
+		/**
+		 * 重置从哪个页面退出，是新闻资讯内容页面还是新闻资讯列表页面
+		 * 周枫
+		 * 2015.10.14
+		 */
+		function reBackType(type) {
+			switch(type) {
+				//如果新闻资讯列表页面退出
+				case 'index':
+				    commonSetWindowName("班级通知");
+					back_type = 'index';
+					commonCloseFrame('common_voiceplay_frame');
+					break;
+				//如果新闻资讯内容页面退出
+				case 'content':
+				    commonSetWindowName("班级通知");
+					break;
+			}
+		}
+	</script>
+</html>

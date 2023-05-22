@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+		<title>title</title>
+		<link rel="stylesheet" type="text/css" href="../../css/aui/aui.css" />
+		<link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+		<style>
+			.ellipsis {
+				white-space: nowrap;
+				overflow: hidden;
+				text-overflow: ellipsis;
+			}
+			.shadow {
+				position: absolute;
+				left: 0;
+				top: 0;
+				width: 100%;
+				height: 100%;
+				z-index: -1;
+			}
+			.left-content {
+				position: fixed;
+				left: 0;
+				top: 0;
+				width: 22%;
+				float: left;
+				background: #F2F4F5;
+				height: 100%;
+			}
+			.left-content ul li {
+				height: 49px;
+				line-height: 49px;
+				border-right: 1px solid #E6E8E9;
+				font-size: 13px;
+				text-align: center;
+				color: #B2B3B4;
+			}
+			.left-content ul li.active {
+				background: #ffffff;
+				border-right: 0 !important;
+				border: 1px solid #E6E8E9;
+				color: #FF9304;
+			}
+			.left-content ul li.first {
+				border-top: 0;
+				border-left: 0;
+			}
+			.right-content {
+				width: 78%;
+				float: right;
+				height: 100%;
+				padding: 0 15px;
+			}
+			.right-content ul li {
+				height: 49px;
+				line-height: 49px;
+				border-bottom: 1px solid #ececec;
+				color: #717171;
+				font-size: 13px;
+			}
+			.right-content ul li.active {
+				color: #FF9304 !important;
+			}
+		</style>
+	</head>
+	<body class="tongxunlu-common">
+		<div id="j_shadow" class="shadow" tapmode></div>
+		<div class="left-content">
+			<ul id="j_classification">
+				<li id="j_class" class="first active" onclick="getClassBtn()">
+					类别
+				</li>
+				<li id="j_group" onclick="getGroupBtn()">
+					所在部门
+				</li>
+				<li id="j_people" onclick="getPeopleBtn()">
+					人员
+				</li>
+			</ul>
+		</div>
+		<div class="right-content">
+			<!--类别-->
+			<ul id="class_body">
+				<li class="ellipsis" onclick="getClassData(1,0)">
+					所属机构
+				</li>
+				<li class="ellipsis" onclick="getClassData(2,1)">
+					管理的机构
+				</li>
+				<li class="ellipsis" onclick="getClassData(3,2)">
+					所属群组
+				</li>
+			</ul>
+			<!--部门-->
+			<ul id="group_body"></ul>
+			<script type="text/html" id="group_script">
+				<% if(list.length == 0){ %>
+				<div style="text-align:center;color:#666;"><span>暂无部门</span></div>
+				<% } else { %>
+				<% for(var i=0; i< list.length; i++){%>
+				<li class="ellipsis" onclick="getMemberData(<%=list[i].id%>,<%=i%>)">
+				<%=list[i].name%>
+				</li>
+				<% } %>
+				<% } %>
+			</script>
+			<!--人员-->
+			<ul id="people_body"></ul>
+			<script type="text/html" id="people_script">
+				<% if(table_List.length == 0){ %>
+				<div style="text-align:center;color:#666;"><span>暂无人员</span></div>
+				<% } else { %>
+				<% for(var i=0; i< table_List.length; i++){%>
+				<%if(table_List[i].is_check == 1){%>
+				<li class="ellipsis active">
+				<div style="display:inline-block;width:80%;" class="ellipsis"><%=table_List[i].PERSON_NAME%></div>
+				<input oninput="commonRemoveExpression(this)" name = "select_people" style = "margin-top: 12px;" class="aui-pull-right aui-checkbox aui-checkbox-success" type="checkbox" checked = "true "onclick="selectUpdatePerson(this,<%=i%>,<%=table_List[i].PERSON_ID%>,<%=table_List[i].identity_id%>,<%=table_List[i].bureau_id%>,<%=table_List[i].is_check%>,<%=table_List[i].idForApp%>,<%=table_List[i].memberTypeForApp%>)" />
+				</li>
+				<% }else{ %>
+				<li class="ellipsis">
+				<div style="display:inline-block;width:80%;" class="ellipsis"><%=table_List[i].PERSON_NAME%></div>
+				<input oninput="commonRemoveExpression(this)"  style = "margin-top: 12px;" class="aui-pull-right aui-checkbox aui-checkbox-success" type="checkbox" onclick="selectUpdatePerson(this,<%=i%>,<%=table_List[i].PERSON_ID%>,<%=table_List[i].identity_id%>,<%=table_List[i].bureau_id%>,<%=table_List[i].is_check%>,<%=table_List[i].idForApp%>,<%=table_List[i].memberTypeForApp%>)" />
+				</li>
+				<% } %>
+				<% } %>
+				<% } %>
+			</script>
+		</div>
+	</body>
+	<script type="text/javascript" src="../../script/api.js"></script>
+	<script type="text/javascript" src="../../script/plug-in/template.js" ></script>
+	<script type="text/javascript" src="../../script/base_config.js" ></script>
+	<script type="text/javascript" src="../../script/common/common.js" ></script>
+	<script type="text/javascript">
+		//1所属机构2管理的机构3所属群组
+		var rangeType;
+		var style_class_id;
+		var style_group_id;
+		var BASE_URL_ACTION;
+		//群组id
+		var current_group_id;
+		var nodeId;
+		var selectPersonArray = new Array();
+		var quitPersonArray = new Array();
+		apiready = function() {
+			commonSetTheme({"level":2,"type":0});
+			BASE_URL_ACTION = $api.getStorage('BASE_URL_ACTION');
+			var arrGroupId = api.pageParam.group_id.split("_");
+			var group_id = arrGroupId[0];
+			//是否是第一次进入
+			if ( typeof ($api.getStorage('current_group_id')) == 'undefined' || typeof ($api.getStorage('current_group_id')) == '') {
+				$api.setStorage('current_group_id', group_id);
+				current_group_id = group_id;
+				style_group_id = -1;
+				style_class_id = 0;
+				rangeType = 1;
+			} else {
+				//上次进入与本次进入是否是同一个群组
+				if ($api.getStorage('current_group_id') != group_id) {
+					$api.setStorage('current_group_id', group_id);
+					current_group_id = group_id;
+					style_class_id = 0;
+					rangeType = 1;
+					style_group_id = -1;
+				} else {
+					current_group_id = group_id;
+					if ( typeof ($api.getStorage('style_class_id')) != 'undefined' && typeof ($api.getStorage('style_class_id')) != '') {
+						style_class_id = $api.getStorage('style_class_id');
+						rangeType = Number(style_class_id) + 1;
+					}
+					if ( typeof ($api.getStorage('style_group_id')) != 'undefined' && typeof ($api.getStorage('style_group_id')) != '') {
+						style_group_id = $api.getStorage('style_group_id');
+					}
+					if ( typeof ($api.getStorage('nodeId')) != 'undefined' && typeof ($api.getStorage('nodeId')) != '') {
+						nodeId = $api.getStorage('nodeId');
+					}
+				}
+			}
+			getClassBtn();
+		};
+		/*
+		 *author:ws
+		 *function:选择添加或删除的人员
+		 *date：20170206
+		 */
+		function selectUpdatePerson(obj, person_num, personId, identityId, bureauId, is_check, idForApp, member_type) {
+			var stageArray = $api.domAll($api.byId('people_body'), 'li');
+			if (obj.checked) {
+				$api.addCls(stageArray[person_num], 'active');
+				if (is_check == 0) {
+					var oparam = new Object();
+					oparam.person_id = personId;
+					oparam.identity_id = identityId;
+					oparam.bureau_id = bureauId;
+					selectPersonArray.push(oparam);
+				}
+				//删除人员去掉选择
+				for (var i = 0; i < quitPersonArray.length; i++) {
+					if (quitPersonArray[i].person_id == personId) {
+						quitPersonArray.splice(i, 1);
+					}
+				}
+			} else {
+				//添加人员去掉选择
+				for (var i = 0; i < selectPersonArray.length; i++) {
+					if (selectPersonArray[i].person_id == personId) {
+						$api.removeCls(stageArray[person_num], 'active');
+						selectPersonArray.splice(i, 1);
+					}
+				}
+				//member_type 0群主1管理员2普通成员
+				if (is_check == 1 && member_type == 0) {
+					obj.checked = true;
+					//判断当前登录人是否是群主
+					if ($api.getStorage("person_id") == personId) {
+						popToast("您是群主不能选择自己");
+					} else {
+						popToast("您不能选择群主");
+					}
+				} else if (is_check == 1 && member_type == 1 && $api.getStorage("person_id") == personId) {
+					//当前用户为管理员
+					obj.checked = true;
+					popToast("您是管理员不能选择自己");
+				} else if (is_check == 1 && member_type == 2 && $api.getStorage("person_id") == personId) {
+				    obj.checked = true;
+					popToast("您不能选择管理员");
+				} else if (is_check == 1) {
+					//去掉已在群租人员
+					$api.removeCls(stageArray[person_num], 'active');
+					var oparam = new Object();
+					oparam.person_id = personId;
+					oparam.memberId = idForApp;
+					quitPersonArray.push(oparam);
+				}
+			}
+		}
+
+		/*
+		 *author:ws
+		 *function:点击完成的操作
+		 *date：20170206
+		 */
+		function selectPerson() {
+			showSelfProgress('加载中...');
+			//先判断会否有添加人员
+			if (selectPersonArray.length != 0) {
+				//添加人员
+				savePeople(selectPersonArray, function(flag) {
+					if (flag) {
+						//是否有删除人员
+						checkQuitPeople();
+					}
+				});
+			} else {
+				//是否有删除人员
+				checkQuitPeople();
+			}
+		}
+
+		/*
+		 *author:ws
+		 *function:判断是否有删除
+		 *date：20170206
+		 */
+		function checkQuitPeople() {
+			if (quitPersonArray.length != 0) {
+				//有删除人员
+				var memberIds = quitPersonArray[0].memberId;
+				for (var i = 1; i < quitPersonArray.length; i++) {
+					memberIds += "," + quitPersonArray[i].memberId;
+				}
+				quitPeople(memberIds);
+			} else {
+				//无删除人员
+				completeAlertPeople();
+			}
+		}
+
+		/*
+		 *author:ws
+		 *function:点击完成更新人员列表
+		 *date：20170206
+		 */
+		function completeAlertPeople() {
+			setTimeout(function() {
+				api.execScript({
+					name : 'hh_group_window',
+					frameName : 'hh_group_personlist_frame',
+					script : 'loadData();'
+				});
+			}, 600);
+			setTimeout(function() {
+				//重新加载人员列表数据
+				api.execScript({
+					name : 'hh_group_window',
+					frameName : 'hh_group_personlist_frame',
+					script : 'loadData();'
+				});
+				//重新加载群组人数
+				api.execScript({
+					name : 'hh_group_window',
+					frameName : 'hh_group_config_frame',
+					script : ' reGroupPeopleNum();'
+				});
+				//重新加载群组会话标题
+				api.execScript({
+					name : 'hh_chat_window',
+					script : 'initHeaer();'
+				});
+				api.closeWin({
+					name : 'txl_people_group_window'
+				});
+				api.hideProgress();
+			}, 1200);
+		}
+
+		/*
+		 *author:ws
+		 *function:删除人员
+		 *date：20170206
+		 */
+		function quitPeople(memberIds) {
+			api.ajax({
+				url : BASE_URL_ACTION + '/group/batchDelGroupForApp',
+				method : 'get',
+				timeout : 30,
+				dataType : 'json',
+				data : {
+					values : {
+						"groupId" : current_group_id,
+						"memberIds" : memberIds,
+					}
+				},
+				headers : {
+					'Cookie' : 'person_id=' + $api.getStorage("person_id") + ';identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+				}
+			}, function(ret, err) {
+				if (ret.success) {
+					completeAlertPeople();
+				}
+			});
+		}
+
+		/*
+		 *author:ws
+		 *function:添加成员
+		 *date：20170112
+		 */
+		function savePeople(arr, callback) {
+			api.ajax({
+				url : BASE_URL_ACTION + '/ypt/group/addMember',
+				method : 'post',
+				timeout : 30,
+				dataType : 'json',
+				data : {
+					values : {
+						"random_num" : creatRandomNum(),
+						"groupId" : current_group_id,
+						"pids" : arr
+					}
+				},
+				headers : {
+					'Cookie' : 'person_id=' + $api.getStorage("person_id") + ';identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+				}
+			}, function(ret, err) {
+				if (ret.success) {
+					callback(true);
+				}
+			});
+		}
+
+		/*
+		 *author:ws
+		 *function:类别左侧按钮
+		 *date：20170112
+		 */
+		function getClassBtn() {
+			removeClassificationActive();
+			$api.addCls($api.byId('j_class'), 'active');
+			$api.css($api.byId('class_body'), 'display:block;');
+			$api.css($api.byId('group_body'), 'display:none;');
+			$api.css($api.byId('people_body'), 'display:none;');
+			removeStageActive(1, 'class_body');
+		}
+
+		/*
+		 *author:ws
+		 *function:组左侧按钮
+		 *date：20170112
+		 */
+		function getGroupBtn() {
+			removeClassificationActive();
+			$api.addCls($api.byId('j_group'), 'active');
+			$api.css($api.byId('class_body'), 'display:none;');
+			$api.css($api.byId('group_body'), 'display:block;');
+			$api.css($api.byId('people_body'), 'display:none;');
+			getGroupData();
+		}
+
+		/*
+		 *author:ws
+		 *function:人员左侧按钮
+		 *date：20170112
+		 */
+		function getPeopleBtn() {
+			if (style_group_id != -1) {
+				removeClassificationActive();
+				$api.addCls($api.byId('j_people'), 'active');
+				$api.css($api.byId('class_body'), 'display:none;');
+				$api.css($api.byId('group_body'), 'display:none;');
+				$api.css($api.byId('people_body'), 'display:block;');
+				getMemberByparams(nodeId);
+			} else {
+				popToast('您还没有选择部门，请选择部门');
+			}
+		}
+
+		/*
+		 *author:ws
+		 *function:去除左侧分类的active样式
+		 *date：20170112
+		 */
+		function removeClassificationActive() {
+			var classificationArray = $api.domAll($api.byId('j_classification'), 'li');
+			for (var i = 0; i < classificationArray.length; i++) {
+				$api.removeCls(classificationArray[i], 'active');
+			}
+		}
+
+		/*
+		 *author:ws
+		 *function:移除样式
+		 *date：20170114
+		 */
+		function removeStageActive(flag, div_id) {
+			//flag 1所属机构  2管理机构   3所属群组
+			if (flag == 1) {
+				var stageArray = $api.domAll($api.byId(div_id), 'li');
+				for (var i = 0; i < stageArray.length; i++) {
+					$api.removeCls(stageArray[i], 'active');
+				}
+				$api.addCls(stageArray[style_class_id], 'active');
+			} else if (flag == 2) {
+				var stageArray = $api.domAll($api.byId(div_id), 'li');
+				for (var i = 0; i < stageArray.length; i++) {
+					$api.removeCls(stageArray[i], 'active');
+				}
+				if (style_group_id != -1) {
+					$api.addCls(stageArray[style_group_id], 'active');
+				}
+			}
+		}
+
+		/*
+		 *author:ws
+		 *function:点击类别，或许单位
+		 *date：20170114
+		 */
+		function getClassData(type, num_class) {
+			rangeType = type;
+			style_class_id = num_class;
+			style_group_id = -1;
+			$api.setStorage('style_class_id', style_class_id);
+			$api.setStorage('style_group_id', style_group_id);
+			removeStageActive(1, 'class_body');
+			getGroupData();
+			getGroupBtn();
+		}
+
+		/*
+		 *author:ws
+		 *function:查询成员群组列表
+		 *date：20170121
+		 */
+		function getMemberData(id, num_group) {
+			style_group_id = num_group;
+			$api.setStorage('style_group_id', style_group_id);
+			nodeId = id;
+			$api.setStorage('nodeId', id);
+			removeStageActive(2, 'group_body');
+			getMemberByparams(id);
+			getPeopleBtn();
+		}
+
+		/*
+		 *author:ws
+		 *function:查询成员群组列表
+		 *date：20170120
+		 */
+		function getMemberByparams(id) {
+			showSelfProgress('加载中...');
+			api.ajax({
+				url : BASE_URL_ACTION + '/ypt/group/getMemberByparams',
+				method : 'post',
+				timeout : 30,
+				dataType : 'json',
+				data : {
+					values : {
+						"random_num" : creatRandomNum(),
+						"groupId" : current_group_id,
+						"member_type" : -1,
+						"nodeId" : id,
+						"orgType" : 3,
+						"pageNumber" : 1,
+						"pageSize" : 999,
+						"rangeType" : rangeType,
+						"stage_id" : -1,
+						"subject_id" : -1,
+						"keyword" : ""
+					}
+				},
+				headers : {
+					'Cookie' : 'person_id=' + $api.getStorage("person_id") + ';identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+				}
+			}, function(ret, err) {
+				if (ret.success) {
+					api.hideProgress();
+					var html_type = template.render('people_script', ret);
+					document.getElementById('people_body').innerHTML = html_type;
+				}
+			});
+		}
+
+		/*
+		 *author:ws
+		 *function:点击所在部门获取数据
+		 *date：
+		 */
+		function getGroupData() {
+			showSelfProgress('加载中...');
+			api.ajax({
+				url : BASE_URL_ACTION + '/ypt/group/getGroups',
+				method : 'post',
+				timeout : 30,
+				dataType : 'json',
+				data : {
+					values : {
+						"random_num" : creatRandomNum(),
+						"group_type" : rangeType,
+						"identity_id" : $api.getStorage("identity"),
+						"personId" : $api.getStorage("person_id"),
+						"plat_type" : 1, //1云平台
+						"use_range" : -1
+					}
+				},
+				headers : {
+					'Cookie' : 'person_id=' + $api.getStorage("person_id") + ';identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+				}
+			}, function(ret, err) {
+				var data = {
+					"list" : []
+				};
+				if (ret.success) {
+					api.hideProgress();
+					var newData = $api.strToJson(ret.tree_data);
+					for (var i = 0; i < newData.length; i++) {
+							var param = new Object();
+							param.id = newData[i].id;
+							param.pId = newData[i].pId;
+							param.name = newData[i].name;
+							param.org_type = newData[i].org_type;
+							data.list.push(param);
+					}
+					var html_type = template.render('group_script', data);
+					document.getElementById('group_body').innerHTML = html_type;
+					removeStageActive(2, 'group_body');
+				}
+			});
+		}
+	</script>
+</html>

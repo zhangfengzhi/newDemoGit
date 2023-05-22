@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<!-- html5：在创建html时为了防止页面缩放等不兼容效果，要创建个viewport  -->
+	<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+	<!-- 在IOS设备上，有时会将数字转为手机号，这里也要禁止下 -->
+	<meta name="format-detection" content="telephone=no"/>
+    <title>知识点选择</title>
+    <link rel="stylesheet" type="text/css" href="../../../../../css/aui/aui.css" />
+    <link rel="stylesheet" type="text/css" href="../../../../../css/module/common/daoxueJyJs.css" />
+    <link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+    <style>
+    	.block-overflow{
+		    display: block;
+		    overflow: hidden;
+		    width: 100%;
+		    word-break: break-all;
+		    white-space: nowrap;
+		    text-overflow: ellipsis;
+		    height: 100%;
+    	}
+    	.child-node{
+    		background:#ffffff !important;
+    		padding-left:35px;
+    	}
+    	.child-node > div{
+    		position:relative;
+		    padding-left: 35px;
+    	}
+    	.first-child .child-node{
+    		/*display:none;*/
+    	}
+    	.all-zsd .first-child.select .child-node{
+    		display:block
+    	}
+    	.all-zsd .first-child.unselect .child-node{
+    		display:none
+    	}
+    	.all-zsd .first-child div .jiedian.have-child-icon{
+    		background-position:15px -86px;
+    	}
+    	
+    </style>
+</head>
+<body class="zsd-body common-iphone-kenjianJs">
+	<div id="j_zsd" class="all-zsd">
+	</div>
+</body>
+<script type="text/javascript" src="../../../../../script/api.js"></script>
+<script type="text/javascript" src="../../../../../script/base_config.js" ></script>
+<script type="text/javascript" src="../../../../../script/plug-in/template.js" ></script>
+<script type="text/javascript" src="../../../../../script/common/common.js" ></script>
+<script type="text/javascript" src="../../../../../script/module/common/daoxueJyJs.js" ></script>
+<script type="text/javascript">
+	var lobal_variable;//全局变量json
+	var list_name = [];//章节名称
+	apiready = function(){
+		commonSetTheme({"level":5,"type":0});
+		lobal_variable = JSON.parse(api.pageParam.lobal_variable);
+		showSelfProgress('加载中...');
+		getSectionAndStruc(function(zsd_flag,zsd_data){
+			if(zsd_flag){
+				var j_zsd_html="";
+				if(zsd_data.section_list.length>0){
+					j_zsd_html=getZsdHtml(zsd_data.section_list,1);
+				}else{
+					j_zsd_html='<div class="no-data">暂无知识点</div>';
+				}
+				setTimeout(function(){
+					$api.html($api.byId('j_zsd'),j_zsd_html);
+					var first_child_dom=$api.closest($api.dom('.active'), '.first-child');
+//					console.log($api.html(first_child_dom))
+					$api.addCls(first_child_dom, 'select');
+					$api.removeCls(first_child_dom, 'unselect');
+//					console.log(j_zsd_html)
+					api.hideProgress();
+				},500)
+			}else{
+				api.hideProgress();
+				popToast(zsd_data);
+			}
+		});
+	};
+	
+	/*
+	*author:zhaoj
+	*function:展示多级知识点
+	*date：20200226
+	*/
+	function getZsdHtml(structure_list,type){
+		var getHtml = "";
+		var active_structure_id = lobal_variable.structure_id;
+		if(structure_list.length>0){
+			structure_list.forEach(function(item, index){
+				if(!item.structure_name){
+                   item.structure_name="";
+                }
+                var div1=""
+                var className1=""
+                var id1=""
+                if(type==1){  //最外层节点的赋值
+                	className1="first-child unselect";
+                	id1="first-child-"+index;
+                	firstChildIndex=index;
+                }else{ //子节点赋值
+                	className1="child-node display-none";
+                	id1="";
+                }
+                var className=""
+                $api.removeCls($api.domAll('.first-child'), 'select');
+                $api.addCls($api.domAll('.first-child'), 'unaselect');
+                if(item.structure_id==active_structure_id){ //获取当前选中的节点
+                	if(type==1){
+                		className="active1";
+                	}else{
+                		className="active";
+                	}
+                }else{
+                	className="";
+                	
+                }
+                //每个节点下不同情况展示的图标
+                if(item.structure_list.length>0){
+                	if(type==1){
+                		div1='<span id="j_display_'+index+'" class="display-child hidden" onclick="displayChild(event,'+index+',1)">&nbsp;</span>';
+                	}else{
+                		div1='<span class="display-child jiedian have-child-icon">&nbsp;</span>';
+                	}
+                }else{
+                	div1='<span class="display-child jiedian">&nbsp;</span>';
+                	
+                }
+                
+                getHtml = getHtml + 
+              			'<div class="'+className1+'"  id="'+id1+'">'+
+              				'<div STRUCTURENAME="'+item.structure_name+'" '+
+              				'onclick="selectZsd(this,'+item.structure_id+')" '+
+              				'class="'+className+'">'+
+              				div1+
+              				'<span class="block-overflow">'+item.structure_name+'</span>'+
+              				'</div>'+
+						 	getZsdHtml(item.structure_list,2)
+						+'</div>';
+			})
+			
+		}
+		return getHtml;
+	}
+	
+	/*
+	*author:zhaoj
+	*function:展示子节点
+	*date：20170329
+	*/
+	function displayChild(e,index,type){
+		if($api.hasCls($api.byId('j_display_'+index), 'hidden')){
+			$api.removeCls($api.byId('j_display_'+index), 'hidden');
+			$api.addCls($api.byId('j_display_'+index), 'show');
+			$api.addCls($api.byId('first-child-'+index), 'select');
+			$api.removeCls($api.byId('first-child-'+index), 'unselect');
+			
+		}else{
+			$api.removeCls($api.byId('j_display_'+index), 'show');
+			$api.addCls($api.byId('j_display_'+index), 'hidden');
+			$api.removeCls($api.byId('first-child-'+index), 'select');
+			$api.addCls($api.byId('first-child-'+index), 'unselect');
+		}
+		type?e.stopPropagation():'';
+	}
+	/*
+	*author:zhaoj
+	*function:选择知识点
+	*date：20170329
+	*/
+	function selectZsd(self,id){
+	    var name = $api.attr(self, 'STRUCTURENAME');
+		var child_first_array = $api.domAll($api.byId('j_zsd'),'.first-child');
+		for(var i =0; i < child_first_array.length; i++){
+			var div_obj = $api.first(child_first_array[i],'div');
+			$api.removeCls(div_obj,'active');
+		}
+		$api.addCls(self,'active');
+		commonExecScript('kejianJs_index_window','kejianJs_index_frame','setStructure('+id+',"'+name+'")',1);
+		setTimeout(function(){
+			commonExecScript('kejianJs_index_window','','back();',0);
+		},100);
+	}
+</script>
+</html>

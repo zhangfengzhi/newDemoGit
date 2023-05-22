@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+		<title>新闻资讯</title>
+		<link rel="stylesheet" type="text/css" href="../../../../../css/aui/aui.css"/>
+		<link rel="stylesheet" type="text/css" href="../../../../../css/module/ipad/left-right-layout.css"/>
+    	<link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+    	<style>
+        	.icon{
+				border-radius: 0px !important;
+				width: 100px  !important;
+				height: 50px  !important;
+			}
+        	.school-icon{
+				width: 100px;
+				height: 73px;
+				margin: 0 auto;
+			}
+			.class-icon{
+				width: 100px;
+				height: 74px;
+				margin: 0 auto;
+			}
+        </style>
+	</head>
+	<body id="j_body" class="left-layout-body common-ipad-xwzxIpadstu">
+		<div id="wrap">
+			<header class="aui-bar aui-bar-nav aui-bar-primary" id="aui-header">
+				<div id="cloud" class="topbar activebar">
+					<div id="back" class="back" onclick="back();" tapmode="">
+						<i class="aui-iconfont aui-icon-left"></i>返回
+					</div>
+					<div  class="mTitle" id="mTitle">
+						
+					</div>
+					<div class="win-menu">
+						<a id="j_add" class="aui-iconfont aui-icon-add btn-new aui-hide"  onclick="openAddFrame();"></a>
+					</div>
+				</div>
+			</header>
+		</div>
+		<!--左侧导航-->
+		<div id="j_left_tag" class="left-tag">
+		</div>
+		<script id="div_script" type="text/html">
+			<%for(var i=0;i<list.length;i++){%>
+				<div class="tag-item" onclick="changeTagItem('<%=list[i].title%>',<%=list[i].org_type%>,<%=list[i].id%>,<%=i%>);">
+					<div class="icon <%if(list[i].org_type == 105){%> class-icon <%}else{%> school-icon <%}%>"></div>
+					<div id="j_class_name" class="name"><%=list[i].title%></div>
+					<!--<div class="parting-line">
+						<div class="left-rectangle fl"></div>
+						<div class="right-rectangle fr"></div>
+						<hr />
+					</div>-->
+				</div>
+			<%}%>	
+		</script>	
+		<!--//左侧导航-->
+		<div id="j-right" class="win-right xwzx-right fr"></div>
+	</body>
+	<script type="text/javascript" src="../../../../../script/api.js"></script>
+	<script type="text/javascript" src="../../../../../script/base_config.js" ></script>
+	<script type="text/javascript" src="../../../../../script/common/common.js"></script>
+	<script type="text/javascript" src="../../../../../script/plug-in/template.js" ></script>
+	<script type="text/javascript" src="../../../../../script/assembly/tongjiData.js"></script>
+	<script type="text/javascript" src="../../../../../script/assembly/voicePlayer.js" ></script>
+	<script type="text/javascript">
+		var back_type ="index";//返回参数
+		var voice_type = 2;//朗读页面显示隐藏判断参数，2是打开，1是隐藏
+		var voice_content;//朗读内容
+		apiready = function(){
+			commonSetTheme({"level":5,"type":0});
+			commonIosAuiHeader();//定位header位置，留出上面电池等空隙，苹果需要
+			commonBackForAndroid();//安卓关闭
+			$api.css($api.byId('j_left_tag'),'top:'+api.pageParam.header_h+'px;max-height:'+(api.winHeight*1-api.pageParam.header_h*1)+'px;height:'+(api.winHeight*1-api.pageParam.header_h*1)+'px;');//设置左侧导航的样式
+			openIndexFrame();
+			commonOpenTjData($api.getStorage("identity")+'_'+api.winName);
+		};
+		/*
+		*author:zhaoj
+		*function:返回页面
+		*date：20161220
+		*/
+		function back() {
+			switch(back_type) {
+				case 'index':
+				  	commonCloseTjData($api.getStorage("identity")+'_'+api.winName);
+					api.closeWin();
+					break;
+				case 'detail':
+					voice_type = 2;
+					commonExecScript('xwzxIpad_index_window','xwzxIpad_index_frame','isShowBoxShow(0);',1);//隐藏虚线
+					commonCloseFrame('common_voiceplay_frame');
+				  	commonCloseFrame('xwzxIpad_detail_frame');
+				  	reBackType('index');
+					break;
+				case 'picture_detail':
+				  	reBackType('detail');
+					break;
+			}
+		}
+		/**
+		 * 重置从哪个页面退出
+		 * 周枫
+		 * 2015.12.17
+		 */
+		function reBackType(type) {
+			switch(type) {
+				//如果列表页面退出
+				case 'index':
+					back_type = 'index';
+					break;
+				//如果详情页面退出
+				case 'detail':
+					back_type = 'detail';
+					break;
+				//如果详情页面退出
+				case 'picture_detail':
+					back_type = 'picture_detail';
+					break;
+			}
+		}
+		/*
+		*author:zhaoj
+		*function:打开详情页面
+		*date：20170911
+		*/
+		function openDetailFrame(oparam){
+			reBackType('detail');
+			var header_h = api.pageParam.header_h;//顶部高度
+			var frame_w = Math.floor(api.winWidth*0.4);
+			var frame_x = Math.floor(api.winWidth*0.6);
+			pageParamJson={"header_h":header_h,'x':frame_x,'w':frame_w,"oparam":oparam};//打开frame页面json数据
+			//打开frame页面
+			commonOpenFrame("xwzxIpad_detail_frame","xwzxIpad_detail_frame.html",header_h,false,false,"rgba(0,0,0,0)",pageParamJson);
+			commonExecScript('xwzxIpad_index_window','xwzxIpad_index_frame','isShowBoxShow(1);',1);//显示虚线
+		}
+		/*
+		*author:zhaoj
+		*function:打开列表页面
+		*date：20170912
+		*/
+		function openIndexFrame(){
+			var header_h = api.pageParam.header_h;//顶部高度
+			var frame_w = Math.floor(api.winWidth*0.6);
+			var frame_x = 0;
+			if(frame_w <= 614){
+				frame_w=frame_w-150;
+				frame_x = 150;
+			}else{
+				frame_w=frame_w-180;
+				frame_x = 180;
+			}
+			pageParamJson={"header_h":header_h,'w':frame_w,"x":frame_x};//打开frame页面json数据
+			//打开frame页面
+			commonOpenFrame("xwzxIpad_index_frame","xwzxIpad_index_frame.html",header_h,false,false,"rgba(0,0,0,0)",pageParamJson);
+		}
+		/*
+		*author:zhaoj
+		*function:获取左侧班级学校数据
+		*date：20170915
+		*/
+		function getTagData(){
+		      bar_items = [];
+		      var org_level = parseInt($api.getStorage('org_level'));
+            getSpaceMenu(function(flag,ret){
+                if(flag){
+                    for(var i = 0; i < ret.org_list.length; i++){
+                        if(ret.org_list[i].org_level >= org_level){
+                            var oparam = new Object();
+                            oparam.id = ret.org_list[i].org_id;
+                            if(ret.org_list[i].flag == 0 && (ret.org_list[i].org_level == 101 || ret.org_list[i].org_level == 102||ret.org_list[i].org_level == 103)){
+                                oparam.title = ret.org_list[i].org_name+'教育局';
+                            }else{
+                                oparam.title = ret.org_list[i].org_name;
+                            }
+                            oparam.org_type = ret.org_list[i].org_level;
+                            bar_items.push(oparam); 
+                        }
+                    }
+                    bar_items.sort(desc); //降序排序 
+                    commonAddOnceHtml('j_left_tag','div_script',{"list":bar_items});
+                    changeTagItem(bar_items[0].title,bar_items[0].org_type,bar_items[0].id)
+                }
+            });
+		}
+		/*
+        *作者:zhaoj
+        *功能:获取这个人所在的机构
+        *日期：20161121
+        */
+        function getSpaceMenu(callback){
+            api.ajax({
+                url :BASE_URL_ACTION + '/space/common/getSpaceMenu?random_num='+creatRandomNum()+'&person_id='+$api.getStorage("person_id")+'&identity_id='+$api.getStorage("identity"),
+                method : 'get',
+                timeout : 30,
+                dataType : 'json',
+                headers : {
+        'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' +$api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+            }
+            }, function(ret, err) {
+                if (err) {
+                    callback(false,0);
+                } else {
+                    if(ret.success){
+                        callback(true,ret);
+                    }else{
+                        callback(false,0);
+                    }
+                }
+            });
+        }
+        /*
+        *作者:zhaoj
+        *功能:json数据排序
+        *日期：20161121
+        */
+        var colId="org_type"  
+        var desc = function(x,y)  {  
+            return (x[colId] < y[colId]) ? 1 : -1  
+        } 
+		/*
+		*author:zhaoj
+		*function:切换左侧导航
+		*date：20170915
+		*/
+		function changeTagItem(title,org_type,id,index){
+			var items = document.getElementsByClassName('tag-item');
+	    	for (var i = 0; i < items.length; i++){
+	    		if (i == index || bar_items[i].title == title){
+	    			$api.css(items[i],'background-color:#003476');
+	    		}else{
+	    			$api.css(items[i],'background-color:#004EA2');
+	    		}
+	    	}
+        
+			commonCloseFrame('xwzxIpad_detail_frame');
+			commonSetWindowName(title);//重新给window页面命名
+			commonExecScript('xwzxIpad_index_window','xwzxIpad_index_frame','changeOrgId(1,'+id+','+org_type+');',1);//切换index列表数据
+		}
+	</script>
+</html>

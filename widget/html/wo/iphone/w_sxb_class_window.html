@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<!-- html5：在创建html时为了防止页面缩放等不兼容效果，要创建个viewport  -->
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<!-- 在IOS设备上，有时会将数字转为手机号，这里也要禁止下 -->
+		<meta name="format-detection" content="telephone=no"/>
+		<title>我的考勤</title>
+		<link rel="stylesheet" type="text/css" href="../../../css/aui/aui.css" />
+		<link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+		<style>
+			.history-date {
+				font-size: 12px;
+			}
+			#message-content {
+				overflow-y: auto;
+				display: none;
+			}
+			
+			
+			.t_display_n {
+				display: none;
+			}
+			.t_display_b {
+				display: block;
+			}
+			.tag-title{height:45px; line-height:43px;background:#ffffff ;border-bottom:2px solid #E6E6E6;}
+			.tag-title div{text-align:center;color:#62656A;}
+			.float-clear{overflow:auto}
+			.tag-title-button{height:55px; line-height:43px;background:#f6f6f6;}
+			.tag-title-button button{float:right}
+			.menu{display:inline-block;width:28px;height:100%;background:url(../../image/fun-module/iphone/kaoqin/static.png) center center no-repeat;background-size: 16px 16px;}
+	.win-menu{height:100%;}
+			.fl{float:left;}
+			.fr{float:right;}
+			.button-reset{margin-right:5px;margin-top:16px;background:#3498db;height:30px;padding-top:5px;}
+			.button-all-selected{margin-right:5px;margin-top:16px;background:#2ecc71;height:30px;padding-top:5px;}
+			.aui-searchbar-text-sys{width:30px;height:30px;background:url(../../../image/wo/sys_logo.png) 0 5px no-repeat;background-size:20px 20px;float:right;}
+		</style>
+	</head>
+	<body class="w-iphone-common">
+		<div id="wrap">
+			<header class="aui-bar aui-bar-nav aui-bar-primary" id="aui-header" style="border-bottom:1px solid #efefef">
+				<div id="cloud" class="topbar activebar">
+					<div id="back" class="back" onclick="back();" tapmode="">
+						<i class="aui-iconfont aui-icon-left"></i>返回
+					</div>
+					<div  class="mTitle" id="mTitle">
+						手写板
+					</div>
+				</div>
+				<div class="tag-title" id="stage_div"></div>
+                    <script type="text/html" id="stage_script">
+                        <%for(var i = 0; i < xd_subject_list.length; i++){%>
+                            <%if(i == 0){%>
+                                <div id="<%=xd_subject_list[i].xd_id%>" class="fl active"onclick="changeSandP(<%=xd_subject_list[i].xd_id%>);"><%=xd_subject_list[i].xd_name%></div>
+                            <%}else{%>
+                                <div id="<%=xd_subject_list[i].xd_id%>" class="fl"onclick="changeSandP(<%=xd_subject_list[i].xd_id%>);"><%=xd_subject_list[i].xd_name%></div>
+                            <%}%>
+                        <%}%>
+                    </script>
+				<div class="aui-searchbar-wrap demo" id="search">
+                    <div class="aui-searchbar aui-border-radius" tapmode onclick="doSearchClass();">
+                        <i id="sys_first_logo" class="aui-iconfont aui-icon-search aui-hide"></i>
+                        <div class="aui-searchbar-text clearfix" style="width:100%;text-align: center;"><i class="aui-iconfont aui-icon-search"></i>请输入学生姓名、用户名或设备码<div id="search_sys" class="aui-searchbar-text-sys" tapmode onclick="nowOpenScanner(event);">&nbsp;</div></div>
+                        <div class="aui-searchbar-input">
+                            <form action="javascript:startSearch(1);">
+                            <input oninput="commonRemoveExpression(this)" type="text" placeholder="最多支持20个字符" id="search-input" maxlength ='20'>
+                            </form>
+                        </div>
+                        <i class="aui-iconfont aui-icon-roundclosefill" tapmode onclick="commonClearInput()"></i>
+                    </div>
+                    <div class="aui-searchbar-cancel aui-text-info" tapmode onclick="sxbCancelSearch()">取消</div>
+                </div>
+			</header>
+			<div  class="aui-content aui-content-padded" id="message-content">
+				<p class="aui-text-center history-date"></p>
+			</div>
+		</div>
+	</body>
+	<script type="text/javascript" src="../../../script/api.js"></script>
+	<script type="text/javascript" src="../../../script/common/common.js"></script>
+	<script type="text/javascript" src="../../../script/base_config.js" ></script>
+	<script type="text/javascript" src="../../../script/plug-in/template.js" ></script>
+	<script type="text/javascript" src="../../../script/init/init_config.js" ></script>
+	<script type="text/javascript" src="../../../script/assembly/tongjiData.js"></script>
+	<script type="text/javascript" src="../../../script/plug-in/base64.js" ></script>
+	<script type="text/javascript">
+		//顶部header高度
+		var header_h;
+		apiready = function() {
+			commonSetTheme({"level":3,"type":0});
+			header_h = api.pageParam.header_h;
+			commonBackForAndroid();//安卓关闭
+			commonIosAuiHeader();//定位header位置，留出上面电池等空隙，苹果需要
+			getStageList();
+		};
+		/*
+		*author:zhaoj
+		*function:返回页面
+		*date：20160307
+		*/
+		function back() {
+			api.closeWin();
+		}
+		
+		/*
+		 * 功能：打开班级列表
+		 * 作者：张自强
+		 * 时间：20171011
+		 */
+		function openGlListFrame(id,headerH){
+			var pageParamJson = {
+				'id' : id,
+				'header_h':header_h
+			};
+			commonOpenFrame('w_sxb_class_frame', 'w_sxb_class_frame.html', headerH, true, false, '#f6f6f6', pageParamJson);
+		}
+		
+		/*
+		 * 功能：切换学段
+		 * 作者：张自强
+		 * 时间：20190219
+		 */
+		function changeSandP(id){
+		  var domAll = $api.domAll($api.byId('stage_div'), 'div');
+		  for(var i = 0; i < domAll.length; i++){
+		      $api.removeCls(domAll[i], 'active');
+		  }
+	      $api.addCls($api.byId(id), 'active');
+	      commonExecScript(api.winName,'w_sxb_class_frame','changeXdId("'+id+'");',1);
+		}
+		
+		/*
+		 * 功能：获取当前学校的学段
+		 * 作者：张自强
+		 * 时间：20190219
+		 * 接口：申健
+		 */
+		function getStageList(){
+		    var product_id='';
+            if(BASE_CRM_TYPE){
+                product_id = 'hjx';
+            }else{
+                product_id = 'ythxxpt';
+            }
+            api.ajax({
+                url : BASE_URL_ACTION + '/ypt/getCrmStageSubject?random_num='+creatRandomNum()+'&&product_id='+product_id,
+                method : 'get',
+                timeout : 0,
+                dataType : 'json',
+                headers : {
+        'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+    }
+            }, function(ret, err) {
+                if(err){
+                    api.hideProgress();
+                    popToast('获取学段学科失败，请稍候重试');
+                }else{
+                    if(ret.success){
+                        commonAddOnceHtml('stage_div','stage_script',ret);
+                        if(ret.xd_subject_list.length > 0){
+                            if(ret.xd_subject_list.length <= 1){
+                                $api.css($api.byId('stage_div'),'height:0;');
+                                openGlListFrame(ret.xd_subject_list[0].xd_id,header_h+51);
+                            }else{
+                                for(var i = 0; i < ret.xd_subject_list.length; i++){
+                                    $api.css($api.byId(ret.xd_subject_list[i].xd_id),'width:'+10/ret.xd_subject_list.length*10+'%');
+                                }
+                                openGlListFrame(ret.xd_subject_list[0].xd_id,header_h+96);
+                            }   
+                        }else{
+                            $api.css($api.byId('stage_div'),'height:0;');
+                            openGlListFrame(-1,header_h+51);
+                        }
+                    }else{
+                        api.hideProgress();
+                        popToast('获取学段学科失败，请稍候重试');
+                    }
+                }
+            });
+		}
+		
+		/*
+        *作者:zhaoj
+        *功能:开始搜索
+        *日期：20161024
+        */
+        function startSearch(type){
+            if(commonRemoveHTMLTag($api.trimAll($api.val($api.byId("search-input")))) == ''){
+                api.execScript({
+                    name : api.winName,
+                    frameName : 'w_sxb_class_frame',
+                    script : 'setKeyword(0,"");'
+                });
+            }else{
+                commonSearch(type,function(data){
+                    if(!((data == null || typeof(data) == undefined || data == "") && type == 1)){
+                        api.execScript({
+                            name : api.winName,
+                            frameName : 'w_sxb_class_frame',
+                            script : 'setKeyword('+type+',"'+data+'");'
+                        });
+                    }
+                })
+            }
+        }
+        
+     /*
+      *作者:zhaoj
+      *功能:点击搜索
+      *日期：20161024
+      */
+     function doSearchClass() {
+         commonAddOrRemoveHideCss('sys_first_logo',1);
+         $api.addCls($api.dom(".aui-searchbar-wrap"), "focus");
+         $api.dom('.aui-searchbar-input input').focus();
+         $api.removeAttr($api.byId('search_sys'), 'onclick');
+     }
+     
+     /*
+     * 功能：获取扫一扫返回的数据
+     * 作者：张自强
+     * 时间：20190221
+     */
+    function openBdFrame(type,content){
+        content = Base64.encode(content);
+        api.execScript({
+            name : api.winName,
+            frameName : 'w_sxb_class_frame',
+            script : 'setKeyword(1,"'+content+'");'
+        });
+    }
+    
+    /*
+     * 功能:打开扫一扫
+     * 作者：张自强
+     * 时间：20190221
+     */
+    function nowOpenScanner(e){
+        openScanner('sxb',1);
+        e.stopPropagation();
+    }
+    
+    /*
+     * 功能：扫描学生二维码并搜索
+     * 作者：张自强
+     * 时间：20190301
+     */
+    function　searchStuSys(login_name){
+        $api.val($api.byId("search-input"),login_name);
+        $api.addCls($api.dom(".aui-searchbar-wrap"), "focus");
+        $api.removeAttr($api.byId('search_sys'), 'onclick');
+        startSearch(1);
+    }
+    
+    /*
+     * 功能：取消搜索
+     * 作者：张自强
+     * 时间：20190301
+     */
+    function sxbCancelSearch(){
+        startSearch(0);
+        commonAddOrRemoveHideCss('sys_first_logo',0);
+        var content = $api.val($api.byId("search-input"));
+        $api.val($api.byId("search-input"), '');
+        $api.removeCls($api.dom(".aui-searchbar-wrap.focus"), "focus");
+        $api.val($api.byId("search-input"), '');
+        $api.dom('.aui-searchbar-input input').blur();
+    }
+	</script>
+</html>

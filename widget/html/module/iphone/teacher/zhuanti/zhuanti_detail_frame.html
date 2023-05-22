@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>专题详情</title>
+    <link rel="stylesheet" type="text/css" href="../../../../../css/aui/aui.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../../../css/aui_css_new/aui.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../../../css/module/common/gameAndZhuanti.css"/>
+    <link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+    <style>
+    	.ima_notice{
+    		padding:0;
+    	}
+    	.introduction-main{
+    		padding-bottom:10px;
+    	}
+    	.dt-ul{
+    		margin-top:10px;
+    		padding-bottom:54px;
+    		border-top:1px solid #E2E2E2;
+    	}
+    	.dt-ul li{
+    		padding-left:0;
+    	}
+    </style>
+</head>
+<body class="common-iphone-zhuanti-tea">
+	<img id="j_img" class="ima_notice game-img" onerror="this.src='../../../../../image/fun-module/common/wk_default.png'" src="" />
+	<div class="introduction-main">
+		<div class="introduction-title">专题介绍</div>
+		<div id="j_memo" class="introduction-content"></div>
+	</div>
+	<div class="introduction-main" style="padding-bottom:50px;display:none;">
+		<div class="introduction-title">专题动态</div>
+		<div>
+			<div id="dt_body"></div>
+			<script type="text/html" id="dt_script">
+				<% if(list.length == 0){ %>
+					<div class="introduction-content"><span>暂无动态</span></div>
+				<% }else{ %>
+					<ul class="dt-ul clearfix">
+						<%for(var i=0; i<list.length; i++) {%>
+							<li >
+								<img onerror="this.src='../../../../../image/fun-module/common/wk_default.png'" src="<%=list[i].avatar_url%>" alt="头像" />
+					        	<div class="detail">
+					        		<div class="person-name ellipsis"><%=list[i].student_name%></div>
+					        		<div class="other">
+					        			<span class="time">
+					        				在<%=list[i].last_pass_result_time%>学习过当前专题
+					        			</span>
+					        		</div>
+					        	</div>
+							</li>
+						<% } %>
+					</ul>
+				<% } %>
+			</script>
+		</div>
+	</div>
+	<!--按钮-->
+	<div id="j_footer" class="footer-div">
+		<div class="wid" onclick="ksxx();">开始学习</div>
+	</div>
+</body>
+<script type="text/javascript" src="../../../../../script/api.js"></script>
+<script type="text/javascript" src="../../../../../script/plug-in/template.js" ></script>
+<script type="text/javascript" src="../../../../../script/plug-in/base64.js" ></script>
+<script type="text/javascript" src="../../../../../script/assembly/executeApp.js" ></script>
+<script type="text/javascript" src="../../../../../script/base_config.js" ></script>
+<script type="text/javascript" src="../../../../../script/common/common.js"></script>
+<script type="text/javascript" src="../../../../../script/module/common/zhuanti_tearcher.js"></script>
+<script type="text/javascript">
+	var BASE_URL_ACTION;
+	apiready = function(){commonSetTheme({"level":5,"type":0});
+		BASE_URL_ACTION = $api.getStorage('BASE_URL_ACTION');
+		showSelfProgress("加载中...");
+		saveGameTopicPreview(function(flag){
+			setPlayCountByResId(function(is_true){
+				getGameOrTopicInfo(function(ret){
+					var index = ret.info[0].thumb_url.lastIndexOf('.');
+					var extension = ret.info[0].thumb_url.split(".")[1];
+					ret.info[0].thumb_url = ret.info[0].thumb_url.substring(0,index);
+					var game_thumb_url = BASE_IMAGE_PRE_ONLY_YUN + BASE_GAME_TOPIC_PATH + ret.info[0].thumb_url.substring(0, 2) + '\/' + ret.info[0].thumb_url+'.' + extension + commonReturnPhotoCutSize(0,0,0,undefined,1);
+					getImageCache(game_thumb_url,function(img_url){
+						$api.attr($api.byId('j_img'), 'src', img_url);
+					})
+					if(ret.info[0].memo){
+						$api.text($api.byId('j_memo'), ret.info[0].memo);
+					}else{
+						$api.text($api.byId('j_memo'), "暂无专题介绍");
+					}
+				});
+			});
+		});
+		getDtData();//获取动态
+		commonResume('getDtData()');//应用从后台回到前台事件
+	};
+	/*
+	 *author:zhaoj
+	 *function:获取动态
+	 *date：20170111
+	 */
+	function getDtData(){
+		getStudentResultRecord(function(ret){
+			commonAddOnceHtml('dt_body','dt_script',ret);
+		});
+	}
+	/*
+	*author:zhaoj
+	*function:获取图片缓存
+	*date：20161224
+	*/
+	function getImageCache(img_url,callback){
+		api.imageCache({
+	        url:img_url
+        },function(ret,err){
+        	callback(ret.url)
+        });
+	}
+	/*
+	 *author:zhaoj
+	 *function:开始学习
+	 *date：20161220
+	 */
+	function ksxx() {
+		var app_key = "";
+			var down_url = "";
+			var app_type = api.systemType;
+			if(app_type == "ios") {
+				app_key = BASE_ZY_APP_IOS;
+				down_url = BASE_ZY_APP_DOWN_IOS;
+			} else {
+				app_key = BASE_ZY_APP_ANDROID;
+				down_url= BASE_ZY_APP_DOWN_ANDROID;
+			}
+			var oparamJsonData = {"type":2,"app_key":app_key,"down_url":down_url,"id":api.pageParam.id,"resource_id":api.pageParam.res_id};
+			//判断是否已经安装app
+			common_app.appInstalled(oparamJsonData);
+	}
+</script>
+</html>

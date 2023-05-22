@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<!-- html5：在创建html时为了防止页面缩放等不兼容效果，要创建个viewport  -->
+	<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+	<!-- 在IOS设备上，有时会将数字转为手机号，这里也要禁止下 -->
+	<meta name="format-detection" content="telephone=no"/>
+    <title>留数字化导学</title>
+    <link rel="stylesheet" type="text/css" href="../../../../../css/aui/aui.css" />
+    <link rel="stylesheet" type="text/css" href="../../../../../css/module/common/daoxueJyJs.css" />
+    <link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+    <style>
+    	.textarea-style,.textarea-concent{overflow-y: visible;height:100px;}
+    </style>
+</head>
+<body id="j_body" class="add-body common-iphone-daojueJyJs">
+	<div id="j_body" class="clearfix">
+		<div id="j_shadow" class="shadow" tapmode></div>
+		<div class="add-name-div border-bottom">
+			<input  id="j_name" class="common-add-input" type="text"  oninput='commonRemoveExpression(this);' placeholder="导学名称-最多支持输入100个字符（必填）" maxlength ='100' />
+		</div>
+		<!--<div id="j_tip_0" class="add-tip">剩余100个字符</div>-->
+		<textarea id = "j_explain" class = "common-add-input textarea-style mt10 border-bottom" maxlength ='500' rows="5"  oninput='commonRemoveExpression(this);'  placeholder="导学说明-最多支持输入500个字符（必填）" ></textarea>
+		<!--<div id="j_tip_1" class="add-tip">剩余500个字符</div>-->
+		<div class="add-name-div mt10 border-bottom clearfix">
+			<textarea id = "j_content" class = "common-add-input textarea-concent"  oninput="commonRemoveExpression(this)" rows="5" placeholder="导学内容"></textarea>
+		</div>
+		<div id="j_files" class="add-file mt10 pb65 clearfix">
+			<dl id="j_add_btn" class="mr0" onclick="openPhotoAndAudioWindow()">
+				<dt class="add-img-btn">
+					<i class="aui-iconfont aui-icon-camera"></i>
+				</dt>
+				<dd></dd>
+			</dl>
+		</div>
+		<div id="foot_div" class="foot_div">
+			<button class="aui-btn aui-btn-info" onclick="saveDaoxue(0);">
+				保存
+			</button>
+			&nbsp;&nbsp;
+			<button class="aui-btn aui-btn-info" onclick="saveDaoxue(1);">
+				保存并发布
+			</button>
+		</div>
+	</div>
+</body>
+<script type="text/javascript" src="../../../../../script/api.js"></script>
+<script type="text/javascript" src="../../../../../script/base_config.js" ></script>
+<script type="text/javascript" src="../../../../../script/common/common.js" ></script>
+<script type="text/javascript" src="../../../../../script/assembly/photoBrowser.js"></script>
+<script type="text/javascript" src="../../../../../script/assembly/UIAlbumBrowser.js"></script>
+<script type="text/javascript" src="../../../../../script/assembly/getPicture.js"></script>
+<script type="text/javascript" src="../../../../../script/module/common/daoxueJyJs.js" ></script>
+<script type="text/javascript" src="../../../../../script/module/common/fileUpload.js" ></script>
+<script type="text/javascript">
+	var obj_scan;
+	var daxue_info={};//导学相关内容
+	var lobal_variable;
+	var img_index = 0;//图片数组的个数
+	apiready = function(){
+		commonSetTheme({"level":5,"type":0});
+		obj_scan = api.require('UIAlbumBrowser');
+		lobal_variable = JSON.parse(api.pageParam.lobal_variable);
+		setAddBtn();
+	};
+	/*
+	*author:zhaoj
+	*function:设置添加按钮样式
+	*date：20170330
+	*/
+	function setAddBtn(){
+		var addBtnWidth = $api.cssVal($api.byId('j_add_btn'), 'width');
+		$api.css($api.dom($api.byId('j_add_btn'),'dt'), 'height:'+addBtnWidth+';line-height:'+(addBtnWidth.replaceAll('px','')*1-4)+'px;');
+	}
+	/*
+	*author:zhaoj
+	*function:提示剩余多少字符
+	*date：20170330
+	*/
+	function showTip(maxLength,length,type,self){
+        var count = maxLength - length;
+        if(count>=0){
+        	$api.text($api.byId('j_tip_'+type),'剩余'+count+'个字符');
+        }
+        if(self !=""){
+            commonRemoveExpression(self);
+        }
+    }
+    /**
+		 * 打开相册选择附件
+		 * 周枫
+		 * 2016.6.22 
+		 */
+		function openAddFilesOpn(mk_type) {
+			api.actionSheet({
+				title : '',
+				cancelTitle : '取消',
+				buttons : ['图片', '拍照'],
+				style : {
+					titleFontColor : '#ff0000'
+				}
+			}, function(ret, err) {
+				if (ret) {
+					if (ret.buttonIndex == 1) {
+						//相册
+						album();
+					} else if (ret.buttonIndex == 2) {
+						//拍照
+						openPicture();
+					}
+				} 
+			});
+		}
+		/*
+		 *author:zhaoj
+		 *function:选择图片
+		 *date：20160225
+		 */
+		function album() {
+			var dlArray = $api.domAll($api.byId('j_files'), '.j_file');
+			var num = 5 - dlArray.length;
+			if(num != 0){
+				UIAlbumBrowser.open(num,function(data){
+					//递归上传图片
+		            commonUiUploadFiles({"data":data,"is_trans":1}, function(ret_data) {
+		            	for(var i = 0; i < ret_data.length; i++){
+		            		var json_data = JSON.parse(ret_data[i]);
+		            		var file_id = json_data.file_id;
+							var ext = json_data.ext;
+							getImgSize();
+							img_suffix = commonReturnPhotoCutSize(0);
+							if (BASE_APP_TYPE == 1) {
+								var img_url = BASE_IMAGE_PRE+"down/Material/" + file_id.substring(0, 2) + "/" + file_id + '.' + ext + commonReturnPhotoCutSize(0);
+							} else {
+								var img_url = BASE_URL_ACTION + "/html/thumb/Material/" + file_id.substring(0, 2) + "/" + file_id + '.' + ext + commonReturnPhotoCutSize(0);
+								
+							}
+							if (getfilesNum() == 4) {
+								$api.css($api.byId('j_add_btn'), 'display:none');
+								addFiles(img_url, 'mr0');
+							} else {
+								addFiles(img_url, '');
+							}
+		            	}
+		            });
+				});
+			}else{
+				popToast('最多上传5张图片');
+			}
+		}
+		/*
+	    *author:zhaoj
+	    *function:打开拍照
+	    *date：20170914
+	    */
+	    function openPicture(){
+	    	getPicture.open({"type":1},function(data){
+	    		//递归上传图片
+	            commonUiUploadFiles({"data":data,"is_trans":0}, function(ret_data) {
+	            	for(var i = 0; i < ret_data.length; i++){
+	            		var json_data = JSON.parse(ret_data[i]);
+	            		var file_id = json_data.file_id;
+						var ext = json_data.ext;
+						getImgSize();
+						img_suffix = commonReturnPhotoCutSize(0);
+						if (BASE_APP_TYPE == 1) {
+							var img_url = BASE_IMAGE_PRE+"down/Material/" + file_id.substring(0, 2) + "/" + file_id + '.' + ext + commonReturnPhotoCutSize(0);
+						} else {
+							var img_url = BASE_URL_ACTION + "/html/thumb/Material/" + file_id.substring(0, 2) + "/" + file_id + '.' + ext + commonReturnPhotoCutSize(0);
+							
+						}
+						if (getfilesNum() == 4) {
+							$api.css($api.byId('j_add_btn'), 'display:none');
+							addFiles(img_url, 'mr0');
+						} else {
+							addFiles(img_url, '');
+						}
+	            	}
+	            });
+	    	});
+	    }
+		/*
+		 *author:zhaoj
+		 *function:图片格式
+		 *date：20160222
+		 */
+		function getImgSize() {
+			img_size = (api.winWidth - 30) * 0.18;
+			img_size = Math.floor(img_size);
+			var img_format = '@' + img_size + 'w_' + img_size + 'h_100Q_1x.';
+			return img_format;
+		}
+
+		/*
+		 *author:zhaoj
+		 *function:根据模块获取子文件的个数
+		 *date：20160224
+		 */
+		function getfilesNum() {
+			var dlArray = $api.domAll($api.byId('j_files'), '.j_file');
+			return dlArray.length;
+		}
+
+		/*
+		 *author:zhaoj
+		 *function:给模块添加文件
+		 *date：20160224
+		 */
+		function addFiles(img_url, css) {
+			var dl_height = $api.cssVal($api.byId('j_add_btn'), 'height')
+			var dl_html = '<dl class="j_file' + ' ' + css + '" style="height:' + dl_height + ';margin-bottom:5px;">' + '<dt class="img" style="width:' + img_size + 'px;height:' + img_size + 'px;margin-bottom:5px;" onclick="openImage(this.parentNode,this.parentNode.parentNode)">' + '<img class="j_img" src=' + img_url + ' width="' + (img_size - 1) + '" height="' + (img_size - 4) + '" />' + '</dt>' + '<dd onclick="deleteFile(event,this.parentNode)"><img src="../../../../../image/fun-module/common/shanchu.png" /></dd>' + '</dl>';
+			$api.before($api.byId('j_add_btn'), dl_html);
+		}
+
+		/*
+		 *author:zhaoj
+		 *function:删除当前文件
+		 *date：20160225
+		 */
+		function deleteFile(e, parent) {
+			parent.parentNode.removeChild(parent);
+			var dlArray = $api.domAll($api.byId('j_files'), '.j_file');
+			var length = getfilesNum();
+			if (length < 9) {
+				$api.removeCls(dlArray[length], 'mr0');
+				$api.css($api.byId('j_add_btn'), 'display:inline-block');
+			}
+			e.stopPropagation();
+		}
+
+		/*
+		 *author:zhaoj
+		 *function:打开图片
+		 *date：20160225
+		 */
+		function openImage(parent, grandpa) {
+			var index;
+			if (parent) {
+				index = 0;
+				while ( parent = parent.previousSibling) {
+					if (parent.nodeType == 1)
+						index++;
+				}
+			}
+			var openImgArray = [];
+			var dlArray = $api.domAll($api.byId('j_files'), '.j_file');
+			for (var i = 0; i < dlArray.length; i++) {
+				openImgArray.push($api.attr($api.dom(dlArray[i], '.j_img'), 'src'));
+			}
+			photoBrowser.open(openImgArray, index);
+		}
+		/*
+		*author:zhaoj
+		*function:发布导学页面
+		*date：20170329
+		*/
+		function openPublicWin(){
+		    api.hideProgress();
+			commonOpenWin('daoxueJyJs_public_window', 'daoxueJyJs_public_window.html', false, false, {'header_h':api.pageParam.header_h,"daxue_info":daxue_info,"lobal_variable":api.pageParam.lobal_variable,"type":1});
+		}
+		/*
+		*author:zhaoj
+		*function:保存导学数据
+		*date：20170405
+		*/
+		function saveDaoxue(type){
+			var name = commonRemoveHTMLTag($api.trimAll($api.val($api.byId('j_name'))));
+			if (name.length == 0) {
+				popToast("导学名称不能为空");
+				return;
+			}
+			var desc = commonRemoveHTMLTag($api.trimAll($api.val($api.byId('j_explain'))));
+			if (desc.length == 0) {
+				popToast("导学说明不能为空");
+				return;
+			}
+			var format_lead_learn = commonRemoveHTMLTag($api.trimAll($api.val($api.byId('j_content'))));
+			//验证是否有附件
+			var dlArray = $api.domAll($api.byId('j_files'), '.j_file');
+			showSelfProgress('保存中...');
+			if (dlArray.length != 0) {
+				if (BASE_APP_TYPE == 2) {
+					for (var i = 0; i < dlArray.length; i++) {
+                        var startIndex = $api.attr($api.dom(dlArray[i], '.j_img'), 'src').indexOf('/dsideal_yy/');
+					    var thumb_id = $api.attr($api.dom(dlArray[i], '.j_img'), 'src');
+					    checkImg(dlArray.length,thumb_id,function(wid,imgUrl,flag,allFlag){
+                              if(flag){
+                                if(wid >= 300){
+                                    wid = 300;
+                                }
+                                imgUrl = imgUrl.substring(startIndex,imgUrl.length);
+                                imgUrl = imgUrl.replaceAll(img_suffix, '');
+                                var img_html = '<img style="width:'+wid+'px" src="' + imgUrl + '" alt="" />'
+                                format_lead_learn = format_lead_learn + img_html;
+                                if(allFlag){
+                                    img_index = 0;
+                                    if (format_lead_learn.length == 0) {
+                                        popToast("导学内容和上传附件不能同时为空");
+                                        return;
+                                    }
+                                    daxue_info.name = name;
+                                    daxue_info.desc = desc;
+                                    daxue_info.format_lead_learn = format_lead_learn;
+                                    saveDaoxueData(type);//调用保存导学接口
+                                }
+                              }
+                        });
+						
+					}
+				} else {
+					for (var i = 0; i < dlArray.length; i++) {
+						var thumb_id = $api.attr($api.dom(dlArray[i], '.j_img'), 'src');
+                        checkImg(dlArray.length,thumb_id,function(wid,imgUrl,flag,allFlag){
+                              if(flag){
+                                if(wid >= 300){
+                                    wid = 300;
+                                }
+                                imgUrl = imgUrl.replaceAll(img_suffix, '');
+                                var img_html = '<img style="width:'+wid+'px" src="' + imgUrl + '" alt="" />'
+                                format_lead_learn = format_lead_learn + img_html;
+                                if(allFlag){
+                                    img_index = 0;
+                                    if (format_lead_learn.length == 0) {
+                                        popToast("导学内容和上传附件不能同时为空");
+                                        return;
+                                    }
+                                    daxue_info.name = name;
+                                    daxue_info.desc = desc;
+                                    daxue_info.format_lead_learn = format_lead_learn;
+                                    saveDaoxueData(type);//调用保存导学接口
+                                }
+                              }
+                        });
+						
+					}
+				}
+			}else{
+			     if (format_lead_learn.length == 0) {
+                    popToast("导学内容和上传附件不能同时为空");
+                    api.hideProgress();
+                    return;
+                }
+                daxue_info.name = name;
+                daxue_info.desc = desc;
+                daxue_info.format_lead_learn = format_lead_learn;
+                saveDaoxueData(type);//调用保存导学接口
+			}
+		}
+		/*
+		*author:zhaoj
+		*function:调用保存导学接口
+		*date：20170405
+		*/
+		function saveDaoxueData(type){
+			if(type){
+				openPublicWin();
+			}else{
+				var height = $api.cssVal($api.byId('j_body'),'height');
+				$api.css($api.byId('j_shadow'),'z-index:3');
+				$api.css($api.byId('j_shadow'),'height:'+height+';');
+				saveLead(function(flag,ret){
+					if(flag){
+						saveResource(1,ret.id,function(flag,res_data){
+							api.hideProgress();
+							popToast('保存成功');
+							api.execScript({
+								name : 'daoxueJyJs_index_window',
+								script : 'changeBtnTitle(0)'
+							});
+							api.execScript({
+								name : 'daoxueJyJs_index_window',
+								frameName:'daoxueJyJs_index_frame',
+								script : 'updataList()'
+							});
+							setTimeout(function(){
+								api.execScript({
+									name : 'daoxueJyJs_add_window',
+									script : 'back();'
+								});
+							},2000);
+						});
+					}else{
+						$api.css($api.byId('j_shadow'),'z-index:-1');
+						api.hideProgress();
+						popToast(ret);
+					}
+				});
+			}
+		}
+		
+		/*
+         * 功能：判断图片大小
+         * 作者：张自强
+         * 时间：20180202
+         */
+        function checkImg(len,img_url,callback){
+            var img  = new Image();
+            var wid = 0;
+            var flag = false;//是否已经加载完所有图片
+            img.src = img_url.substring(0,img_url.indexOf(img_suffix));
+            // 如果图片被缓存，则直接返回缓存数据
+            if(img.complete){
+                img_index++;
+                if(img_index == len){
+                    flag = true;
+                }
+                wid = img.naturalWidth;
+                callback(wid,img_url,true,flag);
+            }else{
+                    // 完全加载完毕的事件
+                img.onload = function(){
+                    img_index++;
+                    if(img_index == len){
+                        flag = true;
+                    }
+                    wid = img.naturalWidth;
+                    callback(wid,img_url,true,flag);
+                }
+            }
+        }
+        /*
+    *author:zfz
+    *function:选视频、图片
+    *date：20200313
+    */
+    function openPhotoAndAudioWindow(){
+        if(showTip()){
+            return;
+        }
+        var imgArray = $api.domAll($api.byId('j_files'), '.j_file');
+        var count = 5-imgArray.length;
+        var param_json={
+           count:count
+        }
+        common_wmMediaResourcesTool.openPhoto(param_json,function(flag,data_arr){
+            if(flag){
+               //递归上传图片
+                commonUiUploadFiles({"data":data_arr,"is_trans":0}, function(ret_data) {
+                    for(var i = 0; i < ret_data.length; i++){
+                        var json_data = JSON.parse(ret_data[i]);
+                        var file_id = json_data.file_id;
+                        var ext = json_data.ext;
+                        getImgSize();
+                        img_suffix = commonReturnPhotoCutSize(0);
+                        if (BASE_APP_TYPE == 1) {
+                            var img_url = BASE_IMAGE_PRE+"down/Material/" + file_id.substring(0, 2) + "/" + file_id + '.' + ext + commonReturnPhotoCutSize(0);
+                        } else {
+                            var img_url = BASE_URL_ACTION + "/html/thumb/Material/" + file_id.substring(0, 2) + "/" + file_id + '.' + ext + commonReturnPhotoCutSize(0);
+                            
+                        }
+                        if (getfilesNum() == 4) {
+                            $api.css($api.byId('j_add_btn'), 'display:none');
+                            addFiles(img_url, 'mr0');
+                        } else {
+                            addFiles(img_url, '');
+                        }
+                    }
+                });
+            }
+        });
+    }
+</script>
+</html>

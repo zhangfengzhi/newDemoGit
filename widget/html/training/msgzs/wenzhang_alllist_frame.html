@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<!-- html5：在创建html时为了防止页面缩放等不兼容效果，要创建个viewport  -->
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<!-- 在IOS设备上，有时会将数字转为手机号，这里也要禁止下 -->
+		<meta name="format-detection" content="telephone=no"/>
+		<title>文章数据页面</title>
+		<link rel="stylesheet" type="text/css" href="../../../css/aui/aui.css" />
+		<link rel="stylesheet" type="text/css" href="../../../css/list_frame.css" />
+		<style>
+			.content {
+				font-size: 14px;
+				color: #666;
+			}
+			.no-data{text-align:center;text-align:center;color:#666;margin-top:10px;}
+		</style>
+	</head>
+	<body >
+	
+		<div class="aui-content-padded" >
+		
+			<!--文章列表-->
+			<div id="wzlist_div"></div>
+			<script type="text/html" id="wzlist_script">
+				<% if(list.length == 0){ %>
+					<div class="no-data"><span>暂无文章</span></div>
+				<% }else{ %>
+					<%for(var i=0; i<list.length; i++) {%>
+						<div class="section3"  onclick="openWzContent('<%=list[i].id %>','<%=list[i].obj_info_id %>','<%=list[i].title_base64 %>');">
+							<div class="item style1" tapmode="itemhover">
+								<%if(list[i].thumb_id != "") {%>
+									<div class="itemlogo userlogo"><img onerror="this.src='../../../image/yingyong/weike/wk_default.png'"  src="../../../image/yingyong/weike/wk_default.png" alt="" data-echo="<%=list[i].wz_thumb_url %>">
+									</div>
+									
+									<div class="itemshelf">
+										<div class="shelfinfo01">
+											<%=list[i].title %>
+										</div>
+										<!--<div class="shelfinfo04">
+											<%=list[i].overview %>
+										</div>-->
+										<div class="shelfinfo04">
+											作者：<%=list[i].person_name %>&nbsp;&nbsp;&nbsp;
+											发布：<%=list[i].support_num.substring(0,10) %>
+										</div>
+										<div  class="shelfinfo06">
+											浏览&nbsp;<%=list[i].browse_num %>&nbsp;&nbsp;&nbsp;&nbsp;
+											评论&nbsp;<%=list[i].comment_num %>&nbsp;&nbsp;&nbsp;&nbsp;
+											<!--点赞&nbsp;<%=list[i].praise_count %>&nbsp;-->
+											<%if(list[i].pub_target == "1") {%>
+												状态&nbsp;<font color="green">已审核</font>&nbsp;
+											<% } else { %>
+												状态&nbsp;<font color="red">未审核</font>&nbsp;
+											<% } %>
+										</div>
+									</div>
+								<% } else { %>
+									<div class="itemlogo userlogo">
+										<img onerror="this.src='../../../image/yingyong/weike/wk_default.png'"  src="../../../image/yingyong/weike/wk_default.png" alt="" data-echo="<%=list[i].wz_thumb_url %>">
+									</div>
+									<div class="itemshelf">
+										<div class="shelfinfo01">
+											<%=list[i].title %>
+										</div>
+										<!--<div class="shelfinfo04">
+											<%=list[i].overview %>
+										</div>-->
+										<div class="shelfinfo04">
+											作者：<%=list[i].person_name %>&nbsp;&nbsp;&nbsp;发布：<%=list[i].support_num.substring(0,10) %>
+										</div>
+										<div  class="shelfinfo06">
+											浏览&nbsp;<%=list[i].browse_num %>&nbsp;&nbsp;&nbsp;&nbsp;
+											评论&nbsp;<%=list[i].comment_num %>&nbsp;&nbsp;&nbsp;&nbsp;
+											<!--点赞&nbsp;<%=list[i].praise_count %>&nbsp;-->
+											<%if(list[i].pub_target == "1") {%>
+												状态&nbsp;<font color="green">已审核</font>&nbsp;
+											<% } else { %>
+												状态&nbsp;<font color="red">未审核</font>&nbsp;
+											<% } %>
+										</div>
+									</div>
+								<% } %>
+							</div>
+						</div>
+					<% } %>
+				<% } %>
+			</script>
+	
+	
+		
+	</body>
+	<script type="text/javascript" src="../../../script/api.js" ></script>
+	<script type="text/javascript" src="../../../script/base_config.js" ></script>
+	<script type="text/javascript" src="../../../script/plug-in/base64.js" ></script>
+	<script type="text/javascript" src="../../../script/plug-in/template.js" ></script>
+	<script type="text/javascript" src="../../../script/plug-in/echo.min.js"></script>
+	<script type="text/javascript" src="../../../script/yingyong/msgzs/wenzhang_common.js" ></script>
+	<script type="text/javascript">
+		//全部文章：0，我的文章：1
+		var wz_from_type;
+		//定义滑动条
+		var navigationBar;
+		//定义滑动条id
+		var n_id = 0;
+		var header_h;
+		//定义搜索框高度
+		var bar_h;
+		//搜索框
+		var uiInput;
+		//姓名关键字
+		var keyword = '';
+		//定义文章分类id
+		var bar_ids = [];
+		//定义类型id
+		var lx_id = 0;
+		//机构id
+		var org_id = 0;
+		//机构类型
+		var org_type = 0;
+		//机构名称
+		var org_name = '全部文章';
+		//总记录数
+		var totalCount = 0;
+		//总页数
+		var totalPages = 0;
+		//定义一个变量存储第一次加载返回来的总记录数
+		var totalData = 0;
+		//判断是否有审核资格
+		var isadmin = 0;
+		//当前页面为第一页
+		var currentPage;
+		var BASE_URL_ACTION;
+		var BASE_SERVER_NAME;
+		apiready = function() {
+			header_h = api.pageParam.header_h;
+			isadmin = api.pageParam.isadmin;
+			BASE_URL_ACTION = $api.getStorage('BASE_URL_ACTION');
+			BASE_SERVER_NAME = $api.getStorage('BASE_SERVER_NAME');
+			bar_h = 40;
+			org_id = api.pageParam.menu_id;
+			org_type = api.pageParam.menu_type;
+			org_name = api.pageParam.menu_name;
+			//实例化滑动条
+			navigationBar = api.require("navigationBar");
+			//打开滑动条
+			openNavigationBar();
+			//实例化搜索框
+			uiInput = api.require('UIInput');
+			//加载搜索框
+			loadSearchBar();
+			//下拉刷新
+			refreshDataInfo();
+			//上拉加载
+			scrollBottomReload();
+		};
+		/**
+		 * 打开文章分类滑动
+		 * 周枫
+		 * 2016.2.28
+		 */
+		function openNavigationBar() {
+			closeNav();
+			getCateGory(function(is_true, data) {
+				if (is_true) {
+					openNavigationBarToHtml(data.list);
+				} else {
+					api.toast({
+						msg : data
+					});
+				}
+			});
+		}
+		
+		/**
+		 * 打开menu列表
+		 * 周枫
+		 * 2016.1.13
+		 */
+		function openNavigationBarToHtml(bar_list) {
+			var bar_items = [];
+			for (var i = 0; i < bar_list.length; i++) {
+				var arr = {
+					title : bar_list[i].name,
+					titleSelected : bar_list[i].name,
+					bg : "#ffffff",
+					alpha : 0.8,
+					bgSelected : "#ffffff"
+				}
+				bar_ids.push(bar_list[i].sequence);
+				bar_items.push(arr);
+			}
+			
+			var params = {
+				x : 0,
+				y : header_h,
+				w : api.frameWidth,
+				h : bar_h,
+				//导航条风格，默认值："left_to_right"
+				style : "left_to_right",
+				itemSize : {
+					w : 100,
+					h : 100
+				},
+				//按钮项
+				items : bar_items,
+				//被选中的导航项的下标.可为空.不传表示不选中任何item，默认值：无
+				selectedIndex : 0,
+				//导航项字体的大小和颜色.可为空
+				font : {
+					//导航项字体大小.数字.默认系统字号，可为空
+					size : 16,
+					// 选中时,导航项字体大小.默认size大小，可为空
+					sizeSelected : 16,
+					// 导航条字体颜色.字符串.默认#FFFFFF,可为空
+					color : "#000000",
+					// 导航条字体颜色.字符串.默认与 color 相同.可为空
+					colorSelected : "#ff0000"
+					// 背景透明度. 数字.取值范围0-1，默认1，可为空
+					//alpha
+				},
+				//导航条背景,支持rgb,rgba,# , img.可为空，默认值：#6b6b6b
+				bg : "#ffffff",
+				//背景透明度.取值范围0-1，默认1，可为空，默认值：1.0.
+				alpha : 1.0,
+				//					popItem : {
+				//						position : "tail",
+				//						title : "打开",
+				//						titleSelected : "关闭",
+				//						bg : "#ffff00",
+				//						bgSelected : "#ffffff"
+				//					},
+				//（可选项）模块所属 Frame 的名字，若不传则模块归属于当前 Window
+				fixedOn : '',
+				//（可选项）模块是否随所属 Window 或 Frame 滚动,默认值：true（不随之滚动）
+				fixed : true
+			};
+			navigationBar = api.require("navigationBar");
+			navigationBar.open(params, callBackNew);
+		}
+
+		function callBackNew(ret, err) {
+			var bar_index = 0;
+			bar_index = ret.index;
+			n_id = ret.id;
+			uiInput.closeKeyboard();
+			currentPage = 1;
+			lx_id = bar_ids[bar_index];
+			$api.setStorage('wenzhang_lx_id',lx_id);
+			loadData(lx_id, currentPage, true,'加载中...');
+		}
+		/**
+		 * 打开文章搜索
+		 * 周枫
+		 * 2016.1.19
+		 */
+		function loadSearchBar() {
+			uiInput.open({
+				//（可选项）模块的位置及尺寸
+				rect : {
+					x : 0,
+					y : header_h + bar_h + 1,
+					w : api.winWidth,
+					h : bar_h
+				},
+				//（可选项）模块各部分的样式
+				styles : {
+					bgColor : '#fff',
+					size : 16,
+					color : '#000',
+					placeholder : {
+						color : '#ccc'
+					}
+				},
+				autoFocus : false,
+				//（可选项）输入框显示的最大行数，注意：取值大于1（多行显示时），不触发 search 事件回调
+				maxRows : 1,
+				//（可选项）输入框的占位提示文本
+				placeholder : '按文章标题搜索,最多输入20个汉字',
+				//（可选项）输入框获取焦点时，弹出的键盘类型；取值范围：default（默认键盘）,number（数字键盘）,search（搜索键盘）
+				keyboardType : 'search',
+				//（可选项）模块所属 Frame 的名字，若不传则模块归属于当前 Window
+				fixedOn : '',
+				//（可选项）模块是否随所属 Window 或 Frame 滚动,默认值：true（不随之滚动）
+				fixed : true
+			}, function(ret) {
+				/*
+				 *  status: true,                  //布尔型；true||false
+				 eventType: 'show'              //字符串类型；交互事件类型，
+				 //取值范围：
+				 //show（模块打开成功）
+				 //change（输入框内容改变）
+				 //search（点击键盘的搜索按钮）
+				 */
+				if (ret) {
+					if (ret.eventType == 'search') {
+						uiInput.value(function(ret) {
+							if (ret) {
+								keyword = ret.msg;
+								currentPage = 1;
+								loadData(lx_id, currentPage, true,'加载中...');
+								uiInput.closeKeyboard();
+							}
+						});
+					}
+					if (ret.eventType == 'change') {
+						uiInput.value(function(ret) {
+							if (ret) {
+								keyword = ret.msg;
+								if (keyword == '') {
+									currentPage = 1;
+									loadData(lx_id, currentPage, true,'加载中...');
+								}
+								if (keyword.length >= 20) {
+									api.alert({
+										msg : '对不起，最多输入20个汉字'
+									}, function(ret, err) {
+										uiInput.value({
+											msg : keyword
+										});
+									});
+								}
+							}
+						});
+					}
+				}
+			});
+		}
+
+		function openWzContent(wz_id,expand_id, wz_name) {
+			api.openWin({
+				name : 'wenzhang_content_window',
+				url : 'wenzhang_content_window.html',
+				pageParam : {
+					org_id : org_id,
+					header_h : header_h,
+					wz_id : wz_id,
+					wz_name : wz_name,
+					expand_id : expand_id,
+					menu_type : api.pageParam.menu_type,
+					menu_id : api.pageParam.menu_id,
+					isadmin : isadmin
+				},
+				bounces : false,
+				opaque : false,
+				showProgress : false,
+				vScrollBarEnabled : false,
+				hScrollBarEnabled : false,
+				slidBackEnabled : false,
+				delay : 0,
+				animation : {
+					type : "reveal", //动画类型（详见动画类型常量）
+					subType : "from_right", //动画子类型（详见动画子类型常量）
+					duration : 300
+				},
+			});
+		}
+
+		/**
+		 * 下拉刷新
+		 * 周枫
+		 * 2016.2.29
+		 */
+		function refreshDataInfo() {
+			//绑定下拉刷新历史会话事件
+			api.setRefreshHeaderInfo({
+				visible : true,
+				loadingImg : 'widget://image/local_icon_refresh.png',
+				bgColor : '#F5F5F5',
+				textColor : '#8E8E8E',
+				textDown : '下拉加载更多...',
+				textUp : '松开加载...',
+				showTime : true
+			}, function(ret, err) {
+				//从服务器加载数据，完成后调用api.refreshHeaderLoadDone()方法恢复组件到默认状态
+				//调用获取历史会话监听
+				//打开滑动条
+				loadData(lx_id, 1, true,'加载中...');							
+//				openNavigationBar();
+			});
+		}
+		/*
+		*author:zhaoj
+		*function:删除文章
+		*date：20160323
+		*/
+		function deleteWz(){
+			loadData(lx_id, 1, true,'删除中...');
+		}
+		/**
+		 * 上拉刷新页面数据
+		 * 周枫
+		 * 2015.11.24
+		 */
+		function scrollBottomReload() {
+			
+			//下移到底部：
+			api.addEventListener({
+				name : 'scrolltobottom',
+				extra : {
+					threshold : 100 //设置距离底部多少距离时触发，默认值为0，数字类型
+				}
+			}, function(ret, err) {
+				//alert(totalPages);
+				if ((currentPage + 1) <= totalPages) {
+					loadData(lx_id, currentPage + 1, false,'加载中...');
+					currentPage = currentPage + 1;
+					// 页码+1
+				} else {
+					api.toast({
+						msg : '已加载全部数据',
+						location : 'bottom'
+					});
+				}
+			});
+		}
+		function closeNav(){
+			navigationBar.close({
+				id : n_id
+			});
+		}
+		function hideInput() {
+			uiInput.hide();
+		}
+
+	</script>
+</html>

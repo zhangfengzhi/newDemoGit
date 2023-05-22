@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<!-- html5：在创建html时为了防止页面缩放等不兼容效果，要创建个viewport  -->
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<!-- 在IOS设备上，有时会将数字转为手机号，这里也要禁止下 -->
+		<meta name="format-detection" content="telephone=no"/>
+		<title>理想帮助</title>
+		<link rel="stylesheet" type="text/css" href="../../../css/aui/aui.css" />
+		<link rel="stylesheet" type="text/css" href="../../../css/api.css"/>
+		<link rel="stylesheet" type="text/css" href="../../../css/common.css"/>
+		<link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+		<style>
+			body {
+			}
+		</style>
+	</head>
+	<body class="w-ipad-common">
+		<div id="wrap">
+			<header class="aui-bar aui-bar-nav aui-bar-primary" id="aui-header">
+				<div id="cloud" class="topbar activebar">
+					<div id="back" class="back" onclick="back();" tapmode="">
+						<i class="aui-iconfont aui-icon-left"></i>返回
+					</div>
+					<div class="mTitle" id="mTitle">
+						客服
+					</div>
+				</div>
+			</header>
+			<div  class="aui-content aui-content-padded" id="message-content">
+				<p class="aui-text-center history-date"></p>
+			</div>
+		</div>
+		
+		<script type="text/javascript" src="../../../script/api.js"></script>
+		<script type="text/javascript" src="../../../script/base_config.js"></script>
+	</body>
+	
+	<script type="text/javascript">
+		apiready = function() {
+			commonSetTheme({"level":3,"type":0});
+			//定位header位置，留出上面电池等空隙，苹果需要
+			var header = $api.byId('aui-header');
+			$api.fixStatusBar(header);
+			header_h = api.pageParam.header_h;
+			//打开信息列表frame
+			openMyInfoFrame();
+		};
+		
+		/**
+		 * 打开信息内容页面
+		 * 周枫
+		 * 2016.1.15 
+		 */
+		function openMyInfoFrame(){
+			//打开通知frame页面
+			api.openFrame({
+				name : 'w_help_frame',
+				scrollToTop : true,
+				allowEdit : true,
+				url : 'w_help_frame.html',
+				showProgress : false,
+				rect : {
+					x : 0,
+					y : header_h,
+					w : 'auto',
+					h : api.winHeight - header_h,
+				},
+				pageParam : {
+					header_h : header_h
+				},
+				vScrollBarEnabled : true,
+				hScrollBarEnabled : false,
+				//页面是否弹动 为了下拉刷新使用
+				bounces : true
+			});
+		}
+		
+		/**
+		 * 返回应用页面
+		 * 周枫
+		 * 2015.10.11
+		 */
+		function back() {
+			api.closeWin();
+		}
+	</script>
+</html>

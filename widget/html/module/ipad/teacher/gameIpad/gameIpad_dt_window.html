@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>游戏动态</title>
+    <link rel="stylesheet" type="text/css" href="../../../css/aui/aui.css"/>
+</head>
+<body>
+	<div id="wrap">
+			<header class="aui-bar aui-bar-nav aui-bar-primary" id="aui-header">
+				<div id="cloud" class="topbar activebar">
+					<div id="back" class="back" onclick="back();" tapmode="">
+						<i class="aui-iconfont aui-icon-left"></i>返回
+					</div>
+					<div  class="mTitle" id="mTitle">
+					</div>
+					<div class="win-menu">
+					</div>
+				</div>
+			</header>
+			<div  class="aui-content aui-content-padded" id="message-content">
+				<p class="aui-text-center history-date"></p>
+			</div>
+		</div>
+</body>
+<script type="text/javascript" src="../../../script/api.js"></script>
+<script type="text/javascript" src="../../../script/plug-in/base64.js" ></script>
+<script type="text/javascript" src="../../../script/common/common.js"></script>
+<script type="text/javascript">
+	apiready = function(){
+		var header_h = api.pageParam.header_h;//顶部高度
+		$api.text($api.byId('mTitle'),Base64.decode(api.pageParam.name_base64));
+		var pageParamJson= {"header_h":header_h};//打开frame页面json数据
+		//打开游戏动态的frame页面
+		commonOpenFrame("gameIpad_dt_frame","gameIpad_dt_frame.html",header_h,false,false,"#ffffff",pageParamJson);
+		commonBackForAndroid();//安卓关闭
+		commonIosAuiHeader();//定位header位置，留出上面电池等空隙，苹果需要
+	};
+	/*
+	*author:zhaoj
+	*function:返回页面
+	*date：20161220
+	*/
+	function back() {
+		api.closeWin();
+	}
+</script>
+</html>

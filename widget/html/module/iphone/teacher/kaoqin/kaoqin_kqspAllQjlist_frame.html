@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no" />
+    <title>我的考勤</title>
+    <link rel="stylesheet" type="text/css" href="../../../../../css/aui/aui.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../../../css/module/common/aui-list-swipe.css" />
+    <link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+    <style>
+    	.person-name{display:inline-block;max-width:69%;margin-right:1%;}
+    	.reason{display:inline-block;max-width:30%;}
+    	.ellipsis{white-space: nowrap;overflow: hidden;text-overflow: ellipsis;}
+    	.leave-reason{max-width:100%;}
+    	.tip-image{position:absolute;top:-12px;right:-15px;width:38px;}
+    	.aui-swipe-div{position:relative;}
+    	.aui-list-view:before{height:0;}
+    	.aui-list-view:after{height:0;}
+    	.aui-list-view-cell:last-child:after {position: absolute;left: 0;right: 0;bottom: 0;height: 1px;content: '';background-color: #c8c7cc;-webkit-transform: scaleY(.5);transform: scaleY(.5);}
+    	.no-data{color:#666666;text-align:center;line-height:45px;}
+    	.aui-list-view .aui-img-object{width:60px;}
+    	.fl{float:left}
+    </style>
+</head>
+<body class="common-iphone-kaoqin">
+	<section class="aui-content" id="banner">
+		<ul id="qj_body" class="aui-list-view">
+        </ul>
+        <script type="text/html" id="qj_script">
+			<% if(list.length == 0){ %>
+				<div class="no-data"><span>暂无请假信息</span></div>
+			<% }else{ %>
+				<%for(var i=0; i<list.length; i++) {%>
+					<%if(list[i].status_id==1){%>
+						<li class="aui-list-view-cell aui-img" tapmode onclick="showMsg(this,'<%=list[i].leave_id%>');">
+			            	<div  class="aui-swipe-div">
+				               <img class="aui-img-object aui-pull-left" onerror="this.src='../../../../../image/fun-module/iphone/kaoqin/<%=list[i].type_id%>.png'"  src="../../../../../image/fun-module/iphone/kaoqin/<%=list[i].type_id%>.png" />
+				                <div class="aui-img-body">
+				                    <div class="person-name ellipsis"><%=list[i].person_name%></div>
+				                    <!--<div class="reason">[<%=list[i].type_name%>]</div>-->
+				                    <p><%=list[i].start_time%>&nbsp;&nbsp;<%=list[i].time%></p>
+				                    <p class="leave-reason ellipsis"><%=list[i].content%></p>
+				                </div>
+				                <%if(list[i].status_id==1){%>
+				                 	<img class="tip-image" src="../../../../../image/fun-module/iphone/kaoqin/shenpi.png" />
+				                <%}else if(list[i].status_id==2){%>
+				                	<img class="tip-image" src="../../../../../image/fun-module/iphone/kaoqin/pass.png" />
+				                <%}else if(list[i].status_id==3){%>
+				                	<img class="tip-image" src="../../../../../image/fun-module/iphone/kaoqin/no-pass.png" />
+				                <%}else if(list[i].status_id==4){%>
+				                	<img class="tip-image" src="../../../../../image/fun-module/iphone/kaoqin/yichexiao.png" />
+				                <%}else{%>
+				                	<img class="tip-image" src="../../../../../image/fun-module/iphone/kaoqin/undo.png" />
+				                <%}%>
+			                </div>
+			            </li>
+		            <%}%>
+				<% } %>
+				<%for(var i=0; i<list.length; i++) {%>
+					<%if(list[i].status_id!=1){%>
+						<li class="aui-list-view-cell aui-img" tapmode onclick="showMsg(this,'<%=list[i].leave_id%>');">
+			            	<div  class="aui-swipe-div">
+				               <img class="aui-img-object aui-pull-left" onerror="this.src='../../../../../image/fun-module/iphone/kaoqin/<%=list[i].type_id%>.png'"  src="../../../../../image/fun-module/iphone/kaoqin/<%=list[i].type_id%>.png" />
+				                <div class="aui-img-body">
+				                    <div class="person-name ellipsis"><%=list[i].person_name%></div>
+				                    <!--<div class="reason">[<%=list[i].type_name%>]</div>-->
+				                    <p><%=list[i].start_time%>&nbsp;&nbsp;<%=list[i].time%></p>
+				                    <p class="leave-reason ellipsis"><%=list[i].content%></p>
+				                </div>
+				                <%if(list[i].status_id==1){%>
+				                 	<img class="tip-image" src="../../../../../image/fun-module/iphone/kaoqin/shenpi.png" />
+				                <%}else if(list[i].status_id==2){%>
+				                	<img class="tip-image" src="../../../../../image/fun-module/iphone/kaoqin/pass.png" />
+				                <%}else if(list[i].status_id==3){%>
+				                	<img class="tip-image" src="../../../../../image/fun-module/iphone/kaoqin/no-pass.png" />
+				                <%}else if(list[i].status_id==4){%>
+				                	<img class="tip-image" src="../../../../../image/fun-module/iphone/kaoqin/yichexiao.png" />
+				                <%}else{%>
+				                	<img class="tip-image" src="../../../../../image/fun-module/iphone/kaoqin/undo.png" />
+				                <%}%>
+			                </div>
+			            </li>
+			        <% } %>
+				<% } %>
+			<% } %>
+		</script>
+	</section>
+</body>
+<script type="text/javascript" src="../../../../../script/api.js"></script>
+<!--<script type="text/javascript" src="../../../../../script/zepto_list.min.js"></script>-->
+<script type="text/javascript" src="../../../../../script/plug-in/aui-list-swipe.js"></script>
+<script type="text/javascript" src="../../../../../script/base_config.js" ></script>
+<script type="text/javascript" src="../../../../../script/plug-in/template.js" ></script>
+<script type="text/javascript" src="../../../../../script/common/common.js"></script>
+<script type="text/javascript" src="../../../../../script/common/kaoqin_common.js"></script>
+<script type="text/javascript">
+	var header_h;
+	apiready = function(){
+		commonSetTheme({"level":5,"type":0});
+		header_h = api.pageParam.header_h;
+		initData(1);
+		//下拉刷新
+		refreshDataInfo();
+	};
+	/*
+	 *author:zhaoj
+	 *function:初始化数据
+	 *date：20160622
+	 */
+	function initData(is_show){
+		getLeaveAllInfoList(is_show,1,function(ret,flag){
+			if(flag){
+				dealData(ret,function(flag){
+					api.parseTapmode();
+					// 初始化
+					var swipe = new ListSwipe();
+					//initSpSwipe();
+				})
+			}
+		})
+	}
+	function showMsg(el,leave_id,check_status){
+		if(!el.classList.contains("aui-swipe-selected")){
+			openKqxqWin(0,leave_id,'kaoqin_allKqxq_window');
+		}
+	}
+	/*
+	 *author:zhaoj
+	 *function:处理数据
+	 *date：20160622
+	 */
+	function dealData(ret,callback){
+		for(var i = 0; i < ret.list.length; i++){
+			ret.list[i].start_time = ret.list[i].start_time.substring(0,16);
+			var time='';
+			if(ret.list[i].days*1>0){
+				time = ret.list[i].days+'天';
+			}
+			if(ret.list[i].hours*1>0){
+				time = time + ret.list[i].hours+'小时';
+			}
+			if(time){
+				time = '共'+time;
+			}
+			if(ret.list[i].minutes*1>0){
+				time = time + ret.list[i].minutes+'分钟';
+			}
+			ret.list[i].time = time;
+		}
+		addTemplateHtml('qj_body', 'qj_script', ret,1);
+		callback(true);
+	}
+</script>
+</html>

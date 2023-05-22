@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<!-- html5：在创建html时为了防止页面缩放等不兼容效果，要创建个viewport  -->
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<!-- 在IOS设备上，有时会将数字转为手机号，这里也要禁止下 -->
+		<meta name="format-detection" content="telephone=no"/>
+		<title>增加访客页面</title>
+		<link rel="stylesheet" type="text/css" href="../../../../../css/aui/aui.css" />
+		<link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+		<style>
+			.h1 {
+				height: 1px;
+				background: #f0f0f0;
+			}
+			.aui-iconfont {
+				float: right;
+			}
+			.menu-i-card {
+				float: left;
+				padding-left: 10px;
+				margin-bottom: 0px;
+				border: 0px none;
+				margin-top: 13px;
+			}
+			.note-gray-form {
+				position: absolute;
+				font-size: 16px;
+				margin-top: 13px;
+			}
+			#foot_div {
+				display: block;
+				bottom: 0px;
+				width: 100%;
+				min-width: 200px;
+				line-height: 30px;
+				text-align: center;
+				color: #fff;
+				background: transparent;
+				padding: 10px 0;
+			}
+			.flex-con {
+				-webkit-box-flex: 1;
+				-webkit-flex: 1;
+				flex: 1;
+			}
+		</style>
+	</head>
+	<body class="common-iphone-fangke">
+		<div id="wrap">
+			<div class="aui-content flex-con">
+				<form class="aui-input-group" style="height: 100%;">
+					<div class="aui-input-row" id="input_row_hei">
+						<label>访客姓名</label>
+						<input oninput="commonRemoveExpression(this)" id="fk_name" type="text" placeholder="最多输入20个字符，必填" maxlength="20" style="width: 60%;">
+						<!--<i class="aui-iconfont aui-icon-card menu-i-card" onclick="openTelNumber();"></i>-->
+					</div>
+					<div class="aui-input-row">
+						<label>访客电话</label>
+						<input oninput="commonRemoveExpression(this)" id="fk_tel" type="tel" placeholder="请输入11位手机号，非必填">
+					</div>
+					<div class="aui-input-row" onclick="getFkTime();">
+						<label>预约时间</label>
+						<font id="fk_time" class="note-gray note-gray-form" >请点击选择时间</font>
+					</div>
+					<!-- <div class="aui-input-row" onclick="getFkNum();">
+						<label>人数限制</label>
+						<font id="fk_num" class="note-gray note-gray-form" >请点击选择人数</font>
+					</div> -->
+					<div class="aui-input-row">
+						<label>备注内容</label>
+					</div>
+					<div class="aui-input-row">
+						<textarea id="fk_memo" placeholder="请输入备注内容，非必填" style="overflow: auto;"></textarea>
+					</div>
+					<!--预约时间隐藏域-->
+					<input oninput="commonRemoveExpression(this)" type="hidden" id="fk_time_hid" value=""/>
+					<!--预约人数隐藏域-->
+					<input oninput="commonRemoveExpression(this)" type="hidden" id="fk_num_hid" value="-1"/>
+				</form>
+			</div>
+			<div id="foot_div">
+				<button class="aui-btn aui-btn-success" onclick="return addFkInfo();">
+					保存
+				</button>
+				&nbsp;&nbsp;
+				<button class="aui-btn aui-btn-info" onclick="reFkInfo();">
+					重置
+				</button>
+			</div>
+		</div>
+		<!--<div class="aui-input-row">
+		<label>访客姓名</label>
+		<input oninput="commonRemoveExpression(this)" style="margin-top: 4px; width: 60%;" id="fk_name" type="text" placeholder="访客姓名最多支持20个字符">
+		<i class="aui-iconfont aui-icon-card menu-i-card" onclick="verContent();"></i>
+		</div>
+		<div class="aui-input-row">
+		<label>访客电话</label>
+		<input oninput="commonRemoveExpression(this)" style="margin-top: 4px;" id="fk_tel" type="text" placeholder="请输入11位手机号">
+		</div>-->
+	</body>
+	<script type="text/javascript" src="../../../../../script/api.js"></script>
+	<script type="text/javascript" src="../../../../../script/plug-in/base64.js"></script>
+	<script type="text/javascript" src="../../../../../script/base_config.js"></script>
+	<script type="text/javascript" src="../../../../../script/common/common.js" ></script>
+	<script type="text/javascript">
+		var header_h;
+		var nowMillisecond;//当前时间
+		apiready = function() {commonSetTheme({"level":5,"type":0});
+			commonShowProgress('加载中...',false);
+          commonGetCurrentDate(function(nowTime, now_millisecond){
+               nowMillisecond = now_millisecond;
+               api.hideProgress();
+                header_h = api.pageParam.header_h;
+                //$api.dom('#form-group');
+                //默认选中当前时间
+                initDateAndNum();
+                var winHeight = api.winHeight;
+                var input_row_hei = document.getElementById("input_row_hei").offsetHeight * 4;
+                var foot_div_hei = document.getElementById("foot_div").offsetHeight;
+                var textAreaH = winHeight - header_h - foot_div_hei - input_row_hei - 3;
+                document.getElementById('fk_memo').style.height = textAreaH + 'px';
+           });
+		};
+		/**
+		 * 打开电话本
+		 * 周枫
+		 * 2016.03.17
+		 */
+		function openTelNumber() {
+			api.openContacts(function(ret, err) {
+				if (err) {
+					api.toast({
+						msg : '对不起，您没有打开电话本权限，请手动录入访客信息'
+					});
+				} else {
+					if (ret.status) {
+						var tel_num = ret.phone;
+						tel_num = tel_num.replaceAll('-', '');
+						tel_num = tel_num.replaceAll(' ', '');
+						tel_num = tel_num.replaceAll('　', '');
+						$api.val($api.byId('fk_name'), ret.name);
+						$api.val($api.byId('fk_tel'), tel_num);
+					} else {
+						api.toast({
+							msg : '对不起，您没有打开电话本权限，请手动录入访客信息'
+						});
+					}
+				}
+			});
+		}
+
+		/**
+		 * 获取访客人数
+		 * 周枫
+		 * 2016.3.18
+		 */
+		function getFkNum() {
+			var bsqy_list = ['1人', '2人', '3人', '4人', '5人', '不限人数'];
+			api.actionSheet({
+				cancelTitle : '取消',
+				buttons : bsqy_list
+			}, function(ret, err) {
+				var b_index = ret.buttonIndex;
+				if (ret) {
+					switch(b_index) {
+						//case 1,2,3,4,5,6:
+						case 1:
+							$api.text($api.byId('fk_num'), bsqy_list[b_index - 1]);
+							$api.removeCls($api.byId('fk_num'), 'note-gray');
+							$api.val($api.byId('fk_num_hid'), b_index);
+							//							if (b_index == 6) {
+							//								$api.val($api.byId('fk_num_hid'), 0);
+							//							} else {
+							//
+							//								$api.val($api.byId('fk_num_hid'), b_index);
+							//							}
+							break;
+						case 2:
+							$api.text($api.byId('fk_num'), bsqy_list[b_index - 1]);
+							$api.removeCls($api.byId('fk_num'), 'note-gray');
+							$api.val($api.byId('fk_num_hid'), b_index);
+							break;
+						case 3:
+							$api.text($api.byId('fk_num'), bsqy_list[b_index - 1]);
+							$api.removeCls($api.byId('fk_num'), 'note-gray');
+							$api.val($api.byId('fk_num_hid'), b_index);
+							break;
+						case 4:
+							$api.text($api.byId('fk_num'), bsqy_list[b_index - 1]);
+							$api.removeCls($api.byId('fk_num'), 'note-gray');
+							$api.val($api.byId('fk_num_hid'), b_index);
+							break;
+						case 5:
+							$api.text($api.byId('fk_num'), bsqy_list[b_index - 1]);
+							$api.removeCls($api.byId('fk_num'), 'note-gray');
+							$api.val($api.byId('fk_num_hid'), b_index);
+							break;
+						case 6:
+							$api.text($api.byId('fk_num'), bsqy_list[b_index - 1]);
+							$api.removeCls($api.byId('fk_num'), 'note-gray');
+							$api.val($api.byId('fk_num_hid'), b_index);
+							break;
+						default :
+							//默认选中不限人数
+							$api.removeCls($api.byId('fk_num'), 'note-gray');
+							$api.val($api.byId('fk_num_hid'), 0);
+							$api.text($api.byId('fk_num'), '不限人数');
+							break;
+					}
+				} else {
+					//默认选中不限人数
+					$api.removeCls($api.byId('fk_num'), 'note-gray');
+					$api.val($api.byId('fk_num_hid'), 0);
+					$api.text($api.byId('fk_num'), '不限人数');
+				}
+			});
+		}
+
+		/**
+		 * 获取访客时间
+		 * 周枫
+		 * 2016.3.18
+		 */
+		function getFkTime() {
+			api.openPicker({
+				type : 'date',
+				title : '预约时间'
+			}, function(ret, err) {
+				if (ret) {
+					var fk_month = ret.month + '';
+					if (fk_month.length == 1) {
+						fk_month = '0' + fk_month;
+					}
+					var fk_day = ret.day + '';
+					if (fk_day.length == 1) {
+						fk_day = '0' + fk_day;
+					}
+					if(Date.parse(ret.year+'/'+fk_month+'/'+fk_day+' 23:59:59')>nowMillisecond){
+                       var fk_time = ret.year + '年' + fk_month + '月' + fk_day + '日';
+                        $api.text($api.byId('fk_time'), fk_time);
+                        $api.removeCls($api.byId('fk_time'), 'note-gray');
+                        $api.val($api.byId('fk_time_hid'), ret.year + '' + fk_month + '' + fk_day);
+                    }else{
+                       popToast('不支持过去日期，请重新选择');
+                    }
+				} else {
+					$api.text($api.byId('fk_time'), '请点击选择时间');
+					$api.val($api.byId('fk_time_hid'), '');
+				}
+			});
+		}
+
+		function initDateAndNum() {
+			//获取现在日期并转换成毫秒数：
+			var nDate = new Date();
+			//取当前时间月
+			var n_date_m = nDate.getMonth();
+			n_date_m = parseInt(n_date_m + 1);
+			n_date_m = n_date_m + '';
+			if (n_date_m.length == 1) {
+				n_date_m = '0' + n_date_m
+			}
+			//取当前时间日
+			var n_date_d = nDate.getDate();
+			n_date_d = parseInt(n_date_d);
+			n_date_d = n_date_d + '';
+			if (n_date_d.length == 1) {
+				n_date_d = '0' + n_date_d
+			}
+			var n_date = nDate.getFullYear() + '年' + n_date_m + '月' + n_date_d + '日';
+			$api.text($api.byId('fk_time'), n_date);
+			$api.removeCls($api.byId('fk_time'), 'note-gray');
+			$api.val($api.byId('fk_time_hid'), nDate.getFullYear() + '' + n_date_m + '' + n_date_d);
+			//默认选中不限人数
+			$api.removeCls($api.byId('fk_num'), 'note-gray');
+			$api.val($api.byId('fk_num_hid'), 0);
+			$api.text($api.byId('fk_num'), '不限人数');
+		}
+
+		function addFkInfo() {
+			//判断访客姓名
+			var fk_name = $api.val($api.byId('fk_name'));
+			var fk_name_code = '';
+			fk_name = fk_name.replaceAll(' ', '');
+			fk_name = fk_name.replaceAll('　', '');
+			if (fk_name == '') {
+				api.alert({
+					msg : '对不起，请输入访客姓名'
+				}, function(ret, err) {
+					$api.byId('fk_name').focus();
+				});
+				return false;
+			}
+			if (fk_name.length > 20) {
+				api.alert({
+					msg : '对不起，访客姓名最多支持20个字符'
+				}, function(ret, err) {
+					$api.val($api.byId('fk_name'), fk_name.substring(40));
+				});
+				return false;
+			}
+			fk_name_code = Base64.encode(fk_name);
+			//判断访客时间
+			var fk_time = $api.val($api.byId('fk_time_hid'));
+			fk_time = fk_time.replaceAll(' ', '');
+			fk_time = fk_time.replaceAll('　', '');
+			if (fk_time == 0) {
+				api.alert({
+					msg : '对不起，请输入预约时间'
+				}, function(ret, err) {
+					$api.byId('fk_time').focus();
+				});
+				return false;
+			}
+			//判断访客人数
+//			var fk_num = $api.val($api.byId('fk_num_hid'));
+//			fk_num = fk_num.replaceAll(' ', '');
+//			fk_num = fk_num.replaceAll('　', '');
+//			if (fk_num == '-1') {
+//				api.alert({
+//					msg : '对不起，请输入访客人数'
+//				}, function(ret, err) {
+//					$api.byId('fk_num').focus();
+//				});
+//				return false;
+//			}
+			//电话有效性
+			var fk_tel = $api.val($api.byId('fk_tel'));
+			fk_tel = fk_tel.replaceAll(' ', '');
+			fk_tel = fk_tel.replaceAll('　', '');
+			if (fk_tel != '') {
+				var reg = /^1\d{10}$/;
+				var r = fk_tel.match(reg);
+				if (r == null) {
+					api.alert({
+						msg : '对不起，您输入的电话格式不正确'
+					}, function(ret, err) {
+						$api.byId('fk_tel').focus();
+					});
+					return false;
+				}
+			}
+			//访客备注
+			var fk_memo = $api.val($api.byId('fk_memo'));
+			fk_memo = Base64.encode(fk_memo);
+			api.ajax({
+				url : $api.getStorage('BASE_URL_ACTION') + '/fangke/addFangKeInfo',
+				method : 'get',
+				dataType : 'json',
+				timeout : 30,
+				data : {
+					values : {
+						"fk_name" : fk_name_code,
+						"fk_tel" : fk_tel,
+						"person_id" : $api.getStorage('person_id'),
+						"fk_person_count" : 0,
+						"reserve_date" : fk_time,
+						"memo" : fk_memo
+					}
+				}
+			}, function(ret, err) {
+				if (err) {
+					api.hideProgress();
+					api.toast({
+						msg : '对不起，保存访客信息失败'
+					});
+				} else {
+					if (ret.success) {
+						var fk_sn = ret.sn;
+						var msg_con = fk_name + '您好，本次会面时间定为' + $api.text($api.byId('fk_time')) + ',可凭邀请码' + fk_sn + '到门卫处登记进入。';
+						var fk_tel = $api.val($api.byId('fk_tel'));
+						fk_tel = fk_tel.replaceAll(' ', '');
+						fk_tel = fk_tel.replaceAll('　', '');
+						//						var prompta = ["复制信息", "短信发送", "关闭"];
+						if (fk_tel == '') {
+							//							prompta = ["复制信息", "关闭"];
+							api.confirm({
+								title : "提示",
+								msg : msg_con,
+								buttons : ["复制信息", "关闭"]
+							}, function(ret, err) {
+								if (1 == ret.buttonIndex) {/* 打开相机*/
+									copyConMessage(msg_con);
+									setTimeout(function() {	
+										commonExecScript('','fangke_jslist_frame','getFkList(1, true);',2);
+									}, 2500);
+								}  else {					
+									commonShowProgress('发布中...',true);		
+									setTimeout(function() {	
+										commonExecScript('','fangke_jslist_frame','getFkList(1, true);',2);
+									}, 2500);							
+									setTimeout(function() {								
+										api.hideProgress();
+										commonExecScript('fangke_jsindex_window','','changeBtnTitle("fangke_jilu",1);',0);
+									}, 3000);
+									
+									reSetFkInfo();
+									reLoadJsList();
+									return;
+								}
+							});
+						} else {
+							api.confirm({
+								title : "提示",
+								msg : msg_con,
+								buttons :  ["复制信息", "短信发送", "关闭"]
+							}, function(ret, err) {
+								if (1 == ret.buttonIndex) {/* 打开相机*/
+									copyConMessage(msg_con);
+									setTimeout(function() {	
+										commonExecScript('','fangke_jslist_frame','getFkList(1, true);',2);
+									}, 2500);	
+								} else if (2 == ret.buttonIndex) {
+									openSendMsg($api.val($api.byId('fk_tel')), msg_con);
+									setTimeout(function() {	
+										commonExecScript('','fangke_jslist_frame','getFkList(1, true);',2);
+									}, 2500);
+								} else {
+									commonShowProgress('发布中...',true);	
+									setTimeout(function() {	
+										commonExecScript('','fangke_jslist_frame','getFkList(1, true);',2);
+									}, 2500);																	
+									setTimeout(function() {									   
+										api.hideProgress();								
+										commonExecScript('fangke_jsindex_window','','changeBtnTitle("fangke_jilu",1);',0);
+									}, 3000);							
+									reSetFkInfo();
+									reLoadJsList();
+									return;
+								}
+							});
+						}
+					} else {
+						api.hideProgress();
+						popToast('对不起，保存访客信息失败');
+					}
+				}
+			});
+		}
+
+		/**
+		 * 复制内容
+		 * 周枫
+		 * 2016.3.18
+		 */
+		function copyConMessage(mes_con) {
+			commonShowProgress('发布中...',true);
+			var clip = api.require('clipBoard');
+			clip.set({
+				value : mes_con
+			}, function(ret, err) {
+				if (ret.status) {
+					setTimeout(function() {
+						api.hideProgress();
+						commonExecScript('fangke_jsindex_window','','changeBtnTitle("fangke_jilu",1);',0);
+					}, 3000);
+					reSetFkInfo();
+					reLoadJsList();
+				} else {
+					api.hideProgress();
+					popToast('复制失败');
+				}
+			});
+		}
+
+		/**
+		 * 打开发送信息
+		 * 周枫
+		 * 2016.3.18
+		 */
+		function openSendMsg(tel_num, tel_msg) {
+			commonShowProgress('发布中...',true);
+			var tel_nums = [];
+			tel_nums[0] = tel_num.toString();
+			api.sms({
+				numbers : tel_nums,
+				text : tel_msg
+			}, function(ret, err) {
+				if (ret) {
+					setTimeout(function() {
+						api.hideProgress();
+						commonExecScript('fangke_jsindex_window','','changeBtnTitle("fangke_jilu",1);',0);
+					}, 3000);
+					reSetFkInfo();
+					reLoadJsList();
+				} else {
+					api.hideProgress();
+				}
+			});
+		}
+
+		/**
+		 * 重置内容
+		 * 周枫
+		 * 2016.3.18
+		 */
+		function reSetFkInfo() {
+			$api.val($api.byId('fk_name'), '');
+			$api.val($api.byId('fk_tel'), '');
+			$api.val($api.byId('fk_memo'), '');
+			initDateAndNum();
+			
+		}
+
+		function reFkInfo() {
+			api.confirm({
+				title : "提示",
+				msg : "现有访客内容将被清空，您确定重置吗？",
+				buttons : ["确定", "取消"]
+			}, function(ret, err) {
+				//定义图片来源类型
+				var sourceType;
+				if (1 == ret.buttonIndex) {
+					$api.val($api.byId('fk_name'), '');
+					$api.val($api.byId('fk_tel'), '');
+					$api.val($api.byId('fk_memo'), '');
+					initDateAndNum();
+				} else if (2 == ret.buttonIndex) {
+					return;
+				}
+			});
+		}
+
+		/**
+		 * 刷新列表页面
+		 * 周枫
+		 * 2016.3.21
+		 */
+		function reLoadJsList() {		    
+			commonExecScript('fangke_jslist_frame','','getFkList(1, true);',0);
+		}
+	</script>
+</html>

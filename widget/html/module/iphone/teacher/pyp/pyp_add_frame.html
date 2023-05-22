@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<title>添加文章</title>
+		<link rel="stylesheet" type="text/css" href="../../../../../css/aui/aui.css" />
+		<link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+		<style>
+			body {
+				background: #F8F7F3;
+				color: #000000;
+			}
+			.bgf {
+				background: #ffffff;
+			}
+			.mb10 {
+				margin-bottom: 10px !important;
+			}
+			.common-name .name {
+				width: 85%;
+				display: inline-block;
+				float: left;
+				line-height: 45px;
+				font-size: 16px;
+				white-space: nowrap;
+				overflow: hidden;
+				text-overflow: ellipsis;
+			}
+			.common-name .name font {
+				font-size: 13px;
+				color: #ABABAB;
+			}
+			.plr15 {
+				padding: 0 15px;
+			}
+			.plrtb {
+				padding: 15px;
+			}
+			.add-img {
+				padding: 15px 20px 10px 20px;
+			}
+			.aui-btn-block {
+				padding: 8px 0;
+				margin-bottom: 0;
+			}
+			.manage {
+				display: inline-block;
+				float: right;
+				color: #0062CC;
+				font-size: 14px;
+				line-height: 45px;
+			}
+			.clearfix:after {
+				content: ' ';
+				display: block;
+				clear: both;
+				visibility: hidden;
+				line-height: 0;
+				height: 0;
+			}
+			.sucai {
+				position: relative;
+			}
+			.sucai-name {
+				border-bottom: 2px solid #f6f6f6;
+				line-height: 45px;
+			}
+			.sucai button {
+				width: 48%;
+				float: left;
+			}
+			.shanchu {
+				position: absolute;
+				top: 25px;
+				right: 30px;
+			}
+			.mr4 {
+				margin-right: 4%;
+			}
+			input[type="text"], textarea {
+				margin-bottom: 0 !important;
+				width: 100%;
+				line-height: 20px;
+				padding: 12px 10px 6px 10px;
+				border: 0;
+				border-radius: 0px;
+			}
+			input[type="text"] {
+				padding-left: 0;
+			}
+			.mt5 {
+				margin-top: 5px;
+			}
+			.mt10 {
+				margin-top: 10px;
+			}
+			.aui-iconfont {
+				color: #34A8FA;
+			}
+			.bb {
+				border-bottom: 1px solid #34A8FA;
+			}
+			.shadow {
+				position: absolute;
+				left: 0;
+				top: 0;
+				width: 100%;
+				height: 100%;
+				z-index: -1;
+				background: #000000;
+				opacity: 0;
+			}
+			.question-file {
+				padding: 10px 15px;
+			}
+			.question-file dl {
+				position: relative;
+				width: 18%;
+				display: inline-block;
+				text-align: center;
+				float: left;
+				margin-right: 2.5%;
+			}
+			.question-file dl dd {
+				position: absolute;
+				z-index: 1px;
+				top: -10px;
+				right: -10px;
+				width: 25px;
+				height: 25px;
+				text-align: center;
+				line-height: 30px;
+			}
+			.question-file dl dd img {
+				width: 13px;
+				height: 13px;
+			}
+			.question-file dl.mr0 {
+				margin: 2px 2px;
+			}
+			.question-file dl img {
+				width: 100%;
+			}
+			.question-file dl dt.add-img-btn{
+				border-radius: 8px;
+				border: 2px solid #C4C4C4;
+			}
+			.question-file dl .img {
+				border-radius: 8px;
+				border: 2px solid #C4C4C4;
+			}
+			.question-file dl .img img {
+				border-radius: 6px;
+			}
+			.clearfix:after {
+				content: ' ';
+				display: block;
+				clear: both;
+				visibility: hidden;
+				line-height: 0;
+				height: 0;
+			}
+			.add-img .aui-iconfont{float:none;}
+			i.aui-iconfont{color:#C4C4C4;font-size:23px;font-weight:bolder;}
+			.content {
+				background: #ffffff;
+			}
+		</style>
+	</head>
+	<body id="body" class="common-iphone-pyp">
+		<div id="shadow" class="shadow"></div>
+		<div class="content clearfix">
+			<textarea id="article_content" class="wz-textarea bgf" rows="5" onscroll="this.rows++;" placeholder="&thinsp;&thinsp;请输入内容"></textarea>
+			<div id="j_files" class="question-file clearfix">
+				<dl id="j_add_btn" class="mr0" onclick="showSelectMenu()">
+					<dt class="add-img-btn">
+						<i class="aui-iconfont aui-icon-camera"></i>
+					</dt>
+					<dd></dd>
+				</dl>
+			</div>
+		</div>
+		<p class="common-content bgf plrtb mb10 mt10">
+			<button class="aui-btn aui-btn-primary aui-btn-block" name="btn" onclick="getArticleValue();">
+				确定
+			</button>
+		</p>
+	</body>
+<script type="text/javascript" src="../../../../../script/api.js"></script>
+<script type="text/javascript" src="../../../../../script/base_config.js" ></script>
+<script type="text/javascript" src="../../../../../script/common/common.js"></script>
+<script type="text/javascript" src="../../../../../script/assembly/UIAlbumBrowser.js"></script>
+<script type="text/javascript" src="../../../../../script/assembly/getPicture.js"></script>
+<script type="text/javascript" src="../../../../../script/assembly/photoBrowser.js"></script>
+<script type="text/javascript" src="../../../../../script/plug-in/base64.js" ></script>
+<script type="text/javascript" src="../../../../../script/assembly/openResource.js" ></script>
+	<script type="text/javascript">
+		var header_h;
+		//机构分类的数组
+		var img_size;
+		//图片的宽高
+		var openImgArray;
+		var describe_pic = '';
+		var is_paizhao = false;
+		apiready = function() {
+		    commonSetTheme({"level":5,"type":0});
+			header_h = api.pageParam.header_h;
+			var addBtnWidth = $api.cssVal($api.byId('j_add_btn'), 'width');
+			$api.css($api.dom($api.byId('j_add_btn'),'dt'), 'height:'+addBtnWidth+';line-height:'+(addBtnWidth.replaceAll('px','')*1-4)+'px;');
+		};
+		
+		
+	   /*
+		*author:zhaoj
+		*function:显示图片选择框
+		*date：20171019
+		*/
+		function showSelectMenu(){
+			api.actionSheet({
+				cancelTitle : '取消',
+				buttons : buttons = ['图片','拍照'],
+				style : {
+					titleFontColor : '#ff0000'
+				}
+			}, function(ret, err) {
+				if (ret) {
+					if (ret.buttonIndex == 1) {
+						getAlbum();//从相册中上传
+					} else if (ret.buttonIndex == 2) {
+						openPicture();//从相机中上传
+					}
+				} else {
+					//		         alert( JSON.stringify( err ) );
+				}
+			});
+		}
+		
+	   /*
+	    *author:zhaoj
+	    *function:选择图片
+	    *date：20171019
+	    */
+	    function getAlbum() {
+	    	var flag = getImageNum();
+	    	if(flag == false){
+	    		return;
+	    	}
+			UIAlbumBrowser.open(flag,function(data){
+				is_paizhao = false;
+				//递归上传图片
+	            dgUploadFiles(0, data,0, function(is_true) {
+	                if (is_true) {
+	                	//showSelectMenu(0);
+	                    api.hideProgress();
+	                } else {
+	                    popToast("服务器繁忙，请稍候再试");
+	                }
+	            });
+			});
+	    }
+	    
+	   /*
+	    *author:zhaoj
+	    *function:打开拍照
+	    *date：20170914
+	    */
+	    function openPicture(){
+	    	if(getImageNum() == false){
+				return;
+			}
+	    	getPicture.open({},function(data){
+	    		is_paizhao  = true;
+	    		//递归上传图片
+	            dgUploadFiles(0, [{"path":data,"thumbPath":data}],0, function(is_true) {
+	                if (is_true) {
+	                	//showSelectMenu(0);
+	                    api.hideProgress();
+	                } else {
+	                    popToast("服务器繁忙，请稍候再试");
+	                }
+	            });
+	    	});
+	    }
+	    
+	   /*
+	    *author:zhaoj
+	    *function:获取图片数量
+	    *date：201701020
+	    */
+	    function getImageNum(){
+	    	imgArray = $api.domAll($api.byId('j_files'), '.j_file');
+	    	if(imgArray.length == 9){
+	    		popToast('最多上传9个附件');
+	    		return false;
+	    	}else{
+	    		return 9-imgArray.length;
+	    	}
+	    }
+		
+		/**
+	     * 递归上传图片
+	     * 赵静
+	     * param:type=0:活动封面；type=1:附件；
+	     * 2017.09.14
+	     */
+	    function dgUploadFiles(p_c, pic_list,type, callback) {
+	        var pic_l = getJsonObjLength(pic_list);
+	        if (p_c < pic_l) {
+	            var pic_url_old = pic_list[p_c].path;
+	            if (api.systemType == 'ios') {
+	            	if(is_paizhao == false){
+	            	    //将相册图片地址转换为可以直接使用的本地路径地址
+		                UIAlbumBrowser.transPath(pic_url_old,function(pic_url_new){
+		                    commonUiUploadFiles(JSON.stringify({'file_path':pic_url_new,"file_path_thumb":pic_list[p_c].thumbPath}), function(is_true, upload_param) {
+		                        if (is_true) {
+		                            upload_param = JSON.parse(upload_param);
+		                            var param_json = getParamJson({"file_id" : upload_param.file_id,"file_name" : upload_param.file_name,"resource_format" : upload_param.ext, "is_show_tip":0,"type":type,"voice_duration":0});
+		                            insertResourceBaseInfo(param_json);
+		                            p_c++;
+		                            getImgSize();
+		                            return dgUploadFiles(p_c, pic_list,type, callback);
+		                        } else {
+		                            return dgUploadFiles(p_c, pic_list,type, callback);
+		                        }
+		                    });
+		                });
+	            	}else{
+	            		  commonUiUploadFiles(JSON.stringify({'file_path':pic_url_old,"file_path_thumb":pic_list[p_c].thumbPath}), function(is_true, upload_param) {
+	                        if (is_true) {
+	                            upload_param = JSON.parse(upload_param);
+	                            var param_json = getParamJson({"file_id" : upload_param.file_id,"file_name" : upload_param.file_name,"resource_format" : upload_param.ext, "is_show_tip":0,"type":type,"voice_duration":0});
+	                            insertResourceBaseInfo(param_json);
+	                            p_c++;
+	                            getImgSize();
+	                            return dgUploadFiles(p_c, pic_list,type, callback);
+	                        } else {
+	                            return dgUploadFiles(p_c, pic_list,type, callback);
+	                        }
+	                    });
+	            	}
+	            } else {
+	                commonUiUploadFiles(JSON.stringify({'file_path':pic_url_old}), function(is_true, upload_param) {
+	                    if (is_true) {
+	                        upload_param = JSON.parse(upload_param);
+	                        var param_json = getParamJson({"file_id" : upload_param.file_id,"file_name" : upload_param.file_name,"resource_format" : upload_param.ext, "is_show_tip":0,"type":type,"voice_duration":0});
+	                        insertResourceBaseInfo(param_json);
+	                        p_c++;
+	                        getImgSize();
+	                        return dgUploadFiles(p_c, pic_list,type, callback);
+	                    } else {
+	                        return dgUploadFiles(p_c, pic_list,type, callback);
+	                    }
+	                });
+	            }
+	        } else {
+	            callback(true);
+	        }
+	    }
+		
+	   /*
+	    *author:zhaoj
+	    *function:上传到资源库中
+	    *date：20170904
+	    */
+	    function insertResourceBaseInfo(param_json){
+	        commonInsertResourceBaseInfo(param_json,function(flag,ret){
+	            if(flag){
+	                param_json.resource_id_int=ret.resource_id_int;
+	                param_json.resource_info_id=ret.resource_info_id;
+	                param_json.resource_title=ret.resource_title;
+	                param_json.resource_type=ret.resource_detail.resource_type;
+	                param_json.resource_myinfo_id=ret.resource_myinfo_id;
+	                //显示图片
+                    if (getfilesNum() == 4) {
+						showPicture(param_json,'mr0');
+					}else if(getfilesNum() == 8){
+						$api.css($api.byId('j_add_btn'), 'display:none');
+						showPicture(param_json,'mr0');
+					}else{
+						showPicture(param_json,'');
+					}
+	               
+	            }else{
+	                api.hideProgress();
+	                popToast('上传答案失败，请重新上传');
+	            }
+	        });
+	    }
+		
+	   /*
+	    *author:zhaoj
+	    *function:显示图片
+	    *date：20171020
+	    */
+	    function showPicture(param_json,css){
+			//删除事件
+	    	var deleteHtml = "deleteImg(this,this.parentNode,event)";
+	    	var img_div="";
+    		var img_url='';//图片路径
+	    	if (BASE_APP_TYPE == 1) {
+				img_url = BASE_IMAGE_PRE+"down/Material/" + param_json.file_id.substring(0, 2) + "/" + param_json.file_id + '.' + param_json.resource_format + commonReturnPhotoCutSize(0);	
+			} else {
+				img_url = BASE_URL_ACTION + "/html/thumb/Material/" + param_json.file_id.substring(0, 2) + "/" + param_json.file_id + '.' + param_json.resource_format + commonReturnPhotoCutSize(0);
+			}
+	    	var clickHtml = 'openImage("'+param_json.file_id+'.'+param_json.resource_format+'");';
+	        var dl_height = $api.cssVal($api.byId('j_add_btn'), 'height')
+			dl_height = dl_height.substring(0,dl_height.length-2)+'px';
+			var dl_html = '<dl class="j_file' + ' ' + css + '" style="height:' + dl_height + ';margin:2px 2px">' + '<dt class="img" style="width:' + img_size + 'px;height:' + img_size + 'px;" onclick='+clickHtml+' fileId="'+param_json.file_id+'.'+param_json.resource_format+'" resource_myinfo_id="'+param_json.resource_myinfo_id+'"  ext="'+param_json.resource_format+'">' + '<img class="j_img" src=' + img_url + ' width="' + (img_size - 1) + '" height="' + (img_size - 4) + '" />' + '</dt>' + '<dd onclick="deleteFile(event,this.parentNode)"><img src="../../../../../image/yingyong/zuoye/shanchu.png" /></dd>' + '</dl>';
+			$api.before($api.byId('j_add_btn'), dl_html);
+	    }
+
+		/*
+		 *author:zhaoj
+		 *function:删除当前文件
+		 *date：20160225
+		 */
+		function deleteFile(e, parent) {
+			parent.parentNode.removeChild(parent);
+			var dlArray = $api.domAll($api.byId('j_files'), '.j_file');
+			var length = getfilesNum() - 1;
+			if (length == 7) {
+				$api.removeCls(dlArray[length], 'mr0');
+				$api.css($api.byId('j_add_btn'), 'display:inline-block');
+			}
+			e.stopPropagation();
+		}
+		
+		 /*
+    *author:zhaoj
+    *function:播放图片
+    *date：20171024
+    */
+    function openImage(mr_file_id){
+    	var li_array = $api.domAll($api.byId('j_files'),'.img');
+    	var image_array=[];
+    	var index;
+    	for(var i = 0; i < li_array.length; i++){
+    		var fileId = $api.attr(li_array[i], 'fileId');
+    		if(mr_file_id == fileId){
+    			index = i;
+    		}
+    		var img_url='';//图片路径
+	    	if (BASE_APP_TYPE == 1) {
+				img_url = BASE_IMAGE_PRE+"down/Material/" + fileId.substring(0, 2) + "/" + fileId;		
+			} else {
+				img_url = BASE_URL_ACTION + "/html/thumb/Material/" + fileId.substring(0, 2) + "/" + fileId;
+			}
+    		image_array.push(img_url);
+    	}
+    	//图片
+		//打开图片
+		photoBrowser.open(image_array, index);
+    	
+    }
+		
+	   /*
+        *author:zhaoj
+        *function:获取到上传资源库中的参数
+        *date：20170904
+        */
+        function getParamJson(param){
+            var resource_format =param.resource_format;
+            resource_format = resource_format.toLowerCase();
+            var check_ext = support_extension.indexOf(resource_format);
+            var m3u8_status;
+            check_ext != "-1" ? m3u8_status = 1:m3u8_status=0;
+            var param_json={
+                "app_type_id" : 17,
+                "beike_type" : 100,
+                "bk_type_name" : -1,
+                "file_id" : param.file_id,
+                "group_id" : 2,
+                "identity_id" : $api.getStorage('identity'),
+                "m3u8_status" : m3u8_status,
+                "person_id" : $api.getStorage("person_id"),
+                "person_name" : Base64.encode($api.getStorage("person_name")),
+                "res_type" : 35,
+                "resource_format" : resource_format,
+                "resource_title" : Base64.encode(param.file_name),
+                "structure_id" : -1,
+                "is_show_tip":param.is_show_tip,
+                "type":param.type,//1:代表视频
+                "voice_duration":param.voice_duration
+            }
+            return param_json;
+        }
+		
+	    /*
+		 *author:zhaoj
+		 *function:图片格式
+		 *date：20160222
+		 */
+		function getImgSize() {
+			img_size = (api.winWidth - 30) * 0.18;
+			img_size = Math.floor(img_size);
+			var img_format = '@' + img_size + 'w_' + img_size + 'h_100Q_1x.';
+			return img_format;
+		}
+		
+		/*
+		 *author:zhaoj
+		 *function:根据模块获取子文件的个数
+		 *date：20160224
+		 */
+		function getfilesNum() {
+			var dlArray = $api.domAll($api.byId('j_files'), '.j_file');
+			return dlArray.length;
+		}
+
+
+		/*
+		 *author:zhaoj
+		 *function:获取文章的值
+		 *date：20160426
+		 */
+		function getArticleValue() {
+			showSelfProgress('保存中...');
+			//图片
+			describe_pic = '';
+			var img_array = $api.domAll($api.byId('j_files'), '.img');
+	    	for(var i = 0; i < img_array.length; i++){
+	            describe_pic += $api.attr(img_array[i], 'resource_myinfo_id') + ',';
+	    	}
+			describe_pic  = $api.trimAll(describe_pic);
+			if(describe_pic.length > 0){//验证内容
+				describe_pic = describe_pic.substring(0,describe_pic.length-1);	
+			}
+			//文字
+			var describe_txt = $api.val($api.byId('article_content'));
+			describe_txt = $api.trimAll(describe_txt);
+			if(describe_txt.length <= 0){
+				api.hideProgress();
+				popAlert("请输入内容");
+				return;
+			}
+//			console.log(BASE_URL_ACTION+'/takephoto/space/createNewAffair?org_id='+$api.getStorage('school_id')+'&describe_pic='+describe_pic+'&describe_txt='+describe_txt+'&identity_id=5&person_id='+$api.getStorage('person_id')+'&org_type=104');
+			api.ajax({
+	            url:BASE_URL_ACTION+'/takephoto/space/createNewAffair',
+	            method:'post',
+	            dataType:'json',
+	            timeout:30,
+	            returnAll : false,
+	            data : {
+	            	values : {
+						'describe_pic':describe_pic,
+						'describe_txt':describe_txt,
+						'identity_id':$api.getStorage('identity'),
+						'person_id':$api.getStorage('person_id'),
+						'org_id':$api.getStorage('school_id'),
+						'org_type':104
+	            	}
+	            },
+	           headers : {
+		'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+			}
+            },function(ret,err){
+            	if(err){
+            		api.hideProgress();
+        			popToast('保存失败，请稍候重试');
+            	}else{
+            		if(ret){
+            			if(ret.success){
+            				setTimeout(function(){
+		        				popToast('保存成功');
+		        				api.hideProgress();
+		        				commonExecScript(api.winName,'pyp_index_frame','initData(1);',1);
+		        				commonExecScript(api.winName,'','back();',0);
+		        			},2900);
+            			}else{
+            				api.hideProgress();
+        					popToast('保存失败，请稍候重试');
+            			}
+            		}else{
+            			api.hideProgress();
+        				popToast('保存失败，请稍候重试');
+            		}
+            	}
+            });
+		}
+	</script>
+</html>

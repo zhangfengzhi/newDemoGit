@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+		<title>班级管理</title>
+		<link rel="stylesheet" type="text/css" href="../../../css/aui/aui.css"/>
+		<link rel="stylesheet" type="text/css" href="../../../css/module/common/table-body.css"/>
+		<link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+		<style>
+			body{font-size:18px;}
+			.top{height:80px;position:relative;}
+			.top hr{height:1px;background:#e0e0e0;top:50%;position:absolute;left:20px;right:20px;}
+			.top span{display:inline-block;position:absolute;background:#fff;z-index: 1;top:30px;left:50%;margin-left:-61px;color:#333;}
+			.tag-change{position:relative;padding-right:120px;}
+			.tag-change .right{position:absolute;right:20px;width:100px;height:40px;color:#fff;font-size:16px;border-radius:0;top:5px;}
+			.tag-change .left div{line-height:50px;}
+			.tag-change .left div.active{color:#f00;border-bottom:1px solid #f00;}
+			.table-body th:first-child{width:90px;position: relative;}
+			.table-body th, .table-body td{font-size:16px;line-height:43px;}
+			.table-body td{line-height:36px;position: relative;}
+			.table-body td input,.table-body th input{position:absolute;top:50%;left:50%;margin-top:-10px;margin-left:-10px;}
+			.aui-checkbox{border:1px solid #c0c0c0;width:20px;height:20px;}
+			.aui-checkbox:checked{background-color:#fff;border:1px solid #c0c0c0;}
+			.aui-checkbox:checked:before{color:#666;font-size:21px;top:-3px;left:-1px;font-weight: 500;}
+		</style>
+	</head>
+	<body class="w-iphone-common">
+		<div class="top">
+			<hr />
+			<span id="j_name" class="plr20"></span>
+		</div>
+		<div class="tag-change">
+			<div class="left clearfix">
+				<div id="j_tag_0" class="active fl mlr20" onclick="tagChange(0);">学生</div>
+				<div id="j_tag_1" class="fl ml10" onclick="tagChange(1);">家长</div>
+			</div>
+			<button class="right" onclick="personInfo_resetPassword();">
+				重置密码
+			</button>
+		</div>
+		<div id="div_body" class="p20"></div>
+		<script id="div_script" type="text/html">
+			<table class="table-body m20">
+				<%if(type){%>
+					<tbody>
+						<tr>
+							<th><input oninput="commonRemoveExpression(this)" class="aui-checkbox" type="checkbox" name="allChecked" id="allChecked" onclick="doAllCheck()" /></th>
+							<th>序号</th>
+							<th>家长姓名</th>
+							<th>家长用户名 </th>
+							<th>学生姓名</th>
+							<th>学生用户名 </th>
+							<th>家长密码 </th>
+						</tr>
+						<%if(table_List.length == 0){%>
+							<tr>
+								<td colspan="7">暂无家长</td>
+							</tr>
+						<%}else{%>
+							<%for(var i=0;i<table_List.length;i++){%>
+								<tr>
+									<td><input oninput="commonRemoveExpression(this)" class="aui-checkbox" type="checkbox" name="choose" value="<%=table_List[i].PARENT_ID%>" /></td>
+									<td><%=i+1%></td>
+									<td><%=table_List[i].PARENT_NAME%></td>
+									<td><%=table_List[i].PARENT_LOGIN_NAME%></td>
+									<td><%=table_List[i].STUDENT_NAME%></td>
+									<td><%=table_List[i].STUDENT_LOGIN_NAME%></td>
+									<td><%=table_List[i].LOGIN_PASSWORD%></td>
+								</tr>
+							<%}%>	
+						<%}%>
+					</tbody>
+				<%}else{%>
+					<tbody>
+						<tr>
+							<th><input oninput="commonRemoveExpression(this)" class="aui-checkbox" type="checkbox" name="allChecked" id="allChecked" onclick="doAllCheck()" /></th>
+							<th>序号</th>
+							<th>学生姓名</th>
+							<th>性别</th>
+							<th>用户名</th>
+							<th>密码</th>
+						</tr>
+						<%if(list.length == 0){%>
+							<tr>
+								<td colspan="6">暂无学生</td>
+							</tr>
+						<%}else{%>
+							<%for(var i=0;i<list.length;i++){%>
+								<tr>
+									<td><input oninput="commonRemoveExpression(this)" class="aui-checkbox" type="checkbox" name="choose" value="<%=list[i].student_id%>" /></td>
+									<td><%=i+1%></td>
+									<td><%=list[i].student_name%></td>
+									<td><%=list[i].xb_name%></td>
+									<td><%=list[i].login_name%></td>
+									<td><%=list[i].login_password%></td>
+								</tr>
+							<%}%>	
+						<%}%>
+					</tbody>
+				<%}%>
+			</table>
+		</script>
+	</body>
+	<script type="text/javascript" src="../../../script/api.js"></script>
+	<script type="text/javascript" src="../../../script/base_config.js" ></script>
+	<script type="text/javascript" src="../../../script/plug-in/template.js" ></script>
+	<script type="text/javascript" src="../../../script/common/common.js"></script>
+	<script type="text/javascript">
+		var identity_id = 6;//6：学生；7：家长
+		apiready = function(){
+			commonSetTheme({"level":3,"type":0});
+			$api.text($api.byId('j_name'), api.pageParam.class_name);
+			personInfo_GetStudentInfoList();
+		};
+		/*
+		* author:zhaoj
+		* function:获取学生列表数据
+		* interface：基础数据（具体是谁不知道，目前有基础数据组负责）
+		* data:20171011
+		*/
+		function personInfo_GetStudentInfoList(){
+			showSelfProgress('删除中...');
+			api.ajax({
+				url : BASE_URL_ACTION + '/admin/new_base/personInfo_GetStudentInfoList',
+				method : 'post',
+				dataType : 'json',
+				timeout : 30,
+				cache : false,
+				data : {
+					values : {
+						"random_num":creatRandomNum(),
+			            "b_use": 1,
+			            "bureau_id": $api.getStorage("bureau_id"),
+			            "class_id": api.pageParam.class_id,
+			            "pageNumber": 1,
+			            "pageSize": 999,
+			            "person_name":""
+					}
+				},
+				headers : {
+					'Cookie' : 'person_id='+$api.getStorage("person_id")+';identity_id='+$api.getStorage("identity")+'; token='+$api.getStorage("token_ypt")+';'
+				}
+			}, function(ret, err) {
+				api.hideProgress();
+				if(err){
+		            popToast('获取学生信息失败，请稍候重试');
+				} else {
+					if(ret.success) {
+						ret.type = 0;
+						commonAddOnceHtml('div_body','div_script',ret);
+					} else {
+						popToast('获取学生信息失败，请稍候重试');
+					}
+				}
+			});
+		}
+		/*
+		* author:zhaoj
+		* function:获取家长列表数据
+		* interface：基础数据（具体是谁不知道，目前有基础数据组负责）
+		* data:20171011
+		*/
+		function getParentList(){
+			showSelfProgress('删除中...');
+			api.ajax({
+				url : BASE_URL_ACTION + '/parent/getParentList',
+				method : 'post',
+				dataType : 'json',
+				timeout : 30,
+				cache : false,
+				data : {
+					values : {
+						"random_num":creatRandomNum(),
+			            "lass_id": api.pageParam.class_id,
+			            "class_id": api.pageParam.class_id,
+			            "pageNumber": 1,
+			            "pageSize": 999,
+			            "parent_name":""
+					}
+				},
+				headers : {
+					'Cookie' : 'person_id='+$api.getStorage("person_id")+';identity_id='+$api.getStorage("identity")+'; token='+$api.getStorage("token_ypt")+';'
+				}
+			}, function(ret, err) {
+				api.hideProgress();
+				if(err){
+		            popToast('获取家长信息失败，请稍候重试');
+				} else {
+					if(ret.success) {
+						ret.type = 1;
+						commonAddOnceHtml('div_body','div_script',ret);
+					} else {
+						popToast('获取家长信息失败，请稍候重试');
+					}
+				}
+			});
+		}
+		/*
+		* author:zhaoj
+		* function:学生和家长切换
+		* data:20171011
+		*/
+		function tagChange(type){
+			type = type;
+			if(type){
+				//家长
+				identity_id = 7;
+				$api.removeCls($api.byId('j_tag_0'), 'active');
+				$api.addCls($api.byId('j_tag_1'), 'active');
+				getParentList();
+			}else{
+				//学生
+				identity_id = 6;
+				$api.removeCls($api.byId('j_tag_1'), 'active');
+				$api.addCls($api.byId('j_tag_0'), 'active');
+				personInfo_GetStudentInfoList();
+			}
+		}
+		/*
+		* author:zhaoj
+		* function:点击全选
+		* data:20171011
+		*/
+		function doAllCheck(){
+			var ch=document.getElementsByName("choose");
+			if(document.getElementsByName("allChecked")[0].checked==true){
+				for(var i=0;i<ch.length;i++){
+					ch[i].checked=true;
+				}
+			}else{
+				for(var i=0;i<ch.length;i++){
+					ch[i].checked=false;
+				}
+			}
+		}
+		/*
+		* author:zhaoj
+		* function:重置密码
+		* interface：基础数据（具体是谁不知道，目前有基础数据组负责）
+		* data:20171011
+		*/
+		function personInfo_resetPassword(){
+			//获取重置密码的人员
+			var ch=document.getElementsByName("choose");
+			var person_ids = "";//所有重置密码的人员id
+			for(var i=0;i<ch.length;i++){
+				if(ch[i].checked == true){
+					if(person_ids == ""){
+						person_ids = ch[i].value;
+					}else{
+						person_ids += ','+ch[i].value;
+					}
+				}
+			}
+			if(person_ids == ""){
+				identity_id == 6 ? popAlert('请选择学生') : popAlert('请选择家长');
+				return;
+			}
+			showSelfProgress('重置中...');
+			api.ajax({
+				url : BASE_URL_ACTION + '/admin/new_base/personInfo_resetPassword',
+				method : 'post',
+				dataType : 'json',
+				timeout : 30,
+				cache : false,
+				data : {
+					values : {
+						"random_num":creatRandomNum(),
+			            "person_ids": person_ids,
+			            "identity_id": identity_id,
+					}
+				},
+				headers : {
+					'Cookie' : 'person_id='+$api.getStorage("person_id")+';identity_id='+$api.getStorage("identity")+'; token='+$api.getStorage("token_ypt")+';'
+				}
+			}, function(ret, err) {
+				api.hideProgress();
+				if(err){
+		            popToast('重置失败，请稍候重试');
+				} else {
+					if(ret.success) {
+						 popAlert('密码重置成功！'+commonRemoveHTMLTag(ret.newPwd.replaceAll('&nbsp;',' ')));
+						 identity_id == 6 ? personInfo_GetStudentInfoList() : getParentList();
+					} else {
+						popToast('重置失败，请稍候重试');
+					}
+				}
+			});
+		}
+	</script>
+</html>

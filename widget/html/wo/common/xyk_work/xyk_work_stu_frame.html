@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>试题统计</title>
+    <link rel="stylesheet" type="text/css" href="../../../../css/aui/aui.css"/>
+    <link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+    <style>
+    	body{background:#f6f6f6;color:#333;}
+    	.content li{list-style:none;border-bottom:1px solid #efefef;padding:10px 10px;background:#ffffff;}
+    	.left-name{width:70%;max-width:70%;overflow:hidden;text-overflow:ellipsis;display:inline-block;}
+    	.float-div{overflow:auto;margin-top:5px;}
+    	.font-css{font-size:14px;color:#696969}
+    	.num{float:left;width:50%;}
+    	.num-div{width:100%;font-size:12px;color:#696969;}
+    	.num-div .font{float:left;width:auto;max-width:30%;overflow:hidden;text-overflow:ellipsis;} 
+    	.num-div .content{float:left;height:100%;max-width:70%;overflow:hidden;text-overflow:ellipsis;center:left;}
+    	.person-name1{float:left;max-width:100%;overflow:hidden;text-overflow:ellipsis;}
+    </style>
+</head>
+<body id="m_body" class="w-iphone-common">
+	<ul id="div_body_stu" class="content"></ul>
+	<script type="text/html" id="div_script">
+		<%if(data.stu_list.length == 0){%>
+			<div class="no-data"><span>暂无数据</span></div>
+		<%}else{%>
+			<%for(var i=0;i<data.stu_list.length;i++){%>
+				<li onclick="selectStu(<%=data.stu_list[i].person_id%>,'<%=data.stu_list[i].student_name%>','<%=data.stu_list[i].sxb_mac%>',<%=data.stu_list[i].class_id%>);">
+					<div class="float-div">
+						<div class="left-name clearfix">
+							<div class="person-name1">
+							    <%if(data.type == 1){%>
+    							   <%=data.pageSize*(data.pageNumber-1)+1+i%>.&nbsp;&nbsp;&nbsp;&nbsp;
+    							<%}%>
+    							<%=data.stu_list[i].student_name%>
+							</div>
+						</div>
+					</div>
+					<div class="float-div">
+					    <div class="num">
+					       <div class="num-div clearfix">
+					           <div class="font">用户名：</div>
+					           <div class="content clearfix"><%=data.stu_list[i].login_name%></div>
+					       </div>
+					    </div>
+					    <div class="num aui-hide">
+                           <div class="num-div clearfix">
+                               <div class="font">设备码：</div>
+                               <div class="content clearfix"><%=data.stu_list[i].sxb_mac%></div>
+                           </div>
+                        </div>
+					</div>
+				</li>
+			<%}%>
+		<%}%>
+	</script>
+</body>
+<script type="text/javascript" src="../../../../script/api.js"></script>
+<script type="text/javascript" src="../../../../script/base_config.js" ></script>
+<script type="text/javascript" src="../../../../script/plug-in/template.js" ></script>
+<script type="text/javascript" src="../../../../script/common/common.js" ></script>
+<script type="text/javascript" src="../../../../script/plug-in/base64.js" ></script>
+<script type="text/javascript">
+	var currentPage = 1;//当前分页数
+	var totalPages = 0;//总页数
+	var totalData = 0;//定义一个变量存储第一次加载返回来的总记录数
+	var class_id = -1;//班级ID
+	var class_type = 1;//班级类型--1行政班2教学班
+	var stu_type = 1;//学生类型--0全部 1已绑定 2未绑定
+	var now_type = 1;//1.正常载入数据，2，通过搜索关键字加载数据中
+	apiready = function (){
+		commonSetTheme({"level":4,"type":0});
+		commonRefreshHeaderInfo();
+		commonScrollBottomReload();
+		class_id = api.pageParam.id;
+		class_type = api.pageParam.class_type;
+		stu_type = api.pageParam.type;
+		initData(1);
+	};
+	
+	/*
+	 * 功能：获取学生数据
+	 * 作者：张自强
+	 * 时间：20190219
+	 * 接口：陈续刚
+	 * class_type:0 获取全部班级 1获取行政班级 2获取教学班级 默认传1,后期会有教学班，现在传1就行
+	 */
+	function initData(current_page,change_type){
+		stu_type = -1;
+	    if(now_type == 1){
+	        currentPage = current_page;
+            showSelfProgress('加载中...');
+            api.ajax({
+                url:BASE_URL_ACTION + '/xx/hwt/getStudentByClassID?random=' + creatRandomNum()+'&class_id='+class_id+'&class_type='+class_type+'&pageNumber='+currentPage+'&pageSize='+BASE_PAGE_SIZE+'&stu_type='+stu_type,
+                method : 'get',
+                dataType : 'json',
+                cache : false,
+                timeout : 30,
+               headers : {
+                'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+            }
+            },function(ret,err){
+                if(err){
+                    popToast('获取学生信息失败！');
+                }else{
+                    if(ret.success){
+                        totalData = ret.data.totalRow;
+                        totalPages = ret.data.totalPage;
+                        ret.data.type = 1;
+                        if(change_type){
+                            commonExecScript('xyk_work_stu_window','','changeBd('+stu_type+','+ret.data.totalRow+');',0);
+                        }
+                        commonAddManyHtml('div_body_stu','div_script',ret);
+                    }else{
+                        popToast('获取学生信息失败！');
+                    }
+                }
+                api.hideProgress();
+                commonControlRefresh();
+                if (currentPage == 1){
+		       		$api.byId("m_body").scrollTop = 0;
+		       	}
+            });
+	    }else{
+	       searchStuOrSb();
+	    }
+	}
+	
+	/*
+	 * 功能：修改学生类型
+	 * 作者：张自强
+	 * 时间：20190219
+	 */
+	function changeType(type){
+	   stu_type = type;
+	   initData(1);
+	}
+	
+	/*
+	 * 功能:选择学生
+	 * 作者：张自强
+	 * 时间：20190219
+	 */
+	function selectStu(id,name,sxbMac,classId){
+	   stu_type =  1;
+	   if(sxbMac == "未绑定"){
+	       stu_type = 2;
+	   }
+	   var param = {
+    	   'header_h' : api.pageParam.header_h,
+    	   'id':id,
+    	   'stu_type':stu_type,
+    	   'name':name,
+    	   'sxbMac':sxbMac,
+    	   'class_id':classId,
+    	   'class_type':class_type
+	   }
+//	   if(stu_type == 1){
+//	     commonOpenWin('xyk_work_bdfinish_window', 'xyk_work_bdfinish_window.html', false, false, param)   
+//	   }else{
+//	     commonOpenWin('xyk_work_bd_window', 'xyk_work_bd_window.html', false, false, param)   
+//	   }
+		commonOpenWin('xyk_work_content_window', 'xyk_work_content_window.html', false, false, param);
+	}
+	
+	
+	/*
+    *作者:zhaoj
+    *功能:设置搜索值，并根据搜索条件加载相关数据数据
+    *日期：20161024
+    */
+    function setKeyword(type,data){
+        if(type){   
+            now_type = 2;
+            currentPage = 1;//当前分页数
+            totalPages = 0;//总页数
+            totalData = 0;//定义一个变量存储第一次加载返回来的总记录数
+            keyword = data;
+            if(keyword !=''){
+                if (api.systemType == 'ios') {
+                    keyword = keyword.replace(/%2B/g, "+");
+                }
+                keyword = Base64.decode(keyword);
+            }
+            initData(1);
+        }else{
+            now_type = 1;
+            initData(1);
+        }
+    }
+    
+    /*
+     * 功能：搜索学生
+     * 作者：张自强
+     * 时间：20190221
+     */
+    function searchStuOrSb(){
+        showSelfProgress('加载中...');
+        stu_type = -1;
+        api.ajax({
+            url:BASE_URL_ACTION + '/xx/hwt/getBoundInfo?bound_type='+stu_type+'&bureau_id='+$api.getStorage('bureau_id')+'&class_id='+class_id+'&class_type='+class_type+'&key_word='+keyword+'&o_type=2'+'&stage_id='+api.pageParam.stage_id,
+            method:'post',
+            dataType : 'json',
+            timeout:30
+        },function(ret,err){
+            if(err){
+               popToast('查找失败！');
+            }else{
+               if(ret.success){
+                   var list = ret.data.student_list;
+                   for(var i = 0; i < list.length; i++){
+                     list[i].sxb_mac = list[i].mac;
+                   }
+                   ret.data.stu_list = list;
+                   commonAddManyHtml('div_body_stu','div_script',ret);
+               }else{
+                   popToast('查找失败！');
+               }
+            }
+            api.hideProgress();
+            commonControlRefresh();
+            if (currentPage == 1){
+	       		$api.byId("m_body").scrollTop = 0;
+	       	}
+        });
+    }
+    
+    /*
+     * 功能：重置绑定个数
+     * 作者：张自强
+     * 时间：20190307
+     */
+    function changeBd(){
+        initData(1,1);
+    }
+</script>
+</html>

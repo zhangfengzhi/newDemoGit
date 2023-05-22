@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+        <title>办公</title>
+        <link rel="stylesheet" type="text/css" href="../../../../../css/aui/aui.css" />
+        <link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+        <style>
+            body {
+            }
+            .close {
+                position: absolute;
+                margin: 1px 10px 0px 80px;
+                font-size: 15px;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="wrap">
+            <header class="aui-bar-nav aui-bar-primary" id="aui-header">
+            </header>
+        </div>
+        <script type="text/javascript"> 
+            /*
+             * 功能：关闭当前页面
+             * 作者：张自强
+             * 时间：20180706
+             */
+            function closeThisModule(){
+                 api.closeWin();
+            }
+        </script>
+        <script type="text/javascript" src="../../../../../script/api.js"></script>
+        <script type="text/javascript" src="../../../../../script/base_config.js"></script>
+        <script type="text/javascript" src="../../../../../script/common/common.js"></script>
+        <script type="text/javascript" src="../../../../../script/plug-in/base64.js" ></script>
+    </body>
+    <script type="text/javascript">
+        //顶部header高度
+        var header_h;
+        var w_h;
+        var statu = 'courseList';
+        var dictationChapter = {};
+        apiready = function() {
+            //定位header位置，留出上面电池等空隙，苹果需要
+            commonSetTheme({"level":5,"type":0});
+            var header = $api.byId('aui-header');
+            $api.fixStatusBar(header);
+            header_h = $api.cssVal(header,'height');
+            header_h = "" + header_h;
+            header_h = header_h.replaceAll('px','');
+            header_h = header_h * 1;
+            if(api.winHeight >= 812 && api.systemType == "ios"){
+                header_h += 24;
+                $api.css(header,'height:'+header_h+'px');
+            }
+            w_h = api.winHeight - header_h;
+            dictationChapter = $api.getStorage('dictationChapter');
+            backForAndroid();
+            goBgFrame();
+        };
+        
+        function goBgFrame() {
+            var nowDictationChapter = Base64.encode(dictationChapter);
+            api.openFrame({
+                name : 'txgj_index_frame',
+                scrollToTop : true,
+                allowEdit : true,
+                url : BASE_URL_ACTION+'/pro_integration/project/xkgj/dictationTool/index.html?person_id='+$api.getStorage('person_id')+'&identity_id='+$api.getStorage('identity')+"&token="+$api.getStorage('token_ypt')+"&useBaseInterface=0&dictationChapter="+nowDictationChapter,
+                showProgress : true,
+                rect : {
+                    x : 0,
+                    y : header_h,
+                    w : 'auto',
+                    h : api.winHeight - header_h,
+                },
+                pageParam : {
+                    header_h : header_h
+                },
+                vScrollBarEnabled : true,
+                hScrollBarEnabled : false,
+                //页面是否弹动 为了下拉刷新使用
+                bounces : false
+            });
+        }
+        
+        /*
+         * 功能：设置默认章节目录
+         * 作者：张自强
+         * 时间：20181221
+         */
+        function setStorageChapter(dictationChapterNow){
+            $api.setStorage('dictationChapter',JSON.stringify(dictationChapterNow));
+        }
+        /**
+         * 返回应用页面
+         * 周枫
+         * 2015.10.11
+         */
+        function clickReturnBtn() {
+            commonExecScript(api.winName,'txgj_index_frame','electiveCourseBack()',1);
+        }
+        
+
+        /**
+         * 安卓点击返回的时候
+         * 周枫
+         * 2015.10.14
+         */
+        function backForAndroid() {
+            api.addEventListener({
+                name : "keyback"
+            }, function(ret, err) {
+                clickReturnBtn();
+            });
+        }      
+    </script>
+</html>

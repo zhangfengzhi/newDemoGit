@@ -1,0 +1,22 @@
+{     
+"list":[
+	{"id":0,"win_name":"孩子导学","win_url":"daoxueNewXs_index_window","type":"1","config_type":0,"icon_css":"dx","code":"hxx_dx"},
+	{"id":1,"win_name":"孩子课件","win_url":"kejianJyXs_index_window","type":"1","config_type":0,"icon_css":"kejian","code":"hxx_kj"},
+	{"id":2,"win_name":"孩子检测","win_url":"zuoyeXsJy_index_window","type":"1","config_type":0,"icon_css":"zuoye","code":"hxx_zy"},
+	{"id":3,"win_name":"主题活动","win_url":"zthd_index_window","type":2,"config_type":0,"icon_css":"zthd","code":"hxx_zthd"},
+	{"id":5,"win_name":"孩子题本","win_url":"tibenJy_index_window","type":"1","config_type":0,"icon_css":"tiben","code":"hxx_tb"},
+	{"id":6,"win_name":"专题学习","win_url":"zhuanti_index_window","type":"1","config_type":0,"icon_css":"ztxx","code":"hxx_tzxx_zt"},
+    {"id":7,"win_name":"新闻资讯","win_url":"xwzx_index_window","type":"3","config_type":1,"icon_css":"xwzx","code":"hsh_xwzx"},
+    {"id":8,"win_name":"班级通知","win_url":"bjtz_index_window","type":"1","config_type":1,"icon_css":"bjgg","code":"hsh_bjtz"},
+    {"id":9,"win_name":"课程表","win_url":"kcb_index_window","type":"9","config_type":1,"icon_css":"kcb","code":"hsh_kcb"},
+    {"id":10,"win_name":"校园食谱","win_url":"cp_index_window","type":"3","config_type":1,"icon_css":"xysp","code":"hsh_xysp"},
+    {"id":11,"win_name":"校园广播","win_url":"guangbo_index_window","type":"3","config_type":1,"icon_css":"xygb","code":"hsh_xygb"},
+    {"id":12,"win_name":"问卷调查","win_url":"dcwj_index_window","type":"3","config_type":1,"icon_css":"wjdc","code":"hsh_wjgl"},
+     {"id":13,"win_name":"扫一扫","win_url":"sys_index_window","type":"7","config_type":1,"icon_css":"sys","code":"hsh_sys"},
+    {"id":14,"win_name":"理想生涯","win_url":"lxsy_index_window","type":3,"config_type":0,"icon_css":"lxsy","code":"zysygh"},
+    {"id":15,"win_name":"名师云课","win_url":"wf_index_window","type":"1","config_type":0,"icon_css":"msyk","code":"yunke"},
+    {"id":16,"win_name":"电子书","win_url":"dianzishu_index_window","type":"1","config_type":0,"icon_css":"dzs","code":"hxx_tzxx_dzs"},
+    {"id":17,"win_name":"孩子微课","win_url":"weike_index_window","type":"1","config_type":0,"icon_css":"weike","code":"hxx_wk"},
+	{"id":18,"win_name":"听写工具","win_url":"txgj_index_window","type":"1","config_type":0,"icon_css":"txgj","code":"hjx_cdtx"},
+	{"id":19,"win_name":"物联网","win_url":"wlw_index_window","type":"3","config_type":0,"icon_css":"ywyxd","code":"hxx_dx1"}
+]}

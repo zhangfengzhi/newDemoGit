@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<!-- html5：在创建html时为了防止页面缩放等不兼容效果，要创建个viewport  -->
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<!-- 在IOS设备上，有时会将数字转为手机号，这里也要禁止下 -->
+		<meta name="format-detection" content="telephone=no"/>
+		<title>学业报告</title>
+		<link rel="stylesheet" type="text/css" href="../../../../../css/aui/aui.css" />
+		<link rel="stylesheet" type="text/css" href="../../../../../css/module/common/cjfxXs.css" />
+		<link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+		<style>
+			.menu{padding-right:20px;background:url(../../../../../image/fun-module/ipad/down-menu.png) right center no-repeat;background-size:15px auto;}
+		</style>
+	</head>
+	<body class="common-ipad-jxbg-tea">
+		<div id="wrap">
+			<header class="aui-bar aui-bar-nav aui-bar-primary" id="aui-header">
+				<div id="cloud" class="topbar activebar">
+					<div id="back" class="back" onclick="back();" tapmode="">
+						<i class="aui-iconfont aui-icon-left"></i>返回
+					</div>
+					<div class="mTitle" id="mTitle">
+						<div id="btn_title" class="btn-title">
+							<div id="j_btn_0" class="btn-l btn-top btn-top-active" onclick="changeBtnTitle(0,1);">学习轨迹</div>
+							<div id="j_btn_1" class="btn-r btn-top" onclick="changeBtnTitle(1,1);">成绩分析</div>
+						</div>
+					</div>
+					<div class="win-menu">
+						<div id="j_term" class="menu" onclick="openTermFrame();"></div>
+						<font id="j_rl" class="aui-hide" onclick="claimExam();">去认领</font>
+						<a id='j_menu' class="aui-iconfont aui-icon-menu back aui-hide" onclick="openMenuFrame();"></a>
+						<a id='menu2' class="aui-iconfont aui-icon-check back aui-hide"  onclick="screenTest();"></a>
+					</div>
+				</div>
+			</header>
+			<div  class="aui-content aui-content-padded" id="message-content">
+				<p class="aui-text-center history-date"></p>
+			</div>
+		</div>
+	</body>
+	<script type="text/javascript" src="../../../../../script/api.js"></script>
+	<script type="text/javascript" src="../../../../../script/plug-in/base64.js" ></script>
+	<script type="text/javascript" src="../../../../../script/common/common.js"></script>
+	<script type="text/javascript" src="../../../../../script/assembly/tongjiData.js"></script>
+	<script type="text/javascript" src="../../../../../script/module/common/cjfxXs.js"></script>
+	<script type="text/javascript">
+		var back_type = 'jxgj_index';
+		var is_fir_jxgj=true;//第一次进入教学轨迹
+		var xq_id;
+		apiready = function() {
+			commonSetTheme({"level":5,"type":0});
+			var header_h = api.pageParam.header_h;
+			var pageParamJson={"header_h":header_h};//打开frame页面所需参数
+			reBackType('jxgj_index');
+			initPadFrameGroup();
+			commonBackForAndroid();//安卓关闭
+			commonIosAuiHeader();//定位header位置，留出上面电池等空隙，苹果需要
+			commonOpenTjData($api.getStorage("identity")+'_'+api.winName);//记录统计
+		};
+		/*
+		*author:zhaoj
+		*function:返回页面
+		*date：20170118
+		*/
+		function back() {
+			switch(back_type) {
+				case 'jxgj_index':
+					commonCloseTjData($api.getStorage("identity")+'_'+api.winName);
+					api.closeWin();
+					break;
+				case 'cjfx_index':
+					commonCloseTjData($api.getStorage("identity")+'_'+api.winName);
+					api.closeWin();
+					break;
+				case 'term':
+					commonCloseFrame('jxgj_term_frame');
+					reBackType('jxgj_index');
+					break;
+			}
+		}
+		/**
+		 * 重置window标题
+		 * 周枫
+		 * 2015.12.17
+		 */
+		function reWindowName(win_name) {
+			$api.html($api.byId('mTitle'), win_name);
+		}
+		/**
+		 * 重置从哪个页面退出
+		 * 周枫
+		 * 2015.12.17
+		 */
+		function reBackType(type) {
+			switch(type) {
+				case 'jxgj_index':
+					//var title_html = '<div id="btn_title" class="btn-title"><div id="j_btn_0" class="btn-l btn-top btn-top-active" onclick="changeBtnTitle(0,1);">教学轨迹</div><div id="j_btn_1" class="btn-r btn-top" onclick="changeBtnTitle(1,1);">成绩分析</div></div>';
+					var title_html ='教学报告';
+					commonSetWindowName(title_html);
+					commonAddOrRemoveHideCss('j_term',1);
+					back_type = 'cjfx_index';
+					break;
+				case 'cjfx_index':
+					//var title_html = '<div id="btn_title" class="btn-title"><div id="j_btn_0" class="btn-l btn-top" onclick="changeBtnTitle(0,1);">教学轨迹</div><div id="j_btn_1" class="btn-r btn-top-active btn-top" onclick="changeBtnTitle(1,1);">成绩分析</div></div>';
+					var title_html ='教学报告';
+					commonSetWindowName(title_html);
+					commonAddOrRemoveHideCss('j_term',0);
+					back_type = 'cjfx_index';
+					break;
+				case 'term':
+					commonAddOrRemoveHideCss('j_term',1);
+					back_type = 'term';
+					break;
+			}
+		}
+		/*
+		*author:zhaoj
+		*function:打开学习轨迹和成绩分析页面组
+		*date：20171014
+		*/
+		function initPadFrameGroup() {
+			var header_h = api.pageParam.header_h;
+			api.openFrameGroup({
+				name : 'jxgj_cjfx_group',
+				rect : {
+					'x' : 0,
+					'y' : header_h ,
+					'w' : 'auto',
+					'h' : api.winHeight - header_h
+				},
+				index : 0,
+				//预加载
+				preload : 1,
+				scrollToTop : true,
+				bounces : false,
+				scrollEnabled : true,
+				frames : [{
+					name : 'jxbgIpad_index_frame',
+					scrollToTop : true,
+					allowEdit : true,
+					url : 'jxgj/jxgj_index_frame.html',
+					bgColor : '#f7f9f8',
+					pageParam : {
+						header_h : header_h
+					},
+					vScrollBarEnabled : false,
+					hScrollBarEnabled : false,
+					//页面是否弹动 为了下拉刷新使用
+					bounces : false
+				}, {
+					name : 'cjfx_index_frame',
+					scrollToTop : true,
+					allowEdit : true,
+					url : 'cjfx/cjfx_index_frame.html',
+					bgColor : '#f7f9f8',
+					pageParam : {
+						header_h : header_h
+					},
+					vScrollBarEnabled : false,
+					hScrollBarEnabled : false,
+					//页面是否弹动 为了下拉刷新使用
+					bounces : false
+				}]
+			}, function(ret, err) {
+				var btn_index = ret.index;
+				switch(btn_index){
+					case 0:
+						//changeBtnTitle(0,0);
+					break;
+					case 1:
+						//changeBtnTitle(1,0);
+					break;
+				}
+			});
+		}
+		/*
+		*author:zhaoj
+		*function:学习轨迹、成绩分析按钮切换
+		*date：20171014
+		*/
+		function changeBtnTitle(btn_type,type) {
+			$api.removeCls($api.dom($api.byId('btn_title'), '.btn-top-active'),'btn-top-active');
+			$api.addCls($api.byId('j_btn_'+btn_type), 'btn-top-active');
+			btn_type?reBackType('cjfx_index'):reBackType('jxgj_index');
+			if(type){
+				api.setFrameGroupIndex({
+					name : 'jxgj_cjfx_group',
+					index : btn_type,
+					scroll : true
+				});
+			}else{
+				if(btn_type == 0){  //成绩分析
+					date1 = new Date();
+				}else{    
+					//学习轨迹
+					if (is_fir_jxgj == 0) {
+						is_fir_jxgj = 1;
+						api.execScript({
+							frameName : 'jxbgIpad_index_frame',
+							script : 'loadData();'
+						});
+					} else {
+						var d_time = getSecondCha();
+						if (d_time > 3) {
+							api.execScript({
+								frameName : 'jxbgIpad_index_frame',
+								script : 'loadData();'
+							});
+						}
+					}
+				}
+			}
+		}
+		/**
+		 * 获取时间差，10秒后刷新通讯录
+		 * 周枫
+		 * 2016.1.13
+		 */
+		function getSecondCha() {
+			//开始时间
+			//			alert("aa");
+			var date2 = new Date();
+			if ( typeof ('undefined') == date1) {
+				date1 = new Date();
+			}
+			//结束时间
+			var date3 = date2.getTime() - date1.getTime();
+			//时间差的毫秒数
+			//计算出相差天数
+			//			var days = Math.floor(date3 / (24 * 3600 * 1000));
+			//计算出小时数
+			var leave1 = date3 % (24 * 3600 * 1000);
+			//计算天数后剩余的毫秒数
+			//			var hours = Math.floor(leave1 / (3600 * 1000));
+			//计算相差分钟数
+			var leave2 = leave1 % (3600 * 1000);
+			//计算小时数后剩余的毫秒数
+			//			var minutes = Math.floor(leave2 / (60 * 1000));
+			//计算相差秒数
+			var leave3 = leave2 % (60 * 1000);
+			//计算分钟数后剩余的毫秒数
+			var seconds = Math.round(leave3 / 1000);
+			return seconds;
+			//			alert(" 相差 " + days + "天 " + hours + "小时 " + minutes + " 分钟" + seconds + " 秒")
+		}
+		/*
+		*author:zhaoj
+		*function:打开学期页面
+		*date：20171014
+		*/
+		function openTermFrame(){
+			reBackType('term');
+			var header_h = api.pageParam.header_h;//顶部高度
+			pageParamJson={"header_h":header_h,"xq_id":xq_id};//打开frame页面json数据
+		//打开frame页面
+		commonOpenFrame("jxgj_term_frame","jxgj/jxgj_term_frame.html",0,false,false,"rgba(0,0,0,0)",pageParamJson);
+		}
+		/*
+		*author:zhaoj
+		*function:设置学期名称
+		*date：20171014
+		*/
+		function setTerm(name,id,start_date,end_date){
+			xq_id = id;
+			$api.text($api.byId('j_term'), name);
+			commonExecScript('','jxbgIpad_index_frame','setTerm('+id+',"'+start_date+'","'+end_date+'");',2);
+		}
+	</script>
+</html>

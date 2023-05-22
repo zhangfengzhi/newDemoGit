@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+		<title>title</title>
+		<link rel="stylesheet" type="text/css" href="../../../../../css/aui/aui.css" />
+		<link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+		<style>
+			.time-content {
+				height: 50px;
+				line-height: 40px;
+				padding: 5px 30px 0 15px;
+				color: #141414;
+				background: #ffffff;
+			}
+			.time-content div {
+				display: inline-block;
+				float: right;
+				color: #666666;
+			}
+		</style>
+	</head>
+	<body class="common-iphone-rizhi">
+		<header class="aui-bar aui-bar-nav aui-bar-primary" id="aui-header">
+			<div id="cloud" class="topbar activebar">
+				<div id="back" class="back" onclick="back();" tapmode="">
+					<i class="aui-iconfont aui-icon-left"></i>返回
+				</div>
+				<div class="mTitle" id="mTitle"></div>
+			</div>
+		</header>
+		<div class="time-content" onclick="chooseData()">
+			选择日期<div id="select_time"></div>
+		</div>
+	</body>
+	<script type="text/javascript" src="../../../../../script/api.js"></script>
+	<script type="text/javascript" src="../../../../../script/common/common.js"></script>
+	<script type="text/javascript" src="../../../../../script/assembly/log-current-time.js"></script>
+	<script type="text/javascript" src="../../../../../script/plug-in/base64.js" ></script>
+	<script type="text/javascript">
+		//顶部高度
+		var header_h;
+		//部门id
+		var org_id;
+		//未提交人数
+		var noSubmit;
+		//按时提交人数
+		var onTime;
+		//延时提交人数
+		var delay;
+		var frameNameLog;
+		var timeParam;
+		var judgeMonth;
+		var yearValue;
+		var monthValue;
+		var backType = 1;
+		var titleName;
+		apiready = function() {
+			commonSetTheme({"level":5,"type":0});
+			titleName = Base64.decode(api.pageParam.titleName);
+			$api.html($api.byId('mTitle'), titleName);
+			header_h = api.pageParam.header_h;
+			org_id = api.pageParam.org_id;
+			noSubmit = api.pageParam.noSubmit;
+			onTime = api.pageParam.onTime;
+			delay = api.pageParam.delay;
+			judgeMonth = api.pageParam.judgeMonth;
+			timeParam = api.pageParam.timeParam;
+			yearValue = api.pageParam.year;
+			if (judgeMonth == 2) {
+				setTimeValue(yearValue, parseInt(timeParam));
+				monthValue = timeParam;
+			} else if (judgeMonth == 1) {
+				var today = document.getElementById('select_time');
+				$api.text(today, timeParam);
+				monthValue = parseInt(timeParam.substring(5, 7));
+			}
+			//定位header位置，留出上面电池等空隙，苹果需要
+			commonIosAuiHeader();
+			//安卓关闭
+			commonBackForAndroid();
+			openDepDetailFrame();
+		};
+		function openDepDetailFrame() {
+			frameNameLog = 'rizhi_dep_detail_frame';
+			winNameLog = "rizhi_dep_detail_window"
+			var pageParamJson = {
+				"header_h" : header_h,
+				"org_id" : org_id,
+				"noSubmit" : noSubmit,
+				"onTime" : onTime,
+				"delay" : delay,
+				"judgeMonth" : judgeMonth,
+				"timeParam" : timeParam,
+				"yearValue" : yearValue,
+				"checkLeader":api.pageParam.checkLeader
+			};
+			commonOpenFrame('rizhi_dep_detail_frame', 'rizhi_dep_detail_frame.html', header_h + 55, false, true, "#ffffff", pageParamJson);
+		}
+
+		/*
+		 *author:ws
+		 *function:返回
+		 *date：20170221
+		 */
+		function back() {
+		    //backType 1返回部门列表页面 2返回部门人员详细页面
+			if (backType == 1) {
+				api.closeWin();
+			}else if(backType == 2){
+			    backType = 1;
+			    $api.html($api.byId('mTitle'), titleName);
+			    api.closeFrame({name:'rizhi_dep_people_frame'});
+			}
+		}
+
+		/*
+		 *author:ws
+		 *function:打开日期选项
+		 *date：20170222
+		 */
+		function chooseData() {
+			api.actionSheet({
+				cancelTitle : '取消',
+				buttons : ['按月查询', '按日查询'],
+				style : {
+					titleFontColor : '#ff0000'
+				}
+			}, function(ret, err) {
+				if (ret) {
+					if (ret.buttonIndex == 1) {
+						//按照月查询
+						selectMonth();
+					} else if (ret.buttonIndex == 2) {
+						//按照日查询
+						pickerDateOpen();
+					}
+				} else {
+					popBottomToast('网络繁忙，请稍候重试');
+				}
+			});
+		}
+
+		/*
+		 *author:ws
+		 *function:选择月份
+		 *date：20170222
+		 */
+		function selectMonth() {
+			var pageParamJson = {
+				"header_h" : header_h,
+				"year" : yearValue,
+				"month" : parseInt(monthValue),
+				"nameFrame" : 'rizhi_dep_detail_frame',
+				"nameWin" : 'rizhi_dep_detail_window'
+			};
+			commonOpenFrame('rizhi_select_month_frame', 'rizhi_select_month_frame.html', header_h, false, false, "rgba(0,0,0,0)", pageParamJson);
+		}
+
+		/*
+		 *author:zhaoj
+		 *function:获取时间
+		 *date：20160803
+		 */
+		function setTimeValue(year, month) {
+			var Month = month > 9 ? month : '0' + month;
+			var setDateValue = year + '年' + Month + '月';
+			var today = document.getElementById('select_time');
+			yearValue = year;
+			monthValue = Month;
+			$api.html(today, setDateValue);
+		}
+
+		/*
+		 *author:ws
+		 *function:设置标题
+		 *date：20170317
+		 */
+		function checkSetTitle(name) {
+		    backType = 2;
+			$api.html($api.byId('mTitle'), Base64.decode(name)+"的日志");
+		}
+	</script>
+</html>

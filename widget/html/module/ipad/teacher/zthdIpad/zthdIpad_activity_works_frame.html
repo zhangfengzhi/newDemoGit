@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>主题活动</title>
+    <link rel="stylesheet" type="text/css" href="../../../../../css/aui/aui.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../../../css/module/ipad/left-right-layout.css"/>
+    <link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+    <style>
+    	.left-layout-body .right-content ul li .right .yulan{padding:0 20px 0 25px;background:url(../../../../../image/fun-module/ipad/zthd/yulan.png) 0 center no-repeat;background-size:22px auto;}
+    	.zoomImage{padding-bottom:75%;}
+    	.voice-bg{padding-bottom:30%;}
+    	.thumb{padding:10px 50px 0 0;}
+    	.thumb .img{width:33%;float:left;}
+    	.thumb .img span{display:inline-block;}
+    	.thumb .img .zoomImage .position{position:absolute;top:0;left:0;right:0;bottom:0;padding:0 5px 0 5px;}
+    	.thumb .img .zoomImage .voice-num{display:inline-block;color:#fff;position:absolute;top:50%;right:15px;margin-top:-13px;font-size:16px;}
+    	.thumb .img .zoomImage .position img{width:100%;height:100%;}
+    	.vedio{background:#fff url(../../../../../image/fun-module/ipad/zthd/vedio-bg.png) center center no-repeat;background-size:98% 100%;}
+    	.left-layout-body .right-content ul li{padding-bottom:10px;}
+    	@media screen and (max-width: 464px){
+    		.left-layout-body .right-content ul li{padding-bottom:5px;}
+    	}
+    	.left-layout-body .right-content ul li.active{padding-bottom:5px;}
+    	.boutique{position:absolute;top:90px;left:45px;display: inline-block;background:url(../../../../../image/fun-module/ipad/zthd/boutique.png) center 4px no-repeat;background-size:auto 40px;color: #fff;padding: 0 8px;font-size: 14px;height:51px;width:30px;}
+    	@media screen and (max-width: 464px)
+			.boutique{top:75px;left:30px;}
+		}
+    </style>
+</head>
+<body class="left-layout-body common-ipad-zthd-tea">
+	<div id="j_top" style="height:0px; overflow:hidden"></div>
+	<div class="aui-searchbar-wrap demo" id="search">
+		<div class="aui-searchbar aui-border-radius" tapmode onclick="commonDoSearch();">
+			<i class="aui-iconfont aui-icon-search"></i>
+			<div class="aui-searchbar-text">
+				请输入关键字
+			</div>
+			<div class="aui-searchbar-input">
+				<form action="javascript:startSearch(1);">
+					<input oninput="commonRemoveExpression(this)" type="text" placeholder="" id="search-input" maxlength ='20'>
+				</form>
+			</div>
+			<i class="aui-iconfont aui-icon-roundclosefill" tapmode onclick="commonClearInput()"></i>
+		</div>
+		<div class="aui-searchbar-cancel aui-text-info" tapmode onclick="commonCancelSearch()">
+			取消
+		</div>
+	</div>
+	<div id="j_box_shadow" class="box-shadow aui-hide"></div>
+	<!--右侧内容-->
+	<div class="right-content">
+		<ul id="list_body">
+<!--			<li id="j_li_0" onclick="openDetailFrame(0,0)" >
+				<div class="left">
+					<img class="mt20" src="http://image.edusoa.com/down/Material/89/890339D0-69AA-CDB9-7686-8020A635EC33.jpg@84w_84h_100Q_1x.png" />
+					<div class="boutique">&nbsp;</div>
+				</div>
+				<div class="right fl">
+					<div class="person-name pt5">鹿晗</div>
+					<div class="infor clearfix">
+						<div class="time">2017-09-12 09:31</div>
+						<div class="comment fr">202</div>
+						<div class="praise fr">344</div>
+						<div class="yulan fr">123</div>
+					</div>
+					<div class="title">
+						<span class="ellipsis">
+							
+							勿忘初心
+							
+						</span>
+					</div>
+					<div class="content word-wrap">div relative定位定高定宽，内部放个个浮动层浮动在右下角字relative定位定高定宽，内部放个个浮动层浮动在右下角字relative定位定高定宽，内部放个个浮动层浮动在右下角字relative定位定高定宽，内部放个个浮动层浮动在右下角字relative定位定高定宽，内部放个个浮动层浮动在右下角字relative定位定高定宽，内部放个个浮动层浮动在右下角字relative定位定高定宽，内部放个个浮动层浮动在右下角字relative定位定高定宽，内部放个个浮动层浮动在右下角字relative定位定高定宽，内部放个个浮动层浮动在右下角字relative定位定高定宽，内部放个个浮动层浮动在右下角字relative定位定高定宽，内部放个个浮动层浮动在右下角字</div>
+					<div class="thumb">
+						<div class="img">
+							<span class="zoomImage">
+								<div class="position">
+									<img src="http://image.edusoa.com/down/Material/89/890339D0-69AA-CDB9-7686-8020A635EC33.jpg" />
+								</div>
+							</span>
+						</div>
+						<div class="img">
+							<span class="zoomImage">
+								<div class="position">
+									<img src="../../../image/fun-module/common/zthd/voice.png" />
+								</div>
+								<div class="voice-num">10</div>
+							</span>
+						</div>
+						<div class="img">
+							<span class="zoomImage">
+								<div class="position">
+									<img src="http://image.edusoa.com/down/Material/89/890339D0-69AA-CDB9-7686-8020A635EC33.jpg" />
+								</div>
+							</span>
+						</div>
+					</div>
+				</div>
+			</li>-->
+		</ul>
+		<script type="text/html" id="list_script">
+			<%if(list.length == 0 && page_num == 1){%>
+				<div class="no-data">暂无作品</div>
+			<%}else{%>
+				<%for(var i = 0; i < list.length; i++){%>
+					<li id="j_li_<%=list[i].id%>" onclick="openDetailFrame('<%=list[i].oparam%>',<%=list[i].id%>)" >
+						<div class="left">
+							<img class="mt20" src="<%=list[i].avatar_fileid%>" onerror="this.src='../../../../../image/common/header.png'" />
+							<div id="j_li_boutique_<%=list[i].id%>" class="boutique <%if(!list[i].is_boutique){%>aui-hide<%}%>">&nbsp;</div>
+						</div>
+						<div class="right fl">
+							<div class="person-name pt5"><%=list[i].person_name%></div>
+							<div class="infor clearfix">
+								<div class="time"><%=list[i].create_time.substring(0,16)%></div>
+								<div class="comment fr"><%=list[i].comment_num%></div>
+								<div class="praise fr"><%=list[i].praise_num%></div>
+								<div id="yulan_<%=list[i].id%>" class="yulan fr"><%=list[i].view_num%></div>
+							</div>
+							<div class="title">
+								<span class="ellipsis">
+									
+									<%=list[i].name%>
+									
+								</span>
+							</div>
+							<div class="content word-wrap"><%=list[i].overview%></div>
+							<%if(list[i].thumbs.length > 0){%>
+                                <div class="thumb">
+                                    <%for(var j=0;j < list[i].thumbs.length;j++){%>
+                                        <%if(j<3){%>
+                                            <%if(list[i].thumbs[j].ext =='jpg'||list[i].thumbs[j].ext =='png'||list[i].thumbs[j].ext =='bmp'||list[i].thumbs[j].ext =='gif'){%>
+                                                <div class="img"  onclick="openAttachment(<%=list[i].id%>,'<%=list[i].thumbs[j].resource_id_int%>','<%=list[i].thumbs[j].resource_format%>',this,event,<%=list[i].thumbs[j].imgIndex%>,<%=i%>)" currentPage="<%=list[i].thumbs[j].currentPage%>" attachment="<%=list[i].thumbs[j].file_id%>" ext="<%=list[i].thumbs[j].ext%>">
+                                                    <span class="zoomImage">
+                                                        <div class="position">
+                                                            <img src="<%=list[i].thumbs[j].image_url%>" onerror="this.src='../../../../../image/common/tpsx.png'" />
+                                                        </div>
+                                                    </span>
+                                                </div>
+                                            <%}else if(commonContainsArray(support_extension,list[i].thumbs[j].ext)){%>
+                                                <div class="img"  onclick="openAttachment(<%=list[i].id%>,'<%=list[i].thumbs[j].resource_id_int%>','<%=list[i].thumbs[j].resource_format%>',this,event)" attachment="<%=list[i].thumbs[j].file_id%>" ext="<%=list[i].thumbs[j].ext%>">
+                                                    <span class="zoomImage">
+                                                        <%if (list[i].attachment[j].defaultUrl==false){%>
+                                                        	<div style="width:100%;float:left;">
+																<img class="production-play-img" style="width:100%;background-color: black;opacity: 0.7;position: absolute"; src="../../../../../image/fun-module/ipad/zthd/play.png"/>
+																<img style="width:100%;float:left;" src="<%=list[i].attachment[j].vediothumburl%>"/>
+															</div>
+                                                    	<%}else{%>
+                                                    		<div class="position" style="width: 98%;height:100%;">
+                                                    			<img style="width: 100%;height:100%;" src="<%=list[i].attachment[j].vediothumburl%>"/>
+                                                        	</div>
+                                                    	<%}%>
+                                                      
+                                                        
+                                                    </span>
+                                                </div>
+                                            <%}else if(list[i].thumbs[j].ext =='mp3'||list[i].thumbs[j].ext =='wav'){%>
+                                                <div class="img"  onclick="openAttachment(<%=list[i].id%>,'<%=list[i].thumbs[j].resource_id_int%>','<%=list[i].thumbs[j].resource_format%>',this,event)" attachment="<%=list[i].thumbs[j].file_id%>" ext="<%=list[i].thumbs[j].ext%>" style="height:<%=height_div%>px;">
+                                                    <table style="height:100%;width:100%;">
+                                                		<tr>
+                                                			<td align="middle">
+                                                				<span class="zoomImage voice-bg">
+			                                                        <div class="position">
+			                                                            <img src="../../../../../image/fun-module/ipad/zthd/voice-bg.png"/>
+			                                                        </div>
+			                                                    </span>
+                                                			</td>
+                                            			</tr>
+                                        			</table>
+                                                </div>
+                                            <%}else if(list[i].thumbs[j].ext =='doc'||list[i].thumbs[j].ext =='docx'){%>
+                                                <div class="img"  onclick="openAttachment(<%=list[i].id%>,'<%=list[i].thumbs[j].resource_id_int%>','<%=list[i].thumbs[j].resource_format%>',this,event)" attachment="<%=list[i].thumbs[j].file_id%>" ext="<%=list[i].thumbs[j].ext%>">
+                                                    <span class="zoomImage">
+                                                        <div class="position">
+                                                            <img src="../../../../../image/fun-module/ipad/zthd/doc.png" />
+                                                        </div>
+                                                    </span>
+                                                </div>
+                                            <%}else if(list[i].thumbs[j].ext =='xlsx'||list[i].thumbs[j].ext =='xls'){%>
+                                                <div class="img"  onclick="openAttachment(<%=list[i].id%>,'<%=list[i].thumbs[j].resource_id_int%>','<%=list[i].thumbs[j].resource_format%>',this,event)" attachment="<%=list[i].thumbs[j].file_id%>" ext="<%=list[i].thumbs[j].ext%>">
+                                                    <span class="zoomImage">
+                                                        <div class="position">
+                                                            <img src="../../../../../image/fun-module/ipad/zthd/xls.png" />
+                                                        </div>
+                                                    </span>
+                                                </div>
+                                            <%}else if(list[i].thumbs[j].ext =='txt'){%>
+                                                <div class="img"  onclick="openAttachment(<%=list[i].id%>,'<%=list[i].thumbs[j].resource_id_int%>','<%=list[i].thumbs[j].resource_format%>',this,event)" attachment="<%=list[i].thumbs[j].file_id%>" ext="<%=list[i].thumbs[j].ext%>">
+                                                    <span class="zoomImage">
+                                                        <div class="position">
+                                                            <img src="../../../../../image/fun-module/ipad/zthd/txt.png" />
+                                                        </div>
+                                                    </span>
+                                                </div>
+                                            <%}else if(list[i].thumbs[j].ext =='sb2'){%>
+                                                <div class="img"  onclick="openAttachment(<%=list[i].id%>,'<%=list[i].thumbs[j].resource_id_int%>','<%=list[i].thumbs[j].resource_format%>',this,event)" attachment="<%=list[i].thumbs[j].file_id%>" ext="<%=list[i].thumbs[j].ext%>">
+                                                    <span class="zoomImage">
+                                                        <div class="position">
+                                                            <img src="../../../../../image/fun-module/ipad/zthd/sb2.png" />
+                                                        </div>
+                                                    </span>
+                                                </div>
+                                            <%}else if(list[i].thumbs[j].ext =='ppt' || list[i].thumbs[j].ext =='pptx'){%>
+                                                <div class="img"  onclick="openAttachment(<%=list[i].id%>,'<%=list[i].thumbs[j].resource_id_int%>','<%=list[i].thumbs[j].resource_format%>',this,event)" attachment="<%=list[i].thumbs[j].file_id%>" ext="<%=list[i].thumbs[j].ext%>">
+                                                    <span class="zoomImage">
+                                                        <div class="position">
+                                                            <img src="../../../../../image/fun-module/ipad/zthd/ppt.png" />
+                                                        </div>
+                                                    </span>
+                                                </div>
+                                            <%}%>
+                                        <%}%>
+                                    <%}%>
+                                </div>
+                            <%}%>
+                        </div>
+					</li>
+				<%}%>
+			<%}%>
+		</script>
+	</div>
+	<!--//右侧内容-->
+</body>
+<script type="text/javascript" src="../../../../../script/api.js"></script>
+<script type="text/javascript" src="../../../../../script/base_config.js" ></script>
+<script type="text/javascript" src="../../../../../script/plug-in/template.js" ></script>
+<script type="text/javascript" src="../../../../../script/common/common.js"></script>
+<script type="text/javascript" src="../../../../../script/plug-in/base64.js" ></script>
+<script type="text/javascript" src="../../../../../script/assembly/UIAlbumBrowser.js"></script>
+<script type="text/javascript" src="../../../../../script/assembly/getPicture.js"></script>
+<script type="text/javascript" src="../../../../../script/assembly/photoBrowser.js"></script>
+<script type="text/javascript" src="../../../../../script/assembly/openResource.js" ></script>
+<script type="text/javascript" src="../../../../../script/module/iphone/common/zthd/zthd.js" ></script>
+<script type="text/javascript">
+	var currentPage = 1;//当前分页数
+	var totalPages = 0;//总页数
+	var oparam_data;
+	var netAudio;//播放录音对象
+	var header_h;
+	var keyword = "";//搜索关键字
+	var imageList=[];//图片路径
+	var is_openAttachment = false;//是否是打开资源
+	var selectWorkId = -1;//记录选中的作品id
+	apiready = function(){
+		commonSetTheme({"level":5,"type":0});
+	    header_h = api.pageParam.header_h;
+		netAudio = api.require('netAudio');
+		oparam_data = JSON.parse(Base64.decode(api.pageParam.oparam_base64));
+		initData(1);
+		commonScrollBottomReload();
+		commonRefreshHeaderInfo();
+	};
+	/*
+	*author:zhaoj
+	*function:打开详情页面
+	*date：20170912
+	*/
+	function openDetailFrame(oparam,id){
+		if (is_openAttachment){
+			is_openAttachment = false;
+			return;
+		}
+		setLiCss(id);
+		commonCloseFrame('zthdIpad_works_detail_frame');
+		commonCloseFrame('zthdIpad_works_detailContent_frame');
+		oparam = JSON.parse(oparam);
+		//获取评论数和点赞数
+		var praise_count = $api.text($api.dom($api.byId('j_li_'+id), '.praise'));
+		var comment_count = $api.text($api.dom($api.byId('j_li_'+id), '.comment'));
+		var yulan_count = $api.text($api.dom($api.byId('j_li_'+id), '.yulan'));
+        oparam.praise = praise_count*1;
+        oparam.comment = comment_count*1;
+        oparam.yulan = yulan_count*1;
+       	oparam.topic_id = oparam_data.id;
+		oparam = Base64.encode(JSON.stringify(oparam));
+		commonExecScript('zthdIpad_detail_window','','openWorksDetailFrame("'+oparam+'",1);',0);
+	}
+	/*
+	*author:zhaoj
+	*function:设置选中样式
+	*date：20170919
+	*/
+	function setLiCss(id){
+		selectWorkId = id;
+		var li_array = $api.domAll($api.byId('list_body'), 'li');
+		for(var i = 0; i < li_array.length; i++){
+			$api.removeCls(li_array[i], 'active');
+		}
+		$api.addCls($api.byId('j_li_'+id), 'active');
+	}
+	/*
+	*author:zhaoj
+	*function:是否显示虚线
+	*date：20171019
+	*/
+	function isShowBoxShow(type){
+		type ? $api.removeCls($api.byId('j_box_shadow'), 'aui-hide') : $api.addCls($api.byId('j_box_shadow'), 'aui-hide');
+	}
+	/*
+	*author:zhaoj
+	*function:初始化列表数据
+	*date：20171024
+	*/
+	function initData(page){
+		currentPage = page;
+		showSelfProgress('加载中...');
+		j_top.scrollIntoView();//切换学科时，定位到最上方 
+		get_works_by_topicid();
+	}
+	/*
+    *author:zhaoj
+    *function:通过主题id获取此主题下的作品列表
+    *interface:张海
+    *date：20171023
+    */
+	function get_works_by_topicid(){
+		api.ajax({
+			url : BASE_URL_ACTION + '/ypt/space/topic/get_works_by_topicid?random_num='+creatRandomNum()+'&topic_id='+oparam_data.id+'&identity_id='+$api.getStorage("identity")+'&page_num='+currentPage+'&page_size='+BASE_PAGE_SIZE+'&person_id='+$api.getStorage("person_id")+'&name='+keyword,
+			method : 'get',
+			timeout : 0,
+			dataType : 'json',
+			headers : {
+	'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+	}
+			}, function(ret, err) {
+				if(err){
+					popToast('获取活动作品信息失败，请稍候重试');
+				}else{
+					if(ret.success){
+						if (currentPage == 1){
+							imageList = [];
+						}
+						totalPages = ret.total_page;
+						for(var i = 0; i < ret.list.length; i++){
+							var img_url="";
+					    	if (BASE_APP_TYPE == 1) {
+								img_url = BASE_IMAGE_PRE+"down/Material/" + ret.list[i].avatar_fileid.substring(0, 2) + "/" + ret.list[i].avatar_fileid+ commonReturnPhotoCutSize(0);		
+							} else {
+								img_url = BASE_URL_ACTION + "/html/thumb/Material/" + ret.list[i].avatar_fileid.substring(0, 2) + "/" + ret.list[i].avatar_fileid + commonReturnPhotoCutSize(0);
+							}
+							ret.list[i].avatar_fileid = img_url;
+							ret.list[i].thumbs=[];
+							var imgIndex = 0;
+							var imageArray = [];
+							//附件
+                            if(!isEmptyString(ret.list[i].attachment)){
+                                var attachment=ret.list[i].attachment;
+                                for(var j = 0; j < attachment.length; j++){
+                                    var ext = attachment[j].resource_format;
+                                    var oparam = new Object();
+                                    oparam.file_id = attachment[j].file_id;
+                                    oparam.resource_id_int = attachment[j].resource_id_int;
+                                    oparam.resource_format = attachment[j].resource_format;
+                                    oparam.image_url = gertImageUrl(attachment[j].file_id,ext,1);
+                                    oparam.image_url_yt = gertImageUrl(attachment[j].file_id,ext,0);
+                                    oparam.ext=ext.toLowerCase();
+                                    oparam.currentPage = currentPage;
+									if((ext=='png' || ext=='jpg' || ext == 'bmp' || ext =='gif')){
+										imageArray.push(gertImageUrl(attachment[j].file_id,ext,1));
+										oparam.imgIndex = imgIndex;
+										imgIndex++;
+									}
+                                    
+                                    ret.list[i].thumbs.push(oparam);
+                                    if(attachment[j].resource_type_name == "视频"){
+										if (parseInt(attachment[j].m3u8_status)===2 || parseInt(attachment[j].m3u8_status)===0){
+											attachment[j].vediothumburl = BASE_URL_ACTION+"/html/down/Thumbs/" + attachment[j].thumb_id.substr(0,2)+"/"+attachment[j].thumb_id+".thumb";
+										    attachment[j].defaultUrl = false;
+										}else{
+											attachment[j].vediothumburl = "../../../../../image/fun-module/ipad/zthd/vedio-bg.png";
+											attachment[j].defaultUrl = true;
+										}
+									}
+                                }
+                            }
+                            
+                            imageList.push(imageArray);
+							var oparam = new Object();
+							oparam.works_id = ret.list[i].id;
+							oparam.type = 0;//代表是从活动作品页面进去的
+							oparam.avatar_fileid = ret.list[i].avatar_fileid;
+							ret.list[i].oparam = JSON.stringify(oparam);
+						}
+						ret.support_audio_extension = support_audio_extension;
+						ret.support_extension = support_extension;
+						ret.commonContainsArray = commonContainsArray;
+						var wid_a = $api.cssVal($api.byId("list_body"),"width");
+						var wid_a_num = wid_a.substring(0,wid_a.length-2) - 100;
+						var height_div = wid_a_num * 0.33 * 0.9 * 0.75;
+						ret.height_div = height_div; 
+						commonAddManyHtml('list_body','list_script',ret);
+						if (selectWorkId != -1){
+							setLiCss(selectWorkId);
+						}
+					}else{
+						popToast('获取活动作品信息失败，请稍候重试');
+					}
+				}
+			api.hideProgress();
+			//通知顶部下拉刷新数据加载完毕，组件会恢复到默认状态
+			commonControlRefresh();
+		});
+	}
+	/*
+    *author:zhaoj
+    *function:获取缩率图路径
+    *date：20171023
+    */
+    function gertImageUrl(file_id,ext,type){
+        var img_url='';//图片路径
+        if(!isEmptyString(file_id)){
+            if(ext == 'png' || ext == 'PNG'|| ext == 'jpg'|| ext == 'JPG'|| ext == 'gif'|| ext == 'GIF'|| ext == 'bmp'|| ext == 'BMP'){
+                image_hz = type?commonReturnPhotoCutSize(0):'';
+                if (BASE_APP_TYPE == 1) {
+                    img_url = BASE_IMAGE_PRE+"down/Material/" + file_id.substring(0, 2) + "/" + file_id+'.'+ext+ image_hz;      
+                } else {
+                    img_url = BASE_URL_ACTION + "/html/thumb/Material/" + file_id.substring(0, 2) + "/" + file_id+'.'+ext+image_hz;
+                }
+            }
+        }
+        return img_url;
+    }
+    /*
+    *author:zhaoj
+    *function:播放音频
+    *date：20171024
+    */
+    function openAudio(voice_url,self){
+    	commonShowProgress('加载中...',false);
+    	netAudio.play({
+		    path: voice_url
+		},function( ret, err ){    
+		    if( ret ){
+		    	if(ret.current == 0){
+		    		api.hideProgress();
+		    		var img_dom = $api.dom(self, 'img');
+					$api.attr(img_dom, 'src','../../../../../image/fun-module/ipad/zthd/voice-bg.gif');
+		    	}
+		    	if(ret.complete==true){
+					popToast('播放完毕');
+					$api.removeCls(self, 'is_play');
+					var img_dom = $api.dom(self, 'img');
+					$api.attr(img_dom, 'src','../../../../../image/fun-module/ipad/zthd/voice-bg.png');		
+		    	}
+		    }else{
+		    	api.hideProgress();
+		    	popToast('加载失败');
+		    }
+		});
+    }
+    /*
+	*author:zhaoj
+	*function:停止录音
+	*date：20171024
+	*/
+	function stopVoice(self){
+		netAudio.stop();
+	}
+	/*
+	*author:zhaoj
+	*function:设置列表数据点赞数量显示
+	*date：20170914
+	*/
+	function setIndexFramePraiseOrCommentNum(type,num,id){
+		if(type == 0){
+			//点赞
+			$api.text($api.dom($api.byId('j_li_'+id), '.praise'),num);
+		}else if(type == 1){
+			//评论
+			$api.text($api.dom($api.byId('j_li_'+id), '.comment'),num);
+		}else if(type == 2){
+            //删除圈子
+            var li_object = $api.byId('j_li_'+id);
+            var li_parent = li_object.parentNode;
+            li_parent.removeChild(li_object);
+        }else if(type == 3){
+            //预览
+             $api.text($api.dom($api.byId('j_li_'+id), '.yulan'),num);
+        }
+	}
+	/*
+	*author:zhaoj
+	*function:设置精品提示显示
+	*date：20170914
+	*/
+	function setBoutiqueTip(type,id){
+		commonAddOrRemoveHideCss('j_li_boutique_'+id,type);
+	}
+	 /*
+    *author:zhaoj
+    *function:打开附件
+    *date：20171023
+    */
+    function openAttachment(works_id,resource_id_int,resource_format,self,e,imgIndex,index){
+    	add_works_view_num(works_id);
+    	is_openAttachment = true;
+    	if (resource_format=='png' || resource_format=='jpg' || resource_format == 'bmp' || resource_format =='gif'){
+    		index = ($api.attr(self, 'currentPage') - 1) * 10 + index;
+    		openPictureShowWin(imageList[index],imgIndex);
+    		return;
+    	}
+    	
+        var param_json = {"is_show_tip":1,"resource_id_int":resource_id_int};
+        commonGetResInfo(param_json,function(flag,ret){
+            api.hideProgress();
+            if(flag){
+                if(resource_format != "mp3"){
+                    var oparam ={"res_type":ret.resource_format, "res_path":ret.file_id, "res_title":ret.resource_title,"m3u8_status":ret.m3u8_status,"winName":api.winName,"setBackFun":'reBackType("voice");',"backFun":'back();',"res_id":'open_picture',"pic_back":'picture_activity_works'};
+                     common_openResource.open_new(JSON.stringify(oparam));
+                }else{
+                    var res_url='';
+                    if (BASE_APP_TYPE == 1) {
+                        res_url = BASE_IMAGE_PRE+"down/Material/" + ret.file_id.substring(0, 2) + "/" + ret.file_id+'.'+ret.resource_format;        
+                    } else {
+                        res_url = BASE_URL_ACTION + "/html/thumb/Material/" + ret.file_id.substring(0, 2) + "/" + ret.file_id+'.'+ret.resource_format;
+                    }
+                    if($api.hasCls(self, 'is_play')){
+                        //停止播放
+                        $api.removeCls(self, 'is_play');
+                        var img_dom = $api.dom(self, 'img');
+                        $api.attr(img_dom, 'src','../../../../../image/fun-module/ipad/zthd/voice-bg.png');
+                        stopVoice(self);
+                    }else{
+                        //正在播放
+                        $api.addCls(self, 'is_play');
+                        openAudio(res_url,self);
+                    }
+                }
+            }else{
+                popToast('打开失败，请稍候重试');
+            }
+        });
+        e.stopPropagation();
+    }
+    
+    /*
+	 *作者:zfz
+	 *功能:开始搜索
+	 *日期：20180427
+	 */
+	function startSearch(type) {
+		commonSearch(type, function(data) {
+			setKeyword(data);
+		})
+	}
+	
+	/*
+	 *作者:zfz
+	 *功能:设置搜索值，并根据搜索条件加载相关数据数据
+	 *日期：20180427
+	 */
+	function setKeyword(data) {
+		keyword = $api.trimAll(data);
+		keyword = Base64.decode(keyword);
+		initData(1);
+	}
+</script>
+</html>

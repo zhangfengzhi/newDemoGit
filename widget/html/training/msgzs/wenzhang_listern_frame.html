@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <title>点名下拉菜单</title>
+    <link rel="stylesheet" type="text/css" href="../../css/aui/aui.css" />
+    <style>
+    	html, body {
+        	background-color: transparent;
+   		 }
+    	body{padding:0;margin:0;}
+    	.shadow{position:absolute;left:0;top:0;width:100%;height:100%;z-index: 1;}
+    	.clearfix:after {content: ' ';display: block;clear: both;visibility: hidden;line-height: 0;height: 0;}
+    	.header{width:100%;height:45px;}
+    	.main{
+    		background-color: rgba(0,0,0,0.9);
+			position: absolute;
+			left:0;
+			bottom:0;
+			width: 100%;
+			z-index: 2;
+			font-size:15px;
+			color:#8A8A8A;
+		}
+		.main .name{
+			height:50px;
+			line-height:50px;
+		}
+		.main .bb{width:100%;border-bottom:1px solid #313131;padding-bottom:15px;}
+		.mlr15{margin:0 15px;}
+		.seleted-sound div{display:inline-block;width:47%;height:42px;text-align:center;line-height:42px;border:1px solid #8A8A8A;border-radius:5px;}
+		.seleted-sound .man{float:left;}
+		.seleted-sound .women{float:right;}
+		.seleted-sound div.selected{color:#BE4C46;border:1px solid #BE4C46;}
+		.seleted-sound div.selected a{color:#BE4C46 !important;}
+		.speak{height:23px;}
+		.speak div{display:inline-block;width:20px;}
+		.speak .fast{float:right;}
+		.speak .slow{float:left;}
+		.btn{height:50px;line-height:50px;text-align:center;}
+		.btn div{display:inline-block;width:49%;}
+		.back{position:relative;color:#8A8A8A;padding-left:0;padding-right:0;}
+    </style>
+</head>
+<body>
+	<div class="shadow" tapmode onclick="api.closeFrame({name:'wenzhang_listern_frame'});"></div>
+	<div id="header" class="header"></div>
+	<div id="main" class="main clearfix">
+		<div class="bb clearfix">
+			<div class="name  mlr15 clearfix">
+				选择声音:
+			</div>
+			<div class="seleted-sound  mlr15 clearfix">
+				<div id="man" class="man selected" onclick="toggleSelected(1)">
+					<a class="aui-iconfont aui-icon-man back"></a>
+					磁性男声
+				</div>
+				<div id="women" class="women" onclick="toggleSelected(0)">
+					<a class="aui-iconfont aui-icon-women back"></a>
+					甜美女声
+				</div>
+			</div>
+		</div>
+		<div class="bb clearfix">
+			<div class="name  mlr15 clearfix">
+				语速调整:
+			</div>
+			<div class="speak mlr15 clearfix">
+				<div class="slow">慢</div>
+				<div class="fast">快</div>
+			</div>
+		</div>
+		<div class="btn clearfix">
+				<div style="border-right:1px solid #313131;" onclick="startPlay();">开始语音朗读</div>
+				<div onclick="endPlay();">结束语音朗读</div>
+		</div>
+	</div>
+</body>
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript">
+	var header_h;
+	var voice_type = 1;//男生、女生
+	var voice_speed = 50;//语速
+	apiready = function(){
+		header_h = api.pageParam.header_h;
+		openUiSlider();
+	};
+	/*
+	*author:zhaoj
+	*function:打开语速调整
+	*date：20160321
+	*/
+	function openUiSlider(){
+		var uislider = api.require('UISlider');
+		uislider.open({
+		    animation: true,
+		    orientation: 'horizontal',
+		    rect: {
+		        x: 40,
+		        y: api.winHeight-81,
+		        size: api.winWidth-85
+		    },
+		    bubble: {
+		        direction: 'top',
+		        state: 'always',
+		        w: 80,
+		        h: 30,
+		        size: 0,
+		        color: 'rgba(0,0,0,0.9)',
+		        bg: 'widget://res/slider/bubble.png',
+		    },
+		    handler: {
+		        w: 10,
+		        h: 8,
+		        bg: 'widget://res/handler.png'
+		    },
+		    bar: {
+		        h: 4,
+		        bg: '#424242',
+		        active: '#c6c6c6'
+		    },
+		    value: {
+		        min: 0,
+		        max: 100,
+		        step: 1,
+		        init: 50
+		    },
+		    fixedOn: api.frameName,
+		    fixed: false
+		}, function(ret, err) {
+		    if (ret) {
+		        voice_speed = ret.value;
+		    } else {
+		        //alert(JSON.stringify(err));
+		    }
+		});
+	}
+	/*
+	*author:zhaoj
+	*function:选择男生女生
+	*date：20160321
+	*/
+	function toggleSelected(type){
+		voice_type = type;
+		if(type == 1){
+			$api.removeCls($api.byId('women'),'selected');
+			$api.addCls($api.byId('man'),'selected');
+		}else{
+			$api.removeCls($api.byId('man'),'selected');
+			$api.addCls($api.byId('women'),'selected');
+		}
+	}
+	/*
+	*author:zhaoj
+	*function:语音播放文章
+	*date：20160321
+	*/
+	function startPlay(){
+		api.execScript({
+			name : 'wenzhang_content_window',
+			frameName : 'wenzhang_content_frame',
+			script : 'listernArticle('+voice_type+','+voice_speed+');'
+		});
+		setTimeout(function() {
+			api.execScript({
+				name : 'wenzhang_content_window',
+				script : 'back();'
+			});
+		}, 300);
+	}
+	/*
+	*author:zhaoj
+	*function:结束语音播放文章
+	*date：20160321
+	*/
+	function endPlay(){
+		api.execScript({
+			name : 'wenzhang_content_window',
+			frameName : 'wenzhang_content_frame',
+			script : 'stopRead();'
+		});
+		setTimeout(function() {
+			api.execScript({
+				name : 'wenzhang_content_window',
+				script : 'back();'
+			});
+		}, 300);
+	}
+</script>
+</html>

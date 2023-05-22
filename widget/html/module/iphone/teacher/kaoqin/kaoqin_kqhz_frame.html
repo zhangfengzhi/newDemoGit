@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <title>考勤汇总</title>
+    <link rel="stylesheet" type="text/css" href="../../css/aui/aui.css"/>
+    <style>
+    	body{background:#F8F7F3;color:#666666;}
+    	.content{height:40px;line-height:40px;padding:0 15px;}
+    	.content div{display:inline-block;float:right;}
+    	.bb{border-bottom:1px solid #efefef;}
+    	.bt{border-top:1px solid #efefef;}
+    	.hr{height:10px;}
+    	.bgf{background:#ffffff;}
+    	.pie-chart{position:relative;}
+    	.detail-info{position:absolute;top:50%;margin-top:-38px;right:0;width:40%;}
+    	.detail-info div{height:25px;line-height:25px;font-size:12px;}
+    	.detail-info div span{display:inline-block;float:left;margin:6px 10px 0 0;width:12px;height:12px;border-radius:6px;}
+    	.yellow{background:#FDB225;}
+    	.blue{background:#4369DB;}
+    	.orange{background:#F56857;}
+    	.s-green{background:#04AE8C;}
+    	.green{background:#87C720;}
+    	.qj-detail{padding:0 15px;}
+    	.qj-detail ul{width:100%;}
+    	.qj-detail ul li{list-style:none;height:40px;line-height:40px;}
+    	.qj-detail ul li div{float:right;}
+    	.pr0{padding-right:0;}
+    	.num{color:#1ab9c9;}
+    </style>
+</head>
+<body class="common-iphone-kaoqin">
+	<div class="hr bb"></div>
+	<div class="content bb bgf">
+		部门名称
+		<div>平台软件开发部</div>
+	</div>
+	<div class="content bb pr0 bgf" onclick="openHzlistWin();">
+		累计请假
+		<div class="num">5次<i class="aui-iconfont aui-icon-right num"></i></div>
+	</div>
+	<div class="hr"></div>
+	<div class="content bt bb bgf">
+		统计图
+	</div>
+	<div id="pie_chart" class="pie-chart bb bgf clearfix">
+		<div class="detail-info">
+			<div>
+				<span class="yellow">&nbsp;</span>
+				病假
+			</div>
+			<div>
+				<span class="orange">&nbsp;</span>
+				事假
+			</div>
+			<div>
+				<span class="s-green">&nbsp;</span>
+				婚假
+			</div>
+		</div>
+	</div>
+	<div class="hr bb"></div>
+	<div class="content bb bgf">
+		请假详情
+	</div>
+	<div class="qj-detail bb bgf">
+		<ul>
+			<li class="bb">
+				婚假
+				<div>7天</div>
+			</li>
+			<li class="bb">
+				病假
+				<div>1天3小时</div>
+			</li>
+			<li>
+				事假
+				<div>2天3小时</div>
+			</li>
+		</ul>
+	</div>
+	<div class="hr"></div>
+</body>
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript" src="../../script/common/kaoqin_common.js"></script>
+<script type="text/javascript">
+	var type = 0;//判读是请假还是公出，默认是请假
+	var header_h;
+	apiready = function(){
+		var header = $api.byId('aui-header');
+		header_h = api.pageParam.header_h;
+		changeType(type);
+		openPieChart();
+		var pieHeight = Math.floor(api.winWidth * 0.46)+30;
+		$api.css($api.byId('pie_chart'),'height:'+pieHeight+'px;');
+	};
+	/*
+	*author:zhaoj
+	*function:更改是请假还是公出的状态type：0请假，type：1公出
+	*date：20160620
+	*/
+	function changeType(num){
+		type = num;
+		if(type){
+			//$api.text($api.byId('content'), '公出统计');
+		}else{
+			//$api.text($api.byId('content'), '请假统计');
+		}
+	}
+	/*
+	*author:zhaoj
+	*function:打开饼状图
+	*date：20160523
+	*/
+	function openPieChart(){
+		var pieChart = api.require('pieChart');
+		pieChart.open({
+		      x: 15+api.winWidth * 0.23,
+		      y: 15+120+20+api.winWidth * 0.23,
+		      radius: api.winWidth * 0.23,
+		      center:{
+		      	  title: '考勤',
+		      	  subTitle: '统计',
+		      	  titleColor:'#484848',
+		      	  titleSize :11,
+		      	  subTitleColor:'#484848',
+		      	  subTitleSize:11
+		      },
+		      elements: [{
+		            value: 3, 
+		            color: '#FF8683'
+		      },{
+		            value: 7, 
+		            color: '#7FEC8B'
+		      }],
+		    fixedOn: api.frameName,
+		    fixed: false
+		}, function(ret, err) {
+		});
+	}
+</script>
+</html>

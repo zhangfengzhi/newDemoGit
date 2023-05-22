@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no" />
+    <title>title</title>
+    <link rel="stylesheet" type="text/css" href="../../../../../css/aui/aui.css"/>
+    <link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+    <style>
+    	body{background:#F8F7F3;color:#141414;}
+	.title{height:40px;background:#ffffff;line-height:40px;padding-left:15px;border-bottom:1px solid #F8F7F3;}
+    	.hr{height:10px;}
+    	.content{padding:12px 15px;}
+    	.content div{display:inline-block;float:right;color:#666666;}
+    	.bb{border-bottom:1px solid #F8F7F3;}
+    	.bgf{background:#ffffff;}
+    	.ellipsis{white-space: nowrap;overflow: hidden;text-overflow: ellipsis;}
+    	button, .aui-btn{padding:4px 12px;}
+    	.time-detail{padding:0 15px;}
+    	.time-detail ul{width:100%;}
+    	.time-detail ul li{list-style:none;height:40px;line-height:40px;}
+    	.time-detail ul li div{float:right;color:#666666;}
+    	.word-break{word-wrap: break-word;word-break: normal;color:#666666;}
+    	.img-content img{max-width:100%;height:auto;}
+    	.footer-div{
+			position:fixed;
+			height:55px;
+			background:#ffffff;
+			display: block;
+			bottom: 0px;
+			z-index:2;
+			width:100%;
+			box-shadow:3px 0 4px #aaaaaa;
+		}
+		.footer-div .wid50{width:50%;line-height:55px;float:left;text-align:center;color:#ffffff;}
+		.bgred{background:#FA4848;}
+		.kb{height:55px;}
+		.shadow{position:absolute;left:0;top:0;width:100%;height:100%;z-index: -1;}
+		.reason-content{font-size:14px;text-indent:2em;padding:20px 15px;}
+		.ima_notice{padding:0;}
+    </style>
+</head>
+<body class="common-iphone-kaoqin">
+	<div id="j_shadow" class="shadow" tapmode></div>
+	<div id="" class="content bb bgf">
+		姓&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;名
+		<div id="j_name"></div>
+	</div>
+	<div id="j_type_title" class="content bb bgf">
+	</div>
+	<div class="hr bb"></div>
+	<div id="j_time_title" class="content bb bgf">
+		
+	</div>
+	<div class="time-detail bb bgf">
+		<ul>
+			<li class="bb">
+				开始时间
+				<div id="start_time"></div>
+			</li>
+			<li>
+				结束时间
+				<div id="end_time"></div>
+			</li>
+		</ul>
+	</div>
+	<div class="hr"></div>
+	<div id="j_reason_title" class="title"></div>
+	<div id="j_reason_content" class="content word-break bb bgf reason-content"></div>
+	<div class="hr bb"></div>
+	<div id="j_file_title" class="title" style="display:none;">附件</div>
+	<div id="j_file_content" class="img-content content bb bgf reason-content" style="display:none;"></div>
+	<div class="hr"></div>
+	<div id="j_kb" class="kb" style="display:none;"></div>
+	<div id="j_footer" class="footer-div" style="display:none;">
+	 	<div class="wid50 bggreen" onclick="setCheckLeaveQj(1);">通过撤销</div>
+	 	<div class="wid50 bgred" onclick="setCheckLeaveQj(2);">驳回撤销</div>
+	</div>
+	<input oninput="commonRemoveExpression(this)" type="hidden" id="qj_gc_type" value=""/>
+</body>
+<script type="text/javascript" src="../../../../../script/api.js"></script>
+<script type="text/javascript" src="../../../../../script/base_config.js" ></script>
+<script type="text/javascript" src="../../../../../script/common/common.js"></script>
+<script type="text/javascript" src="../../../../../script/plug-in/photoBrowser.js"></script>
+<script type="text/javascript" src="../../../../../script/common/kaoqin_common.js"></script>
+<script type="text/javascript">
+	var ruleType;
+	var per_id;
+	apiready = function(){
+		commonSetTheme({"level":5,"type":0});
+		getLeaveInfoById(1,api.pageParam.leave_id);
+		if(api.pageParam.check_status != 3){
+			$api.css($api.byId('j_kb'),'display:block;');
+			$api.css($api.byId('j_footer'),'display:block;');
+		}
+	};
+	/*
+	*author:zhaoj
+	*function:根据type判断是请假还是公出
+	*date：20160620
+	*/
+	function diffrentType(data){
+		per_id = data.check_list.person_id;
+		if(api.pageParam.type){
+			$api.html($api.byId('j_type_title'),'公出类别<div>'+data.type_name+'</div>');
+			$api.text($api.byId('j_reason_title'),'公出事由');
+			getSinglePersonWaiChuInfo(data.type_id,data.start_time,data.end_time,function(flag,ret){
+				dealTimeData(flag,ret,data,function(time){
+					$api.html($api.byId('j_time_title'),'公出时间<div>'+time+'</div>');
+				});
+			});
+			ruleType = 2;
+		}else{
+			$api.html($api.byId('j_type_title'),'请假类型<div>'+data.type_name+'</div>');
+			$api.text($api.byId('j_reason_title'),'请假事由');
+			getSinglePersonLeaveInfo(data.type_id,data.start_time,data.end_time,function(flag,ret){
+				dealTimeData(flag,ret,data,function(time){
+					$api.html($api.byId('j_time_title'),'合计时间<div>'+time+'</div>');
+				});
+			});
+			ruleType = 1;
+		}
+		$api.text($api.byId('j_name'),data.apply_person_name);
+		$api.html($api.byId('j_reason_content'),transferBrStr(data.content));
+		$api.text($api.byId('start_time'),data.start_time);
+		$api.text($api.byId('end_time'),data.end_time);
+	}
+	/*
+	*author:zhaoj
+	*function:处理时间的数据
+	*date：20160804
+	*/
+	function dealTimeData(flag,ret,data,callback){
+		var retData = flag == true ? ret : data;
+		var time='';
+		if(retData.days*1>0){
+			time = retData.days+'天';
+		}
+		if(retData.hours*1>0){
+			time = time + retData.hours+'小时';
+		}
+		if(retData.minutes*1>0){
+			time = time + retData.minutes+'分钟';
+		}
+		if(time){
+			time = '共'+time;
+		}
+		callback(time);
+	}
+	/*
+	*author:zhaoj
+	*function:获取我的请假或公出的详情信息
+	*date：20160624
+	*/
+	function getLeaveInfoById(show_type,leave_id){
+		if(show_type == 1){
+			showSelfProgress('加载中...');
+		}
+		api.ajax({
+			url : BASE_URL_ACTION + '/leave/getLeaveInfoById',
+			method : 'get',
+			timeout : 0,
+			dataType : 'json',
+			data : {
+				values : {
+					"random_num" : creatRandomNum(),
+					"leave_id" : leave_id
+				}
+			},
+			headers : {
+	'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+	}
+			}, function(ret, err) {
+				api.hideProgress();
+				if (err) {
+					popToast('获取详情信息失败');
+				} else {
+					if(ret.success){
+						ret.start_time = ret.start_time.substring(0,16);
+						ret.end_time = ret.end_time.substring(0,16);
+						if(ret.file_list.length > 0){
+							$api.css($api.byId('j_file_title'),'display:block;');
+							$api.css($api.byId('j_file_content'),'display:block;');
+							var img_array = new Array();//保存图片路径
+							for(var i = 0;i < ret.file_list.length; i++){
+								var img_url;
+								if(BASE_APP_TYPE == 1){
+									img_url = BASE_IMAGE_PRE+"down/Material/"+ ret.file_list[i].substring(0, 2) + "/" + ret.file_list[i] + commonReturnPhotoCutSize(0);
+								}else{
+									img_url = BASE_URL_ACTION + "/html/thumb/Material/" + ret.file_list[i].substring(0, 2) + "/" + ret.file_list[i] + commonReturnPhotoCutSize(0);;
+								}
+								img_array.push(img_url);
+							}
+							uploadImgHtml(img_array);//将图片显示到页面中
+						}
+						diffrentType(ret);
+						$api.val($api.byId('qj_gc_type'), ret.type_name);
+					}else{
+						popToast('获取详情信息失败');
+					}
+				}
+		});
+	}
+	/*
+	 *author:zhaoj
+	 *function:图片的HTML
+	 *date：20160628
+	 */
+	function uploadImgHtml(img_array) {
+		var img_html="";
+		var onerror_html = "this.src='../../../../../image/common/tpsx.png'";
+		for(var i = 0;i < img_array.length; i++){
+			img_html = img_html + '<img class="ima_notice" src="'+img_array[i]+'" onerror="'+onerror_html+'"  alt="附件" onclick="openImage('+i+')" />';
+		}
+		$api.append($api.byId('j_file_content'), img_html);
+	}
+	/*
+	 *author:zhaoj
+	 *function:考勤审批通过或驳回type=1通过，type=2驳回
+	 *date：20160624
+	 */
+	function setCheckLeaveQj(type){
+	if(type == 1){
+		showSelfProgress('审批中...');
+	}else{
+		showSelfProgress('驳回中...');
+	}
+	$api.css($api.byId('j_shadow'),'z-index:3');
+	api.ajax({
+		url : BASE_URL_ACTION + '/leave/checkCancelLeave',
+		method : 'get',
+		timeout : 0,
+		dataType : 'json',
+		data : {
+			values : {
+				"random_num" : creatRandomNum(),
+				"leave_id" : api.pageParam.leave_id,
+				"check_status":type
+			}
+		},
+		headers : {
+'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+}
+		}, function(ret, err) {
+			api.hideProgress();
+			if (err) {
+				if(type == 1){
+					popToast('审批失败');
+				}else{
+					popToast('驳回失败');
+				}
+				$api.css($api.byId('shadow'),'z-index:-1');
+			} else {
+				if(ret.success){
+                    commonExecScript('kaoqin_kqhz_window','','setSubCount('+ruleType+');',0);
+					//发送系统消息通知审批
+					var target_person = ret.login_name_return + "_5_"+$api.getStorage("BASE_SERVER_NAME");
+					
+					//1：通过 2：全部结束 3：驳回
+					var target_status = parseInt(ret.status_id);
+					if(target_status == 1) {
+						sendSysMsg(target_status, target_person);
+					} else if (target_status == 2) { 
+						sendSysMsg(target_status, target_person);
+					} else if (target_status == 3) {
+						sendSysMsg(target_status, target_person);
+					}
+					if(type == 1){
+						popToast('审批成功');
+					}else{
+						popToast('驳回成功');
+					}
+					if(api.pageParam.type){
+						setTimeout(function(){
+							commonExecScript('kaoqin_cxKqxq_window','','back()',1);
+							commonExecScript('kaoqin_kqhz_window','','openGcFrame()',1);
+							$api.css($api.byId('j_shadow'),'z-index:-1');
+						},1000);
+					}else{
+						setTimeout(function(){
+							commonExecScript('kaoqin_cxKqxq_window','','back()',1);
+							commonExecScript('kaoqin_kqhz_window','','openQjFrame()',1);
+							$api.css($api.byId('j_shadow'),'z-index:-1');
+						},1000);
+					}
+				}else{
+					if(type == 1){
+						popToast('审批失败');
+					}else{
+						popToast('驳回失败');
+					}
+					$api.css($api.byId('j_shadow'),'z-index:-1');
+				}
+			}
+	});
+}
+
+/**
+		 * 发布申请系统消息
+		 * 周枫
+		 * 2016.07.02 
+		 */
+		function sendSysMsg(target_type, target_login_name){
+			var sender_id = $api.getStorage('person_id');
+			var sender_person_name = $api.getStorage("person_name");
+			var sender_login_name = commonNewParamToOldParam($api.getStorage("login_name")); 
+			var sender_identity = $api.getStorage("identity");
+			var target_login_names = [target_login_name];
+			var is_url = 1;
+			var url_name = 'kaoqin_kqsp_window';
+			
+			var sysmsg_code = 'KAOQIN_CXKQXQ_FRAME';
+			
+			var bureau_id = $api.getStorage('bureau_id');
+			( typeof (bureau_id) == 'undefined') ? bureau_id = -1 : bureau_id = bureau_id;
+			
+			var district_id = $api.getStorage('district_id');
+			( typeof (district_id) == 'undefined') ? district_id = -1 : district_id = district_id;
+			
+			var city_id = $api.getStorage('city_id');
+			( typeof (city_id) == 'undefined') ? city_id = -1 : city_id = city_id;
+			
+			var province_id = $api.getStorage('province_id');
+			( typeof (province_id) == 'undefined') ? province_id = -1 : province_id = province_id;
+			var target_person_name = $api.val($api.byId('j_name'));
+			var params = [];
+			var param_num = 0;
+			var qj_gc_type = $api.val($api.byId('qj_gc_type'));
+			if(qj_gc_type == '' || typeof(qj_gc_type) == 'undefined') {
+				qj_gc_type = '考勤申请';
+			}
+			switch(target_type){
+				case 1:
+					param_num = 101;
+					url_name = 'kaoqin_kqsp_window';
+					params = ['考勤消息',target_person_name,'撤销'+qj_gc_type];
+				break;
+				case 2:
+					param_num = 1;
+					url_name = 'kaoqin_wdkq_window';
+					params = ['考勤消息','申请',qj_gc_type,'考勤','审批通过'];
+				break;
+				case 3:
+					param_num = 1;
+					url_name = 'kaoqin_wdkq_window';
+					params = ['考勤消息','申请',qj_gc_type,'考勤','被驳回'];
+				break;
+			}
+			
+			commonSendSysMsg(sender_id, sender_person_name, sender_login_name, sender_identity, target_login_names, is_url, url_name, param_num, sysmsg_code, bureau_id, district_id, city_id, province_id, params, function(is_true){
+				if(is_true) {
+	               
+				} else {
+					
+				}
+			});
+		}
+</script>
+</html>

@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<!-- html5：在创建html时为了防止页面缩放等不兼容效果，要创建个viewport  -->
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<!-- 在IOS设备上，有时会将数字转为手机号，这里也要禁止下 -->
+		<meta name="format-detection" content="telephone=no"/>
+		<title>任课计划frame</title>
+		<link rel="stylesheet" type="text/css" href="../../../css/aui/aui.css" />
+		<link rel="stylesheet" type="text/css" href="../../../css/module/common/aui-list-swipe.css" />
+		<link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+		<style>
+			.body-p{padding:0px 50px;}
+	    	.main-content li{display:block; width :100%; padding:5px 10px 7px 10px; width:45%; float:left;margin-right:5%; border-bottom:1px solid #ddd;}
+	    	.cur_xq{height:40px; line-height: 43px;background: #fff;color:#9F9F9F;margin-bottom:1px;padding:0 5px;}
+	    	.cla_img{ position: absolute;}
+	    	.main-content li .name{position:relative;height:35px;padding:10px 0 9px 0;}
+	    	.main-content li .name span{ color:#000;display:block;}
+	    	.wid100{width:100%;}
+	    	.ellipsis{white-space: nowrap;overflow: hidden;text-overflow: ellipsis; word-break:break-all;}
+	    	.tijiao,.tip{display: inline-block;font-size:12px;color:#696969; padding-bottom:0px;max-width:50%;padding-top:1px;}
+	    	.tijiao{float:left;}
+	    	.version{display: inline-block;font-size:12px;color:#696969;line-height:18px;padding-top:5px;}
+	    	.mgr5{margin-right:5%;}
+	    	.fl{float:left;}
+	   		.no-data{padding:15px 0;}
+	   		.aui-swipe-div{padding-left:60px;background:url(../../../image/person/class.png) 0 10px no-repeat;background-size:48px;}
+	    	.no-data{background:#f6f6f6;}
+	    	.top{height:80px;position:relative;}
+            .top hr {height: 1px;background: #e0e0e0;top: 50%;position: absolute;left: 20px;right: 20px;}
+            .top span { display: inline-block; position: absolute; background: #fff; z-index: 1;top: 30px; left: 50%; margin-left: -61px;color: #333; font-size:18px;}
+            .rela{position: relative;}
+		</style>
+	</head>
+	<body class="w-ipad-common">
+	<div class="top">
+		<hr />
+		<span id="j_name" class="plr20">任课计划</span>
+	</div>
+	<div class="main-content body-p">
+		<div class="cur_xq" id="cur_xq"></div>
+		<section id="banner">
+		
+		
+		
+		</section>
+		<script type="text/html" id="rkjh_script">
+			<% if(table_List.length==0){ %>
+				<div class="no-data"><span>暂无任课计划</span></div>
+			<% }else{ %>
+				<ul id="rkjh_div">
+				<% for(var i=0;i<table_List.length;i++){ %>
+					<li class="rela" tapmode onclick="openManageFrame(this,'<%=table_List[i].CLASS_ID%>','<%=table_List[i].CLASS_NAME%>');">
+						<div class="aui-swipe-div aui-swipe-handle">
+							<div class="name wid100">
+								<span class="ellipsis">任教班级：<%=table_List[i].CLASS_NAME%></span>
+							</div>
+							<div class="detail wid100">
+								<span class="tijiao mgr5 ellipsis">学段：<%=table_List[i].STAGE_NAME%></span>
+								<span class="tip remain-day ellipsis">学科：<%=table_List[i].SUBJECT_NAME%></span>
+							</div>
+							<!--<div class="detail wid100">
+								<span class="version ellipsis">教材版本：<%=table_List[i].SCHEME_NAME%></span>
+							</div>-->
+						</div>
+						<div class="aui-swipe-right-btn aui-bg-danger" tapmode onclick="delTeachPlan(<%=table_List[i].ID%>);">删除</div>
+					</li>
+				<% } %>
+				</ul>
+			<% } %>
+		</script>
+	</div>
+	
+	</body>
+	<script type="text/javascript" src="../../../script/api.js"></script>
+	<script type="text/javascript" src="../../../script/base_config.js"></script>
+	<script type="text/javascript" src="../../../script/plug-in/aui-list-swipe.js"></script>
+	<script type="text/javascript" src="../../../script/plug-in/template.js" ></script>
+	<script type="text/javascript" src="../../../script/plug-in/base64.js" ></script>
+	<script type="text/javascript" src="../../../script/common/common.js"></script>
+	<script type="text/javascript">
+		var header_h;
+		var BASE_URL_ACTION;
+		var currentPage;//当前页面为第一页
+		var totalPage=0;//总页数
+		//定义一个变量存储第一次加载返回来的总记录数
+		var totalData = 0;
+		var swipe;
+		apiready = function() {
+			commonSetTheme({"level":3,"type":0});
+			//定位header位置，留出上面电池等空隙，苹果需要
+			var header = $api.byId('aui-header');
+			BASE_URL_ACTION = $api.getStorage('BASE_URL_ACTION');
+			$api.fixStatusBar(header);
+			header_h = api.pageParam.header_h;
+			currentPage = 1;
+			loadXqInfo(currentPage);
+			//下拉刷新
+			refreshDataInfo();
+			//上拉加载
+			scrollBottomReload();
+		};
+		
+		/*
+		 * author:zfz
+		 * function:获取当前学期id及名称
+		 * data:2016.4.26
+		 */
+		function loadXqInfo(currentPage){
+			api.ajax({
+				url : BASE_URL_ACTION + '/subject/getListSemester',
+				method : 'post',
+				timeout : 30,
+				dataType : 'json',
+				cache : false,
+			}, function(ret, err) {
+				if (err) {
+					api.toast({
+						msg : '对不起，获取学期信息失败'
+					});
+				} else {
+					if(ret.xqlist!=''){
+						if(ret.xqlist.length>0){
+							for(var i=0;i<ret.xqlist.length;i++){
+								if(ret.xqlist[i].SFDQXQ==1){
+									var cur_xq = document.getElementById('cur_xq');
+									$api.text(cur_xq, '当前学期：'+ret.xqlist[i].XQMC);
+									loadRkjhList(ret.xqlist[i].XQ_ID,currentPage);
+									$api.setStorage("rkjh_xq_id",ret.xqlist[i].XQ_ID)
+								}
+							}
+							
+						}else{
+							$("#cur_term").text('');
+						}
+					}
+					else{
+						api.toast({
+							msg : '对不起，获取学期信息失败'
+						});
+					}
+				}
+			});
+		}
+		
+		/*
+		 * author:zfz
+		 * function:获取任课计划相关信息
+		 * data:2016.4.26
+		 */
+		function loadRkjhList(cur_xq_id,currentPage){
+			api.ajax({
+				url : BASE_URL_ACTION + '/person/getTeachPlanByTeacherId',
+				method : 'post',
+				timeout : 30,
+				dataType : 'json',
+				cache : false,
+				data : {
+					values : {
+						"random_num" : creatRandomNum(),
+						'pageNumber':currentPage,
+						"pageSize" : BASE_PAGE_SIZE,
+						"teacher_id":$api.getStorage("person_id"),
+						"xq_id":cur_xq_id
+					}
+				}
+			}, function(ret, err) {
+				api.hideProgress();
+				//通知顶部下拉刷新数据加载完毕，组件会恢复到默认状态
+				commonControlRefresh();
+				if (err) {
+					api.alert({
+						msg : '对不起，您当前地区尚未开通此功能'
+                    },function(ret,err){
+                    	api.execScript({
+                    		name : 'w_index_window',
+	                        script: 'back();'
+                        });
+                    });
+					
+				} else {
+					if(ret.success){
+						totalData = ret.totalRow;
+						totalPage = ret.totalPage;
+						var html_type = template.render('rkjh_script', ret);
+						if (currentPage == 1) {
+							document.getElementById('banner').innerHTML = html_type;
+						} else {
+							$api.append($api.byId('banner'), html_type);
+						}
+						api.parseTapmode();//右滑按钮初始化
+						swipe = new ListSwipe();// 初始化
+					}
+					else{
+						api.toast({
+							msg : '对不起，获取列表信息失败'
+						});
+					}
+				}
+			});
+		}
+		
+		/**
+		 * 下拉刷新
+		 * 周枫
+		 * 2016.2.29
+		 */
+		function refreshDataInfo() {
+			//绑定下拉刷新历史会话事件
+			api.setRefreshHeaderInfo({
+				visible : true,
+				loadingImg : 'widget://image/local_icon_refresh.png',
+				bgColor : '#f7f9f8',
+				textColor : '#8E8E8E',
+				textDown : '下拉加载更多...',
+				textUp : '松开加载...',
+				showTime : true
+			}, function(ret, err) {
+				//从服务器加载数据，完成后调用commonControlRefresh()方法恢复组件到默认状态
+				//调用获取历史会话监听
+				//打开滑动条
+				currentPage = 1;
+				loadXqInfo(currentPage);
+			});
+		}
+		
+		/**
+		 * 上拉刷新页面数据
+		 * 周枫
+		 * 2015.11.24
+		 */
+		function scrollBottomReload() {
+			//下移到底部：
+			api.addEventListener({
+				name : 'scrolltobottom',
+				extra : {
+					threshold : 100 //设置距离底部多少距离时触发，默认值为0，数字类型
+				}
+			}, function(ret, err) {
+				if ((currentPage + 1) <= totalPage) {
+					loadXqInfo(currentPage + 1);
+					currentPage = currentPage + 1;
+					// 页码+1
+				} else {
+					api.toast({
+						msg : '已加载全部数据',
+						location : 'bottom'
+					});
+				}
+			});
+		}
+		/*
+		*作者:zhaoj
+		*功能：删除任课计划
+		*日期：20161129
+		*/
+		function delTeachPlan(id){
+			showSelfProgress('删除中...');
+			api.ajax({
+				url : BASE_URL_ACTION + '/class/delTeachPlan?id='+id+'&random_num='+creatRandomNum(),
+				method : 'get',
+				timeout : 30,
+				dataType : 'json',
+				cache : false,
+				headers : {
+					'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+				}
+			}, function(ret, err) {
+				api.hideProgress();
+				if (err) {
+					popToast('删除失败，请稍候再试！');
+				} else {
+					if(ret.success){
+						popToast('删除成功');
+						currentPage = 1;
+						loadXqInfo(currentPage);
+					}
+					else{
+						popToast('删除失败，请稍候再试！');
+					}
+				}
+			});
+		}
+		/*
+		*作者:zhaoj
+		*功能：打开班级管理页面
+		*日期：20171010
+		*/
+		function openManageFrame(el,class_id,class_name){
+			if(!el.classList.contains("aui-swipe-selected")){
+				commonExecScript('w_index_window','','reBackType("manage");',0);//设置返回参数
+				var header_h = api.pageParam.header_h;
+				var frame_w = api.pageParam.w;
+				var frame_x = api.pageParam.x;
+				pageParamJson={"header_h":header_h,"class_id":class_id,"class_name":class_name,'w':frame_w,"x":frame_x};//打开frame页面json数据
+				//打开frame页面
+				commonOpenFrame("w_rkjh_manage_frame","w_rkjh_manage_frame.html",header_h,false,false,"rgba(0,0,0,0)",pageParamJson);
+			}
+		}
+	</script>
+</html>

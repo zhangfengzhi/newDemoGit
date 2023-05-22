@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<!-- html5：在创建html时为了防止页面缩放等不兼容效果，要创建个viewport  -->
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<!-- 在IOS设备上，有时会将数字转为手机号，这里也要禁止下 -->
+		<meta name="format-detection" content="telephone=no"/>
+		<title>广播window</title>
+		<link rel="stylesheet" type="text/css" href="../../../../../css/aui/aui.css" />
+		<link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+		<style>
+			.history-date {
+				font-size: 12px;
+			}
+			#message-content {
+				overflow-y: auto;
+				display: none;
+			}
+			.t_display_n {
+				display: none;
+			}
+			.t_display_b {
+				display: block;
+			}
+		</style>
+	</head>
+	<body class="common-iphone-guangbo">
+		<div id="wrap">
+			<header class="aui-bar aui-bar-nav aui-bar-primary" id="aui-header">
+				<div id="cloud" class="topbar activebar">
+					<div id="back" class="back" onclick="back();" tapmode="">
+						<i class="aui-iconfont aui-icon-left"></i>返回
+					</div>
+					<div class="mTitle" id="mTitle">
+						校园广播
+					</div>
+					<div class="win-menu">
+						<a id='menu' style="display: none;" class="aui-iconfont aui-icon-add"  onclick="openGuangBoAddFrame();"></a>
+					</div>					
+				</div>
+			</header>
+			<div  class="aui-content aui-content-padded" id="message-content">
+				<p class="aui-text-center history-date"></p>
+			</div>
+		</div>
+	</body>
+	<script type="text/javascript" src="../../../../../script/api.js"></script>
+	<script type="text/javascript" src="../../../../../script/plug-in/base64.js" ></script>
+	<script type="text/javascript" src="../../../../../script/common/common.js"></script>
+	<script type="text/javascript" src="../../../../../script/assembly/tongjiData.js"></script>
+	<script type="text/javascript">
+		//顶部header高度
+		var header_h;
+		var school_id;//学校id
+		apiready = function() {
+			commonSetTheme({"level":5,"type":0});
+			//定位header位置，留出上面电池等空隙，苹果需要
+			var header = $api.byId('aui-header');
+			$api.fixStatusBar(header);
+			header_h = api.pageParam.header_h;
+			school_id = api.pageParam.school_id;
+			//打开广播列表frame
+			openGuangBoListFrame('');
+			//安卓关闭
+			commonBackForAndroid();
+			commonOpenTjData($api.getStorage("identity")+'_'+api.winName);//记录统计
+		};
+
+		var back_type = 'index';
+		/**
+		 * 打开新闻资讯列表frame
+		 * 周枫
+		 * 2015.11.20
+		 */
+		function openGuangBoListFrame() {
+			reBackType('index');
+			//打开新闻资讯frame页面
+			api.openFrame({
+				name : 'guangbo_index_frame',
+				scrollToTop : true,
+				allowEdit : true,
+				url : 'guangbo_index_frame.html',
+				rect : {
+					x : 0,
+					y : header_h,
+					w : 'auto',
+					h : api.winHeight - header_h,
+				},
+				pageParam : {
+					'header_h' : header_h,
+					'school_id' : school_id
+				},
+				bgColor: '#f0f0f0',
+				vScrollBarEnabled : true,
+				hScrollBarEnabled : false,
+				//页面是否弹动 为了下拉刷新使用
+				bounces : true
+			});
+		}
+
+		/**
+		 * 返回应用页面
+		 * 周枫
+		 * 2015.10.11
+		 */
+		function back() {
+			switch(back_type) {
+				case 'index':
+					commonCloseTjData($api.getStorage("identity")+'_'+api.winName);//记录统计
+					api.closeWin();
+					reBackType('index');
+					break;
+				case 'content':
+					api.closeFrame({
+						name : 'guangbo_content_frame'
+					});
+					reBackType('index');
+					break;
+				case 'add':
+					api.execScript({
+						name : 'guangbo_index_window',
+						frameName : 'guangbo_index_frame',
+						script : 'openNavigationBar();'
+					});
+					api.closeFrame({
+						name : 'guangbo_add_frame'
+					});
+					reBackType('index');
+					break;
+				case 'record':
+					api.execScript({
+						name : 'guangbo_index_window',
+						script : 'openTongzhiAddFrame() ;'
+					});
+					api.closeFrame({
+						name : 'guangbo_record_frame'
+					});
+					break;	
+				case 'picture_detail':
+					
+					reBackType('content');
+					break;		
+			}
+		}
+		/**
+		 * 重置从哪个页面退出，是新闻资讯内容页面还是新闻资讯列表页面
+		 * 周枫
+		 * 2015.10.14
+		 */
+		function reBackType(type) {
+			switch(type) {
+				//如果新闻资讯列表页面退出
+				case 'index':
+					$api.html($api.byId('mTitle'), "校园广播");
+//					$api.css($api.byId('menu'),'display:inline;');
+					if($api.getStorage('is_add_guangbo') == 1 && isEmptyString(school_id)) {
+						isAddDisplay(true);
+					}
+					//isSearchDisplay(true);
+					back_type = 'index';
+					break;
+				//如果新闻资讯内容页面退出
+				case 'content':
+					$api.html($api.byId('mTitle'), "校园广播");
+					isAddDisplay(false);
+					//isSearchDisplay(false);
+					back_type = 'content';
+					break;
+				//如果新闻资讯内容页面退出
+				case 'add':
+					$api.html($api.byId('mTitle'), "添加校园广播");
+					isAddDisplay(false);
+					//isSearchDisplay(false);
+					back_type = 'add';
+					break;
+				case 'record':
+					$api.html($api.byId('mTitle'), "广播录入");
+					isAddDisplay(false);
+					//isSearchDisplay(false);
+					back_type = 'record';
+					break;
+				case 'picture_detail':
+					back_type = 'picture_detail';
+					break;
+			}
+		}
+		
+		/**
+		 * 判断发送新闻资讯是否显示
+		 * 周枫
+		 * 2015.11.25 
+		 */
+		function isAddDisplay(flag){
+			if(flag){
+				$api.css($api.byId('menu'),'display:inline;');
+			} else {
+				$api.css($api.byId('menu'),'display:none;');
+			}
+		}
+		
+		/**
+		 * 判断搜索按钮是否显示
+		 * 周枫
+		 * 2016.10.11 
+		 */
+		function isSearchDisplay(flag){
+			if(flag){
+				$api.css($api.byId('search'),'display:inline;');
+			} else {
+				$api.css($api.byId('search'),'display:none;');
+			}
+		}
+		/*
+		*作者:zhaoj
+		*功能:点击搜索
+		*日期：20161013
+		*/
+		function doSearch(){
+			$api.addCls($api.dom(".aui-searchbar-wrap"),"focus");
+			$api.dom('.aui-searchbar-input input').focus();
+		}
+		/*
+		*作者:zhaoj
+		*功能:取消搜索
+		*日期：20161013
+		*/
+		function cancelSearch(mode_name){
+			var content = $api.val($api.byId("search-input"));
+			if(content.length > 0){
+				$api.val($api.byId("search-input"),'');
+				var content='';
+				api.execScript({
+					name : mode_name+'_index_window',
+					frameName : mode_name+'_index_frame',
+					script : 'setKeyword("'+content+'");'
+				});
+			}
+			$api.removeCls($api.dom(".aui-searchbar-wrap.focus"),"focus");
+			$api.val($api.byId("search-input"),'');
+			$api.dom('.aui-searchbar-input input').blur();
+		}
+		/*
+		*作者:zhaoj
+		*功能:清空搜索
+		*日期：20161013
+		*/
+		function clearInput(mode_name){
+			var content = $api.val($api.byId("search-input"));
+			if(content.length > 0){
+				$api.val($api.byId("search-input"),'');
+				var content='';
+				api.execScript({
+					name : mode_name+'_index_window',
+					frameName : mode_name+'_index_frame',
+					script : 'setKeyword("'+content+'");'
+				});
+			}
+		}
+		/*
+		*作者:zhaoj
+		*功能:开始搜索
+		*日期：20161013
+		*/
+		function search(mode_name){
+			var content = Base64.encode($api.trimAll($api.val($api.byId("search-input"))));
+			//ios系统时，将base64加密之后的+号替换成%2B
+			if (api.systemType == 'ios') {
+				content = content.replace(/\+/g, "%2B");
+			}
+			
+			if(content){
+				//设置页面的搜索值
+				api.execScript({
+					name : mode_name+'_index_window',
+					frameName : mode_name+'_index_frame',
+					script : 'setKeyword("'+content+'");'
+				});
+			}else{
+				popToast('您没有输入任何内容');
+			}
+		}
+	</script>
+</html>

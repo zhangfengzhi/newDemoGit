@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+		<title>游戏详情</title>
+		<link rel="stylesheet" type="text/css" href="../../../../../css/aui/aui.css"/>
+		<link rel="stylesheet" type="text/css" href="../../../../../css/aui_css_new/aui.css"/>
+		<link rel="stylesheet" type="text/css" href="../../../../../css/module/ipad/gameAndZhuanti.css"/>
+		<link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+		<style>
+			.instr{text-indent:2em;}
+			.res-detail{border-bottom:1px dashed #e0e0e0;margin-left:35px;}
+			.res-detail .header-img{width:55px;height:55px;border-radius:50%;border:1px solid #e0e0e0;padding:2px;}
+			.res-detail .header-img img{width:100%;height:100%;border-radius:50%;}
+			.res-detail .pass{line-height:25px;color:#777;}
+			.res-detail .pass font{font-size:25px;}
+   		</style>
+	</head>
+	<body id="j_body" class="vedio-body aui-hide common-ipad-gameIpad">
+	    <div class="top clearfix">
+	    	<div id="j_vedio_nav" class="vedio-nav">
+	    		<div id="j_vedio_name" class="wk-name ellipsis"></div>
+	    		<div id="j_time"></div>
+	    	</div>
+	    	<div id="j_vedio" class="vedio fl" onclick="ksxx();">
+	    		<img id="j_img" onerror="this.src='../../../../../image/fun-module/common/wk_default.png'" src="" />
+	    	</div>
+	    	<div id="j_vedio_r" class="vedio-right" style="width:40%;">
+	    		<div class="res fl">
+                    <div class="name">游戏简介</div>
+                    <div id="game_memo" class="instr pb15"></div>
+                </div>
+                <div class="res fl">
+                    <div class="name">游戏动态</div>
+                    <div id="res_div" class="res-content pb15 pt10">
+                  	</div>
+                  	<script type="text/html" id="res_script">
+						<% if(list.length == 0){ %>
+							<div class="no-data"><span>暂无动态</span></div>
+						<% }else{ %>
+							<%for(var i=0; i<list.length; i++) {%>
+								<div class="res-detail ptb10 ellipsis">
+		                    		<div class="header-img fl mr15">
+		                				<img src="<%=list[i].avatar_url%>" onerror="this.src='../../../../../image/common/header.png'" />
+		                			</div>
+		                			<div class="detail">
+						        		<div class="person-name ellipsis"><%=list[i].student_name%></div>
+						        		<div class="pass">
+						        			已经于&nbsp;&nbsp;&nbsp;&nbsp;<%=list[i].last_pass_result_time.substring(0,16)%>&nbsp;&nbsp;&nbsp;&nbsp;通过第<font class="plr10"><%=list[i].last_game_result%></font>关
+						        		</div>
+						        	</div>
+				    			</div>
+							<% } %>
+						<% } %>
+					</script>
+                </div>
+	    	</div>
+	    </div>
+    </body>
+	<script type="text/javascript" src="../../../../../script/api.js"></script>
+	<script type="text/javascript" src="../../../../../script/base_config.js" ></script>
+	<script type="text/javascript" src="../../../../../script/plug-in/base64.js" ></script>
+	<script type="text/javascript" src="../../../../../script/plug-in/template.js" ></script>
+	<script type="text/javascript" src="../../../../../script/assembly/executeApp.js" ></script>
+	<script type="text/javascript" src="../../../../../script/common/common.js"></script>
+	<script type="text/javascript" src="../../../../../script/module/common/game.js"></script>
+	<script type="text/javascript">
+		var BASE_URL_ACTION;
+		apiready = function() {
+			commonSetTheme({"level":5,"type":0});
+			BASE_URL_ACTION = $api.getStorage('BASE_URL_ACTION');
+			showSelfProgress("加载中...");
+			saveGameTopicPreview(function(flag) {
+				getGameOrTopicInfo(function(ret) {
+					var index = ret.info[0].thumb_url.lastIndexOf('.');
+                    var extension = ret.info[0].thumb_url.split(".")[1];
+                    ret.info[0].thumb_url = ret.info[0].thumb_url.substring(0,index);
+                    var game_thumb_url = BASE_IMAGE_PRE_ONLY_YUN + BASE_GAME_TOPIC_PATH + ret.info[0].thumb_url.substring(0, 2) + '\/' + ret.info[0].thumb_url+'.' + extension + commonReturnPhotoCutSize(0,0,0,undefined,1);
+                    getImageCache(game_thumb_url,function(img_url){
+                        $api.attr($api.byId('j_img'), 'src', img_url);
+                    })
+					$api.text($api.byId('j_time'), '发布时间：'+api.pageParam.create_time.substring(0,16));
+					$api.text($api.byId('j_vedio_name'),'游戏名称：'+Base64.decode(api.pageParam.name_base64));
+					if (ret.info[0].memo) {
+						$api.text($api.byId('game_memo'), ret.info[0].memo);
+					} else {
+						$api.text($api.byId('game_memo'), "暂无游戏介绍");
+					}
+					setModeWidthHeight();
+				});
+			});
+			getDtData();//获取动态
+			commonResume('getDtData()');//应用从后台回到前台事件
+		};
+		/*
+		*作者:zhaoj
+		*功能:设置各个模块的宽高
+		*日期：20170824
+		*/
+        function setModeWidthHeight(){
+        	var nav_h = 140;
+        	var vedio_h = Math.floor(api.winHeight-nav_h-60-api.pageParam.header_h);
+        	var height = api.winHeight-40-api.pageParam.header_h;
+        	var vedio_w = Math.floor(vedio_h/3*4);
+        	var vedio_r = Math.floor(api.winWidth-60-vedio_w);
+        	//设置左侧视频宽高
+        	$api.css($api.byId('j_vedio'),"width:"+vedio_w+"px;height:"+vedio_h+"px;");
+        	//设置左侧视频宽高
+        	$api.css($api.byId('j_vedio_nav'),"width:"+vedio_w+"px;height:"+nav_h+"px;");
+        	//设置视频右侧内容宽高
+        	$api.css($api.byId('j_vedio_r'),"width:"+vedio_r+"px;height:"+height+"px;max-height:"+height+"px;");
+        	$api.removeCls($api.byId('j_body'), 'aui-hide');
+        }
+		/*
+		 *author:zhaoj
+		 *function:获取动态
+		 *date：20170111
+		 */
+		function getDtData(){
+			getStudentResultRecord(function(ret) {
+				commonAddOnceHtml('res_div', 'res_script', ret);
+			});
+		}
+		/*
+		 *author:zhaoj
+		 *function:获取图片缓存
+		 *date：20161224
+		 */
+		function getImageCache(img_url, callback) {
+			api.imageCache({
+				url : img_url
+			}, function(ret, err) {
+				callback(ret.url)
+			});
+		}
+
+		/*
+		 *author:zhaoj
+		 *function:开始学习
+		 *date：20161220
+		 */
+		function ksxx() {
+			setPlayCountByResId(function(is_true) {});
+			var app_key = "";
+			var down_url = "";
+			var app_type = api.systemType;
+			if(app_type == "ios") {
+				app_key = BASE_ZY_APP_IOS;
+				down_url = BASE_ZY_APP_DOWN_IOS;
+			} else {
+				app_key = BASE_ZY_APP_ANDROID;
+				down_url= BASE_ZY_APP_DOWN_ANDROID;
+			}
+			var oparamJsonData = {"type":1,"app_key":app_key,"down_url":down_url,"id":api.pageParam.id,"resource_id":api.pageParam.res_id};
+			//判断是否已经安装app
+			common_app.appInstalled(oparamJsonData);
+		}
+
+		
+	</script>
+</html>

@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>共享范围</title>
+    <link rel="stylesheet" type="text/css" href="../../../../../css/aui/aui.css"/>
+    <link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+    <style>
+    	body{background:#f6f6f6;}
+    	.shadow{position:absolute;left:0;top:0;width:100%;height:100%;z-index: -1;}
+		.title-kj-js{padding:20px 15px 10px 15px;}
+		ul{border-top:1px solid #EDECEE;}
+		ul li{list-style:none;float:left;line-height:55px;width:100%;background:#ffffff;border-bottom:1px solid #EDECEE;padding:0 15px;}
+		ul li div{max-width:80%;float:left;}
+		ul li input{float:right;}
+		.aui-radio{height:26px;width:26px;margin:14px 10px;}
+		.kb{height:65px;}
+		.footer-div{position:fixed;height:55px;background:#ffffff;display: block;bottom: 0px;width:100%;border-top:1px solid #E2E2E2;font-size:14px;}
+		.footer-div .wid{width:92%;line-height:36px;text-align:center;color:#ffffff;margin-top:9px;border-radius:2px;margin-left:4%;}
+		.aui-radio:checked:before, .aui-radio.aui-checked:before {content:'';}
+    </style>
+</head>
+<body class="common-iphone-kenjianJs">
+	<div id="j_shadow" class="shadow" tapmode></div>
+	<div id="share_body">     
+	</div>
+	<script type="text/html" id="share_script">
+		<%if(share.tip_str){%>
+       		<div class="title-kj-js"><%=share.tip_str%></div>
+        <%}else{%>
+        	<div class="title-kj-js">请选择共享范围</div>
+        <%}%>
+        <ul >
+			<%for(var i = 0; i < dataRange.org_List.length; i++){%>
+				<li>
+					<div><%=dataRange.org_List[i].org_name%></div>
+					<%if(!dataRange.org_List[i].isDisable){%>
+						<input oninput="commonRemoveExpression(this)" class="aui-pull-right aui-radio aui-radio-success" disabled="" >
+					<%}else{%>
+						<input oninput="commonRemoveExpression(this)" class="aui-pull-right aui-radio aui-radio-success" value="<%=dataRange.org_List[i].org_id%>" org_type="<%=dataRange.org_List[i].org_type %>" <%if(dataRange.org_List[i].check){%>checked="checked"<%}%> type="radio" name="demo" >
+					<%}%>
+				</li>
+			<%}%>
+			<li>
+				<div>自己</div>
+				<%if(share.share_type && data.orgInfo.CHECK_STATUS!=10){%>
+					<input oninput="commonRemoveExpression(this)" class="aui-pull-right aui-radio <%if(!share.share_type){%>aui-radio-success<%}%>" disabled="" >
+				<%}else{%>
+					<input oninput="commonRemoveExpression(this)" class="aui-pull-right aui-radio aui-radio-success" <%if(!share.share_type){%>checked="checked"<%}%> type="radio" name="demo" value="-1" >
+				<%}%>
+			</li>
+		</ul>
+	</script>
+	<div class="kb">
+		&nbsp;
+	</div>
+	<div class="footer-div">
+		<div class="wid" onclick="shareRes();">确定</div>
+	</div>
+</body>
+<script type="text/javascript" src="../../../../../script/api.js"></script>
+<script type="text/javascript" src="../../../../../script/base_config.js" ></script>
+<script type="text/javascript" src="../../../../../script/plug-in/template.js" ></script>
+<script type="text/javascript" src="../../../../../script/common/common.js" ></script>
+<script type="text/javascript" src="../../../../../script/common/jszy_new_common.js"></script>
+<script type="text/javascript">
+	var share_org_type_array=[];//共享机构的级别标识数组
+	var innerHtml = {};//共享的相关数据
+	var share = {};
+	apiready = function(){
+		commonSetTheme({"level":5,"type":0});
+		showSelfProgress('加载中...');
+		getResShareRange(function(is_true,ret){
+			var content;
+	        if(is_true){
+		        innerHtml["data"] = ret;
+	            innerHtml["share"] = setNextDisabled(ret,3);
+	            share =setNextDisabled(ret,3);
+				getShareRange(function(flag,dataRange){
+					if(flag){
+						for(var i = 0; i < dataRange.org_List.length; i++){
+							dataRange.org_List[i].isDisable = isDisable(innerHtml.share.share_type,dataRange.org_List[i].org_type,innerHtml.data);
+							if(innerHtml.share.share_type && dataRange.org_List[i].org_type == innerHtml.share.share_type){
+								dataRange.org_List[i].check = true;
+							}else{
+								dataRange.org_List[i].check = false;
+							}
+						}
+						innerHtml["dataRange"] = dataRange;
+                        commonAddOnceHtml('share_body','share_script',innerHtml);
+					}else{
+						popToast('获取共享范围失败，请稍候重试');
+					}
+				});
+			}else{
+				api.hideProgress();
+				popToast('获取共享范围失败，请稍候重试');
+			}
+		});
+	};
+	/*
+	*作者:zhaoj
+	*功能:获取当前检测已经共享到那个范围内
+	*日期：20161028
+	*/
+	function getResShareRange(callback){
+		api.ajax({
+			url : BASE_URL_ACTION + '/ypt/group/getResShareRange',
+			method : 'get',
+			timeout : 30,
+			dataType : 'json',
+			data : {
+				values : {
+					"random_num" : creatRandomNum(),
+					"resourceId" : api.pageParam.resource_id_int
+				}
+			},
+			headers : {
+	'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+}
+		}, function(ret, err) {
+			api.hideProgress();
+			if (err) {
+				callback(false,'');
+			} else {
+				if(ret.success){
+					callback(true,ret);
+				}else{
+					callback(false,'');
+				}
+			}
+		});
+	}
+	function setNextDisabled(data,media_type){
+	    share = {};
+	    var share_range;
+	    var org_info = data.orgInfo;
+	    if(org_info.BUREAU_SHARED){
+	        share["share_id"] = org_info.BUREAU_ID;
+	        share["share_type"] = 4;
+	        share_range = "本校";
+	    }else if(org_info.DISTRICT_SHARED){
+	        share["share_id"] = org_info.DISTRICT_ID;
+	        share["share_type"] = 3;
+	        share_range = "本区";
+	    }else if(org_info.CITY_SHARED){
+	        share["share_id"] = org_info.CITY_ID;
+	        share["share_type"] = 2;
+	        share_range = "本市";
+	    }else if(org_info.PROVINCE_SHARED){
+	        share["share_id"] = org_info.PROVINCE_ID;
+	        share["share_type"] = 1;
+	        share_range = "本省";
+	    }else if(org_info.DSIDEAL_SHARED){
+	        share["share_id"] = org_info.DSIDEAL_ID;
+	        share["share_type"] = 100;
+	        share_range = "全国";
+	    }
+		
+	
+	    if(share.share_type){
+	        var check_str = "";
+	        if(org_info.CHECK_STATUS == 10){
+	            check_str = "待审核";
+	        }else if(org_info.CHECK_STATUS == 11){
+	            check_str = "审核通过";
+	        }else if(org_info.CHECK_STATUS == 13){
+	            check_str = "正在审核";
+	        }
+	        var tip_str = "当前"+(media_type==2?"教案":(media_type==3?"课件":"素材"))+"已经共享给"+share_range;
+	        if(check_str){
+	            tip_str = tip_str+ "," + check_str;
+	        }else{
+	            tip_str = tip_str;
+	        }
+	        share["tip_str"] = tip_str;
+	    }
+	    return share;
+	};
+	function isDisable(shareOrgType,orgType,data){
+        if(data.orgInfo.CHECK_STATUS==10){
+            return true;
+        }else{
+            if(orgType==100){
+                return true;
+            }else{
+                if(shareOrgType==100){
+                    return false;
+                }else{
+                    if(orgType>shareOrgType){
+                        return false;
+                    }else {
+                        return true;
+                    }
+                }
+            }
+        }
+    };
+	/*
+	*作者:zhaoj
+	*功能:获取滑动条的数据
+	*日期：20160912
+	*/
+	function getShareRange(callback){
+		api.ajax({
+			url :BASE_URL_ACTION + '/ypt/config/getShareRange?random_num='+creatRandomNum(),
+			method : 'get',
+			timeout : 30,
+			dataType : 'json',
+			headers : {
+	'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+		}
+		}, function(ret, err) {
+			if (err) {
+				callback(false,'');
+			} else {
+				if(ret.success){
+					callback(true,ret);
+				}else{
+					callback(false,'');
+				}
+			}
+		});
+	}
+	/*
+	*作者:zhaoj
+	*功能:共享检测
+	*日期：20160920
+	*/
+	function shareRes(){
+		$api.css($api.byId('j_shadow'),'z-index:3');
+		showSelfProgress('共享中...');
+		var radio = document.getElementsByName("demo");
+		var add_unit_id;
+        var add_unit_type;//共享机构的级别标识：0全国1本省2本市3本区4本校5群组
+        var addArray = [];
+        var delArray = [];
+	   	for(var i = 0;i < radio.length;i++){
+	    	if(radio[i].checked){
+	    		add_unit_id = radio[i].value;
+	    		add_unit_type = $api.attr(radio[i],'org_type');
+	    	}
+	   	}
+	   	if(share.share_id != add_unit_id && share.share_type != add_unit_type){
+            if(add_unit_id && add_unit_type){
+                addArray.push({
+                    "unit_id":add_unit_id,
+                    "unit_type":add_unit_type
+                });
+            }
+            if(share.share_id && share.share_type){
+                delArray.push({
+                    "unit_id":share.share_id,
+                    "unit_type":share.share_type
+                })
+            }
+        }
+         var param = {
+            "org": {
+                "addArray": addArray,
+                "delArray": delArray
+            },
+            "group": {
+                "addArray": [],
+                "delArray": []
+            }
+        };
+        var  encode_param = encodeURI(JSON.stringify(param))
+	   	api.ajax({
+			url : BASE_URL_ACTION + '/ypt/group/shareRes',
+			method : 'post',
+			timeout : 30,
+			dataType : 'json',
+			data : {
+				values : {
+					"random_num":creatRandomNum(),
+					"param_json" : encode_param,
+					"resourceId":api.pageParam.resource_id_int
+				}
+			},
+			headers : {
+	'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+}
+		}, function(ret, err) {
+			api.hideProgress();
+			if (err) {
+				$api.css($api.byId('j_shadow'),'z-index:-1');
+				popToast('共享失败,请稍候重试');
+			} else {
+				if(ret.success){
+					popToast(ret.info);
+					setTimeout(function(){
+						api.execScript({
+							name : 'kejianJs_share_window',
+							script : 'back();'
+						});
+					},2000);
+				}else{
+					$api.css($api.byId('j_shadow'),'z-index:-1');
+					popToast('共享失败,请稍候重试');
+				}
+			}
+		});
+	}
+</script>
+</html>

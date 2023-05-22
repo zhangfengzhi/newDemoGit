@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<!-- html5：在创建html时为了防止页面缩放等不兼容效果，要创建个viewport  -->
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<!-- 在IOS设备上，有时会将数字转为手机号，这里也要禁止下 -->
+		<meta name="format-detection" content="telephone=no"/>
+		<title>任课计划window</title>
+		<link rel="stylesheet" type="text/css" href="../../../css/aui/aui.css" />
+		<link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+		<style>
+			.history-date {
+				font-size: 12px;
+			}
+			#message-content {
+				overflow-y: auto;
+				display: none;
+			}
+			.t_display_n {
+				display: none;
+			}
+			.t_display_b {
+				display: block;
+			}
+			.back{font-size:16px !important;}
+		</style>
+	</head>
+	<body class="w-iphone-common">
+		<div id="wrap">
+			<header class="aui-bar aui-bar-nav aui-bar-primary" id="aui-header">
+				<div id="cloud" class="topbar activebar">
+					<div id="back" class="back" onclick="back();" tapmode="">
+						<i class="aui-iconfont aui-icon-left"></i>返回
+					</div>
+					<div class="mTitle" id="mTitle">
+						任课计划
+					</div>
+					<div class="win-menu">
+						<a id="set" class="aui-iconfont aui-icon-sitting back"  onclick="openSetRkjhFrame();"></a>
+						<a id="check" style="display:none" class="aui-iconfont aui-icon-check back"  onclick="addRkjh();"></a>
+					</div>
+				</div>
+			</header>
+			<div  class="aui-content aui-content-padded" id="message-content">
+				<p class="aui-text-center history-date"></p>
+			</div>
+		</div>
+		
+		<script type="text/javascript" src="../../../script/api.js"></script>
+		<script type="text/javascript" src="../../../script/base_config.js"></script>
+		<script type="text/javascript" src="../../../script/common/common.js"></script>
+	</body>
+	
+	<script type="text/javascript">
+		var header_h;
+		var back_type = 'index';//返回参数
+		apiready = function() {
+			commonSetTheme({"level":3,"type":0});
+			header_h = api.pageParam.header_h;
+			commonIosAuiHeader();//定位header位置，留出上面电池等空隙，苹果需要
+			commonBackForAndroid();//安卓关闭
+			//打开信息列表frame
+			openMyInfoFrame();
+		};
+		/*
+		*author:zhaoj
+		*function:设置任课计划页面
+		*date：20160510
+		*/
+		function openSetRkjhFrame(){
+			reBackType('set');
+			//打开通知frame页面
+			api.openFrame({
+				name : 'w_setrkjh_frame',
+				scrollToTop : true,
+				allowEdit : true,
+				url : 'w_setrkjh_frame.html',
+				rect : {
+					x : 0,
+					y : header_h,
+					w : 'auto',
+					h : api.winHeight - header_h,
+				},
+				pageParam : {
+					header_h : header_h
+				},
+				vScrollBarEnabled : true,
+				hScrollBarEnabled : false,
+				//页面是否弹动 为了下拉刷新使用
+				bounces : false
+			});
+		}
+		/**
+		 * 打开任课计划页面
+		 * zfz
+		 * 2016.4.23
+		 */
+		function openMyInfoFrame(){
+			//打开通知frame页面
+			api.openFrame({
+				name : 'w_rkjh_frame',
+				scrollToTop : true,
+				allowEdit : true,
+				url : 'w_rkjh_frame.html',
+				rect : {
+					x : 0,
+					y : header_h,
+					w : 'auto',
+					h : api.winHeight - header_h,
+				},
+				pageParam : {
+					header_h : header_h
+				},
+				vScrollBarEnabled : true,
+				hScrollBarEnabled : false,
+				//页面是否弹动 为了下拉刷新使用
+				bounces : false
+			});
+		}
+		
+		/**
+		 * 返回应用页面
+		 * 周枫
+		 * 2015.10.11
+		 */
+		function back() {
+			switch(back_type) {
+				case 'index':
+					api.execScript({
+						name : 'root',
+						frameName : 'w_index',
+			            script: 'loadMyself();'
+		            });
+					api.closeWin();
+					break;
+				case 'set':
+					api.closeFrame({
+						name : 'w_setrkjh_frame'
+					});
+					api.execScript({
+						name : 'w_rkjh_window',
+						frameName : 'w_rkjh_frame',
+			            script: 'loadXqInfo(1,true);'
+		            });
+		            $api.setStorage('rkjh_person_id',$api.getStorage("person_id"));
+					reBackType('index');
+					break;
+				case 'manage':
+					commonCloseFrame('w_rkjh_manage_frame');
+					reBackType('index');
+					break;
+			}
+		}
+		/**
+		 * 重置从哪个页面退出
+		 * 周枫
+		 * 2015.12.17
+		 */
+		function reBackType(type) {
+			switch(type) {
+				//如果通知列表页面退出
+				case 'index':
+					displaySetRkjh(true);
+					back_type = 'index';
+					reSetName('任课计划');
+					break;
+				//如果微课内容页面退出
+				case 'set':
+					displaySetRkjh(false);
+					back_type = 'set';
+					reSetName('设置任课计划');
+					break;
+				//如果班级管理页面退出
+				case 'manage':
+					displaySetRkjh(false);
+					back_type = 'manage';
+					break;
+			}
+		}
+		/*
+		*author:zhaoj
+		*function:重新设置名称
+		*date：20160510
+		*/
+		function reSetName(name){
+			$api.text($api.byId('mTitle'), name);
+		}
+		/*
+		*author:zhaoj
+		*function:设置任课计划按钮是否显示
+		*date：20160510
+		*/
+		function displaySetRkjh(flag){
+			if(flag){
+				$api.css($api.byId('set'),'display:block');
+				$api.css($api.byId('check'),'display:none');
+			}else{
+				$api.css($api.byId('set'),'display:none');
+				$api.css($api.byId('check'),'display:block');
+			}
+		}
+		/*
+		*author:zhaoj
+		*function:添加了任课计划
+		*date：20160510
+		*/
+		function addRkjh(){
+			$api.setStorage('rkjh_person_id',$api.getStorage("person_id"));
+			api.execScript({
+				name : 'w_rkjh_window',
+				frameName : 'w_setrkjh_frame',
+	            script: 'saveClassInfo();'
+            });
+		}
+	</script>
+</html>

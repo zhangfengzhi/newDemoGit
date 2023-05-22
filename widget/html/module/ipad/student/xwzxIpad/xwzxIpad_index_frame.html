@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>新闻资讯</title>
+    <link rel="stylesheet" type="text/css" href="../../../../../css/aui/aui.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../../../css/module/ipad/left-right-layout.css"/>
+    <link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+</head>
+<body class="left-layout-body common-ipad-xwzxIpadstu">
+	<div id="j_top" style="height:0px; overflow:hidden"></div>
+	<div id="j_box_shadow" class="box-shadow aui-hide"></div>
+	<!--右侧内容-->
+	<div class="thumb-content clearfix">
+		<ul id="div_body">
+		</ul>
+		<script id="div_script" type="text/html">
+			<%if(list.length == 0){%>
+				<div class="no-data">暂无新闻资讯</div>
+			<%}else{%>
+				<%for(var i=0;i<list.length;i++){%>
+					<li onclick="openDetailFrame('<%=list[i].oparam%>',this);">	
+						<img class="thumb-img" onerror="this.src='../../../../../image/fun-module/common/xwzx-bg.png'" src="<%=list[i].thumb_id%>" />
+						<div class="title pr20 pt20 mt10">
+							<span class="ellipsis">
+								
+								<%=list[i].title%>
+								
+							</span>
+						</div>
+						<div class="detail-infor mt20">
+							<div class="person-name ellipsis"><%=list[i].person_name%></div>
+							<div class="time pt5"><%=list[i].create_time.substring(0,16)%></div>
+						</div>
+					</li>
+				<%}%>	
+			<%}%>
+		</script>
+	</div>
+	<!--//右侧内容-->
+</body>
+<script type="text/javascript" src="../../../../../script/api.js"></script>
+<script type="text/javascript" src="../../../../../script/base_config.js" ></script>
+<script type="text/javascript" src="../../../../../script/plug-in/template.js" ></script>
+<script type="text/javascript" src="../../../../../script/common/common.js"></script>
+<script type="text/javascript" src="../../../../../script/plug-in/base64.js" ></script>
+<script type="text/javascript">
+	var currentPage = 1;//当前分页数
+	var totalPages = 0;//总页数
+	var total_json = {};//全局参数
+	apiready = function(){
+		commonSetTheme({"level":5,"type":0});
+		commonExecScript('xwzxIpad_index_window','','getTagData();',0);//切换index列表数据
+		commonScrollBottomReload();
+		commonRefreshHeaderInfo();
+	};
+	/*
+	*author:zhaoj
+	*function:切换选项，加载对应列表数据
+	*date：20170915
+	*/
+	function changeOrgId(page,org_type,id){
+		total_json.id = id;
+		total_json.org_type = org_type;
+		initData(page);
+	}
+	/*
+	*author:zhaoj
+	*function:初始化列表数据
+	*date：20170915
+	*/
+	function initData(current_page){
+		currentPage = current_page;
+		showSelfProgress('加载中...');
+		loadTongzhiListData();
+	}
+	/*
+	*author:zhaoj
+	*function:获取新闻资讯列表
+	*date：20170915
+	*/
+	function loadTongzhiListData(){
+		//获取新闻资讯码
+		getNewsRegisterId(total_json.org_type, total_json.id, function(is_true, a_id) {
+			if (is_true) {
+				if (a_id == -1) {
+					api.hideProgress();
+					//新闻资讯顶部下拉刷新数据加载完毕，组件会恢复到默认状态
+					commonControlRefresh();
+					commonAddManyHtml('div_body','div_script',{"list":[]});
+				} else {
+					api.ajax({
+						url : BASE_URL_ACTION + '/notice/getNoticeList?page_number=' + currentPage + '&page_size=' + BASE_PAGE_SIZE + '&register_id=' + a_id+ '&title=',
+						method : 'get',
+						timeout : 30,
+						dataType : 'json',
+						cache : false
+					}, function(ret, err) {
+						if(err){
+							popToast('获取新闻资讯失败，请稍候重试');
+						}else{
+							if (ret.success) {
+								totalPages = ret.total_page;
+								for (var i = 0; i < ret.list.length; i++) {
+									var notice_str1 = '';
+									var notice_str2 = '';
+									if ($api.getStorage('BASE_APP_TYPE') == 1) {
+										notice_str1 = 'src=\"down/Material/';
+										notice_str2 = 'class="ima_notice" src=\"' + BASE_IMAGE_PRE + 'down/Material/';
+									} else {
+										notice_str1 = 'src=\"/dsideal_yy/';
+										notice_str2 = 'class="ima_notice" src=\"' + BASE_URL_ACTION + '\/';
+									}
+									ret.list[i].content = ret.list[i].content.replaceAll(notice_str1, notice_str2);
+								}
+								//得到缩略图路径
+	                            for (var i = 0; i < ret.list.length; i++) {
+	                                if(!ret.list[i].thumbnail){
+	                                    var image_array=[];
+                                    	ret.list[i].content.replace(/<img [^>]*src=['"]([^'"]+)[^>]*>/gi, function (match, capture) {
+										  image_array.push(capture);
+										});
+										if(image_array.length > 0){
+											ret.list[i].thumb_id= image_array[0];
+										}else{
+                                        	ret.list[i].thumb_id='../../../../../image/fun-module/common/xwzx-bg.png';
+                                        }
+	                                }else{
+	                                    var thumb_url = ret.list[i].thumbnail;
+	                                    var index = thumb_url.indexOf('/Material');
+	                                    if (index != -1) {
+	                                        var thumb_id=thumb_url.substring(index+10,thumb_url.length);
+	                                        if(BASE_APP_TYPE == 1){
+	                                            ret.list[i].thumb_id = BASE_IMAGE_PRE + BASE_MATERIAL_BEGIN+ thumb_id+commonReturnPhotoCutSize(0);
+	                                        }else{
+	                                            ret.list[i].thumb_id = BASE_URL_ACTION + BASE_IMAGE_BEGIN+ thumb_id+commonReturnPhotoCutSize(0);
+	                                        }
+	                                    }else{
+	                                        ret.list[i].thumb_id = ret.list[i].thumbnail;
+	                                    }
+	                                }
+	                                var oparam = new Object();
+	                                oparam.notice_id = ret.list[i].notice_id;
+	                                ret.list[i].oparam = JSON.stringify(oparam);
+	                            }
+	                         	commonAddManyHtml('div_body','div_script',ret);
+							} else {
+								popToast('获取新闻资讯失败，请稍候重试');
+							}
+							api.hideProgress();
+							//新闻资讯顶部下拉刷新数据加载完毕，组件会恢复到默认状态
+							commonControlRefresh();
+						}
+					});
+				}
+			} else {
+				popToast(a_id);
+			}
+		});
+	}
+	/*
+	*author:zhaoj
+	*function:获取通知码
+	*date：20170915
+	*/
+	function getNewsRegisterId(orgs_id, level_type, callback) {
+		api.ajax({
+			url : BASE_URL_ACTION + '/space/getNewsRegisterId?a_id=' + orgs_id + '&a_identity_id=' + level_type,
+			method : 'get',
+			dataType : 'json',
+			timeout : 30,
+			cache : false
+		}, function(ret, err) {
+			if (err) {
+				callback(false, '获取新闻资讯失败，请稍候重试');
+			} else {
+				if (ret.success) {
+					var flag = parseInt(ret.flag);
+					//没注册过通知码
+					if (flag == 0) {
+						callback(true, -1);
+					} else {
+						callback(true, ret.regist_id);
+					}
+				} else {
+					callback(false, '获取新闻资讯失败，请稍候重试');
+				}
+			}
+		});
+	}
+	/*
+	*author:zhaoj
+	*function:打开详情页面
+	*date：20170912
+	*/
+	function openDetailFrame(oparam,self){
+		setLiCss(self);
+		commonCloseFrame('xwzxIpad_detail_frame');
+		oparam = Base64.encode(oparam);
+		commonExecScript('xwzxIpad_index_window','','openDetailFrame("'+oparam+'");',0);
+	}
+	/*
+	*author:zhaoj
+	*function:设置选中样式
+	*date：20170919
+	*/
+	function setLiCss(self){
+		var li_array = $api.domAll($api.byId('div_body'), 'li');
+		for(var i = 0; i < li_array.length; i++){
+			$api.removeCls(li_array[i], 'active');
+		}
+		$api.addCls(self, 'active');
+	}
+	/*
+	*author:zhaoj
+	*function:是否显示虚线
+	*date：20170919
+	*/
+	function isShowBoxShow(type){
+		type ? $api.removeCls($api.byId('j_box_shadow'), 'aui-hide') : $api.addCls($api.byId('j_box_shadow'), 'aui-hide');
+	}
+</script>
+</html>

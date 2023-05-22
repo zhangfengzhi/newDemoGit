@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>学生统计</title>
+    <link rel="stylesheet" type="text/css" href="../../../../../css/aui/aui.css"/>
+    <link id="j_theme_base" rel="stylesheet" type="text/css" href="" /><style>
+    	body{color:#333333;padding-top:15px;}
+    	.plr15{padding:0 15px;}
+    	.title-st-list{margin:0 0 0 15px;color:#606060;height: 16px;line-height: 16px;padding-left: 5px;}
+    	.st{background:#ffffff;padding-bottom:15px;}
+    	.st li{width:25%;float:left;list-style: none;text-align:center;padding-top:15px;}
+    	.st li span{display:inline-block;width:40px;height:40px;border-radius:20px;line-height:40px;text-align:center;}
+    </style>
+</head>
+<body class="common-iphone-zuoye-tea">
+	<div id="div_body">
+	</div>
+	<script type="text/html" id="div_script">
+		<%for(var i = 0; i < list.length; i++ ){%>
+			<div class="title-st-list"><%=list[i].title%></div>
+			<%if(list[i].chlid_list.length==0){%>
+				<div style="padding:15px 0 15px 21px; font-size:14px !important;color:#a0a0a0;">暂无题号</div>
+			<%}else{%>
+				<ul class="st plr15">
+					<%for(var j = 0; j < list[i].chlid_list.length; j++){%>
+						<li onclick="openWriteWin(2,<%=list[i].chlid_list[j].sort%>);">
+							<span><%=list[i].chlid_list[j].sort%></span>
+						</li>
+					<%}%>
+				</ul>
+			<%}%>
+		<%}%>
+	</script>
+</body>
+<script type="text/javascript" src="../../../../../script/api.js"></script>
+<script type="text/javascript" src="../../../../../script/base_config.js" ></script>
+<script type="text/javascript" src="../../../../../script/plug-in/template.js" ></script>
+<script type="text/javascript" src="../../../../../script/common/common.js" ></script>
+<script type="text/javascript" src="../../../../../script/common/jszy_jy_common.js" ></script>
+<script type="text/javascript">
+	var header_h;
+	var zy_id;//检测id
+	var student_id;//学生id
+	apiready = function(){
+		commonSetTheme({"level":5,"type":0});
+		header_h = api.pageParam.header_h;
+		zy_id = api.pageParam.zy_id;
+		student_id = api.pageParam.student_id;
+		getZyDetailByStuZyId();
+	};
+	/*
+	*作者:zhaoj
+	*功能:获取答题详情
+	*日期：20160922
+	*/
+	function getZyDetailByStuZyId(){
+		showSelfProgress('加载中...');
+		api.ajax({
+			url :BASE_URL_ACTION + '/xx/getZyDetailByStuZyId',
+			method : 'post',
+			timeout : 30,
+			dataType : 'json',
+			data : {
+				values : {
+					"random_num" : creatRandomNum(),
+					"student_id" : student_id,
+					"zy_id" : zy_id,
+					"p_type" : 2,
+					"zy_type":1,
+					"identity_id" :$api.getStorage("identity")
+				}
+			},
+			headers : {
+	'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+}
+		}, function(ret, err) {
+			var data={'list':[ {'title': '零分（未作答）题号',"chlid_list": []},{'title': '零分（做错）题号',"chlid_list": []},{'title': '满分题号',"chlid_list": []},	{'title': '其他得分题号',"chlid_list": []}]};
+			api.hideProgress();
+			if (err) {
+				popToast('获取答题信息失败');
+			} else {
+				if(ret.success){
+					for(var i = 0; i < ret.zy_info.ques.length; i++){
+						var oparam = new Object();
+						oparam.sort = ret.zy_info.ques[i].sort;
+						if(ret.zy_info.ques[i].stu_answer.length==0 || (ret.zy_info.ques[i].stu_answer.length==1&&isEmptyString(ret.zy_info.ques[i].stu_answer[0])&& ret.zy_info.ques[i].qt_type == 1) || (isEmptyString(ret.zy_info.ques[i].stu_answer[0].stu_answer) && ret.zy_info.ques[i].qt_type == 2)){
+							//零分未作答题号
+							data.list[0].chlid_list.push(oparam);
+						}else if(ret.zy_info.ques[i].score == 0){
+							//零分做错题号
+							data.list[1].chlid_list.push(oparam);
+						}else if(ret.zy_info.ques[i].score == 1){
+							//满分题号
+							data.list[2].chlid_list.push(oparam);
+						}else{
+							//其他得分题号
+							data.list[3].chlid_list.push(oparam);
+						}
+					}
+					var html_type = template.render('div_script', data);
+					document.getElementById('div_body').innerHTML = html_type;
+				}else{
+					popToast('获取答题信息失败');
+				}
+			}
+		});
+	}
+</script>
+</html>

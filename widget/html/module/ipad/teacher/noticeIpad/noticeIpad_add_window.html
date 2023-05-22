@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <!-- html5：在创建html时为了防止页面缩放等不兼容效果，要创建个viewport  -->
+        <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+        <!-- 在IOS设备上，有时会将数字转为手机号，这里也要禁止下 -->
+        <meta name="format-detection" content="telephone=no"/>
+        <title>发布通知</title>
+        <link rel="stylesheet" type="text/css" href="../../../../../css/aui/aui.css" />
+        <link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+        <style>
+            .history-date {
+                font-size: 12px;
+            }
+            #message-content {
+                overflow-y: auto;
+                display: none;
+            }
+            
+            
+            .t_display_n {
+                display: none;
+            }
+            .t_display_b {
+                display: block;
+            }
+            .win-menu{
+                font-size:16px;
+            }
+        </style>
+    </head>
+    <body class="common-iphone-notice">
+        <div id="wrap">
+            <header class="aui-bar aui-bar-nav aui-bar-primary" id="aui-header">
+                <div id="cloud" class="topbar activebar">
+                    <div id="back" class="back" onclick="back();" tapmode="">
+                        <i class="aui-iconfont aui-icon-left"></i>返回
+                    </div>
+                    <div  class="mTitle" id="mTitle">
+                        
+                    </div>
+                    <div class="win-menu" onclick="addNotice(1)">
+                           发送
+                    </div>
+                </div>
+            </header>
+            <div  class="aui-content aui-content-padded" id="message-content">
+                <p class="aui-text-center history-date"></p>
+            </div>
+        </div>
+    </body>
+    <script type="text/javascript" src="../../../../../script/api.js"></script>
+    <script type="text/javascript" src="../../../../../script/common/common.js"></script>
+    <script type="text/javascript" src="../../../../../script/base_config.js" ></script>
+    <script type="text/javascript">
+        var header_h;//顶部header高度
+        var back_type = 'index';
+        apiready = function() {
+            commonSetTheme({"level":5,"type":0});
+            //定位header位置，留出上面电池等空隙，苹果需要
+            header_h = api.pageParam.header_h;
+            openAddIndexFrame()
+            if($api.getStorage('BASE_SERVER_NAME') == 155 || $api.getStorage('BASE_SERVER_NAME') == 'jntq'){
+                $api.text($api.byId('mTitle'), '发站内信');
+            }else{
+                $api.text($api.byId('mTitle'), '发布通知公告');
+            }
+            commonIosAuiHeader();//定位header位置，留出上面电池等空隙，苹果需要
+            commonBackForAndroid();//安卓关闭
+        };
+        /*
+        *author:zhaoj
+        *function:打开通知列表frame页面
+        *date：20160625
+        */
+        function openAddIndexFrame() {
+            var header_h = api.pageParam.header_h;
+            var pageParamJson={"header_h":header_h,'type' : api.pageParam.type,'notice_id':api.pageParam.notice_id,'notice_public':api.pageParam.notice_public};//打开frame页面所需参数
+            commonOpenFrame('noticeIpad_add_frame', 'noticeIpad_add_frame.html',header_h, false, true,"#ffffff",pageParamJson);    //打开index页面
+        }
+        /**
+         * 返回应用页面
+         * 周枫
+         * 2015.10.11
+         */
+        function back() {
+            switch(back_type){
+                case 'index':
+                    $api.setStorage('now_all_selected',[]);
+                    $api.setStorage('now_select_all',[]);
+                    $api.setStorage('group_person_list',[]);
+                    api.closeWin();
+                    break;
+                case 'picture_detail':
+                    reBackType('index');
+                    break;
+                case 'voice':
+                    commonCloseFrame('common_playaudio_frame');
+                    reBackType('index');
+                    break;
+            }
+        }
+        
+        /*
+         * 功能：重置返回页面
+         * 作者：张自强
+         * 时间：20180730
+         */
+        function reBackType(type){
+           switch(type){
+                case 'index':
+                    back_type = 'index';
+                    break;
+                case 'picture_detail':
+                    back_type = 'picture_detail';
+                    break;
+                case 'voice':
+                    back_type = 'voice';
+                    break;
+            }
+        }
+        
+        /*
+         * 功能：点击发送
+         * 作者：张自强
+         * 时间：20170717
+         */
+        function addNotice(){
+           var buttons = [];
+           if(api.pageParam.send_status*1)
+           switch(api.pageParam.send_status*1){
+              case 0://未发布
+                  buttons = ['发布'];
+                  break;
+              case 1://已发布
+                  buttons = ['发布','保存'];
+                  break;
+           }
+           api.actionSheet({
+                cancelTitle: '取消',
+                buttons: buttons,
+                style:{
+                    titleFontColor:'#ff0000'
+                }
+            },function( ret, err ){
+                if( ret ){
+                    if(ret.buttonIndex == 1){
+                        commonExecScript(api.winName,'noticeIpad_add_frame','addNotice(1);',1);
+                    }else if(ret.buttonIndex == 2){
+                        commonExecScript(api.winName,'noticeIpad_add_frame','addNotice(0);',1);
+                    }
+                }
+            });
+        }
+    </script>
+</html>

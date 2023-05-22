@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<link rel="stylesheet" type="text/css" href="../css/aui.css" />
+	<meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>筛选</title>
+    <link rel="stylesheet" type="text/css" href="../../../../css/aui_css_new/aui.css" />
+    <link rel="stylesheet" type="text/css" href="../../../../css/module/iphone/init-screen.css" />
+	<link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+    <style>
+		body{
+			width:100%;
+			height:auto;
+			font-size: 18px;
+		}
+		.radio-parent{
+			width:100%;
+			padding-bottom: 50px;
+		}
+		.ok-button{
+			width:100%;
+			height:50px;
+			text-align: center;
+			margin:0px;
+			background: #34A8FA;
+			line-height: 30px;
+			font-size: 18px;
+			line-height: 50px;
+			color: #FFFFFF;
+			position: fixed;
+			bottom: 0px;
+			z-index:999;
+		}
+		#group_div,#class_div{
+			padding-top: 10px;
+			padding-left: 30px;
+			line-height: 18px;
+		}
+		
+		.checkbox_div{
+			/*display: inline-block;*/
+			padding: 5px;
+		}
+		.btn-disabled{
+			background: #bdbdbd;
+			pointer-events: none;
+		}
+		.radio-parent label{
+			margin-left: 5px;
+			line-height: 1.2rem;
+		}
+		
+		.li-div{
+    		line-height: 30px;
+			font-family: "Microsoft YaHei";
+			border-bottom: 1px solid #CCCCCC;
+		}
+		
+		.icon-img{
+			width: 30px;
+			height: 30px;
+			/*margin-right: 5px;*/
+		}
+		
+		.myself-img{
+			background:#FFFFFF url(../../../../image/quanzi/screen/iphone/myself.png) center center no-repeat;background-size:100% auto;
+		}
+		.city-img{
+			background:#FFFFFF url(../../../../image/quanzi/screen/iphone/city.png) center center no-repeat;background-size:100% auto;
+		}
+		.school-img{
+			background:#FFFFFF url(../../../../image/quanzi/screen/iphone/school.png) center center no-repeat;background-size:100% auto;
+		}
+		.class-img{
+			background:#FFFFFF url(../../../../image/quanzi/screen/iphone/class.png) center center no-repeat;background-size:100% auto;
+		}
+		.group-img{
+			background:#FFFFFF url(../../../../image/quanzi/screen/iphone/group.png) center center no-repeat;background-size:100% auto;
+		}
+			
+		.teacher-img{
+			width: 35%;
+			height: 30px;
+			display: inline-block;
+			margin: 10px 4% 0px 10%;
+			background:#FFFFFF url(../../../../image/quanzi/screen/iphone/teacher-unSelect.png) center center no-repeat;background-size:100% auto;
+		}
+		.student-img{
+			width: 35%;
+			height: 30px;
+			display: inline-block;
+			margin: 10px 10% 0px 4%;
+			background:#FFFFFF url(../../../../image/quanzi/screen/iphone/student-unSelect.png) center center no-repeat;background-size:100% auto;
+		}
+		.teacherAndStudent{
+			white-space: nowrap;
+			padding: 5px 0px;
+		}
+		.area-radio{
+			top: 4px;
+		}
+		.title-div{
+			margin: 10px 20px;
+		}
+		.title-div label{
+			margin-left: 10px;
+		}
+		.list-div{
+			background-color: #F0EFF5;
+			border-top: 1px solid #CCCCCC; 
+		}
+    </style>
+</head>
+<body>
+	<div id="root-div" class="aui-hide">
+		<div class="radio-parent">
+			<ul>
+				<li  class="li-div">
+					<div class="title-div">
+						<div class="icon-img myself-img aui-pull-left"></div>
+						<label for="seeMySelf">只看自己</label>
+						<input id="seeMySelf" class="area-radio aui-radio aui-pull-right" type="radio" name="demo" onchange="partChange(true)">
+					</div>
+				</li>
+				<li  class="li-div">
+					<div class="title-div">
+						<label for="seeSchool">查看全校</label>
+						<div class="icon-img school-img aui-pull-left"></div>
+						<input id="seeSchool" class="area-radio aui-radio aui-pull-right" type="radio" name="demo" onchange="partChange(true)">
+					</div>
+					<div class="teacherAndStudent">
+						<div class="teacher-img" isSelect = "false" onclick="identityChange(0,this,'teacher')"></div>
+						<div class="student-img"  isSelect = "false"  onclick="identityChange(0,this,'student')"></div>
+					</div>
+				</li>
+				<li  class="li-div">
+					<div>
+						<div class="title-div">
+							<label for="seeClass">查看本班</label>
+							<div class="icon-img class-img aui-pull-left"></div>
+							<input id="seeClass" class="area-radio aui-radio aui-pull-right" type="radio" name="demo" onchange="partChange(true)">
+						</div>
+						<div class="teacherAndStudent">
+								<div class="teacher-img" isSelect = "false" onclick="identityChange(1,this,'teacher')"></div>
+								<div class="student-img"  isSelect = "false"  onclick="identityChange(1,this,'student')"></div>
+						</div>
+					</div>
+				</li>
+				<li  class="li-div">
+					<div class="title-div">
+						<label for="seeGroup">查看群组</label>
+						<div class="icon-img group-img aui-pull-left"></div>
+						<input id="seeGroup" class="area-radio aui-radio aui-pull-right" type="radio" name="demo" onchange="partChange(true)">
+					</div>
+					<div id="group-list" class="list-div">
+						<div id="group_div">
+							<script id="group_script" type="text/html">
+								<%if (list.length > 0){%>
+									<%for(var i = 0; i < list.length; i++){%>
+										<div class="checkbox_div">
+											<input id="group + <%=i%>" class="aui-radio" type="radio" name="groupCheckbox" onchange="groupSelectChange(this)">
+											<label for="group + <%=i%>"><%=list[i].group_name%></label>
+										</div>
+									<%}%>
+								<%}else{%>
+									<div style="padding-bottom: 10px">暂无群组</div>
+								<%}%>
+							</script>
+						</div>
+					</div>
+				</li>
+			</ul>
+		</div>
+		<div id="ok_btn"  class="ok-button" name="btn" onclick="getData();">
+			确定
+		</div>
+	</div>
+</body>
+<script type="text/javascript" src="../../../../script/api.js"></script>
+<script type="text/javascript" src="../../../../script/base_config.js" ></script>
+<script type="text/javascript" src="../../../../script/plug-in/template.js" ></script>
+<script type="text/javascript" src="../../../../script/common/init_common.js"></script>
+<script type="text/javascript" src="../../../../script/common/common.js"></script>
+<script type="text/javascript" src="../../../../script/plug-in/base64.js" ></script>
+<script type="text/javascript">
+	var currentPage = 1;//当前分页数
+	var teacherImg;//教师复选数组
+	var studentImg;//学生复选数组
+	var radio = document.getElementsByName('demo');
+	var classDiv = $api.byId('class-list');//班级div
+	var groupDiv = $api.byId('group-list');//群组div
+	var identityAry;//教师学生
+	var okBtn = $api.byId('ok_btn');
+	var	org_id;
+	var org_type = 1;
+	var keyword = '';
+	var groupList;//群组列表
+	var orgAry = [];
+	var identityIdAry = [];
+	var partIndex = 0;
+	var groupAry;//群组选择框数组
+	apiready = function(){
+		api.showProgress({
+			title : '加载中',
+			text : '请稍候...',
+			modal : true
+		});
+		get_group_bypersonid();
+	};
+	
+	function initData(){
+		radio[2].checked = true;
+		for (var i = 0; i < studentImg.length; i++){
+			studentImg[i].setAttribute('isSelect','true');
+			$api.css(studentImg[i],'background-image: url(../../../../image/quanzi/screen/iphone/student-select.png)');
+//			if (i != 1){
+//				teacherImg[i].setAttribute('isSelect','true');
+//				$api.css(teacherImg[i],'background-image: url(../../../../image/quanzi/screen/iphone/teacher-select.png)');
+//			}
+		}
+		
+		identityIdAry.push(6);
+		if (groupAry.length > 0){
+			groupAry[0].checked = true;
+		}
+	}
+	
+	function setSelTeaAndStu(){
+		for (var i = 0; i < studentImg.length; i++){
+			studentImg[i].setAttribute('isSelect','true');
+			$api.css(studentImg[i],'background-image: url(../../../../image/quanzi/screen/iphone/student-select.png)');
+			teacherImg[i].setAttribute('isSelect','true');
+			$api.css(teacherImg[i],'background-image: url(../../../../image/quanzi/screen/iphone/teacher-select.png)');
+		}
+	}
+	
+	function groupSelectChange(self){
+		var isHaveSelect = false;
+		for (var i = 0; i < groupAry.length; i++){
+			if (groupAry[i].checked){
+				isHaveSelect = true;
+				break;
+			}
+		}
+		
+		if (!isHaveSelect){
+			self.checked = true;
+			popToast('应至少选中一个群组！');
+		}
+	}
+	
+	/**
+	 * 人员选择变化
+	 * 王俭
+	 * 2018.5.14
+	 */
+	function identityChange(index,self,type){
+    	if (index >=0 && index < teacherImg.length){
+    		var isSelect = self.getAttribute('isSelect');
+			if (isSelect == 'true'){
+				isSelect = 'false'
+				$api.css(self,'background-image: url(../../../../image/quanzi/screen/iphone/'+ type +'-unSelect.png)');
+			}else if (isSelect == 'false'){
+				isSelect = 'true';
+				$api.css(self,'background-image: url(../../../../image/quanzi/screen/iphone/'+ type +'-select.png)');
+			}
+			
+			self.setAttribute('isSelect',isSelect);
+    		if (teacherImg[index].getAttribute('isSelect') == 'false' && studentImg[index].getAttribute('isSelect') == 'false'){
+				self.setAttribute('isSelect','true');
+				$api.css(self,'background-image: url(../../../../image/quanzi/screen/iphone/'+ type +'-select.png)');
+				popToast('教师与学生至少选中一个！');
+			}
+		
+			getSelectIdentityData(index);
+    	}
+	}
+	
+	/**
+	 *获取群组
+	 * 王俭
+	 * 2018.4.20
+	 * {"list":[{"group_id":900000020,"category_s":[[{"id":2686,"org_person_id":900000020,"business_iid":106,"level":1,"person_name":null,"article_num":0,"sequence":1,"identity_id":106,"name":"默认分类","business_id":900000020,"is_del":0,"business_type":2}]],"group_name":"123"}]}
+	 */
+
+	function get_group_bypersonid(){
+    	api.ajax({
+	    	url : BASE_URL_ACTION+'/blog_expand/get_group_bypersonid?random_num='+creatRandomNum()+'&person_id='+$api.getStorage("person_id")+'&identity_id='+$api.getStorage("identity"),
+			method : 'get',
+			timeout : 30,
+			dataType : 'json',
+			headers : {
+				'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+			}
+        },function(ret,err){
+        	if(err){
+        		popToast('获取群组信息失败，请稍候重试');
+        		api.hideProgress();
+        		commonExecScript("init_screen_window","","back()",0);
+        	}else{
+        		groupList = ret.list;
+        		commonAddManyHtml('group_div','group_script',ret);
+        		groupAry = document.getElementsByName('groupCheckbox');
+        		identityAry = document.getElementsByClassName('teacherAndStudent');
+        		teacherImg = document.getElementsByClassName('teacher-img');
+				studentImg = document.getElementsByClassName('student-img');
+        		var screenSetData = $api.getStorage('screenSetData');
+        		if (screenSetData){
+        			setData()
+        		}else{
+        			initData();
+        		}
+        		
+				partChange(false);
+				api.hideProgress();
+				$api.removeCls($api.byId('root-div'), 'aui-hide');
+			}
+        });
+    }
+    
+    /**
+	 * 切换区域选择
+	 * 王俭
+	 * 2018.5.14 
+    */
+    function partChange(isSelAll){
+    	if (radio[0].checked){//自己
+    		groupDiv.style.display = 'none';
+    		setTeacherOrStudentShow(-1);
+    		org_type = 1;
+    		partIndex = 0;
+    	}
+    	else if (radio[1].checked){//学校
+    		isSelAll?setSelTeaAndStu():"";
+    		groupDiv.style.display = 'none';
+    		org_type = 104;
+    		org_id = $api.getStorage('school_id');
+    		partIndex = 1;
+
+			setTeacherOrStudentShow(0);
+    	}
+    	else if (radio[2].checked){//班级
+    		isSelAll?setSelTeaAndStu():"";
+    		groupDiv.style.display = 'none';
+    		org_type = 105;
+    		partIndex = 2;
+			setTeacherOrStudentShow(1);
+    	}
+    	else if (radio[3].checked){//群组
+    		groupDiv.style.display = 'block';
+    		org_type = 106;
+    		partIndex = 3;
+    		setTeacherOrStudentShow(-1);
+    	}
+    }
+    
+    /**
+     * 设置教师或学生是否显示
+     * 王俭
+     * 2018.5.14 
+     */
+     function setTeacherOrStudentShow(index){
+    	for (var i = 0; i < identityAry.length; i++){
+    		if (i == index){
+    			identityAry[i].style.display = 'block';
+    		}else{
+    			identityAry[i].style.display = 'none';
+    		}
+    	}
+    }
+    
+    /**
+     * 获取人员选择
+     * 王俭
+     * 2018.5.14 
+     */
+    function getSelectIdentityData(index){
+    	identityIdAry.splice(0,identityIdAry.length);
+		if (teacherImg[index].getAttribute('isSelect') == 'true'){
+			identityIdAry.push(5);
+		}
+		
+		if (studentImg[index].getAttribute('isSelect') == 'true') {
+			identityIdAry.push(6);
+		}
+    }
+    
+    
+    function getData(){
+    	orgAry.splice(0,orgAry.length);
+    	if (radio[0].checked){
+    		identityIdAry.slice(0,identityIdAry.length);
+    	}else if(radio[1].checked) {
+    		getSelectIdentityData(0);
+    	}else if (radio[2].checked){
+    		getSelectIdentityData(1);
+			orgAry = [];
+			orgAry.push($api.getStorage('class_id'));
+    	}else if (radio[3].checked){
+    		if (groupAry.length > 0){
+    			identityIdAry.slice(0,identityIdAry.length);
+		    	for (var i = 0; i < groupAry.length; i++){
+		    		if (groupAry[i].checked){
+		    			orgAry.push(groupList[i].group_id);
+		    		}
+	    		}
+    		}
+    		else{
+    			popToast("当前无群组信息，请切换筛选范围！");
+    			return;
+    		}
+    	}
+    	
+    	
+    	var url = getUrl();
+    	saveSetData();
+    	commonExecScript("init_screen_window","","back()",0);
+        commonExecScript("root","center_index",'initData(1,"' + url + '")',1);
+    }
+    
+    function getUrl(){
+    	var list_url;
+		if(org_type == 0 ||org_type == 101 || org_type == 102|| org_type == 103){
+			list_url = BASE_URL_ACTION + '/blog/orgArticleList?';
+		}else if(org_type == 105 || org_type == 106){
+			//班级
+			list_url = BASE_URL_ACTION + '/blog_expand/list_article_expand?';
+		}else if(org_type == 104){
+			//学校文章
+			list_url = BASE_URL_ACTION + '/blog/orgArticleList?';
+		}else{
+			list_url = BASE_URL_ACTION + '/blog/search?';
+		}
+		//查询类型（title，content）
+		var tempUrl = list_url + 'search_type=title&pagesize=' + BASE_PAGE_SIZE +  '&random_num='
+		 + creatRandomNum();
+		list_url = tempUrl + "&identity_id=" + identityIdAry;
+		if(org_type == 1){
+		//我的文章
+			list_url = tempUrl + '&person_id=' + $api.getStorage('person_id')+ '&business_type=1' + '&identity_id='
+			 + $api.getStorage('identity');
+		}else if(org_type == 101 || org_type == 102|| org_type == 103){
+			list_url = list_url + '&org_id=' + org_id + '&org_type=' + org_type + '&business_type=7';
+		}else if(org_type == 105){//班级
+			list_url = list_url + '&business_id=' + orgAry + '&business_type=3' + '&business_iid=' + org_type;
+		}else if(org_type == 104){
+			//学校文章
+			list_url = list_url +'&org_id=' + org_id + '&org_type=' + org_type + '&business_type=7';
+		}else if(org_type == 106){
+			list_url = tempUrl + '&business_type=2' + '&business_id=' + orgAry + '&business_iid=' + org_type;
+		}
+		
+		return list_url;
+	}
+	
+	function saveSetData(){
+		var data = {
+			'partIndex':partIndex,
+			'orgAry':orgAry,
+			'identityIdAry':identityIdAry,
+			'org_type':org_type
+		};
+		
+		$api.setStorage('screenSetData',data);
+	}
+	
+	function setData(){
+		if (groupAry.length > 0){
+			groupAry[0].checked = true;
+		}
+		var setData = $api.getStorage('screenSetData');
+		var isSelect = false;
+		var i = 0;
+		var j = 0;
+		if (setData){
+			radio[setData.partIndex].checked = true;
+			if (setData.partIndex == 3){
+				for (i = 0; i < groupList.length; i++){
+					isSelect = false;
+					for (j = 0; j < setData.orgAry.length; j++){
+						if (setData.orgAry[j] == groupList[i].group_id){
+							isSelect = true;
+							break;
+						}
+					}
+					
+					groupAry[i].checked = isSelect;
+				}
+			}
+			
+			var tempIndex = setData.partIndex - 1;
+			identityIdAry.slice(0,identityIdAry.length);
+			if (tempIndex >= 0 && tempIndex < teacherImg.length){
+				for (i = 0; i < setData.identityIdAry.length; i++){
+					if (setData.identityIdAry[i] == 5){
+						teacherImg[tempIndex].setAttribute('isSelect','true');
+						$api.css(teacherImg[tempIndex],'background-image: url(../../../../image/quanzi/screen/iphone/teacher-select.png)');
+						identityIdAry.push(5);
+					}
+					else if (setData.identityIdAry[i] == 6){
+						studentImg[tempIndex].setAttribute('isSelect','true');
+						$api.css(studentImg[tempIndex],'background-image: url(../../../../image/quanzi/screen/iphone/student-select.png)');
+						identityIdAry.push(6);
+					}
+				}
+			}
+			
+			for (i = 0; i < studentImg.length; i++){
+				if (i != tempIndex){
+					studentImg[i].setAttribute('isSelect','true');
+					$api.css(studentImg[i],'background-image: url(../../../../image/quanzi/screen/iphone/student-select.png)');
+				}
+			}
+		}
+	}
+</script>
+</html>

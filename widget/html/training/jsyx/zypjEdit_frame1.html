@@ -1,0 +1,125 @@
+<!DOCTYPE html>	
+<html>	
+<head>	
+	<meta charset="utf-8">	
+	<title>frame</title>	
+	<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>	
+	<link rel="stylesheet" type="text/css" href="../../../css/training/jsyx/api.css" />	
+    <link rel="stylesheet" type="text/css" href="../../../css/training/jsyx/common.css" />	
+	
+	<style>	
+		html, body {width: 100%;min-height: 100%;background: #e6ded6;}	
+		.h80 {height: 80px;}	
+		.h40 {height: 40px;}	
+		.h20 {height: 20px;}	
+    	.h10 {height: 10px;background: #e5e5e5;}	
+		.h1 {height: 1px;margin-left: 15px;background: #e5e5e5;}	
+		.fr {float: right;}	
+		.fl {float: left;}	
+		.hightitem {background-color: #fff;}	
+	
+			/* 2X2样式 */	
+		.row {display: -webkit-box;display: -webkit-flex;	
+        display: flex;}	
+		.col {-webkit-box-flex:1; -webkit-flex:1; flex:1;position: relative;}	
+		.col img {position: absolute; right: 0; width: 80px; top: 0;}	
+		.col .matrixcell {display: table-cell;vertical-align: middle; padding-left: 10px;}	
+		.col .matrixcell .title {margin-bottom: 10px;}	
+		.matrix {display: table;height: inherit;}	
+		/* 猜你喜欢 */	
+		.home-tuan-list .item {position: relative; display: block;}	
+		.home-tuan-list{ margin-bottom: 50px;}
+		.home-tuan-list .cnt { display: box; display: -webkit-box;display: -webkit-flex; display: flex;
+		                      background-size: auto 1px;  border-bottom: 1px #cfd9de solid;  }		
+		.home-tuan-list .pic {margin-right: 10px; background: center;  width: 80px;	 margin-left:5px; height: 60px;padding: 2px;	border: 1px solid #e7e7e7;	border-radius: 2px;	}		
+		.home-tuan-list img {width: 90px; height: 66px; margin-top: 7px; margin-bottom: 5px; border-radius: 3px; }	
+		.home-tuan-list .wrap {-webkit-box-flex: 1;-webkit-flex:1; flex:1;}	
+		.home-tuan-list .wrap2 {display: table; max-height: 200px; width: 100%; }	
+		.home-tuan-list .content {-webkit-box-flex: 1; -webkit-flex:1; flex:1; box-flex: 1;	display: table-cell; vertical-align: middle; padding-left: 10px;}	
+		.home-tuan-list .shopname {color: #333; font-size: 16px; max-width: 24em; white-space: nowrap; word-wrap: normal; text-overflow: ellipsis; overflow: hidden; min-height: 10px; padding-bottom: 2px; padding-top: 3px; display: inline-block;}	
+	
+		.home-tuan-list .comment {margin-bottom: 6px; position: relative; }	
+		.home-tuan-list .comment span {vertical-align: middle; color: #999; font-size: 12px;}	
+	
+	
+		.home-tuan-list .classify {color: #34A8FA; font-size: 13px;}
+	
+		/* 4. tabbar*/	
+		.tabbar {height: 50px;line-height: 50px;text-align: center;/*border-bottom: 1px solid #e0e0e0;*/ background:#f5f6f7; }	
+		.tabbar .col {font-size: 14px;  color: #696969}	
+	
+		/* 1 滑动栏*/	
+		.movieslide {position: relative; width:100%; min-height:200px; line-height:24px; margin: 0 auto; z-index: 400; overflow-y: hidden; 
+		            overflow-x: visible; background: #fff;  color: #696969; border-bottom: 1px #cccccc solid;}	
+		.movieslide .slider {width: 520px; height: 190px;}	
+		.movieslide tr {width:100%; text-align: left; }
+		 td{margin: 0; padding: 0; text-align:left;vertical-align:top; }
+		.td1{ width:90px;}
+	   /* .movieslide tr .td1{ width:30%;}
+	   .movieslide tr .td2{width:70%;}*/
+	    
+		.active {color: #f60;}	
+		.indicator {height: 3px; width: 100%; background: #34A8FA; position: absolute; bottom: 0;}	
+		.hide{display:none;}
+		.pldiv{margin-top:20px; position:fixed; bottom:5px;left:0; height: 50px; width: 100%; }
+		.pl{width:73%;background-color: white; height: 50px;  border: 3px #c1c1c1 solid; }
+		.wrap{ margin-top: 5px;}
+	    .pldiv .buttom{ background-color: #34A8FA; color: #fff; text-align: center; height: 54px; width:25%; }
+	    .shuru{background: #e6ded6;height: 80px;}
+	    .xian{border-bottom: 1px solid #34A8FA ;height: 40px;line-height: 40px;
+		     vertical-align: middle;text-align: center; font-size: 16px; color: #373636; background-color: #f5f6f7;}
+		.changDiv input{border: 1px solid #c1c1c1;width:50%;height: 32px;background-color: #fafafa;border-radius:4px;}
+		.changDiv select{text-align: center;height: 32px;border: 1px solid #c1c1c1; background-color: #fafafa;border-radius:4px;}
+		.changDiv .button{text-align: center; height: 40px; width:90%;background-color: #34A8FA;border-radius:5px; border: 0; color: #fff; }
+		.changDiv{height: 42px;line-height: 42px;vertical-align: middle;}
+		#selectpj{height: 32px; width:50%;line-height: 32px; color: #828181; background:#fafafa; border: 1px #c1c1c1 solid; padding-left: 5px; }
+		.changDiv span{height: 32px;line-height: 32px;padding-left: 10px;width:100px; font-size: 18px; margin-left: 5px;  margin-top:15px; color: #696969}
+		.selectdiv{height: 60px;line-height: 60px; border-bottom: 1px #34A8FA  solid;}
+	</style>	
+</head>	
+<body>	
+	<!-- 1 2X2 -->	
+	<form id="pjform">
+	
+	<!-- 培训班id -->
+	<input oninput="commonRemoveExpression(this)" id="pxb_id" name="pxbId" type="hidden"/>
+	<!-- 学员id -->
+	<input oninput="commonRemoveExpression(this)" id="person_id" name="person_id" type="hidden"/>
+	<!-- 学分认定id -->
+	<input oninput="commonRemoveExpression(this)" id="xf_id" name="xf_id" type="hidden"/>
+	<!-- 总学分 -->
+	<input oninput="commonRemoveExpression(this)" id="zxf" name="zxf" type="hidden"/>
+	<!-- 修改标识 -->
+	<input oninput="commonRemoveExpression(this)" id="ifupdate" name="ifupdate" value="0" type="hidden"/>
+	<!-- 评分人 -->
+	<input oninput="commonRemoveExpression(this)" id="pfr_id" name="pfr_id"  type="hidden"/>
+	<div>检测内容：<font id="hw_content"></font></div>
+	<div class="selectdiv">评价：<select id="selectpj" name="pf">
+	<option  value="1" selected="selected">优秀</option>
+	<option  value="2">良好</option>
+	<option  value="3">及格</option>
+	<option  value="4">不及格</option>
+		</select></div>
+	<div class="xian">评语</div>
+	<div class="movieslide" id="kcxx">	
+	<textarea id='zy_content' rows='14' style="width: 100%;height: 100%;"></textarea>
+	
+	</div>	
+	<div class="changDiv mt20 mb10" align="center">	
+	<input oninput="commonRemoveExpression(this)" type="button" value="保存" class="button" onclick="fillResource()"/>
+	</div>
+	</form>
+	<!-- 2 列表 -->	
+	
+	
+	<!--<div class="home-tuan-list" id="list">	
+       
+	</div>-->
+	
+	
+</body>	
+<script type="text/javascript" src="../../../script/api.js"></script>	
+<script type="text/javascript" src="../../../script/base_config.js"></script>
+<script type="text/javascript" src="../../../script/training/jsyx/constant.js"></script>
+<script type="text/javascript" src="../../../script/training/jsyx/zypjEdit_frame1.js"></script>		
+</html>	

@@ -1,0 +1,348 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<title>APP</title>
+		<link rel="stylesheet" type="text/css" href="../../../css/training/jsyx/aui.css" />
+	</head>
+	<style>
+		img.avatar {
+			width: 18px;
+			height: 18px;
+			border-radius: 50%;
+		}
+		.boxCont {
+			position: relative;
+		}
+	</style>
+	<body>
+		<div class="aui-content">
+			<!--微课列表-->
+			<div id="zblist_div"></div>
+			<script type="text/html" id="zblist_script">
+				<% if(entities.length == 0){ %>
+					<div class="no-data"><span>暂无直播</span></div>
+				<% }else{ %>
+					<ul class="aui-waterfall" id="aui-waterfall">
+						<%for(var i=0; i<entities.length; i++) {%>
+							<li onclick="openZbContent(<%=entities[i].roomId%>,'<%=entities[i].anchorPwd%>','<%=entities[i].assistPwd%>','<%=entities[i].userPwd%>','<%=entities[i].roomName%>');">
+								<div class="aui-waterfall-header">
+									<img onerror="this.src='../../../image/training/weike/wk_default.png'" src="../../../image/training/weike/wk_default.png" alt="" data-echo="<%=entities[i].room_pic%>">
+								</div>
+								<div class="aui-waterfall-body">
+									<%=entities[i].roomName%>
+								</div>
+								<div class="aui-waterfall-footer">
+									<span class="aui-text-info"> 
+										<%=entities[i].creator%> 
+									</span>
+									<% if(entities[i].status == 2){ %>
+										<span class="aui-pull-right"> 
+											 <i class="aui-text-success">直播中</i>&nbsp;
+											 <i class="aui-iconfont aui-icon-friend aui-text-success"></i>&nbsp;
+											 <i class="aui-text-success"><%=entities[i].onlineNum%></i>
+										</span>
+									<% } %>
+								</div>
+							</li>
+						<% } %>
+					</ul>
+				<% } %>
+			</script>
+		</div>
+	</body>
+	<script type="text/javascript" src="../../../script/api.js" ></script>
+	<script type="text/javascript" src="../../../script/base_config.js" ></script>
+	<script type="text/javascript" src="../../../script/aui_js/aui-waterfall.js" ></script>
+	<script type="text/javascript" src="../../../script/echo.min.js"></script>
+	<script type="text/javascript" src="../../../script/template.js" ></script>
+	<script type="text/javascript" src="../../../script/training/jsyx/zbLive.js" ></script>
+	<script type="text/javascript">
+		//定义头高度
+		var header_h;
+		//总记录数
+		var totalCount = 0;
+		//总页数
+		var totalPages = 0;
+		//定义一个变量存储第一次加载返回来的总记录数
+		var totalData = 0;
+		//当前页面为第一页
+		var currentPage = 0;
+		//当前人员是否有权限创建直播间
+		var is_add_zb;
+		//云直播还是我的直播，云直播为1，我的直播为2,没有创建权限人员为0
+		var zb_from_type;
+		var BASE_URL_ACTION;
+		var BASE_APP_TYPE;
+		var access_token = '';
+		apiready = function() {
+			var header = $api.byId('aui-header');
+			$api.fixStatusBar(header);
+			header_h = api.pageParam.header_h;
+			is_add_zb = api.pageParam.is_add_zb;
+			zb_from_type = api.pageParam.zb_from_type;
+			BASE_URL_ACTION = $api.getStorage('BASE_URL_ACTION');
+			BASE_APP_TYPE = $api.getStorage('BASE_APP_TYPE');
+			currentPage = 1;
+//			access_token = $api.getStorage('access_token');
+			if (access_token == '' ) {
+				//获取直播token
+				getZbToken(function(is_true, accessToken) {
+					$api.setStorage('access_token', accessToken);
+					access_token = accessToken;
+					loadData(0, 0, true);
+				});
+			} else {
+				loadData(0, 0, true);
+			}
+			//下拉刷新
+			//			refreshDataInfo();
+			//上拉加载数据
+			//			scrollBottomReload();
+		}
+		/**
+		 * 加载直播列表，zb_status：直播状态，查询类型,0-未删除 1-全部（包含未删除和已经删除的） 2-直播中 3-已删除，默认0
+		 * 周枫
+		 * 2016.11.01
+		 */
+		function loadData(zb_status, currentPage, isReload) {
+			api.showProgress({
+				title : '加载中...',
+				modal : false
+			});
+			
+			//云直播
+			if (is_add_zb == 1 || is_add_zb == 0) {
+				currentPage = isReload ? 0 : currentPage;
+				//获取
+				api.ajax({
+					url : BASE_ZB_ACTION + 'GetRooms',
+					method : 'post',
+					dataType : 'json',
+					cache : false,
+					data : {
+						values : {
+							"type" : zb_status,
+							"index" : currentPage,
+							"count" : BASE_PAGE_SIZE
+						}
+					},
+					headers : {
+						'Authorization' : access_token
+					}
+				}, function(ret, err) {
+					
+					if (ret.status == 200) {
+						totalData = ret.total;
+						//获取分页总页数
+						var t1 = parseInt(totalData % BASE_PAGE_SIZE);
+						var t2 = parseInt(totalData / BASE_PAGE_SIZE);
+						if (t1 != 0) {
+							t2 = t2 + 1;
+						}
+						totalPages = t2;
+						//获取直播间封面
+						var zb_list = ret.entities;
+						var zb_list_l = zb_list.length;
+						getZbDbGetRoomConfig(0, zb_list, function(is_true, zb_list_json) {
+							ret.entities = zb_list_json;
+							if (isReload) {
+								// 重新设置为1
+								currentPage = 1;
+							}
+							var html_type = template.render('zblist_script', ret);
+							if (currentPage == 1) {
+								document.getElementById('zblist_div').innerHTML = html_type;
+							} else {
+								$api.append($api.byId('zblist_div'), html_type);
+							}
+							$aui.waterfall($api.byId("aui-waterfall"), {
+								col : 2, //列数
+								padding : 5, //容器内边距
+								space : 5//列间距
+							});
+							//延迟加载图片
+							setTimeout(function() {
+								echoInit();
+							}, 300);
+						})
+						//						//通知顶部下拉刷新数据加载完毕，组件会恢复到默认状态
+						//						api.refreshHeaderLoadDone();
+						api.hideProgress();
+					}
+				});
+			}
+		}
+		
+		/**
+		 * 获取token认证
+		 * 周枫
+		 * 2016.11.01 
+		 */
+		function getZbToken(callback) {
+			api.ajax({
+				url : BASE_ZB_ACTION + 'AccessToken',
+				method : 'post',
+				dataType : 'json',
+				cache : false,
+				data : {
+					values : {
+						"scope" : 'app',
+						"username" : "279725110@qq.com",
+						"password" : 'liwenbo0815'
+						//"username" : "95834073@qq.com",
+						//"password" : "dsideal4r5t6y7u"
+					}
+				},
+				headers : {
+					'Authorization' : access_token
+				}
+			}, function(ret, err) {
+				if (ret.status == 200) {
+					callback(true, ret.accessToken)
+				} else {
+				}
+			});
+		}
+		
+		/**
+		 * 获取主播房间信息
+		 * 周枫
+		 * 2016.11.01 
+		 */
+		function getZbGetRoomConfig(room_id, callback) {
+			api.ajax({
+				url : BASE_ZB_ACTION + 'GetRoomConfig',
+				method : 'post',
+				dataType : 'json',
+				cache : false,
+				data : {
+					values : {
+						"roomId" : room_id
+					}
+				},
+				headers : {
+					'Authorization' : access_token
+				}
+			}, function(ret, err) {
+				if (ret.status == 200) {
+					callback(true, ret.entity.roomCoverPicUrl)
+				}
+			});
+		}
+		
+		/**
+		 * 递归获取主播房间信息重组json
+		 * 周枫
+		 * 2016.11.01 
+		 */
+		function getZbDbGetRoomConfig(zb_c, zb_list, callback) {
+			var zb_l = zb_list.length;
+			if (zb_c < zb_l) {
+				var zb_room_id = zb_list[zb_c]["roomId"];
+				//缓存群组头像处理数据
+				getZbGetRoomConfig(zb_room_id, function(is_true, room_pic) {
+					if (is_true) {
+						zb_list[zb_c]["room_pic"] = room_pic;
+						zb_c++;
+						return getZbDbGetRoomConfig(zb_c, zb_list, callback);
+					}
+				});
+			} else {
+				callback(true, zb_list);
+			}
+		}
+		
+		function openZbContent(room_id, anchor_pwd, assist_pwd, user_pwd, room_name){
+			var person_name = $api.getStorage('person_name');
+			if(zb_from_type == 1 || zb_from_type == 0) {
+				//清除房间验证信息，销毁session实例
+				zbLiveCore.destroyRoomSession(room_id, user_pwd, person_name);
+				zbLiveCore.authRoomSession(room_id, user_pwd, person_name, function(is_true, data) {
+				if (is_true) {
+					zbLiveCore.getClientUrl(room_id, user_pwd, person_name, function(is_true, data) {
+					if (is_true) {
+						api.openWin({
+						name : 'zhibo_user_window',
+						url : 'zhibo_user_window.html',
+						pageParam : {
+							header_h : header_h,
+							client_url:data.educVisitorUrl
+						},
+						bounces : false,
+						opaque : false,
+						showProgress : false,
+						vScrollBarEnabled : false,
+						hScrollBarEnabled : false,
+						slidBackEnabled : false,
+						delay : 0,
+						animation : {
+							type : "reveal", //动画类型（详见动画类型常量）
+							subType : "from_right", //动画子类型（详见动画子类型常量）
+							duration : 300
+						},
+					});
+						
+						
+				}else{
+					api.alert({
+					msg : '网络连接失败，请检查您的网络设置'
+					}, function(ret, err) {
+					});
+				}
+			});
+				
+				}else{
+					api.alert({
+					msg : '网络连接失败，请检查您的网络设置'
+					}, function(ret, err) {
+					});
+				}
+			});
+				
+			} else {
+				api.prompt({
+					title : '请输入主播密码',
+					buttons : ['确定', '取消']
+				}, function(ret, err) {
+					if (ret.buttonIndex != 1)
+						return;
+					var pwd = ret.text;
+					if(pwd != anchor_pwd) {
+						api.alert({
+							msg : '对不起，主播密码错误，您没有主播权限'
+                        },function(ret,err){
+                        	return;
+                        });
+					} else {
+						api.openWin({
+							name : 'zhibo_admin_window',
+							url : 'zhibo_admin_window.html',
+							pageParam : {
+								header_h : header_h,
+								room_id : room_id,
+								anchor_pwd : anchor_pwd,
+								assist_pwd : assist_pwd,
+								user_pwd : user_pwd,
+								room_name : room_name
+							},
+							bounces : false,
+							opaque : false,
+							showProgress : false,
+							vScrollBarEnabled : false,
+							hScrollBarEnabled : false,
+							slidBackEnabled : false,
+							delay : 0,
+							animation : {
+								type : "reveal", //动画类型（详见动画类型常量）
+								subType : "from_right", //动画子类型（详见动画子类型常量）
+								duration : 300
+							},
+						});
+					}
+				});
+			}
+		}
+	</script>
+</html>

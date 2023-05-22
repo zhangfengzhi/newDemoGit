@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>提交检测详情</title>
+    <link rel="stylesheet" type="text/css" href="../../../../../css/aui/aui.css" />
+    <link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+    <style>
+    	body{margin:0;padding-bottom:90px;}
+    	.clearfix:after{content: ' ';display: block;clear: both;visibility: hidden;line-height: 0;height: 0;}
+		.right_rate {text-align: center;border-bottom: 1px solid #E4E4E4;padding: 20px 0 18px 0;}
+		.right_rate dt {font-size: 30px;padding-bottom: 14px;color: #F30808;font-family: Arial;}
+		.right_rate dd {font-size: 16px;}
+    	.plr15{padding:0 15px;}
+    	.plr30{padding:0 30px;}
+    	.title{height:55px;line-height:55px;color:#606060;}
+    	.question-item ul li{float:left;}
+    	.question-item ul li div{margin:0 auto;text-align:center;}
+    	.question-item ul li div.active{color:#ffffff;}
+    	.footer-div{position:fixed;height:107px;background:#ffffff;display: block;bottom: 0px;width:100%;box-shadow:3px 0 4px #aaaaaa;}
+		.footer-div div{width:50%;line-height:55px;float:left;text-align:center;color:#666666;}
+		.footer-div div.br{border-right:2px solid #E2E2E2;}
+		.content-div{padding-bottom:105px;}
+		.zhushi {margin-top: 14px;border-bottom:2px solid #E2E2E2; height:38px;}
+		.zhushi li {list-style: none;float: left;width: 25%;text-align: center;}
+		.zhushi li span {display: inline-block;vertical-align: middle;height: 20px;width: 20px;margin-right: 8%;border-radius:10px !important;}
+		.zhushi li em {display: inline-block;vertical-align: middle;height: 20px;line-height: 21px;color:#666666;}
+		.bggreen {background: #42B096 !important;border:1px solid #42B096 !important;color:#ffffff;background-clip:padding-box !important;}
+		.bgred {background: #FF0000 !important;border:1px solid #FF0000 !important;color:#ffffff;background-clip:padding-box !important;}
+		.bggrey {background: #CCCCCC !important;border:1px solid #CCCCCC !important;color:#ffffff;background-clip:padding-box !important;}
+		.bgyellow {background: #FFCC33 !important;border:1px solid #FFCC33 !important;color:#ffffff;background-clip:padding-box !important;}
+    </style>
+</head>
+<body class="common-iphone-zuoyeXsJy">
+  <div class="content-div clearfix">
+  	<dl id="title" class="right_rate">
+  	  <dt id="rights"></dt>
+  	  <dd>正确率</dd>
+  	</dl>
+	<!--主观题-->
+	<div id="kg_title" class="title plr15">客观题</div>
+	<div class="question-item plr30">
+		<ul id="objective">
+		</ul>
+	</div>
+	<!--//主观题-->
+	<!--客观题-->
+	<div id="zg_title" class="title plr15">主观题</div>
+	<div class="question-item plr30">
+		<ul id="subjective">
+		</ul>
+	</div>
+	
+	
+  	<br/>
+ </div>
+ <div id="j_footer" class="footer-div">
+ 	<ul class="zhushi" id="zhushi">
+  	  <li><span class="bggreen"></span><em>正确</em></li>
+  	  
+  	  <li><span class="bgred"></span><em>错误</em></li>
+  	  
+  	  <li><span class="bgyellow"></span><em>半对</em></li>
+  	  
+  	  <li><span class="bggrey"></span><em>未批</em></li>
+  	</ul>
+ 	<div class="br" onclick="openProblemsWin(1,1);">逐题解析</div>
+ 	<div onclick="errorAnalysis();">错题解析</div>
+ </div>
+
+</body>
+<script type="text/javascript" src="../../../../../script/api.js"></script>
+<script type="text/javascript" src="../../../../../script/base_config.js" ></script>
+<script type="text/javascript" src="../../../../../script/common/common.js" ></script>
+<script type="text/javascript">
+	var header_h;
+	var BASE_URL_ACTION;
+	var BASE_APP_TYPE;
+	var errorArray=[];
+	//人person_id
+	var p_id = 0;
+	//身份id
+	var i_id = 0;
+	apiready = function(){       
+	    commonSetTheme({"level":5,"type":0});
+		header_h = api.pageParam.header_h;
+		p_id = $api.getStorage('person_id');
+		i_id = $api.getStorage('identity');
+		$api.html($api.byId('rights'),api.pageParam.rights);
+		BASE_APP_TYPE = $api.getStorage('BASE_APP_TYPE');
+		getZyDetailByStuZyIdFun(function(flag){
+			if(flag){
+				getZyAnswerInfoByStudentId();
+			}
+		})
+		
+	};
+	/*
+		*作者:zhaoj
+		*功能:调用其他接口之前调用
+		*日期：20160922
+		*/
+		function getZyDetailByStuZyIdFun(callback){
+			showSelfProgress('加载中...');
+			commonGetStudentInfoByParentId(p_id, i_id, function(is_true, stu_info_json){
+			if(is_true) {
+				api.ajax({
+					url :BASE_URL_ACTION + '/xx/getZyDetailByStuZyId',
+					method : 'post',
+					timeout : 30,
+					dataType : 'json',
+					data : {
+						values : {
+							"random_num" : creatRandomNum(),
+							"student_id" : stu_info_json.student_id,
+							"zy_id" : api.pageParam.zy_id,
+							"p_type" : 2,
+							"zy_type":1,
+							"identity_id" :stu_info_json.roles[0].role_id
+						}
+					},
+					headers : {
+			'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+		}
+				}, function(ret, err) {
+					api.hideProgress();
+					if (err) {
+						callback(false);
+						popToast('获取答题信息失败');
+					} else {
+						if(ret.success){
+							callback(true);
+						}else{
+							callback(false);
+							popToast('获取答题信息失败');
+						}
+					}
+				});
+			}})
+			
+		}
+	
+	/*
+	*author:zhaoj
+	*function:客观题选项
+	*date：20160329
+	*/
+	function objective(sort,score,question_id){
+		if(score == 0){
+			uploadHtml('objective',sort,'bgred');
+			errorArray.push(sort);
+		}else if(score == 1){
+			uploadHtml('objective',sort,'bggreen');
+		}else if(score == -2){
+			uploadHtml('objective',sort,'bggrey');
+		}else{
+			uploadHtml('objective',sort,'');
+		}
+	}
+	/*
+	*author:zhaoj
+	*function:主观题选项
+	*date：20160329
+	*/
+	function subjective(sort,score,question_id){
+		if(score == 0){
+			uploadHtml('subjective',sort,'bgred');
+			errorArray.push(sort);
+		}else if(score < 1&& score > 0){
+			uploadHtml('subjective',sort,'bgyellow');
+			errorArray.push(sort);
+		}else if(score == 1){
+			uploadHtml('subjective',sort,'bggreen');
+		}else if(score == -2){
+			uploadHtml('subjective',sort,'bggrey');
+		}else{
+			uploadHtml('subjective',sort,'');
+		}
+	}
+	/*
+	*author:zhaoj
+	*function:客观题和客观题选项添加到页面中
+	*date：20160329
+	*/
+	function uploadHtml(divID,sort,css){
+		var liWidth = Math.floor((api.frameWidth-60)/5);
+		var liHeight = liWidth;
+		var divWidth= Math.floor(liWidth*0.8);
+		var divHeight = divWidth;
+		var borderRad = Math.floor(divWidth*0.5);
+		var clickHtml = "openProblemsWin("+sort+",1)";
+		var liHtml = '<li style="width:'+liWidth+'px;height:'+liHeight+'px;" onclick='+clickHtml+'>';
+			if(api.frameWidth>360){
+				liHtml = liHtml+'<div class="'+css+'" style="max-width:48px;max-height:48px;line-height:47px;border-radius:24px !important;">'+sort+'</div>';
+			}else{
+				liHtml = liHtml+'<div class="'+css+'" style="width:'+divWidth+'px;height:'+divHeight+'px;border-radius:'+borderRad+'px !important;line-height:'+(divHeight-1)+'px;max-width:48px;max-height:48px;">'+sort+'</div>';
+			}
+			liHtml = liHtml+'</li>';
+		$api.append($api.byId(divID), liHtml);
+	}
+	/*
+	*author:zhaoj
+	*function:学生查看具体题目的情况
+	*date：20160324
+	*/
+	function openProblemsWin(sort,type){
+		if(type == 1){
+			sort = sort-1;
+		};
+		var pageParamJson = {
+		    'header_h' : header_h,
+            'zy_id' :api.pageParam.zy_id,
+            'zy_name' :api.pageParam.zy_name,
+            'is_public' : api.pageParam.is_public,
+            'sort' : sort,
+            'type' : type
+		};
+		commonOpenWin('zuoyeXsJy_problems_window', 'zuoyeXsJy_problems_window.html', false, false, pageParamJson);
+	}
+	function errorAnalysis(){
+		if(errorArray.length>0){
+			var errorArrayList = JSON.stringify(errorArray.sort(sortNumber));
+			openProblemsWin(errorArrayList,2);
+		}else{
+			popToast('暂无错题');
+		}
+	}
+	function sortNumber(a, b){
+		return a - b
+	}
+	/*
+	*author:zhaoj
+	*function:获取学生检测作答进度
+	*date：20160405
+	*/
+	function getZyAnswerInfoByStudentId(){
+		commonGetStudentInfoByParentId(p_id, i_id, function(is_true, stu_info_json){
+			if(is_true) {
+				api.ajax({
+					url : BASE_URL_ACTION + '/xx/getZyAnswerInfoByStudentId',
+					method : 'post',
+					timeout : 30,
+					dataType : 'json',
+					returnAll : false,
+					data : {
+						values : {
+							"random_num" : creatRandomNum(),
+							"student_id" : stu_info_json.student_id,
+							"zy_id" : api.pageParam.zy_id,
+							"identity_id" : stu_info_json.roles[0].role_id,
+						}
+					}
+				}, function(ret, err) {
+					if (err) {
+						noQuestions();
+					} else {
+						if(ret.success){
+//							if(ret.rights*1 >= 0){
+//								$api.html($api.byId('rights'),ret.rights+'%');
+//							}else{
+//								$api.html($api.byId('rights'),ret.rights);
+//							}
+							var kg_list = ret.kg_que_list;
+							var zg_list = ret.zg_que_list;
+							if(kg_list.length > 0){
+								for(var i = 0; i < kg_list.length ;i++){
+									objective(kg_list[i].sort,kg_list[i].score,kg_list[i].question_id)
+								}
+							}else{
+								$api.css($api.byId('kg_title'),'display:none;');
+							}
+							if(zg_list.length > 0){
+								for(var i = 0; i < zg_list.length;i++){
+									subjective(zg_list[i].sort,zg_list[i].score,zg_list[i].question_id)
+								}
+							}else{
+								$api.css($api.byId('zg_title'),'display:none;');
+							}
+							if(zg_list.length == 0 && kg_list.length == 0){
+								noQuestions();
+							}
+						}else{
+							noQuestions();
+						}
+					}
+				});
+			} else {
+				api.toast({
+					msg:stu_info_json
+				});
+			}	
+		});
+	}
+	/*
+	*author:zhaoj
+	*function:没有题目时
+	*date：20160405
+	*/
+	function noQuestions(){
+		$api.html($api.byId('title'), "暂无题目");
+		$api.css($api.byId('kg_title'),'display:none;');
+		$api.css($api.byId('zg_title'),'display:none;');
+		$api.css($api.byId('j_footer'),'display:none;');
+	}
+</script>
+</html>

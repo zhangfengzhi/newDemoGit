@@ -1,0 +1,641 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <!-- 在IOS设备上，有时会将数字转为手机号，这里也要禁止下 -->
+	<meta name="format-detection" content="telephone=no"/>
+    <title>办公-主页</title>
+    <link rel="stylesheet" type="text/css" href="../../../css/aui_css_new/aui.css" />
+    <link rel="stylesheet" type="text/css" href="../../../css/module/common/img-auto.css" />
+    <link rel="stylesheet" type="text/css" href="../../../css/module/iphone/init-iphone-work.css" />
+    <link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+</head>
+<body class="common-init init-iphone-body">
+	<div class="mode-tip">
+		<ul id="dbsx_div"></ul>
+		<script id="dbsx_script" type="text/html">
+			<%for(var i=0;i<list.length;i++){%>
+				<%if(list.length != 0){%>
+					<%if(list[i].business =="notice"){%>
+						<%if(list[i].data.list.length == 0){%>
+						<li class="height_1" style="padding-top:75px;">
+							<div class="tzgg-back">通知公告</div>
+									<div style="border:none;width:100%;font-size:14px;color:#585657">暂无通知公告</div>
+								<%}else{%>
+									<li class="height_<%=list[i].data.list.length>4?4:list[i].data.list.length%>">
+									<div class="tzgg-back">通知公告</div>
+									<%for(var j=0;j<list[i].data.list.length;j++){%>
+										<%if(j<4 && j==0){%>
+											<div class="first-div clearfix bottom_<%=list[i].data.list.length == 0?0:1%>" onclick="openContentWindow(<%=list[i].data.list[j].notice_id%>,'<%=list[i].data.list[j].notice_id.flag%>');">
+												<div class="tongzi-div">
+													<span><%=list[i].data.list[j].create_time.substring(0,10)%></span>
+												</div>
+												<%if(list[i].data.list[j].flag == '[未签]' || list[i].data.list[j].flag =='[未阅]'){%>
+													<span class="tu-span-active">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+												<%}else{%>
+													<span class="tu-span">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+												<%}%>
+												<div class="tongzi-name ellipsis">
+													<%if(list[i].data.list[j].is_update == 1){%>
+														<font style="color:red">[已改]&nbsp;</font><%=list[i].data.list[j].notice_title%>
+													<%}else{%>
+														<%=list[i].data.list[j].notice_title%>
+													<%}%>
+												</div>
+											</div>
+										<%}else if(j<4 && j==1){%>
+											<div class="second-div clearfix bottom_<%=list[i].data.list.length == 1?0:1%>" onclick="openContentWindow(<%=list[i].data.list[j].notice_id%>,'<%=list[i].data.list[j].notice_id.flag%>');">
+												<div class="tongzi-div">
+													<span><%=list[i].data.list[j].create_time.substring(0,10)%></span>
+												</div>
+												<%if(list[i].data.list[j].flag == '[未签]' || list[i].data.list[j].flag =='[未阅]'){%>
+													<span class="tu-span-active">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+												<%}else{%>
+													<span class="tu-span">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+												<%}%>
+												<div class="tongzi-name ellipsis">
+													<%if(list[i].data.list[j].is_update == 1){%>
+														<font style="color:red">[已改]</font><%=list[i].data.list[j].notice_title%>
+													<%}else{%>
+														<%=list[i].data.list[j].notice_title%>
+													<%}%>
+												</div>
+											</div>
+										<%}else if(j<4 && j==2){%>
+											<div class="third-div clearfix bottom_<%=list[i].data.list.length == 2?0:1%>" onclick="openContentWindow(<%=list[i].data.list[j].notice_id%>,'<%=list[i].data.list[j].notice_id.flag%>');">
+												<div class="tongzi-div">
+													<span><%=list[i].data.list[j].create_time.substring(0,10)%></span>
+												</div>
+												<%if(list[i].data.list[j].flag == '[未签]' || list[i].data.list[j].flag =='[未阅]'){%>
+													<span class="tu-span-active">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+												<%}else{%>
+													<span class="tu-span">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+												<%}%>
+												<div class="tongzi-name ellipsis">
+													<%if(list[i].data.list[j].is_update == 1){%>
+														<font style="color:red">[已改]</font><%=list[i].data.list[j].notice_title%>
+													<%}else{%>
+														<%=list[i].data.list[j].notice_title%>
+													<%}%>
+												</div>
+											</div>
+										<%}else if(j<4 && j==3){%>
+											<div class="forth-div clearfix bottom_<%=list[i].data.list.length == 3?0:1%>" onclick="openContentWindow(<%=list[i].data.list[j].notice_id%>,'<%=list[i].data.list[j].notice_id.flag%>');">
+												<div class="tongzi-div" style="width:32%;max-width:32%;">
+													<span><%=list[i].data.list[j].create_time.substring(0,10)%></span>
+												</div>
+												<%if(list[i].data.list[j].flag == '[未签]' || list[i].data.list[j].flag =='[未阅]'){%>
+													<span class="tu-span-active">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+												<%}else{%>
+													<span class="tu-span">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+												<%}%>
+												<div class="tongzi-name ellipsis" style="right:10%;width:58%;max-width: 63%;">
+													<%if(list[i].data.list[j].is_update == 1){%>
+														<font style="color:red">[已改]</font><%=list[i].data.list[j].notice_title%>
+													<%}else{%>
+														<%=list[i].data.list[j].notice_title%>
+													<%}%>
+												</div>
+											</div>
+										<%}%>
+									<%}%>
+								<%}%>
+							<%if(list[i].data.list.length != 0){%>
+								<div class="more-tzgg" onclick="openTongZhi();">更多<div>
+							<%}%>
+						</li>
+					<%}else if(list[i].business =="wdkq_qj"){%>
+						<li id="wdkq">
+							<div class="img img-wdkq" onclick="openQjOrGc(1);">
+								<div>我的考勤</div>
+							</div>
+							<div class="name_left" style="top:-20px" onclick="openQjOrGc(1);"><%=wdkq_qj_list%><span class="wdkq-span">请假</span></div>
+							<div class="name_right" style="top:-20px" onclick="openQjOrGc(2);"><%=wdkq_gc_list%><span class="wdkq-span">公出</span></div>
+						</li>
+					<%}else if(list[i].business =="kqsp_qj"){%>
+						<li id="kqsp" onclick="goYyKqsp();">
+							<div class="img img-kqsp">
+								<div>考勤审批</div>
+							</div>
+							<div class="name_left" onclick="openkqsp(0,event);"><%=kqsp_qj_list.length%><span class="wdkq-span">请假</span></div>
+							<div class="name_right" onclick="openkqsp(1,event);"><%=kqsp_gc_list.length%><span class="wdkq-span">公出</span></div>
+						</li>
+					<%}else if(list[i].business =="person_detailed_clockin_info"){%>
+						<li id="dkjl" onclick="openDkjl();">
+							<div class="img img-dktj">
+								<div>打卡记录</div>
+							</div>
+							<%if(list.length == 0){%>
+								<div class="name_right no-dkj" style="left:10px;border:none;width:80%;height:50px;"><div style="position:absolute;top:0;left:60px;width:50%;height:50px;line-height:20px;">未设置打卡机请联系管理员</div></div>
+							<%}else{%>
+								<div class="time_left"><%=time%></div>
+								<div class="name_left" style="left:0"><%=list[i].data.zc%>次<span class="dktj-span">正常</span></div>
+								<div class="name_right" style="left:5px;"><%=list[i].data.wdk%>次<span class="dktj-span">未签</span></div>
+								<div class="name_right" style="left:10px"><%=list[i].data.cd%>次<span class="dktj-span">迟到</span></div>
+								<div class="name_right" style="left:15px"><%=list[i].data.zt%>次<span class="dktj-span">早退</span></div>
+							<%}%>
+						</li>
+					<%}else if(list[i].business =="dktj"){%>
+						<li id="dktj" onclick="openDktj();">
+							<div class="img img-dktj">
+								<div>打卡统计</div>
+							</div>
+							<%if(list[i].data.success == false){%>
+								<div class="name_right no-dkj" style="left:10px;border:none;width:80%;height:50px;"><div style="position:absolute;top:0;left:60px;width:50%;height:50px;line-height:20px;">未设置打卡机请联系管理员</div></div>
+							<%}else{%>
+								<div class="time_left" style="left:67%"><%=time_day%></div>
+								<div class="name_right"><%=list[i].data.wdk_list.length%>人<span class="dktj-span">未签</span></div>
+								<div class="name_right"><%=list[i].data.cd_list.length%>人<span class="dktj-span">迟到</span></div>
+								<div class="name_right"><%=list[i].data.qj_list.length%>次<span class="dktj-span">请假</span></div>
+								<div class="name_right"><%=list[i].data.wc_list.length%>次<span class="dktj-span">公出</span></div>
+								<div class="name_right"><%=list[i].data.zt_list.length%>人<span class="dktj-span">早退</span></div>
+							<%}%>
+						</li>
+					<%}else if(list[i].business =="permission"){%>
+						<li onclick="openWjdc();" style="padding-left:33%">
+							<div class="img img-wjdc">
+								<div>问卷调查</div>
+							</div>
+							<%if(list[i].data.list.length == 0){%>
+								<div class="name_left" style="border:none;width:80%;font-size:14px;top:40px;left:0;">暂无问卷</div>
+							<%}else{%>
+								<%for(var j=0;j<list[i].data.list.length;j++){%>
+									<%if(j==0 && list[i].data.list.length == 1){%>
+										<div class="wjdc-div" style="top:40px;"><%=list[i].data.list[j].create_time.substring(0,11)%>&nbsp;<%=list[i].data.list[j].title%></div>
+									<%}else if(j == 0){%>
+										<div class="wjdc-div" style="top:16px;border-bottom:1px dashed #D9D8D9"><%=list[i].data.list[j].create_time.substring(0,11)%>&nbsp;<%=list[i].data.list[j].title%></div>
+									<%}else if(j==1){%>
+										<div class="wjdc-div" style="top:16px"><%=list[i].data.list[j].create_time.substring(0,11)%>&nbsp;<%=list[i].data.list[j].title%></div>
+									<%}%>
+								<%}%>
+							<%}%>
+						</li>
+					<%}else if(list[i].business =="zthd"){%>
+                        <li onclick="openZthd();" style="padding-left:33%">
+                            <div class="img img-zthd">
+                                <div style="margin-left:15px;margin-top:10px;">主题活动</div>
+                            </div>
+                            <%if(list[i].list.length == 0){%>
+                                <div class="name_left" style="border:none;width:80%;font-size:14px;top:40px;left:0;">暂无主题活动</div>
+                            <%}else{%>
+                                <%for(var j=0;j<list[i].list.length;j++){%>
+                                    <%if(j==0 && list[i].list.length == 1){%>
+                                        <div class="wjdc-div" style="top:40px;"><%=list[i].list[j].org_name%><div class="zthd-li"><%=list[i].list[j]._count%></div></div>
+                                    <%}else if(j == 0){%>
+                                        <div class="wjdc-div" style="top:16px;border-bottom:1px dashed #D9D8D9"><%=list[i].list[j].org_name%><div class="zthd-li" style="margin-top:7px;"><%=list[i].list[j]._count%></div></div>
+                                    <%}else if(j==1){%>
+                                        <div class="wjdc-div" style="top:16px"><%=list[i].list[j].org_name%><div class="zthd-li" style="margin-top:7px;"><%=list[i].list[j]._count%></div></div>
+                                    <%}%>
+                                <%}%>
+                            <%}%>
+                        </li>
+                    <%}%>
+				<%}%>
+			<%}%>
+		</script>
+	</div>
+</body>
+<script type="text/javascript" src="../../../script/api.js" ></script>
+<script type="text/javascript" src="../../../script/base_config.js" ></script>
+<script type="text/javascript" src="../../../script/plug-in/template.js" ></script>
+<script type="text/javascript" src="../../../script/plug-in/base64.js" ></script>
+<script type="text/javascript" src="../../../script/common/common.js"></script>
+<script type="text/javascript" src="../../../script/common/init_common.js" ></script>
+<script type="text/javascript" src="../../../script/plug-in/echo.min.js" ></script>
+<script type="text/javascript" src="../../../script/assembly/photoBrowser.js"></script>
+<script type="text/javascript" src="../../../script/init/init_config.js"></script>
+<script type="text/javascript">
+	var header_h = 0;//定义头高度
+	var 
+    apiready = function () {
+    	commonSetTheme({"level":3,"type":0});
+		header_h = api.pageParam.header_h;
+		initData(1);
+		commonRefreshHeaderInfo();
+    }
+    
+    /*
+     * 功能：获取数据
+     * 作者：张自强
+     * 时间：20171101
+     */
+    function initData(current_page){
+		commonShowProgress( '加载中...',false);
+    	get_waithandle_list();//获取待办事项
+    }
+    /*
+	*author:zhaoj
+	*function:获取考勤菜单权限
+	*date：20170413
+	*/
+	function getKaoqinMenu(callback) {
+		var is_xxgly = 0;
+		var url = '';
+		var nowData = '';
+     	commonGetCurrentDate(function(nowTime,nowMillisecond){
+			var year = nowTime.getFullYear();
+			var month = nowTime.getMonth()*1+1;
+			month = month < 10 ? '0'+month : month;
+			var day = nowTime.getDate();
+			day = day < 10 ? '0'+day : day;
+			nowData = year+'-'+month+'-'+day;
+		var rolesArray = $api.getStorage('roles');
+		for (var i = 0; i < rolesArray.length; i++) {
+			if (rolesArray[i].role_id * 1 == 2) {
+				is_xxgly = 1;
+			}
+		}
+		url = '/dsideal_yy/new_notice/getMyNoticeList?person_id='+$api.getStorage("person_id")+'&level=0&bureau_id='+$api.getStorage('bureau_id')+'&pageNumber=1&pageSize=10&random_num='+creatRandomNum();
+		var request_urls={
+			"request_urls": [
+//		       {
+//				"url":url,
+//				'business':'notice'
+//		       },
+		 	]
+		}
+		api.ajax({
+	        url : BASE_URL_ACTION + '/leave/getPurviewInfo',
+	        method : 'get',
+	        timeout : 0,
+	        dataType : 'json',
+	        data : {
+	            values : {
+	                "random_num" : creatRandomNum(),
+	                "person_id" : $api.getStorage("person_id"),
+	                "identity_id" : $api.getStorage("identity"),
+	            }
+	        },
+	        headers : {
+	            'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+	        }
+	    }, function(ret, err) {
+	        if (err) {
+	            callback(request_urls,false,false);
+	        } else {
+	            if (ret.success) {
+	                //未读消息总数
+	                var kq_isadd = false;//是否加入考勤审批
+	                var wdkq_isadd = false;//是否加入我的考勤
+	                var dktj_flag = false;//是否加入打卡统计
+	                var dkjl_flag = false;//是否加入打卡记录
+	                var time = new Date();
+					var year = time.getFullYear();
+					var month = (1+time.getMonth() );
+					var str = '';
+	                for (var i = 0; i < ret.list.length; i++) {
+	                    var kq_id = parseInt(ret.list[i].id);
+	                    if(kq_id == 6){
+	                    	dktj_flag = true;
+	                    }
+	                    if(kq_id == 4){
+	                    	dkjl_flag = true;
+	                    }
+	                    switch(kq_id) {
+	                        case 1:
+	                        	//我的考勤
+	                           wdkq_isadd = true;
+	                           str={	                     
+	                           "url":'/dsideal_yy/leave/getMyLeave?random_num='+creatRandomNum()+'&rule_type=1',
+	                           'business':'wdkq_qj'
+	                           }
+	                           request_urls.request_urls.push(str);
+	                           str={	                     
+	                           "url":'/dsideal_yy/leave/getMyLeave?random_num='+creatRandomNum()+'&rule_type=2',
+	                           'business':'wdkq_gc'
+	                           }
+	                           request_urls.request_urls.push(str);
+	                            break;
+	                        case 2:
+	                            //考勤审批
+	                            kq_isadd = true;
+	                         	str = {	   
+		                         	"url":'/dsideal_yy/leave/getCheckLeaveInfoList?random_num='+creatRandomNum()+'&rule_type=1',
+		                         	'business':'kqsp_qj'
+	                         	}
+	                         	request_urls.request_urls.push(str);
+	                         	str = {	   
+		                         	"url":'/dsideal_yy/leave/getCheckLeaveInfoList?random_num='+creatRandomNum()+'&rule_type=2',
+		                         	'business':'kqsp_gc'
+	                         	}
+	                         	request_urls.request_urls.push(str);
+	                            break;
+	                    }
+	                    if(i==ret.list.length-1){
+	                    	if(dktj_flag){
+								str={
+					"url":'/dsideal_yy/leave/getDayClockInStatisticalInfo?bureau_id='+$api.getStorage('bureau_id')+'&date='+nowData+'&random_num='+creatRandomNum(),
+						        'business':'dktj'
+						               };
+						         request_urls.request_urls.push(str);
+							}else if(dkjl_flag){
+								 str={ "url":'/dsideal_yy/clockin/getPersonDetailedClockInInfo?bureau_id='+$api.getStorage('bureau_id')+'&person_id='+$api.getStorage('person_id')+'&year='+year+'&month='+month,
+						            'business':'person_detailed_clockin_info'
+						          };
+						         request_urls.request_urls.push(str);
+							}
+							str = {	                    
+"url":'/dsideal_yy/space/survey/get_permission?random_num='+creatRandomNum()+'&page_size=2&page_num=1&province_id='+$api.getStorage('province_id')+'&city_id='+$api.getStorage('city_id')+'&districts_id='+$api.getStorage('district_id')+'&school_id='+$api.getStorage('school_id')+'&identity_id='+$api.getStorage('identity')+'&person_id='+$api.getStorage('person_id')+'&is_answer=0',
+	                        'business':'permission'
+	                      }
+	                     request_urls.request_urls.push(str); 	
+	                    }
+	                }						  
+	                callback(request_urls,kq_isadd,wdkq_isadd);
+	            } else {
+	                callback(request_urls,false,false);
+	            }
+	        }
+	    });
+	   });
+	}
+	
+	/*
+	 * 功能：获取主题活动统计
+	 * 作者：张自强
+	 * 时间：20180912
+	 */
+	function getTjZthd(callback){
+	   if($api.getStorage('bureau_id') != $api.getStorage('district_id')){
+	       callback(false,'');
+	   }else{
+	       judgeRoles(function(flag){
+	           if(flag){
+	               api.ajax({
+                       url:BASE_URL_ACTION + '/ypt/space/topic/get_topic_stat_by_districtid?district_id='+$api.getStorage('district_id')+'&page_num=1&page_size=10&end_time=&start_time=&sort_column=1&sort_type=desc&random_num='+creatRandomNum(),
+                       method:'get',
+                       dataType:'json',
+                       timeout : 30,
+                       headers : {
+                        'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+                        }
+                   },function(ret,err){
+                        if(err){
+                            callback(false,'');
+                        }else{
+                            if(ret.success){
+                                callback(true,ret.list);
+                            }else{
+                                callback(false,'');
+                            }
+                        }
+                   });
+	           }else{
+	               callback(false,'');
+	           }
+	       });
+	   }
+	}
+    
+    /*
+	*author:zhaoj
+	*function:获取待办事项
+	*interface:张海
+	*date：20171028
+	*/
+	function get_waithandle_list(){
+		getKaoqinMenu(function(request_urls,flag,flag_wdkq){
+		    getTjZthd(function(flag_zthd,data_zthd){
+		       var _url = BASE_URL_ACTION+'/ypt/space/waithandle/get_waithandle_list?param='+ encodeURIComponent(JSON.stringify(request_urls));
+                api.ajax({
+                    url : _url,
+                    method : 'get',
+                    timeout : 0,
+                    dataType : 'json',
+                    headers : {
+                'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+                }
+                        }, function(ret, err) {
+                        if(err){
+                                popToast('获取待办事项失败，请稍候重试');
+                        }else{
+                            if(ret){
+                                if(flag_zthd){
+                                    ret.push({'business':'zthd','list':data_zthd});   
+                                }
+                                if(flag){
+                                    var kqsp_qj_list = [];
+                                    var kqsp_gc_list = [];
+                                    var data = {'time':'','time_day':''};
+                                    for(var i=0;i<ret.length;i++){
+                                        if(ret[i].business == "kqsp_qj"){
+                                            kqsp_qj_list = ret[i].data.list;
+                                        }else if(ret[i].business == "kqsp_gc"){
+                                            kqsp_gc_list = ret[i].data.list;
+                                        }
+                                    }
+                                    data = {"list":ret,"kqsp_qj_list":kqsp_qj_list,"kqsp_gc_list":kqsp_gc_list,"wdkq_qj_list":[],"wdkq_gc_list":[],"time":'','time_day':''}
+                                 }else if(flag_wdkq){
+                                    var wdkq_qj_list=0;
+                                    var wdkq_gc_list=0;
+                                    var data = {};
+                                    for(var i=0;i<ret.length;i++){
+                                        if(ret[i].business == "wdkq_qj"){
+                                            for(var j=0;j<ret[i].data.list.length;j++){
+                                                if(ret[i].data.list[j].status_id == 1){
+                                                    wdkq_qj_list++;
+                                                }
+                                            }
+                                        }else if(ret[i].business == "wdkq_gc"){
+                                            for(var j=0;j<ret[i].data.list.length;j++){
+                                                if(ret[i].data.list[j].status_id == 1){
+                                                    wdkq_gc_list++;
+                                                }
+                                            }
+                                        }
+                                    }
+                                    data = {"list":ret,"wdkq_qj_list":wdkq_qj_list,"wdkq_gc_list":wdkq_gc_list,"kqsp_qj_list":[],"kqsp_gc_list":[],"time":'','time_day':''}
+                                 }else{
+                                    data = {"list":ret,"wdkq_qj_list":[],"wdkq_gc_list":[],"kqsp_qj_list":[],"kqsp_gc_list":[],"time":'','time_day':''};
+                                 }
+                                commonGetCurrentDate(function(nowTime,nowMillisecond){
+                                    var year = nowTime.getFullYear();
+                                    var month = nowTime.getMonth()*1+1;
+                                    month = month < 10 ? '0'+month : month;
+                                    var day = nowTime.getDate();
+                                    day = day < 10 ? '0'+day : day;
+                                    data.time = year+'-'+month;
+                                    data.time_day = year+'-'+month+'-'+day;
+                                    commonAddOnceHtml('dbsx_div',"dbsx_script",data);
+                                     if(flag){
+                                        $api.css($api.byId('wdkq'),'display:none');
+                                     }else if(flag_wdkq){
+                                        $api.css($api.byId('kqsp'),'display:none');
+                                     }
+                                });
+                            }else{
+                                popToast('获取待办事项失败，请稍候重试');
+                            }
+                        }
+                        commonControlRefresh();
+                        api.hideProgress();
+                });
+		    });
+		}); 
+	}
+	
+	/*
+	 * 功能：打开请假页面
+	 * 作者：张自强
+	 * 时间：20171101
+	 */
+	function openQjOrGc(type){
+		getCrmInfoByPerson('rcbg_kqgl_kqjl',function(flag,data){
+            if(flag){
+				var pageParamJson={
+					'fromType':type,
+					'header_h':header_h
+				};
+				commonOpenWin('kaoqin_wdkq_window', 'widget://html/module/iphone/teacher/kaoqin/kaoqin_wdkq_window.html', false, false,pageParamJson);
+		}else{
+               popAlert(data);
+            }
+        });
+	}
+	
+	/*
+	 * 功能：打开通知公告详情
+	 * 作者：张自强
+	 * 时间：20171101
+	 */
+	function openContentWindow(notice_id,flag){
+		getCrmInfoByPerson('rcbg_tzgg',function(flag,data){
+			if(flag){
+				commonOpenWin('notice_content_window', 'widget://html/module/iphone/teacher/notice/notice_content_window.html', false, false, {"header_h" : header_h,"is_xxgly" : 0,"notice_id" : notice_id,"flag" : flag,"form_type":1});
+			}else{
+	           popAlert(data);
+	        }
+        });
+	}
+	
+	/*
+	 * 功能：打开通知公告
+	 * 作者：张自强
+	 * 时间：20171113
+	 */
+	function openTongZhi(){
+		getCrmInfoByPerson('rcbg_tzgg',function(flag,data){
+			if(flag){
+				api.showProgress({
+					title : '加载中',
+					text : '请稍候...',
+					modal : false
+				});
+				var pageParamJson = {
+					'header_h':header_h,
+					'form_type':1
+				}
+				commonOpenWin('notice_index_window','widget://html/module/iphone/teacher/notice/notice_index_window.html',false,false, pageParamJson);
+			}else{
+	           popAlert(data);
+	        }
+        });
+	}
+	
+	/*
+	 * 功能：打开主题活动
+	 * 作者：张自强
+	 * 时间：20180912
+	 */
+	function openZthd(){
+	   var pageParamJson = {
+                    'header_h' : header_h,
+                    'fromType':1
+                }
+                commonOpenWin('zthd_tj_window','widget://html/module/iphone/teacher/zthd/zthd_tj_window.html',false,false,pageParamJson);
+	}
+	
+	/*
+	 * 功能：打开问卷调查页面
+	 * 作者：张自强
+	 * 时间：20171101
+	 */
+	function openWjdc(){
+		getCrmInfoByPerson('rcbg_wjdc',function(flag,data){
+            if(flag){
+				var pageParamJson = {
+					'header_h' : header_h,
+					'fromType':1
+				}
+				commonOpenWin('dcwj_index_window','widget://html/module/iphone/common/dcwj/dcwj_index_window.html',false,false,pageParamJson);
+			}else{
+               popAlert(data);
+            }
+       });
+	}
+	
+	/*
+	 * 功能：打开考勤审批请假或公出页面
+	 * 作者：张自强
+	 * 时间：20171111
+	 */
+	function openkqsp(type,e){
+		getCrmInfoByPerson('rcbg_kqgl_kqjl',function(flag,data){
+            if(flag){
+				var pageParamJson={
+					'fromType':type,
+					'header_h':header_h,
+					'form_type':1
+				};
+				commonOpenWin('kaoqin_wdkq_window', 'widget://html/module/iphone/teacher/kaoqin/kaoqin_kqsp_window.html', false, false,pageParamJson);
+				e.stopPropagation();
+			}else{
+	           popAlert(data);
+	        }
+        });
+	}
+	
+	/*
+	 * 功能：打开考勤审批页面
+	 * 作者：张自强
+	 * 时间：20171114
+	 */
+	function goYyKqsp(){
+		getCrmInfoByPerson('rcbg_kqgl_kqsp',function(flag,data){
+            if(flag){
+				var pageParamJson={
+					'header_h':header_h,
+					'form_type':1
+				};
+				commonOpenWin('kaoqin_kqsp_window', 'widget://html/module/iphone/teacher/kaoqin/kaoqin_kqsp_window.html', false, false,pageParamJson);
+			}else{
+	           popAlert(data);
+	        }
+        });
+	}
+
+	/*
+	 * 功能；打开打卡统计
+	 * 作者：张自强
+	 * 时间：20180206
+	 */
+	function openDktj(){
+    	openModule({id: 3,win_name: '打卡统计',win_url:'dktj_index_window',type: 0,config_type:2,icon_css: 'dktj',code: 'rcbg_kqgl_kqtj'})
+	}
+	/*
+	 * 功能；打开打卡记录
+	 * 作者：张自强
+	 * 时间：20180206
+	 */
+	function openDkjl(){
+    	openModule({id: 4,win_name: '打卡记录',win_url:'dk_index_window',type: 0,config_type:2,icon_css: 'dkjl',code: 'rcbg_kqgl_dkjl'})
+	}
+	
+	/*
+     *author:zhaoj
+     *function:判断角色，如果存在role_id = 2，说明是学校管理员
+     *date：20160627
+     */
+    function judgeRoles(callback) {
+        var flag_role = false;
+        var rolesArray = $api.getStorage('roles');
+        for (var i = 0; i < rolesArray.length; i++) {
+            if (rolesArray[i].role_id * 1 == 63) {
+                flag_role = true;
+            }
+        }
+        callback(flag_role);
+    }
+</script>
+</html>

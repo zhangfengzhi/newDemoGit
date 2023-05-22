@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<!-- html5：在创建html时为了防止页面缩放等不兼容效果，要创建个viewport  -->
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<!-- 在IOS设备上，有时会将数字转为手机号，这里也要禁止下 -->
+		<meta name="format-detection" content="telephone=no"/>
+		<title>教师页面</title>
+		<link rel="stylesheet" type="text/css" href="../../../../../css/aui/aui.css" />
+		<link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+		<style>
+			body {
+				background: #efeff4;
+				padding: 10px 0px;
+			}
+			.zuoye-content {
+			}
+			.zuoye-content li {
+				position: relative;
+				display: block;
+				width: 100%;
+				padding: 10px 10px 7px 10px;
+				background: #ffffff;
+				border-radius: 3px;
+				margin-bottom: 10px;
+			}
+			.zuoye-content li .time {
+				height: 20px;
+				font-size: 14px;
+				color: #9F9F9F;
+			}
+			.zuoye-content li .time font {
+				font-size: 14px;
+				margin-right: 5px;
+			}
+			.zuoye-content li .name {
+				color: #686868;
+				line-height: 40px;
+			}
+			.zuoye-content li .yifang {
+				position: absolute;
+				right: 0;
+				top: 0;
+				width: 28px;
+				height: 46px;
+				background: url(../../../../../image/fun-module/iphone/fangke/visited.png) top no-repeat;
+				background-size: 28px 46px;
+			}
+			.zuoye-content li .guoqi {
+				position: absolute;
+				right: 0;
+				top: 0;
+				width: 28px;
+				height: 46px;
+				background: url(../../../../../image/fun-module/iphone/fangke/timeOut.png) top no-repeat;
+				background-size: 28px 46px;
+			}
+			.wid100 {
+				width: 100%;
+			}
+			.wid45 {
+				min-width: 45%;
+			}
+			.ellipsis {
+				white-space: nowrap;
+				overflow: hidden;
+				text-overflow: ellipsis;
+			}
+			.tijiao, .piyue, .more {
+				display: inline-block;
+				font-size: 12px;
+				color: #9F9F9F;
+			}
+			.mgr5 {
+				margin-right: 5%;
+			}
+			.mgr2 {
+				margin-right: 2%;
+			}
+			.fr {
+				float: right;
+			}
+			.fl {
+				float: left;
+			}
+		</style>
+	</head>
+	<body class="common-iphone-fangke">
+		<!--访客记录列表-->
+		<div id="fklist_div"></div>
+		<script type="text/html" id="fklist_script">
+			<div class="aui-content-padded">
+			<!--检测列表-->
+			<ul class="zuoye-content">
+			<% if(fk_list.length == 0){ %>
+			<div style="text-align:center;color:#666;"><span>您还没有访客记录</span></div>
+			<% }else{ %>
+			<%for(var i=0; i<fk_list.length; i++) {%>
+			<li class="ul-li-ca" id="<%=fk_list[i].id %>" onclick="" tapmode="presshover">
+			<div class="time wid100">
+			<font><%=fk_list[i].fk_name %></font>
+			</div>
+			<% if(fk_list[i].fk_status == 2){ %>
+			<div class="yifang"></div>
+			<% } %>
+			<% if(fk_list[i].fk_status == 1 && fk_list[i].wf_status == 0){ %>
+			<div class="guoqi"></div>
+			<% } %>
+			<div class="detail wid100">
+			
+			<div  class="wid45 fl  mgr2">
+			<% if(fk_list[i].fk_status == 1){ %>
+			<span class="tijiao" style="display: block;">邀请码：<font><%=fk_list[i].sn %></font></span>
+			<% } %>
+			<% if(fk_list[i].fk_status == 1){ %>
+			<% if(fk_list[i].wf_status == 1){ %>
+			<span class="tijiao">预约时间：<font><%=fk_list[i].reserve_date %></font></span>
+			<% } %>
+			<% if(fk_list[i].wf_status == 0){ %>
+			<span class="tijiao">预约时间：<font><%=fk_list[i].reserve_date %></font></span>
+			<% } %>
+			<% } %>
+			<% if(fk_list[i].fk_status == 2 && fk_list[i].real_date != ""){ %>
+			<span class="tijiao" style="display: block;">访问：<font><%=fk_list[i].real_date %></font></span>
+			<% } %>
+			</div>
+			<div class="wid45 fl">
+			<span class="tijiao" style="display: block;"> 访客电话：<font> <% if(fk_list[i].fk_tel == ""){ %>
+				未填
+				<% }else{ %>
+				<%=fk_list[i].fk_tel %>
+				<% } %> </font></span>
+			<!-- <span class="tijiao">人数：<font><%=fk_list[i].fk_person_count %></font></span> -->
+			</div>
+			</div>
+			<input oninput="commonRemoveExpression(this)" type="hidden" id="fk_name_<%=fk_list[i].id %>" value="<%=fk_list[i].fk_name %>"/>
+			<input oninput="commonRemoveExpression(this)" type="hidden" id="fk_tel_<%=fk_list[i].id %>" value="<%=fk_list[i].fk_tel %>"/>
+			<input oninput="commonRemoveExpression(this)" type="hidden" id="fk_sn_<%=fk_list[i].id %>" value="<%=fk_list[i].sn %>"/>
+			<!--<input oninput="commonRemoveExpression(this)" type="hidden" id="fk_num_<%=fk_list[i].id %>" value="<%=fk_list[i].fk_person_count %>"/>-->
+			<input oninput="commonRemoveExpression(this)" type="hidden" id="fk_time_<%=fk_list[i].id %>" value="<%=fk_list[i].reserve_date %>"/>
+			</li>
+			<% } %>
+			<% } %>
+			</ul>
+			</div>
+		</script>
+	</body>
+	<script type="text/javascript" src="../../../../../script/api.js" ></script>
+	<script type="text/javascript" src="../../../../../script/base_config.js" ></script>
+	<script type="text/javascript" src="../../../../../script/plug-in/template.js" ></script>
+	<!-- 长按控件 周枫 2015.08.05 -->
+	<script type="text/javascript" src="../../../../../script/hammer.min.js"></script>
+	<script type="text/javascript" src="../../../../../script/common/common.js"></script>
+	<script type="text/javascript">
+		//定义头高度
+		var header_h;
+		//总记录数
+		var totalCount = 0;
+		//总页数
+		var totalPages = 0;
+		//定义一个变量存储第一次加载返回来的总记录数
+		var totalData = 0;
+		//通知关键字
+		var keyword = '';
+		//当前页面为第一页
+		var currentPage;
+		apiready = function() {commonSetTheme({"level":5,"type":0});
+			header_h = api.pageParam.header_h;
+			currentPage = 1;
+			//获取数据
+			getFkList(currentPage, true);
+			//下拉刷新
+			refreshDataInfo();
+			//加载上拉加载数据方法
+			scrollBottomReload();
+		};
+		/**
+		 * 获取访客记录列表
+		 * 周枫
+		 * 2016.3.19
+		 */
+		function getFkList(currentPage, isReload) {
+			commonShowProgress('加载中...',false);
+			currentPage = isReload ? 1 : currentPage;
+			api.ajax({
+				url : $api.getStorage('BASE_URL_ACTION') + '/fangke/getFangKeInfoListByPersonId',
+				method : 'get',
+				dataType : 'json',
+				timeout : 30,
+				data : {
+					values : {
+						"pageNumber" : currentPage,
+						"pageSize" : BASE_PAGE_SIZE,
+						"person_id" : $api.getStorage('person_id')
+					}
+				}
+			}, function(ret, err) {
+				api.hideProgress();
+				//通知顶部下拉刷新数据加载完毕，组件会恢复到默认状态
+				commonControlRefresh();
+				if (err) {
+					popToast('对不起，获取访客记录列表信息失败');
+				} else {
+					if (ret.success) {
+						totalData = ret.totalRow;
+						totalPages = ret.totalPage;
+						if (isReload) {
+							// 重新设置为1
+							currentPage = 1;
+						}
+						var fk_list = ret.fk_list;
+						//获取现在日期并转换成毫秒数：
+						var nDate = new Date();
+						//取当前时间月
+						var n_date_m = nDate.getMonth();
+						n_date_m = parseInt(n_date_m + 1);
+						n_date_m = n_date_m + '';
+						if (n_date_m.length == 1) {
+							n_date_m = '0' + n_date_m
+						}
+						//取当前时间日
+						var n_date_d = nDate.getDate();
+						n_date_d = parseInt(n_date_d);
+						n_date_d = n_date_d + '';
+						if (n_date_d.length == 1) {
+							n_date_d = '0' + n_date_d
+						}
+						var n_date = nDate.getFullYear() + '\/' + n_date_m + '\/' + n_date_d;
+						var nDate = Date.parse(n_date);
+						for (var i = 0; i < getJsonObjLength(fk_list); i++) {
+							//判断是否访问，1：未访问 2：已访问
+							var fk_status = fk_list[i].fk_status;
+							if (fk_status == 1) {
+								////获取预约日期并转换成毫秒数：
+								var fTime = fk_list[i].reserve_date;
+								var f_Time = fTime.substring(0, 4) + '-' + fTime.substring(4, 6) + '-' + fTime.substring(6, 8);
+								fTime = fTime.substring(0, 4) + '\/' + fTime.substring(4, 6) + '\/' + fTime.substring(6, 8);
+								var fTimeDate = fTime.replace(/-/g, '\/');
+								var fDate = Date.parse(new Date(fTimeDate));
+								if (fDate < nDate) {
+									//超期
+									fk_list[i]["wf_status"] = 0;
+								} else {
+									//正常
+									fk_list[i]["wf_status"] = 1;
+								}
+								fk_list[i]["reserve_date"] = f_Time;
+							} else {
+								var r_time = fk_list[i].real_date;
+								if (r_time != '') {
+									r_time = r_time.substring(0, 4) + '-' + r_time.substring(4, 6) + '-' + r_time.substring(6, 8) + ' ' + r_time.substring(8, 10) + ':' + r_time.substring(10, 12);
+								}
+								fk_list[i]["real_date"] = r_time;
+							}
+						}
+						var html_type = template.render('fklist_script', ret);
+						if (currentPage == 1) {
+							document.getElementById('fklist_div').innerHTML = html_type;
+						} else {
+							$api.append($api.byId('fklist_div'), html_type);
+						}
+						var fk_info = $api.domAll('.ul-li-ca');
+						for (var i = 0; i < fk_info.length; i++) {
+							(function(i) {
+								var id = $api.attr(fk_info[i], "id");
+								var index = i;
+								$api.addEvt($api.byId(id), 'click', function() {
+									var fk_tel = fk_list[index].fk_tel;
+									//获取当前点击条目的电话
+									if (fk_tel == '') {
+										api.confirm({
+											title : "提示",
+											msg : '访问备注：' + fk_list[index].memo,
+											buttons : ["复制信息", "关闭"]
+										}, function(ret, err) {
+											var fk_name_val = $api.val($api.byId('fk_name_' + id));
+											var fk_tel_val = $api.val($api.byId('fk_tel_' + id));
+//											var fk_num_val = $api.val($api.byId('fk_num_' + id));
+											var fk_sn_val = $api.val($api.byId('fk_sn_' + id));
+											var fk_time_val = $api.val($api.byId('fk_time_' + id));
+											var msg_con = fk_name_val + '您好，本次会面时间定为' + fk_time_val + ',可凭邀请码' + fk_sn_val + '到门卫处登记进入。';
+											//定义图片来源类型
+											var sourceType;
+											if (1 == ret.buttonIndex) {/* 打开相机*/
+												copyConMessage(msg_con);
+											} else {
+												return;
+											}
+										});
+									} else {
+										api.confirm({
+											title : "提示",
+											msg : '访问备注：' + fk_list[index].memo,
+											buttons : ["复制信息", "短信发送", "关闭"]
+										}, function(ret, err) {
+											var fk_name_val = $api.val($api.byId('fk_name_' + id));
+											var fk_tel_val = $api.val($api.byId('fk_tel_' + id));
+//											var fk_num_val = $api.val($api.byId('fk_num_' + id));
+											var fk_sn_val = $api.val($api.byId('fk_sn_' + id));
+											var fk_time_val = $api.val($api.byId('fk_time_' + id));
+											var msg_con = fk_name_val + '您好，本次会面时间定为' + fk_time_val + ',可凭邀请码' + fk_sn_val + '到门卫处登记进入。';
+											//定义图片来源类型
+											var sourceType;
+											if (1 == ret.buttonIndex) {/* 打开相机*/
+												copyConMessage(msg_con);
+											} else if (2 == ret.buttonIndex) {
+												openSendMsg(fk_tel_val, msg_con);
+											} else {
+												return;
+											}
+										});
+									}
+									
+								});
+							})(i);
+						}
+					} else {
+						popToast('对不起，获取访客记录列表信息失败');
+					}
+				}
+			});
+		}
+
+		/**
+		 * 下拉刷新
+		 * 周枫
+		 * 2016.3.19
+		 */
+		function refreshDataInfo() {
+			//绑定下拉刷新历史会话事件
+			api.setRefreshHeaderInfo({
+				visible : true,
+				loadingImg : 'widget://image/local_icon_refresh.png',
+				bgColor : '#F5F5F5',
+				textColor : '#8E8E8E',
+				textDown : '下拉加载更多...',
+				textUp : '松开加载...',
+				showTime : true
+			}, function(ret, err) {
+				//从服务器加载数据，完成后调用commonControlRefresh()方法恢复组件到默认状态
+				getFkList(currentPage, true);
+			});
+		}
+
+		/**
+		 * 上拉刷新页面数据
+		 * 周枫
+		 * 2015.11.24
+		 */
+		function scrollBottomReload() {
+			//下移到底部：
+			api.addEventListener({
+				name : 'scrolltobottom',
+				extra : {
+					threshold : 100 //设置距离底部多少距离时触发，默认值为0，数字类型
+				}
+			}, function(ret, err) {
+				if ((currentPage + 1) <= totalPages) {
+					getFkList(currentPage, true);
+					currentPage = currentPage + 1;
+					// 页码+1
+				} else {
+					popToast('已加载全部数据');
+				}
+			});
+		}
+
+		/**
+		 * 复制内容
+		 * 周枫
+		 * 2016.3.18
+		 */
+		function copyConMessage(mes_con) {
+			var clip = api.require('clipBoard');
+			clip.set({
+				value : mes_con
+			}, function(ret, err) {
+				if (ret.status) {
+					popToast('复制成功');
+				} else {
+					popToast('复制失败');
+				}
+			});
+		}
+
+		/**
+		 * 打开发送信息
+		 * 周枫
+		 * 2016.3.18
+		 */
+		function openSendMsg(tel_num, tel_msg) {
+			var tel_nums = [];
+			tel_nums[0] = tel_num.toString();
+			api.sms({
+				numbers : tel_nums,
+				text : tel_msg
+			}, function(ret, err) {
+			});
+		}
+	</script>
+</html>

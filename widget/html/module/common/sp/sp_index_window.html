@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+        <title>办公</title>
+        <link rel="stylesheet" type="text/css" href="../../../../css/aui/aui.css" />
+        <link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+        <style>
+            body {
+            }
+            .close {
+                position: absolute;
+                margin: 1px 10px 0px 80px;
+                font-size: 15px;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="wrap">
+            <header class="aui-bar aui-bar-nav aui-bar-primary" id="aui-header">
+                <div id="cloud" class="topbar activebar">
+                    <!--<div id="back" class="back" onclick="back();" tapmode="">
+                        <i class="aui-iconfont aui-icon-left"></i>返回
+                    </div>
+                    <div class="mTitle" id="mTitle">
+                        公文管理
+                    </div>
+                    <div class="win-menu aui-hide" id="menu">
+                        <a class="aui-iconfont aui-icon-menu aui-pull-right" onclick="openMenu();"></a>
+                    </div>-->
+                </div>
+            </header>
+            <div  class="aui-content aui-content-padded" id="message-content">
+                <p class="aui-text-center history-date"></p>
+            </div>
+        </div>
+        <script type="text/javascript" src="../../../../script/api.js"></script>
+        <script type="text/javascript" src="../../../../script/base_config.js"></script>
+        <script type="text/javascript" src="../../../../script/common/common.js"></script>
+        <script type="text/javascript" src="../../../../script/assembly/openResource.js" ></script>
+		<script type="text/javascript" src="../../../../script/assembly/UIAlbumBrowser2.js"></script>
+		<script type="text/javascript" src="../../../../script/assembly/getPicture.js"></script>
+		<script type="text/javascript" src="../../../../script/module/common/fileUpload.js" ></script>
+        <script type="text/javascript" src="../../../../script/plug-in/base64.js" ></script>
+    </body>
+    <script type="text/javascript">
+        //顶部header高度
+        var header_h;
+        var w_h;
+        var menuButtons = [
+                {
+                    name:"提交",
+                    id:0
+                },
+                {
+                    name:"保存",
+                    id:1
+                },
+                {
+                    name:"退回",
+                    id:2
+                },
+                {
+                    name:"抄送",
+                    id:3
+                },
+                {
+                    name:"发送",
+                    id:4
+                },
+                {
+                    name:"结束",
+                    id:5
+                },
+            ];
+        var menuButtons_now = [];
+        apiready = function() {
+            //定位header位置，留出上面电池等空隙，苹果需要
+            commonSetTheme({"level":4,"type":0});
+            var header = $api.byId('aui-header');
+            $api.fixStatusBar(header);
+            header_h = 0;
+            w_h = api.winHeight - header_h;
+            menuButtons_now = menuButtons;
+            var statusBarHeight = parseInt($api.cssVal(header,"padding-top"));
+            var url 
+            var pageParam = 'person_id=' + $api.getStorage('person_id') + '&identity_id=' + $api.getStorage('identity') + '&isShowInApp=true' + '&useBaseInterface=0&statusBarHeight=' + statusBarHeight + '&token=' + $api.getStorage("token_ypt")
+            var address = '?'
+            switch(api.pageParam.url_type){
+            	case 0:
+            	
+            	break;
+            	case 1:
+            		address = 'By?'
+            	break;
+            }
+            switch(api.pageParam.from_type){
+                case 1:
+                	url = $api.getStorage('BASE_URL_ACTION')  +'/pro_integration/reactProject/weChatApp/index.html#/docManagement'
+                    commonSetWindowName('公文管理')
+                    break;
+                case 2:
+                	url = $api.getStorage('BASE_URL_ACTION') +'/pro_integration/reactProject/weChatApp/index.html#/myDoc'
+                    commonSetWindowName('我的公文')
+                    break;
+                case 3:
+                	url = $api.getStorage('BASE_URL_ACTION') +'/pro_integration/reactProject/weChatApp/index.html#/docSearch'
+                    commonSetWindowName('公文查询')
+                    break;
+            }
+            commonBackForAndroid();
+            goBgFrame(url+ address + pageParam);
+            //          openBgReceiveNoticeListFrame();
+        };
+
+        function goBgFrame(url) {
+//      console.log(BASE_URL_ACTION + '/pro_integration/reactProject/dailyOfficeApp/index.html?person_id=' + $api.getStorage('person_id') + '&identity=' + $api.getStorage('identity') + '&org_id=' + $api.getStorage('org_id') + '&bureau_id=' + $api.getStorage('bureau_id') + '&header_h=' + header_h + '&type='+api.pageParam.from_type + '&person_name=' + $api.getStorage('person_name') + '&token=' + $api.getStorage("token_ypt") + '&useBaseInterface=0' + "&showType="+api.pageParam.type+"&OfficeData="+api.pageParam.data)
+            console.log(url)
+            api.openFrame({
+                name : 'sp_index_frame',
+                scrollToTop : true,
+                allowEdit : true,
+                url : url,
+                showProgress : true,
+                rect : {
+                    x : 0,
+                    y : header_h,
+                    w : 'auto',
+                    h : api.winHeight - header_h,
+                },
+                pageParam : {
+                    header_h : header_h
+                },
+                vScrollBarEnabled : true,
+                hScrollBarEnabled : false,
+                //页面是否弹动 为了下拉刷新使用
+                bounces : false
+            });
+//          setTimeout(function(){
+//              api.execScript({
+//                  name : api.winName,
+//	                frameName:'bg_index_frame',
+//	                script: "window.api.execScript({name : 'sp_index_window',script: 'showOrHideRrtMenu(0)'});window.api.execScript({name : 'sp_index_window',script: 'changeMenuList([])'});"
+//              });
+//          },1000);
+        }
+
+        /**
+         * 返回应用页面
+         * 周枫
+         * 2015.10.11
+         */
+        function back() {
+            console.log(backType)
+			switch (backType){
+				case "win":
+					api.execScript({
+		                name : api.winName,
+		                frameName : "sp_index_frame",
+			            script: 'onReturnBack();'
+		            });
+				break;
+				case "voice":
+					commonCloseFrame('common_playaudio_frame');
+			  		reBackType('win');
+			  	case "txt":
+			  		common_openDocument.closeTxt();
+			  		reBackType('win');
+				break;
+			}
+        }
+        
+        function closeWin(){
+            api.closeWin();
+        }
+
+        /**
+         * 安卓点击返回的时候
+         * 周枫
+         * 2015.10.14
+         */
+        function backForAndroid() {
+            api.addEventListener({
+                name : "keyback"
+            }, function(ret, err) {
+                back();
+            });
+        }
+        
+        /*
+         * 功能：打开menu页
+         * 作者：张自强
+         * 时间：20171020
+         */
+        function openMenu(){
+            var header_h = api.pageParam.header_h;
+            api.openFrame({
+                name: 'sp_menu_frame',
+                url: 'sp_menu_frame.html',
+                bounces: false,
+                rect: {
+                    x: 0,
+                    y: 0,
+                    w: 'auto',
+                    h: 'auto'
+                },
+                bgColor : 'rgba(0,0,0,0)',
+                pageParam : {
+                    'header_h' : header_h,
+                    'menuButtons':menuButtons_now
+                },
+                reload: true
+            });  
+        }
+        
+        /*
+         * 功能：显示或隐藏menu
+         * 作者：张自强
+         * 时间：20190424
+         * */
+        function showOrHideRrtMenu(type){
+            commonAddOrRemoveHideCss('menu',type)
+        }
+        
+        /*
+         * 功能：修改显示列表的参数
+         * 作者：张自强
+         * 时间：20190424
+         * */
+        function changeMenuList(array){
+            var array_now = [];
+            for(var i = 0; i < array.length; i++){
+                for(var j = 0; j < menuButtons.length; j++){
+                    if(array[i]*1 == menuButtons[j].id){
+                        array_now.push(menuButtons[j]);
+                    }
+                }
+            }
+            menuButtons_now = array_now;
+        }
+        
+        /*
+        *author:zhaoj
+        *function:打开拍照
+        *date：20170914
+        */
+        function showPicture(param_json){
+        console.log("receiveFieldInfo('"+param_json.resource_format+"','"+param_json.file_id+"','"+param_json.m3u8_status+"','"+param_json.resource_id_int+"','"+param_json.resource_title+"','"+param_json.resource_type_name+"');")
+            api.execScript({
+                name : api.winName,
+                frameName:'sp_index_frame',
+                script: "receiveFieldInfo('"+param_json.resource_format+"','"+param_json.file_id+"','"+param_json.m3u8_status+"','"+param_json.resource_id_int+"','"+param_json.resource_title+"','"+param_json.resource_type_name+"');"
+            });
+        }
+    </script>
+</html>

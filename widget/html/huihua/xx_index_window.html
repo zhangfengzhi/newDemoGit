@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<!-- html5：在创建html时为了防止页面缩放等不兼容效果，要创建个viewport  -->
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<!-- 在IOS设备上，有时会将数字转为手机号，这里也要禁止下 -->
+		<meta name="format-detection" content="telephone=no"/>
+		<title>消息列表</title>
+		<link rel="stylesheet" type="text/css" href="../../css/aui/aui.css" />
+		<link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+		<style>
+			.history-date {
+				font-size: 12px;
+			}
+			#message-content {
+				overflow-y: auto;
+			}
+			#wrap {
+				height: 100%;
+				display: -webkit-box;
+				display: -webkit-flex;
+				display: flex;
+				-webkit-box-orient: vertical;
+				-webkit-flex-flow: column;
+				flex-flow: column;
+			}
+			.topbar {
+				background: #f2f2f2;
+				height: 45px;
+				border-bottom: 1px solid #DDDFE3;
+				line-height: 45px;
+				text-align: center;
+				display: none;
+				color: #323237;
+				position:relative;
+			}
+			.activebar {
+				display: block;
+			}
+			.menu {
+				position: absolute;
+				right:20px;
+				top: 0;
+				/*padding: 1px 2000px 0px 10px;*/
+				/*margin-right: 1000px;*/
+				/*float: right !important;*/
+				height: 29px;
+				font-size: 15px;
+			}
+			/*.mTitle {
+			 color: #FFFFFF;
+			 position: fixed;
+			 width: 40%;
+			 margin-left:30%;
+			 font-size: 17px;
+			 text-align: center;
+			 margin-top: 13px;
+			 }*/
+		</style>
+	</head>
+	<body class="huihua-commont">
+		<div id="wrap">
+			<header>
+				<div id="cloud" class="topbar activebar">
+					<div id="back" class="back" onclick="back()" tapmode="">
+						<i class="aui-iconfont aui-icon-left"></i>会话
+					</div>
+					<div class="mTitle" id="mTitle">
+						消息
+					</div>
+					<div id="menu" class="menu" onclick="menu()" tapmode="">
+						<i class="aui-iconfont aui-icon-add"></i>
+					</div>
+				</div>
+			</header>
+		</div>
+		<script type="text/javascript" src="../../script/api.js"></script>
+		<script type="text/javascript" src="../../script/plug-in/template.js"></script>
+		<!-- 长按控件 周枫 2015.08.05 -->
+		<!--<script type="text/javascript" src="../../script/hammer.min.js"></script>-->
+		<script type="text/javascript" src="../../script/base_config.js"></script>
+		<script type="text/javascript" src="../../script/huihua/xx_index_window.js"></script>
+	</body>
+</html>

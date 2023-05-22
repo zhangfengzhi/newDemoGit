@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<!-- html5：在创建html时为了防止页面缩放等不兼容效果，要创建个viewport  -->
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<!-- 在IOS设备上，有时会将数字转为手机号，这里也要禁止下 -->
+		<meta name="format-detection" content="telephone=no"/>
+		<title>学校管理员</title>
+		<link rel="stylesheet" type="text/css" href="../../../../../css/aui/aui.css" />
+		<link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+		<style>
+			* {
+				margin: 0;
+				padding: 0;
+			}
+			img {
+				border: 0;
+			}
+			body {
+				background: #fff;
+				font-size: 12px;
+				font-family: "微软雅黑";
+				color: #000;
+			}
+			.body_main {
+				width: 100%;
+				height: 100%;
+				background: #1bbc9b;
+				margin-left: auto;
+				margin-right: auto;
+			}
+			.head {
+				font-size: 30px;
+				height: 70px;
+				line-height: 70px;
+				color: #fff;
+			}
+			.head a {
+				float: left;
+				color: #fff;
+				text-decoration: none;
+				margin-left: 25px;
+			}
+			.head span {
+				display: block;
+				text-align: center;
+				width: 88%;
+				text-align: center;
+			}
+			.top {
+				height: 42%;
+				background: #ffa800;
+				text-align: center;
+				/*line-height: 495px;*/
+			}
+			.top > table{
+				margin-left: auto;
+				margin-right: auto;
+			}
+			.top img {
+				width: 80%;
+				display: inline;
+			}
+			.tea_stu {
+				height: 50%;
+			}
+			.tea_stu a {
+				display: block;
+				width: 80%;
+				height: 66px;
+				line-height: 62px;
+				text-align: center;
+				background: none;
+				border: 2px solid #fff;
+				font-size: 30px;
+				color: #fff;
+				text-decoration: none;
+				border-radius: 40px;
+			}
+			.tea_stu a:hover, .tea_stu a.selected {
+				background: #ffa800;
+			}
+			.presshover {
+				background-color: #FAFAFA;
+			}
+		</style>
+	</head>
+	<body class="common-iphone-notice">
+		<div class="body_main">
+			<div class="top">
+				<table height="100%">
+					<tr>
+						<td valign="middle" align="center"><img src="../../../../../image/fun-module/iphone/notice/which.jpg" /></td>
+					</tr>
+				</table>
+			</div>
+			<div class="tea_stu">
+				<table width="100%" height="100%">
+					<tr>
+						<td valign="middle" align="center"><a href="javascript:openFkSecFrame('fangke_jsindex_window',1);" id="fangke_jsindex_ida" style="margin-bottom:30px;">查看发布通知</a><a href="javascript:openFkSecFrame('fangke_mwindex_window',0);" id="fangke_mwindex_ida" >查看接收通知</a></td>
+					</tr>
+				</table>
+			</div>
+		</div>
+	</body>
+	<script type="text/javascript" src="../../../../../script/api.js" ></script>
+	<script type="text/javascript" src="../../../../../script/base_config.js" ></script>
+	<script type="text/javascript" src="../../../../../script/common/common.js"></script>
+	<script type="text/javascript">
+		var header_h;
+		apiready = function() {
+			commonSetTheme({"level":5,"type":0});
+			header_h = api.pageParam.header_h;
+			$api.getStorage('name');
+		};
+		function openFkSecFrame(win_name, is_xxgly) {
+			var fangke_jsindex_ida = $api.dom('#fangke_jsindex_ida');
+			var fangke_mwindex_ida = $api.dom('#fangke_mwindex_ida');
+			$api.removeCls(fangke_mwindex_ida, 'selected');
+			$api.removeCls(fangke_jsindex_ida, 'selected');
+			if (win_name == 'fangke_jsindex_window') {
+				$api.addCls(fangke_jsindex_ida, 'selected');
+			} else {
+				$api.addCls(fangke_mwindex_ida, 'selected');
+			}
+			commonExecScript('notice_index_window','','addShow(' + is_xxgly + ');',0);
+			commonExecScript('notice_index_window','','reBackType("index");',0);
+			openNoticeIndexFrame(is_xxgly);
+		}
+
+		/*
+		 *author:zhaoj
+		 *function:打开通知列表frame页面
+		 *date：20160625
+		 */
+		function openNoticeIndexFrame(is_xxgly) {
+			var header_h = api.pageParam.header_h;
+			var pageParamJson={header_h : header_h,is_xxgly : is_xxgly};//打开frame页面所需参数
+			commonOpenFrame('notice_index_frame', 'notice_index_frame.html',header_h+45, false, false,"#ffffff",pageParamJson);	//打开index页面
+			api.setFrameAttr({// 隐藏内容层
+				name : 'notice_select_frame',
+				hidden : true,
+			});
+		}
+	</script>
+</html>

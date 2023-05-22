@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+		<title>主题活动</title>
+		<link rel="stylesheet" type="text/css" href="../../../../../css/aui/aui.css"/>
+		<link rel="stylesheet" type="text/css" href="../../../../../css/module/ipad/left-right-layout.css"/>
+		<link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+		<style>
+			.left-layout-body .left-tag .tag-item{padding-top:11px;}
+			.qbhd-icon{background:url(../../../../../image/fun-module/ipad/zthd/qbhd.png) center center no-repeat;background-size:36px auto;}
+			.hrjx-icon{background:url(../../../../../image/fun-module/ipad/zthd/hrjx.png) center center no-repeat;background-size:38px auto;}
+			.jjks-icon{background:url(../../../../../image/fun-module/ipad/zthd/jjks.png) center center no-repeat;background-size:40px auto;}
+			.yjjs-icon{background:url(../../../../../image/fun-module/ipad/zthd/yjjs.png) center center no-repeat;background-size:53px auto;}
+			.left-layout-body .left-tag .tag-item .name{padding-top:3px;}
+			.left-layout-body .left-tag .active .name{color:#fff !important;}
+			.left-layout-body .active .qbhd-icon{background:url(../../../../../image/fun-module/ipad/zthd/qbhd-active.png) center center no-repeat;background-size:36px auto;}
+			.left-layout-body .active .hrjx-icon{background:url(../../../../../image/fun-module/ipad/zthd/hrjx-active.png) center center no-repeat;background-size:38px auto;}
+			.left-layout-body .active .jjks-icon{background:url(../../../../../image/fun-module/ipad/zthd/jjks-active.png) center center no-repeat;background-size:40px auto;}
+			.left-layout-body .active .yjjs-icon{background:url(../../../../../image/fun-module/ipad/zthd/yjjs-active.png) center center no-repeat;background-size:53px auto;}
+			.tongjibtn{background:url(../../../../../image/fun-module/ipad/zthd/tongji.png) center center no-repeat;background-size:20px 20px;}
+		</style>
+	</head>
+	<body id="j_body" class="left-layout-body common-ipad-zthd-tea">
+		<div id="wrap">
+			<header class="aui-bar aui-bar-nav aui-bar-primary" id="aui-header">
+				<div id="cloud" class="topbar activebar">
+					<div id="back" class="back" onclick="back();" tapmode="">
+						<i class="aui-iconfont aui-icon-left"></i>返回
+					</div>
+					<div  class="mTitle" id="mTitle">
+						主题活动
+					</div>
+					<div class="win-menu">
+						<a id="j_add" class="aui-iconfont aui-icon-add btn-new"  onclick="openAddFrame();"></a>
+						<a id="tongji" class="aui-iconfont btn-new tongjibtn aui-hide"  onclick="openTj();">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a>
+					</div>
+				</div>
+			</header>
+		</div>
+		<!--左侧导航-->
+		<div id="j_left_tag" class="left-tag">
+			<div class="tag-item active" onclick="changeTagItem(this,1);">
+				<div class="icon qbhd-icon"></div>
+				<div id="j_class_name" class="name">全部活动</div>
+				<div class="parting-line">
+					<div class="left-rectangle fl"></div>
+					<div class="right-rectangle fr"></div>
+					<hr />
+				</div>
+			</div>
+			<div id="j_school" class="tag-item" onclick="changeTagItem(this,3);">
+				<div class="icon hrjx-icon"></div>
+				<div class="name">火热进行</div>
+				<div class="parting-line">
+					<div class="left-rectangle fl"></div>
+					<div class="right-rectangle fr"></div>
+					<hr />
+				</div>
+			</div>
+			<div id="j_school" class="tag-item" onclick="changeTagItem(this,2);">
+				<div class="icon jjks-icon"></div>
+				<div class="name">即将开始</div>
+				<div class="parting-line">
+					<div class="left-rectangle fl"></div>
+					<div class="right-rectangle fr"></div>
+					<hr />
+				</div>
+			</div>
+			<div id="j_school" class="tag-item" onclick="changeTagItem(this,4);">
+				<div class="icon yjjs-icon"></div>
+				<div class="name">已经结束</div>
+				<div class="parting-line">
+					<div class="left-rectangle fl"></div>
+					<div class="right-rectangle fr"></div>
+					<hr />
+				</div>
+			</div>
+		</div>
+	</body>
+	<script type="text/javascript" src="../../../../../script/api.js"></script>
+	<script type="text/javascript" src="../../../../../script/base_config.js" ></script>
+	<script type="text/javascript" src="../../../../../script/common/common.js"></script>
+	<script type="text/javascript" src="../../../../../script/plug-in/template.js" ></script>
+	<script type="text/javascript" src="../../../../../script/assembly/tongjiData.js"></script>
+	<script type="text/javascript">
+		var back_type ="index";//返回参数
+		apiready = function(){
+			commonSetTheme({"level":5,"type":0});
+			commonIosAuiHeader();//定位header位置，留出上面电池等空隙，苹果需要
+			$api.css($api.byId('j_left_tag'),'top:'+api.pageParam.header_h+'px;max-height:'+(api.winHeight*1-api.pageParam.header_h*1)+'px;height:'+(api.winHeight*1-api.pageParam.header_h*1)+'px;');//设置左侧导航的样式
+			commonJudgeRoles(function(type){
+			  if(type*1 == 5){
+			     commonAddOrRemoveHideCss('tongji',1);
+			  }
+			});
+			openIndexFrame();
+			commonBackForAndroid();//安卓关闭
+			commonOpenTjData($api.getStorage("identity")+'_'+api.winName);
+		};
+		/*
+		*author:zhaoj
+		*function:返回页面
+		*date：20161220
+		*/
+		function back() {
+			api.hideProgress();
+			switch(back_type) {
+				case 'index':
+				  	commonCloseTjData($api.getStorage("identity")+'_'+api.winName);
+				  	commonExecScript('zthdIpad_tj_window','zthdIpad_tj_frame','initData(1)',1);
+					api.closeWin();
+					break;
+				case 'add':
+				    
+				  	commonCloseFrame('zthdIpad_add_frame');
+				  	reBackType('index');
+					break;
+				case 'open_picture':
+				  	
+				  	reBackType('add');
+					break;
+				case 'imageClip':
+				  	commonCloseImageClipFrame();
+				  	reBackType('add');
+					break;
+				case 'cydx':
+					commonCloseFrame('zthdIpad_cydx_frame');
+				  	reBackType('add');
+					break;
+			}
+		}
+		/**
+		 * 重置从哪个页面退出
+		 * 周枫
+		 * 2015.12.17
+		 */
+		function reBackType(type) {
+			switch(type) {
+				//如果列表页面退出
+				case 'index':
+				    commonAddOrRemoveHideCss('j_add',1);
+					commonSetWindowName('主题活动');
+					back_type = 'index';
+					break;
+				//如果添加页面退出
+				case 'add':
+				    commonAddOrRemoveHideCss('j_add',0);
+					commonSetWindowName('创建活动');
+					back_type = 'add';
+					break;
+				//如果图片页面退出
+				case 'open_picture':
+					back_type = 'open_picture';
+					break;
+				//如果图片裁剪退出
+				case 'imageClip':
+					back_type = 'imageClip';
+					break;
+				//参与对象页面
+				case 'cydx':
+					back_type = 'cydx';
+					break;
+			}
+		}
+		/*
+		*author:zhaoj
+		*function:打开添加页面
+		*date：20170912
+		*/
+		function openAddFrame(){
+			reBackType('add');
+			var header_h = api.pageParam.header_h;//顶部高度
+			pageParamJson={"header_h":header_h};//打开frame页面json数据
+			//打开frame页面
+			commonOpenFrame("zthdIpad_add_frame","zthdIpad_add_frame.html",header_h,false,false,"rgba(0,0,0,0)",pageParamJson);
+		}
+		/*
+		*author:zhaoj
+		*function:打开列表页面
+		*date：20170912
+		*/
+		function openIndexFrame(){
+			var header_h = api.pageParam.header_h;//顶部高度
+			var frame_w = Math.floor(api.winWidth);
+			var frame_x = 0;
+			if(frame_w <= 1024){
+				frame_w=frame_w-150;
+				frame_x = 150;
+			}else{
+				frame_w=frame_w-180;
+				frame_x = 180;
+			}
+			pageParamJson={"header_h":header_h,'w':frame_w,"x":frame_x,"fromType":api.pageParam.fromType,"start_time":api.pageParam.start_time,"end_time":api.pageParam.end_time,"person_now":api.pageParam.person_now,"person_now_name":api.pageParam.person_now_name,'hdNum':api.pageParam.hdNum};//打开frame页面json数据
+			//打开frame页面
+			commonOpenFrame("zthdIpad_tj_index_frame","zthdIpad_tj_index_frame.html",header_h,false,false,"rgba(0,0,0,0)",pageParamJson);
+		}
+		/*
+		*author:zhaoj
+		*function:切换左侧导航数据
+		*date：201701019
+		*/
+		function changeTagItem(self,type){
+			commonExecScript(api.winName,'zthdIpad_tj_index_frame','changeTagItem('+type+');',1);
+			$api.removeCls($api.dom($api.byId('j_left_tag'), '.active'), 'active');
+			$api.addCls(self, 'active');
+		}
+		
+		/*
+		 * 功能：打开校级统计页面
+		 * 作者：张自强
+		 * 时间：20181227
+		 */
+		function openTj(){
+		   var pageParamJson = {'header_h':api.pageParam.header_h};
+		   commonOpenWin('zthdIpad_tj_window','zthdIpad_tj_window.html',false,true,pageParamJson);
+		}
+	</script>
+</html>

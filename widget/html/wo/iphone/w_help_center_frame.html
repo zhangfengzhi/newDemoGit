@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<!-- html5：在创建html时为了防止页面缩放等不兼容效果，要创建个viewport  -->
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<!-- 在IOS设备上，有时会将数字转为手机号，这里也要禁止下 -->
+		<meta name="format-detection" content="telephone=no"/>
+		<title>帮助中心frame</title>
+		<link rel="stylesheet" type="text/css" href="../../../css/aui/aui.css" />
+		<link rel="stylesheet" type="text/css" href="../../../css/aui/aui-flex.css" />
+		<link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+		<style>
+		.show{display:inline-block;}
+		.hide{display:none;}
+		.ask{color:#696969;width:100%;color:#696969; padding:13px 0 12px 4px;}
+		.answer{padding:0 8px 5px 8px;}
+		.answer dl dt{line-height:22px;width:100%;/*color:#868686;*/}
+		.answer dl dd{padding-left:10px;line-height:22px;color:#868686;margin:5px 0;font-size:14px;}
+		.aui-arrow-right:after {font-family: Muiicons;font-size: inherit;color: #bbbbbb;text-decoration: none;display: 		inline-block;-webkit-transform: translateY(-50%);transform: translateY(-50%);-webkit-font-smoothing: antialiased;
+		line-height: 35px;
+		}		
+		.aui-arrow-right:after {font-family: "iconfont" !important;right: 15px;}
+		.aui-icon-fold:before,.aui-icon-unfold:before{content: "";}
+		.aui-icon-fold:after {content: "\e654";}
+		.aui-icon-unfold:after {content: "\e61d";}
+		.aui-content{width:100%;}
+		.aui-content ul li{position:relative;}
+		.borderb{border-bottom:1px solid #ccc;}
+	    .demo-box {overflow-y: auto;-webkit-overflow-scrolling: touch;}
+	    .demo-box::-webkit-scrollbar {width: 0px;height: 0px;visibility: hidden;}
+	    .aui-content,.aui-flex-col,.aui-flex-item-3,.aui-flex-item-9,.demo-box{height:100%;margin-bottom: 0 !important;}
+	    .aui-list-view-li{padding:12px 0; text-align:center;margin-bottom:1px;/*border-bottom:1px solid #ccc;*/}
+	    .aui-border-r{border-right:1px solid #CCCCCC !important;}
+	    .aui-border-t{border-top:1px solid #CCCCCC !important;}
+	    .help_info_list{display:none;}
+	    .aui-list-view{margin-bottom: 0 !important;}
+	    .red{color:#f00;}
+		</style>
+	</head>
+	<body class="w-iphone-common">
+	    <div class="aui-content">
+	        <div class="aui-flex-col">
+	        	<div class="aui-content" id="help_info_div"></div>
+					<script type="text/html" id="help_info_script">
+						<% if(help_info.length != 0){ %>
+				            <div class="aui-flex-item-3">
+				                <ul class="demo-box  aui-border-r aui-border-t">
+				                	<% for(var i=0;i<help_info.length;i++){ %>
+				                		<% if(i==0){ %>
+				                			<li class="aui-list-view-li red" id="slide_nav<%=i%>" onclick="helpInfoListShow(<%=i%>,'slide_nav<%=i%>')"><%=help_info[i].help_title%></li>
+				                		<% }else{ %>
+				                			<li class="aui-list-view-li" id="slide_nav<%=i%>" onclick="helpInfoListShow(<%=i%>,'slide_nav<%=i%>')"><%=help_info[i].help_title%></li>
+				                		<% } %>
+				                	<% } %>
+				                </ul>
+				            </div>
+				            <div class="aui-flex-item-9">
+				                <div class="demo-box">
+									<ul class="aui-list-view">
+										<% for(var i=0;i<1;i++){ %>
+											<% for(var j=0;j<help_info[i].help_ans_length;j++){ %>
+												<li data-win="list_arrow" tapmode="presshover" class="help_info_list help_info_list<%=i%>" style="display: block;"> 
+													<div class="ask aui-arrow-right aui-icon-fold" id="ask<%=i%><%=j%>" onclick="toggleShowAns(this.id,'<%=i%><%=j%>')">
+														<%=help_info[i].help_info_list[j].help_que%>?
+													</div>
+												</li>
+												<li class="borderb help_info_list help_info_list<%=i%>"  style="display: block;">
+													<div class="answer hide" id="answer<%=i%><%=j%>">
+											          <dl>
+											            <dt>功能描述</dt>
+											            <dd><%=help_info[i].help_info_list[j].help_ans_gn_describe%></dd>
+											          </dl>
+											          <dl>
+											            <dt>操作描述</dt>
+											            <dd><%=#help_info[i].help_info_list[j].help_ans_cz_describe%></dd>
+											          </dl>
+											        </div>
+												</li>
+											<% } %>
+										<% } %>
+										<% for(var i=1;i<help_info.length;i++){ %>
+											<% for(var j=0;j<help_info[i].help_ans_length;j++){ %>
+												<li data-win="list_arrow" tapmode="presshover" class="help_info_list help_info_list<%=i%>"> 
+													<div class="ask aui-arrow-right aui-icon-fold" id="ask<%=i%><%=j%>" onclick="toggleShowAns(this.id,'<%=i%><%=j%>')">
+														<%=help_info[i].help_info_list[j].help_que%>?
+													</div>
+												</li>
+												<li class="borderb help_info_list help_info_list<%=i%>">
+													<div class="answer hide" id="answer<%=i%><%=j%>">
+											          <dl>
+											            <dt>功能描述</dt>
+											            <dd><%=help_info[i].help_info_list[j].help_ans_gn_describe%></dd>
+											          </dl>
+											          <dl>
+											            <dt>操作描述</dt>
+											            <dd><%=#help_info[i].help_info_list[j].help_ans_cz_describe%></dd>
+											          </dl>
+											        </div>
+												</li>
+											<% } %>
+										<% } %>
+									</ul>
+								<% } %>
+	                		</div>
+	            		</div>
+	             </script>
+	        </div>
+	    </div>
+	</body>
+	<script type="text/javascript" src="../../../script/api.js"></script>
+	<script type="text/javascript" src="../../../script/base_config.js"></script>
+	<script type="text/javascript" src="../../../script/plug-in/template.js"></script>
+	<script type="text/javascript" src="../../../script/common/common.js"></script>
+	<script type="text/javascript">
+		var header_h;
+		apiready = function() {
+			commonSetTheme({"level":3,"type":0});
+			header_h = api.pageParam.header_h;
+			var idy_type = $api.getStorage('idy_type');
+			var jsonPath = "widget://res/json/help/help_"+idy_type+".json";
+			commonBaseConfig(jsonPath,function(data) {
+				commonAddOnceHtml('help_info_div','help_info_script', data);
+			});
+		};
+		/*
+		 * author:zfz
+		 * function:点击左侧导航条有测实现的展示效果
+		 * data:2016.4.27
+		 */
+		function helpInfoListShow(p,thisId){
+			var auiListViewLiDom=$api.domAll('.aui-list-view-li');
+			for(var i=0;i<auiListViewLiDom.length;i++){
+				$api.removeCls(auiListViewLiDom[i], 'red');  //去掉左侧导航列表所有文字的红色选中状态
+			}
+			var thisIdDom=$api.byId(thisId);
+			$api.addCls(thisIdDom, 'red');   //给选中的导航添加红色选中状态
+			
+			var helpInfoListLi=$api.domAll('.help_info_list');
+			var helpInfoListDom = $api.domAll('.help_info_list'+p);
+			for(var i=0;i<helpInfoListLi.length;i++){
+				$api.css(helpInfoListLi[i],'display:none;');   //页面渲染的帮助列表全部隐藏
+			}
+			for(var i=0;i<helpInfoListDom.length;i++){
+				$api.css(helpInfoListDom[i],'display:block;');  //显示选中导航内容的帮助列表
+			}
+		}
+	
+		/*
+		 * author:zfz
+		 * function:点击问题显示帮助提示
+		 * data:2016.4.26
+		 */
+		function toggleShowAns(CueId,p){
+			var askDom=$api.dom("#"+CueId);
+			var AnsDom=$api.dom("#answer"+p);
+			if($api.hasCls(AnsDom, 'show')){
+				$api.addCls(askDom, 'aui-icon-fold');
+				$api.removeCls(askDom, 'aui-icon-unfold');
+				$api.removeCls(AnsDom, 'show');
+				$api.addCls(AnsDom, 'hide');
+			}else{
+				$api.addCls(askDom, 'aui-icon-unfold');
+				$api.removeCls(askDom, 'aui-icon-fold');
+				$api.removeCls(AnsDom, 'hide');
+				$api.addCls(AnsDom, 'show');
+			}
+		}
+		
+		
+	</script>
+</html>

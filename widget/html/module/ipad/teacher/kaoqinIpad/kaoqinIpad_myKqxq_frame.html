@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no" />
+    <title>title</title>
+    <link rel="stylesheet" type="text/css" href="../../../../../css/aui/aui.css"/>
+    <link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+    <style>
+    	body{background:#F8F7F3;color:#141414;}
+	.title{height:40px;background:#ffffff;line-height:40px;padding-left:15px;border-bottom:1px solid #F8F7F3;}
+    	.step-content{width:100%;background:#ffffff;height:166px;padding-top:20px;}
+    	.height166{height:166px !important;}
+    	.height145{height:145px !important;}
+    	.wd1{width:100%;}
+    	.wd2{width:50%;}
+    	.wd3{width:33%;}
+    	.wd4{width:25%;}
+    	.wd5{width:20%;}
+    	.step-content dl{float:left;}
+    	.step-content dl dt{position:relative;z-index:999;height:34px;line-height:34px;text-align:center;color:#ffffff;}
+    	.step-content dl dt .num{position:absolute;left:50%;top:50%;margin:-17px 0 0 -17px;width:34px;height:34px;line-height:34px;z-index:1;}
+    	.pass-bg{background: url(../../../../../image/fun-module/iphone/kaoqin/pass_bg.png) center center no-repeat;}
+    	.doing{background: url(../../../../../image/fun-module/iphone/kaoqin/doing.png) center center no-repeat;}
+    	.no-pass{background: url(../../../../../image/fun-module/iphone/kaoqin/no_pass.png) center center no-repeat;}
+    	.left-border,.right-border{position:absolute;width:50%;border-top:1px solid #bababa;border-bottom:1px solid #e0e0e0;top:50%;margin-top:-1px;z-index:0;}
+    	.step-content dl dt .border-active{border-top:1px solid #F1C40F;border-bottom:1px solid #F1C40F;}
+    	.left-border{left:0;}
+    	.right-border{right:0;}
+    	.step-content dl dd{padding-top:15px;}
+    	.step-content dl dd div{text-align:center;line-height:26px;color:#b9b9b9;}
+    	.step-content dl dd.active div{color:#F1C40F;}
+    	.step-content dl dd .btn{line-height:38px;}
+    	.step-content dl dd .btn button{color:#666666;border-radius: 0;border:1px solid #cccccc;background:#ffffff;}
+    	.hr{height:10px;}
+    	.content{padding:12px 15px;}
+    	.content div{display:inline-block;float:right;color: #666666;}
+    	.bb{border-bottom:1px solid #F8F7F3;}
+    	.bgf{background:#ffffff;}
+    	.ellipsis{white-space: nowrap;overflow: hidden;text-overflow: ellipsis;}
+    	button, .aui-btn{padding:4px 12px;}
+    	.time-detail{padding:0 15px;}
+    	.time-detail ul{width:100%;}
+    	.time-detail ul li{list-style:none;height:40px;line-height:40px;}
+    	.time-detail ul li div{float:right;color: #666666;}
+    	.word-break{word-wrap: break-word;word-break: normal;color: #666666;}
+    	.img-content img{max-width:100%;height:auto;}
+    	.footer-div{
+			position:fixed;
+			height:55px;
+			background:#ffffff;
+			display: block;
+			bottom: 0px;
+			z-index:2;
+			width:100%;
+			box-shadow:3px 0 4px #aaaaaa;
+		}
+		.footer-div .wid50{width:50%;line-height:55px;float:left;text-align:center;color:#ffffff;}
+		.bgred{background:#FA4848;}
+		.footer-div .bggreen{background:#F1C40F;}
+		.kb{height:55px;}
+		.shadow {position: absolute;left: 0;top: 0;width: 100%;	height: 100%;z-index: -1;	background: #000000;opacity: 0;}
+		.reason-content{font-size:14px;text-indent:2em;padding:20px 15px;}
+		.ima_notice{padding:0;}
+    </style>
+</head>
+<body class="common-ipad-kaoqinIpad-tea">
+	<div id="j_shadow" class="shadow"></div>
+	<div class="hr bb"></div>
+	<div id="j_step_title" class="title">审批进度</div>
+	<div id="step_body" class="step-content"></div>
+	<script type="text/html" id="step_script">
+		<%if(check_list.length == 1){%>
+			<dl class="wd<%=check_list.length%>">
+				<dt>
+					<div class="num <%=check_list[0].image_name%>"><%=1%></div>
+				</dt>
+				<dd class="<%=check_list[0].class_name%>">
+					<div class="person-name ellipsis"><%=check_list[0].person_name%> </div>
+					<%if(check_list[0].check_status*1 == 1){%>
+						<div class="static">已通过</div>
+					<%}else if(check_list[0].check_status*1 == 2){%>
+						<div class="static">待审批</div>
+						<%if(check_list[0].btn_show){%>
+							<div class="btn">
+								<button id="tx_btn" onclick="sendSysMsg(this, '<%=check_list[0].login_name%>');">提醒</button>
+							</div>
+						<%}%>
+					<%}else if(check_list[0].check_status*1 == 3){%>
+						<div class="static">已驳回</div>
+					<%}else{%>
+						<div class="static">不需审批</div>
+					<%}%>
+				</dd>
+			</dl>
+		<%}else{%>
+			<%for(var i=0; i<check_list.length; i++) {%>
+				<dl class="wd<%=check_list.length%>">
+					<dt>
+						<%if(i == 0){%>
+							<div class="num <%=check_list[i].image_name%>"><%=i+1%></div>
+							<div class="right-border <%if(check_list[i].check_status == 1 && check_list[i+1].check_status == 2){%>border-active<%}else if(check_list[i].check_status == 1 && check_list[i+1].check_status == 1){%>border-pass<%}%>"></div>
+						<%}else if(i == check_list.length-1){%>
+							<div class="left-border <%if(check_list[i-1].check_status == 1 && check_list[i].check_status == 2){%>border-active<%}else if(check_list[i-1].check_status == 1 && check_list[i].check_status == 1){%>border-pass<%}%>"></div>
+							<div class="num <%=check_list[i].image_name%>"><%=i+1%></div>
+						<%}else{%>
+							<div class="left-border <%if(check_list[i-1].check_status == 1 && check_list[i].check_status == 2){%>border-active<%}else if(check_list[i-1].check_status == 1 && check_list[i].check_status == 1){%>border-pass<%}%>"></div>
+							<div class="num <%=check_list[i].image_name%>"><%=i+1%></div>
+							<div class="right-border <%if(check_list[i].check_status == 1&& check_list[i+1].check_status == 2){%>border-active<%}else if(check_list[i].check_status == 1 && check_list[i+1].check_status == 1){%>border-pass<%}%>"></div>
+						<%}%>
+					</dt>
+					<dd class="<%=check_list[i].class_name%>">
+						<div class="person-name ellipsis"><%=check_list[i].person_name%> </div>
+						<%if(check_list[i].check_status*1 == 1){%>
+							<div class="static">已通过</div>
+						<%}else if(check_list[i].check_status*1 == 2){%>
+							<div class="static">待审批</div>
+							<%if(check_list[i].btn_show){%>
+								<div class="btn">
+									<button id="tx_btn" onclick="sendSysMsg(this, '<%=check_list[i].login_name%>');">提醒</button>
+								</div>
+							<%}%>
+						<%}else if(check_list[i].check_status*1 == 3){%>
+							<div class="static">已驳回</div>
+						<%}else{%>
+							<div class="static">不需审批</div>
+						<%}%>
+					</dd>
+				</dl>
+			<% } %>
+		<%}%>
+	</script>
+	<div class="hr bb"></div>
+	<div id="j_type_title" class="content bgf">
+	</div>
+	<div class="hr bb"></div>
+	<div id="j_time_title" class="content bb bgf">
+		
+	</div>
+	<div class="time-detail bb bgf">
+		<ul>
+			<li class="bb">
+				开始时间
+				<div id="start_time"></div>
+			</li>
+			<li>
+				结束时间
+				<div id="end_time"></div>
+			</li>
+		</ul>
+	</div>
+	<div class="hr"></div>
+	<div id="j_reason_title" class="title"></div>
+	<div id="j_reason_content" class="content word-break bb bgf reason-content">
+	</div>
+	<div class="hr bb"></div>
+	<div id="j_file_title" class="title" style="display:none;">附件</div>
+	<div id="j_file_content" class="img-content content bb bgf" style="display:none;">
+	</div>
+	<div class="hr"></div>
+	<div id="j_kb" class="kb" style="display:none;"></div>
+	<div id="j_footer" class="footer-div" style="display:none;">
+	 	<div class="wid50 bggreen" onclick="openMybc();">补充附件</div>
+	 	<div id="cancel_btn" class="wid50 bgred" onclick="cancelLeave();"></div>
+	</div>
+	<!--请假类型-->
+	<input oninput="commonRemoveExpression(this)" type="hidden" id="qj_type_hid" value=""/>
+</body>
+<script type="text/javascript" src="../../../../../script/api.js"></script>
+<script type="text/javascript" src="../../../../../script/base_config.js" ></script>
+<script type="text/javascript" src="../../../../../script/plug-in/template.js" ></script>
+<script type="text/javascript" src="../../../../../script/common/common.js"></script>
+<script type="text/javascript" src="../../../../../script/assembly/photoBrowser.js"></script>
+<script type="text/javascript" src="../../../../../script/common/kaoqinIpad_common.js"></script>
+<script type="text/javascript">
+	var BASE_URL_ACTION;
+	var header_h;
+	var judgeNotice=false;//判断第一个待审批需要显示按钮
+	var per_id;
+	apiready = function(){
+		commonSetTheme({"level":5,"type":0});
+		header_h = api.pageParam.header_h;
+		BASE_URL_ACTION = $api.getStorage('BASE_URL_ACTION');
+		getLeaveInfoById(1);
+		if(api.pageParam.status_id == 1 || api.pageParam.status_id == 2){
+			$api.css($api.byId('j_kb'),'display:block;');
+			$api.css($api.byId('j_footer'),'display:block;');
+		}
+	};
+	/*
+	*author:zhaoj
+	*function:根据type判断是请假还是公出
+	*date：20160620
+	*/
+	function diffrentType(data){
+		per_id = data.check_list.person_id;
+		if(api.pageParam.type){
+			$api.html($api.byId('j_type_title'),'公出类别<div>'+data.type_name+'</div>');
+			$api.text($api.byId('j_reason_title'),'公出事由');
+			$api.text($api.byId('cancel_btn'),'撤回公出');
+			getSinglePersonWaiChuInfo(data.type_id,data.start_time,data.end_time,function(flag,ret){
+				dealTimeData(flag,ret,data,function(time){
+					$api.html($api.byId('j_time_title'),'公出时间<div>'+time+'</div>');
+				});
+			});
+			$api.val($api.byId('qj_type_hid'), data.type_name);
+			
+		}else{
+			$api.html($api.byId('j_type_title'),'请假类型<div>'+data.type_name+'</div>');
+			
+			$api.text($api.byId('j_reason_title'),'请假事由');
+			$api.text($api.byId('cancel_btn'),'撤回请假');
+			getSinglePersonLeaveInfo(data.type_id,data.start_time,data.end_time,function(flag,ret){
+				dealTimeData(flag,ret,data,function(time){
+					$api.html($api.byId('j_time_title'),'合计时间<div>'+time+'</div>');
+				});
+			});
+			$api.val($api.byId('qj_type_hid'), data.type_name);
+		}
+		$api.html($api.byId('j_reason_content'),transferBrStr(data.content));
+		$api.text($api.byId('start_time'),data.start_time);
+		$api.text($api.byId('end_time'),data.end_time);
+	}
+	/*
+	*author:zhaoj
+	*function:处理时间的数据
+	*date：20160804
+	*/
+	function dealTimeData(flag,ret,data,callback){
+		var retData = flag == true ? ret : data;
+		var time='';
+		if(retData.days*1>0){
+			time = retData.days+'天';
+		}
+		if(retData.hours*1>0){
+			time = time + retData.hours+'小时';
+		}
+		if(retData.minutes*1>0){
+			time = time + retData.minutes+'分钟';
+		}
+		if(time){
+			time = '共'+time;
+		}
+		callback(time);
+	}
+	/*
+	*author:zhaoj
+	*function:打开补充页面
+	*date：20160704
+	*/
+	function openMybc(){
+		judgeNotice=false;
+		var pageParamJson = {};
+		if(api.pageParam.type){
+			pageParamJson = {
+				header_h : header_h,
+				rule_type : 2,
+				leave_id : api.pageParam.leave_id,
+				type : 2
+			}
+			//commonOpenFrame('kaoqinIpad_mybc_frame', 'kaoqinIpad_mybc_frame.html', 0, false, false, 'rgba(0,0,0,0)', pageParamJson);
+		}else{
+			pageParamJson = {
+					header_h : header_h,
+					rule_type : 1,
+					leave_id : api.pageParam.leave_id,
+					type : 2
+				}
+			//commonOpenFrame('kaoqinIpad_mybc_frame', 'kaoqinIpad_mybc_frame.html', 0, false, false, 'rgba(0,0,0,0)', pageParamJson)
+		}
+
+		api.openFrame({
+				name : 'kaoqinIpad_mybc_frame',
+				scrollToTop : true,
+				allowEdit : true,
+				url : 'kaoqinIpad_mybc_frame.html',
+				rect : {
+					x : 0,
+					y : 0,
+					w : 'auto',
+					h : api.winHeight,
+				},
+				pageParam : {
+					header_h : header_h,
+					rule_type : pageParamJson.rule_type,
+					leave_id : pageParamJson.leave_id
+				},
+				bgColor : 'rgba(0,0,0,0)',
+				vScrollBarEnabled : true,
+				hScrollBarEnabled : true,
+				//页面是否弹动 为了下拉刷新使用
+				bounces : false
+			});
+			commonExecScript('kaoqinIpad_myKqxq_window','','reBackType("mybc");',0);
+	}
+	/*
+	*author:zhaoj
+	*function:获取我的请假或公出的详情信息
+	*date：20160622
+	*/
+	function getLeaveInfoById(show_type){
+		if(show_type == 1){
+			showSelfProgress('加载中...');
+		}
+		var img_html = '';
+		$api.html($api.byId('j_file_content'), img_html);
+		api.ajax({
+			url : BASE_URL_ACTION + '/leave/getLeaveInfoById',
+			method : 'get',
+			timeout : 0,
+			dataType : 'json',
+			data : {
+				values : {
+					"random_num" : creatRandomNum(),
+					"leave_id" : api.pageParam.leave_id
+				}
+			},
+			headers : {
+	'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+	}
+			}, function(ret, err) {
+				api.hideProgress();
+				if (err) {
+					popToast('获取详情信息失败');
+				} else {
+					if(ret.success){
+						ret.start_time = ret.start_time.substring(0,16);
+						ret.end_time = ret.end_time.substring(0,16);
+						var btnShowFlag = false;
+						for(var i = 0; i < ret.check_list.length; i++){
+							if(ret.check_list[i].check_status*1 == 1){
+								ret.check_list[i].image_name = 'pass-bg';
+								ret.check_list[i].class_name = 'pass';
+								ret.check_list[i].btn_show = 0;
+							}else if(ret.check_list[i].check_status*1 == 2){
+								if(!judgeNotice){
+									ret.check_list[i].image_name = 'doing';
+									ret.check_list[i].class_name = 'active';
+									ret.check_list[i].btn_show = 1;
+									btnShowFlag = true;
+									judgeNotice = true;
+								}else{
+									ret.check_list[i].image_name = 'no-pass';
+									ret.check_list[i].class_name = '';
+									ret.check_list[i].btn_show = 0;
+								}
+							}else if(ret.check_list[i].check_status*1 == 3){
+								ret.check_list[i].image_name = 'pass-bg';
+								ret.check_list[i].class_name = 'pass';
+								ret.check_list[i].btn_show = 0;
+							}else{
+								ret.check_list[i].image_name = 'pass-bg';
+								ret.check_list[i].class_name = 'pass';
+								ret.check_list[i].btn_show = 0;
+							}
+						}
+						//改变审批内容的高度
+						if(btnShowFlag){
+							$api.addCls($api.byId('step_body'),'height166');
+						}else{
+							$api.addCls($api.byId('step_body'),'height145');
+						}
+						//ret.time = time;
+						diffrentType(ret);
+						if(ret.file_list.length>0){
+							$api.css($api.byId('j_file_title'),'display:block;');
+							$api.css($api.byId('j_file_content'),'display:block;');
+							var img_array = new Array();//保存图片路径
+							for(var i = 0;i < ret.file_list.length; i++){
+								var img_url;
+								if(BASE_APP_TYPE == 1){
+									img_url = BASE_IMAGE_PRE+"down/Material/"+ ret.file_list[i].substring(0, 2) + "/" + ret.file_list[i] + commonReturnPhotoCutSize(0);
+								}else{
+									img_url = BASE_URL_ACTION + "/html/thumb/Material/" + ret.file_list[i].substring(0, 2) + "/" + ret.file_list[i] + commonReturnPhotoCutSize(0);;
+								}
+								img_array.push(img_url);
+							}
+							uploadImgHtml(img_array);//将图片显示到页面中
+						}
+						addTemplateHtml('step_body', 'step_script', ret,1);
+					}else{
+						popToast('获取详情信息失败');
+					}
+				}
+		});
+	}
+	/*
+	 *author:zhaoj
+	 *function:图片的HTML
+	 *date：20160628
+	 */
+	function uploadImgHtml(img_array) {
+		var img_html="";
+		var onerror_html = "this.src='../../../../../image/common/tpsx.png'";
+		for(var i = 0;i < img_array.length; i++){
+			img_html = img_html + '<img class="ima_notice" src="'+img_array[i]+'" onerror="'+onerror_html+'" alt="附件" onclick="openImage('+i+')" />';
+		}
+		$api.append($api.byId('j_file_content'), img_html);
+	}
+	
+	/**
+	 * 发送系统消息
+	 * 周枫
+	 * 2016.06.30 
+	 */
+	function sendSysMsg(e, target_login_name){
+		var sender_id = $api.getStorage('person_id');
+		var sender_person_name = $api.getStorage("person_name");
+		var sender_login_name = commonNewParamToOldParam($api.getStorage("login_name")); 
+		var sender_identity = $api.getStorage("identity");
+		var target_login_names = [target_login_name + "_5_"+ $api.getStorage("BASE_SERVER_NAME")];
+		var is_url = 1;
+		var url_name = 'kaoqinIpad_kqsp_window';
+		var param_num = 101;
+		var sysmsg_code = 'KAOQIN_MYKQXQ_FRAME';
+		var qj_type = '';
+		qj_type = $api.val($api.byId('qj_type_hid'));
+		var bureau_id = $api.getStorage('bureau_id');
+		( typeof (bureau_id) == 'undefined') ? bureau_id = -1 : bureau_id = bureau_id;
+		
+		var district_id = $api.getStorage('district_id');
+		( typeof (district_id) == 'undefined') ? district_id = -1 : district_id = district_id;
+		
+		var city_id = $api.getStorage('city_id');
+		( typeof (city_id) == 'undefined') ? city_id = -1 : city_id = city_id;
+		
+		var province_id = $api.getStorage('province_id');
+		( typeof (province_id) == 'undefined') ? province_id = -1 : province_id = province_id;
+
+		var params = ['考勤消息', sender_person_name, qj_type];
+		commonSendSysMsg(sender_id, sender_person_name, sender_login_name, sender_identity, target_login_names, is_url, url_name, param_num, sysmsg_code, bureau_id, district_id, city_id, province_id, params, function(is_true){
+			if(is_true) {
+                $api.html($api.byId('tx_btn'), '已发送');
+//              $api.text($api.byId('tx_btn'), '已发送');
+                e.disabled = 'disabled';
+			} else {
+				api.toast({
+	                msg:'发送信息失败'
+                });
+			}
+		});
+	}
+	/*
+	*author:zhaoj
+	*function:撤销请假或者公出
+	*date：20160622
+	*/
+	function cancelLeave(){
+		showSelfProgress('撤回中...');
+		$api.css($api.byId('j_shadow'),'z-index:3;');
+		api.ajax({
+			url : BASE_URL_ACTION + '/leave/cancelLeave',
+			method : 'get',
+			timeout : 0,
+			dataType : 'json',
+			data : {
+				values : {
+					"random_num" : creatRandomNum(),
+					level_id : api.pageParam.leave_id
+				}
+			},
+			headers : {
+	'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+	}
+			}, function(ret, err) {
+				api.hideProgress();
+				if (err) {
+					popToast('撤回失败');
+					$api.css($api.byId('j_shadow'),'z-index:-1;');
+				} else {
+					if(ret.success){
+						popToast('撤回成功');
+						setTimeout(function(){
+							if(api.pageParam.type){
+								commonExecScript('kaoqinIpad_wdkq_window','kaoqinIpad_gclist_frame','initData(0);',1);
+							}else{
+								commonExecScript('kaoqinIpad_wdkq_window','kaoqinIpad_qjlist_frame','initData(0);',1);
+							}
+							$api.css($api.byId('j_shadow'),'z-index:-1;');
+							commonExecScript('kaoqinIpad_myKqxq_window','','back();',0);
+						},500);
+					}else{
+						popToast('撤回失败');
+						$api.css($api.byId('j_shadow'),'z-index:-1;');
+					}
+				}
+		});
+	}
+</script>
+</html>

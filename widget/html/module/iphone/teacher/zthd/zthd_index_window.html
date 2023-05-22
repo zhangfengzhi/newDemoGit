@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<!-- html5：在创建html时为了防止页面缩放等不兼容效果，要创建个viewport  -->
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<!-- 在IOS设备上，有时会将数字转为手机号，这里也要禁止下 -->
+		<meta name="format-detection" content="telephone=no"/>
+		<title>教师端主题活动</title>
+		<link rel="stylesheet" type="text/css" href="../../../../../css/aui/aui.css" />
+		<link id="j_theme_base" rel="stylesheet" type="text/css" href="" /><style>
+			.tag-title{height:45px; line-height:43px;background:#ffffff ;border-bottom:2px solid #E6E6E6;width:100%;}
+			.fl{width:21%;color: #000000;float:left;text-align:center;color:#686868;}
+			.fl-last{width:15%;float:left;text-align:center;color:red;height:28px;line-height:28px;border-left:3px solid #CDCDCD;margin:8px auto;margin-left:1%;}
+			.tag-title .fl-last .hot{color:#686868;}
+			.tag-title .fl-last .new{color:#686868;}
+			.img{width:30px;height:30px}
+			.tag-title .time-div{width:50%;float:left;padding-left:10px;background:#fff;color:#CDCDCD;font-size:14px;}
+            .menu-zthd{
+              background:url(../../../../../image/fun-module/ipad/zthd/tj-type.png) center center no-repeat;
+              background-size:20px 20px;
+              width:20px;
+              height:45px;
+              }
+		</style>
+	</head>
+	<body class="common-iphone-zthd-tea">
+		<div id="wrap">
+			<header class="aui-bar aui-bar-nav aui-bar-primary" id="aui-header">
+				<div id="cloud" class="topbar activebar">
+					<div id="back" class="back" onclick="back();" tapmode="">
+						<i class="aui-iconfont aui-icon-left"></i>返回
+					</div>
+					<div  class="mTitle" id="mTitle">
+						主题活动
+					</div>
+					<div id="j_add" class="win-menu">
+						<a class="aui-iconfont aui-icon-add plr5" id="add_btn" onclick="openAddWin()"></a>
+						<a class="aui-iconfont aui-icon-menu pl5" onclick="openMenuFrame();"></a>
+					</div>
+				</div>
+				<div class="tag-title" id="tag_title">
+					<div class="fl active" onclick="changeZt(this,1);">全部活动</div>
+					<div class="fl" onclick="changeZt(this,3);">火热进行</div>
+					<div class="fl" onclick="changeZt(this,2);">即将开始</div>
+					<div class="fl" onclick="changeZt(this,4);">已经结束</div>
+					<div class="fl-last"  id="fl_last" onclick="changePx(1);"><font id="new" class="new"><img src="../../../../../image/fun-module/ipad/zthd/new.png" class="img"></font><font id="hot" class="hot aui-hide"><img class="img" src="../../../../../image/fun-module/ipad/zthd/hot.png"></font></div>
+				</div>
+			</header>
+			<div  class="aui-content aui-content-padded" id="message-content">
+				<p class="aui-text-center history-date"></p>
+			</div>
+		</div>
+	</body>
+	<script type="text/javascript" src="../../../../../script/api.js"></script>
+	<script type="text/javascript" src="../../../../../script/base_config.js" ></script>
+	<script type="text/javascript" src="../../../../../script/common/common.js"></script>
+	<script type="text/javascript" src="../../../../../script/assembly/tongjiData.js"></script>
+	<script type="text/javascript" src="../../../../../script/assembly/openPicker.js"></script>
+	<script type="text/javascript" src="../../../../../script/module/iphone/common/zthd/zthd.js"></script>
+	<script type="text/javascript">
+		var mode_type=0;//0代表我的导学案,1代表精品导学案
+		var back_type = 'index';
+		var type = 1;//初始化查询权限
+		var dic_type=1;  //1全部活动、2我发布的、3邀请我的
+		var start_time = '';
+        var end_time = '';
+        var first_check_time = true;//第一次选择时间
+        var now_fw_time = '';
+        var org_type_now = 0;
+        var fromType = 2;//代表统计中的当前页面
+        var change_type = 0;//当前menu类型
+        var old_back_type = 'index';
+        var now_person_name = '';
+        var is_new_hot = 1;//当前是最热还是最新
+        var is_now_time_flag = 1;
+        var is_open_isopen = false;//开始时间组件是否已经打开
+        var is_back_isopen = false;//是否点击了返回按钮
+		apiready = function() {
+			commonSetTheme({"level":5,"type":0});
+			var header_h = api.pageParam.header_h;
+			if(api.pageParam.from_tj){
+			 commonSetWindowName(api.pageParam.org_name);
+			 $api.css($api.byId("j_add"),"display:none");
+			 start_time = api.pageParam.start_time;
+			 end_time = api.pageParam.end_time;
+			}
+			commonJudgeRoles(function(type){
+              if(type*1 == 5){
+                  org_type_now = 5;
+                  $api.html($api.byId('mTitle'),'<div id="btn_title" class="btn-title"><div id="index_title"><div id="j_nav_0" class="btn-l btn-top-active btn-top" onclick="changeBtnTitle(0,1);">主题活动</div><div id="j_nav_1"  class="btn-r btn-top" onclick="changeBtnTitle(1,1);">活动统计</div></div></div>');
+                }
+            });
+            commonBackForAndroid();//安卓关闭
+            commonIosAuiHeader();//定位header位置，留出上面电池等空隙，苹果需要
+            commonOpenTjData($api.getStorage("identity")+'_'+api.winName);//记录统计
+			api.openFrameGroup({
+                name : 'group',
+                scrollEnabled : false,
+                rect : {
+                    x : 0,
+                    y : header_h+45,
+                    w : 'auto',
+                    h : api.winHeight - header_h - 45
+                },
+                index : 0,
+                //预加载
+                preload : 2,
+                scrollToTop : true,
+                bounces : false,
+                frames : [{
+                    name : 'zthd_index_frame',
+                    url : 'zthd_index_frame.html',
+                    bounces : false,
+                    pageParam : {
+                        "header_h":header_h,
+                        'from_tj':api.pageParam.from_tj,
+                        'bureau_id':api.pageParam.bureau_id,
+                        'end_time':end_time,
+                        'start_time':start_time
+                    }
+                }, {
+                    name : 'zthd_tjtea_frame',
+                    url : 'zthd_tjtea_frame.html',
+                    bounces : false,
+                    pageParam : {
+                        'header_h' : header_h
+                    }
+                }]
+            }, function(ret, err) {
+            });
+            api.setFrameGroupAttr({
+                name: 'zthd_group',
+                hidden: false
+            });
+		};
+		
+		/*
+		 * 功能：返回页面
+		 * 作者：张自强
+		 * 时间：20171019
+		 */
+		function back(type) {
+		    if(type){
+		      is_open_isopen = true;
+		      setTimeout(function(){
+		          is_open_isopen = false;
+		      },1000);
+		      if(!is_back_isopen){
+		          openTime(0);
+		      }
+		    }else{
+		        is_back_isopen = true;
+		        setTimeout(function(){
+                  is_back_isopen = false;
+                },1000);
+		        if(!is_open_isopen){
+		            api.hideProgress();
+                    switch (back_type){
+                        case 'index':
+                            commonCloseTjData($api.getStorage("identity")+'_'+api.winName);
+                            if(api.pageParam.from_tj){
+                                commonExecScript('zthd_tj_window','zthd_tj_frame','initData(1);',1);
+                                setTimeout(function(){
+                                    api.closeWin();
+                                },500);
+                            }else{
+                                api.closeWin();
+                            }
+                            break;
+                        case 'hd':
+                            if(old_back_type == 'tjteaframe'){
+                                reBackType('tjteaframe');
+                            }else{
+                                reBackType('index');
+                            }
+                            break;
+                        case 'add':
+                            commonCloseFrame('zthd_add_frame');
+                            reBackType('index');
+                            reNameWin(dic_type);
+                            break;
+                        case 'open_picture':
+                            
+                            reBackType('add');
+                            break;
+                        case 'imageClip':
+                            commonCloseImageClipFrame();
+                            reBackType('add');
+                            break;
+                        case 'cydxSelect':
+                            commonCloseFrame('zthd_cydx_frame');
+                            reBackType('add');
+                            break;
+                        case 'cydxIndex':
+                            hideOrshowAddAndMenu(1);
+                            commonCloseFrame('zthd_cydx_frame');
+                            commonSetWindowName('全部活动');
+                            reBackType('index');
+                            break;
+                        case 'tjteaframe':
+                            reBackType('index');
+                            old_back_type = 'index';
+                            $api.html($api.byId('mTitle'),'<div id="btn_title" class="btn-title"><div id="index_title"><div id="j_nav_0" class="btn-l btn-top-active btn-top" onclick="changeBtnTitle(0,1);">主题活动</div><div id="j_nav_1"  class="btn-r btn-top" onclick="changeBtnTitle(1,1);">活动统计</div></div></div>');
+                            changeBtnTitle(1,1);
+                            is_now_time_flag=1;
+                            dic_type=1;
+                            is_new_hot=1;
+                            commonExecScript(api.winName,'zthd_index_frame','changeNowPerson("'+$api.getStorage('person_id')+'",'+dic_type+',"","","",'+is_new_hot+','+is_now_time_flag+')',1);
+                            break;
+                    }
+		        }
+		    }
+		}
+		
+		/*
+		 * 功能；重置返回页面
+		 * 作者：张自强
+		 * 时间：20171023
+		 */
+		function reBackType(type,name){
+            if(name && name != '' && typeof(name) != undefined){
+               now_person_name = name;
+            }
+            switch(type){
+                case 'index':
+                    hideOrshowAddAndMenu(1);
+                    back_type = type;
+                    break;
+                case 'hd':
+                    hideOrshowAddAndMenu(0);
+                    back_type = type;
+                    break;
+                //如果添加页面退出
+                case 'add':
+                    hideOrshowAddAndMenu(0);
+                    commonSetWindowName('创建活动');
+                    back_type = 'add';
+                    break;
+                //如果图片页面退出
+                case 'open_picture':
+                    back_type = 'open_picture';
+                    break;
+                //如果图片裁剪退出
+                case 'imageClip':
+                    back_type = 'imageClip';
+                    break;
+                case 'cydxSelect':
+                    commonSetWindowName('参与对象');
+                    back_type = 'cydxSelect';
+                    break;
+                case 'cydxIndex':
+                    hideOrshowAddAndMenu(0);
+                    commonSetWindowName('参与对象');
+                    back_type = 'cydxIndex';
+                    break;
+                case 'tjteaframe':
+                    old_back_type = 'tjteaframe';
+                    back_type = 'tjteaframe';
+                    $api.html($api.byId('mTitle'),now_person_name);
+                    break;
+            }
+        }
+		
+		/*
+		 * 功能：打开menu页
+		 * 作者：张自强
+		 * 时间：20171020
+		 */
+		function openMenuFrame(){
+		    if(change_type == 1){
+                commonExecScript(api.winName,'zthd_tjtea_frame','openTjMenu();',1);
+            }else{
+                var header_h = api.pageParam.header_h;
+                    api.openFrame({
+                        name: 'zthd_menu_frame',
+                        url: 'zthd_menu_frame.html',
+                        bounces: false,
+                        rect: {
+                            x: 0,
+                            y: 0,
+                            w: 'auto',
+                            h: 'auto'
+                        },
+                        bgColor : 'rgba(0,0,0,0)',
+                        pageParam : {
+                            'header_h' : header_h,
+                            'dic_type' : dic_type
+                        },
+                        reload: true
+                    });  
+            }
+		}
+		
+		/*
+		 * 功能：切换主题分类
+		 * 作者：张自强
+		 * 时间：20171020
+		 */
+		function changeZt(e,type){
+			var domArray = document.getElementsByClassName('fl');
+			for(var i=0;i<domArray.length;i++){
+				$api.removeCls(domArray[i], 'active');
+			}
+			$api.addCls(e, 'active');
+			is_now_time_flag = type;
+			commonExecScript('zthd_index_window','zthd_index_frame','changeTimeFlag('+type+');',1);
+		}
+		
+		/*
+		 * 功能：打开添加主题页面
+		 * 作者：张自强
+		 * 时间：20171020
+		 */
+		function openAddWin(){
+//			reBackType('add');
+			var pageParamJson={"old_header_h":api.pageParam.header_h,"header_h":api.pageParam.header_h};//打开frame页面所需参数
+//			commonOpenFrame('zthd_add_frame', 'zthd_add_frame.html',0, false, false,"#ffffff",pageParamJson);	//打开index页面
+			commonOpenWin('zthd_add_window','zthd_add_window.html',false,false,pageParamJson);
+		}
+		
+		/*
+		 * 功能：隐藏或显示添加和menu按钮
+		 * 作者：张自强
+		 * 时间：20171023
+		 */
+		function hideOrshowAddAndMenu(type){
+			if(type && !api.pageParam.from_tj){
+				$api.css($api.byId('j_add'),'display:block');
+			}else{
+				$api.css($api.byId('j_add'),'display:none');
+			}
+		}
+		
+		/*
+		 * 功能：改变主题活动排序分类
+		 * 作者：张自强
+		 * 时间：20171023
+		 */
+		function changePx(type){
+			var tip = '';
+			if(type == 1){
+				type = 2;
+				tip='changePx(2);';
+				commonAddOrRemoveHideCss('hot',1);
+				commonAddOrRemoveHideCss('new',0);
+				$api.attr($api.byId('fl_last'), 'onclick', tip);
+			}else{
+				type = 1;
+				tip='changePx(1);';
+				commonAddOrRemoveHideCss('hot',0);
+				commonAddOrRemoveHideCss('new',1);
+				$api.attr($api.byId('fl_last'), 'onclick', tip);
+			}
+			is_new_hot = type;
+			commonExecScript('zthd_index_window','zthd_index_frame','changePx('+type+');',1);
+		}
+		
+		/*
+		 * 功能：重命名标题
+		 * 作者：张自强
+		 * 时间：20171108
+		 */
+		function reNameWin(type){
+			dic_type = type;
+			var name = '';
+			switch (type){
+				case 1:
+					name = '全部活动';
+					break;
+				case 2:
+					name = '我创建的';
+					break;
+				case 3:
+					name = '邀请我的';
+					break;
+			}
+			if(org_type_now == 5){
+             commonSetWindowName('<div id="btn_title" class="btn-title"><div id="index_title"><div id="j_nav_0" class="btn-l btn-top-active btn-top" onclick="changeBtnTitle(0,1);">'+name+'</div><div id="j_nav_1"  class="btn-r btn-top" onclick="changeBtnTitle(1,1);">活动统计</div></div></div>');
+            }else{
+              commonSetWindowName(name);
+            }
+		}
+		
+		/*
+         * 功能；切换活动统计和主题活动
+         * 作者：张自强
+         * 时间：20181225
+         */
+        function changeBtnTitle(type,now_type){
+          if(now_type == 1){
+              $api.addCls($api.byId('j_nav_'+type), 'btn-top-active');
+              $api.removeCls($api.byId('j_nav_'+(type == 0?1:0)), 'btn-top-active');
+              change_type = type*1;
+          }
+          switch(type*1){
+              case 0://主题活动
+                  if(now_type == 0){//从统计中查看主题活动列表
+                      $api.html($api.byId('j_add'), '&nbsp;');
+                      $api.removeCls($api.byId('j_add'), 'menu-zthd');
+                      $api.html($api.byId('tag_title'),'<div class="fl active" onclick="changeZt(this,1);">全部活动</div><div class="fl" onclick="changeZt(this,3);">火热进行</div><div class="fl" onclick="changeZt(this,2);">即将开始</div><div class="fl" onclick="changeZt(this,4);">已经结束</div><div class="fl-last"  id="fl_last" onclick="changePx(1);"><font id="new" class="new"><img src="../../../../../image/fun-module/ipad/zthd/new.png" class="img"></font><font id="hot" class="hot aui-hide"><img class="img" src="../../../../../image/fun-module/ipad/zthd/hot.png"></font></div>');
+                      $api.attr($api.byId('j_add'), 'onclick', '');
+                  }else{//正常查看主题互动列表
+                      $api.removeCls($api.byId('j_add'), 'menu-zthd');
+                      $api.html($api.byId('j_add'), '<a class="aui-iconfont aui-icon-add plr5" id="add_btn" onclick="openAddWin()"></a><a class="aui-iconfont aui-icon-menu pl5" onclick="openMenuFrame();"></a>');
+                      
+                      $api.html($api.byId('tag_title'),'<div class="fl '+(is_now_time_flag==1?"active":"")+'" onclick="changeZt(this,1);">全部活动</div><div class="fl '+(is_now_time_flag==3?"active":"")+'" onclick="changeZt(this,3);">火热进行</div><div class="fl '+(is_now_time_flag==2?"active":"")+'" onclick="changeZt(this,2);">即将开始</div><div class="fl '+(is_now_time_flag==4?"active":"")+'" onclick="changeZt(this,4);">已经结束</div><div class="fl-last"  id="fl_last" onclick="changePx('+is_new_hot+');"><font id="new" class="new '+(is_new_hot==2?"aui-hide":"")+'"><img src="../../../../../image/fun-module/ipad/zthd/new.png" class="img"></font><font id="hot" class="hot '+(is_new_hot==1?"aui-hide":"")+'"><img class="img" src="../../../../../image/fun-module/ipad/zthd/hot.png"></font></div>');
+                      $api.attr($api.byId('j_add'), 'onclick', '');
+                      commonExecScript(api.winName,'zthd_index_frame','changeNowPerson("'+$api.getStorage('person_id')+'",'+dic_type+',"","","",'+is_new_hot+','+is_now_time_flag+')',1);                    commonExecScript(api.winName,'zthd_tjtea_frame','changeTimeAndInit("'+start_time+'","'+end_time+'")',1);
+                      reBackType('index');
+                  }
+                  break;
+              case 1://活动统计
+                  $api.addCls($api.byId('j_add'), 'menu-zthd');
+                  $api.html($api.byId('tag_title'),'<div class="time-div" onclick="back(1);">开始日期：<span id="j_time_0">'+(start_time == ""?"--":start_time)+'</span></div><div class="time-div" onclick="openTime(1);">结束日期：<span id="j_time_1">'+(end_time == ""?"--":end_time)+'</span></div>');
+                  $api.html($api.byId('j_add'), '&nbsp;');
+                  $api.attr($api.byId('j_add'), 'onclick', 'openMenuFrame();');
+                  break;
+          }
+          api.setFrameGroupIndex({
+                name : 'group',
+                index : type,
+                scroll : true
+          });
+        }
+	</script>
+</html>

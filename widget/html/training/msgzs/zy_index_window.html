@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<!-- html5：在创建html时为了防止页面缩放等不兼容效果，要创建个viewport  -->
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<!-- 在IOS设备上，有时会将数字转为手机号，这里也要禁止下 -->
+		<meta name="format-detection" content="telephone=no"/>
+		<title>微课</title>
+		<link rel="stylesheet" type="text/css" href="../../../css/aui/aui.css" />
+		<style>
+			.history-date {
+				font-size: 12px;
+			}
+			#message-content {
+				overflow-y: auto;
+				display: none;
+			}
+			
+			
+			.t_display_n {
+				display: none;
+			}
+			.t_display_b {
+				display: block;
+			}
+			.win-menu .font-size{font-size:12px;}
+		</style>
+	</head>
+	<body>
+		<div id="wrap">
+			<header class="aui-bar aui-bar-nav aui-bar-primary" id="aui-header">
+				<div id="cloud" class="topbar activebar">
+					<div id="back" class="back" onclick="back();" tapmode="">
+						<i class="aui-iconfont aui-icon-left"></i>返回
+					</div>
+					<div  class="mTitle" id="mTitle">
+						工作室资源
+					</div>
+					<div class="win-menu" ><a id='examine' class="aui-iconfont aui-icon-roundcheck back"  style="display: none;margin-right:40px;" onclick="examineSource()"></a></div>
+					<div class="win-menu" >
+						
+						<a id='menu1' style="display: none;" class="aui-iconfont aui-icon-menu back"  onclick="openZyMenuFrame(1);"></a>
+						<a id='menu2' style="display: none;" class="aui-iconfont aui-icon-fold back"  onclick="openZyMenuFrame(2);"></a>
+						<a id='display' style="display: none;" class="aui-iconfont aui-icon-display back"  onclick="display();"></a>
+						<a id='num' style="display: none;" class="aui-iconfont back font-size"></a>
+					</div>
+				</div>
+			</header>
+			<div  class="aui-content aui-content-padded" id="message-content">
+				<p class="aui-text-center history-date"></p>
+			</div>
+		</div>
+	</body>
+	<script type="text/javascript" src="../../../script/api.js"></script>
+	<script type="text/javascript">
+		var ifex=0;
+		var resource_exid=-1;
+		//顶部header高度
+		var header_h;
+		//云资源  我的资源
+		var zy_from_t;
+		//云资源html
+		var title_btn_y_html='工作室资源';
+		var isadmin;
+		//我的资源html
+		var title_btn_w_html='工作室资源';
+		apiready = function() {
+			isadmin=api.pageParam.isadmin;
+			$api.setStorage('zy_knowledge_name','');
+			$api.setStorage('zy_knowledge_id','');
+			$api.setStorage('zy_version_name','');
+			$api.setStorage('zy_version_id','');
+			$api.setStorage('zy_km_id','');
+			$api.setStorage('zy_km_name','');
+			$api.setStorage('zy_xd_id','');
+			$api.setStorage('zy_xd_name','');
+			var identity = $api.getStorage('identity');
+			//定位header位置，留出上面电池等空隙，苹果需要
+			var header = $api.byId('aui-header');
+			$api.fixStatusBar(header);
+			var headerPos = $api.offset(header);
+			header_h = headerPos.h;
+			//title_btn_y_html = '<div id="btn_title" class="btn-title"><div class="btn-l btn-top-active btn-top" onclick="changeBtnTitle(this,1);">云资源</div><div class="btn-r btn-top" onclick="changeBtnTitle(this,2);">我的资源</div></div>';
+			//title_btn_w_html = '<div id="btn_title" class="btn-title"><div class="btn-l btn-top" onclick="changeBtnTitle(this,1);">云资源</div><div class="btn-r btn-top-active btn-top" onclick="changeBtnTitle(this,2);">我的资源</div></div>';
+			//定义云，我切换
+			//reWindowName(title_btn_y_html);
+			//显示menu
+			//$api.css($api.byId('menu1'), 'display:block;');
+			//打开资源列表frame
+			openZyListFrame(1);
+			zy_from_t = 1;
+			//安卓关闭
+			if (api.systemType == 'android') {
+				backForAndroid();
+			}
+		};
+		var back_type = 'index';
+		/**
+		 * 打开通知列表frame
+		 * 周枫
+		 * 2015.11.20
+		 */
+		function openZyListFrame(zy_from_type) {
+			isSamePerson(zy_from_type,function(type,flag){
+				if(flag && typeof($api.getStorage('zy_xd_id')) != 'undefined'){
+					openIndexFrame(type,1);
+				}else{
+					openIndexFrame(type,0);
+					openMenuFirst(type);
+				}
+			});
+		}
+		/*
+		*author:zhaoj
+		*function:判断是否为同一个人登录
+		*date：20160504
+		*/
+		function isSamePerson(zy_from_type,callback){
+			if($api.getStorage('zy_person_id') == $api.getStorage("person_id")){
+				callback(zy_from_type,true);
+			}else{
+				callback(zy_from_type,false);
+			}
+		}
+		/*
+		*author:zhaoj
+		*function:打开资源index页面
+		*date：20160504
+		*/
+		function openIndexFrame(zy_from_type,showProgress){
+			api.openFrame({
+				name : 'zy_index_frame',
+				scrollToTop : true,
+				allowEdit : true,
+				url : 'zy_index_frame.html',
+				reload : true,
+				rect : {
+					x : 0,
+					y : header_h + 80 + 1,
+					w : api.winWidth,
+					h : api.winHeight - header_h - 81,
+				},
+				pageParam : {
+					header_h : header_h,
+					showProgress : showProgress,
+					zy_from_type : zy_from_type,
+					gzs_id: api.pageParam.org_id*1,
+					gzs_type : api.pageParam.org_type*1,
+					gzs_name : api.pageParam.org_name,
+					isadmin : api.pageParam.isadmin
+				},
+				vScrollBarEnabled : true,
+				hScrollBarEnabled : false,
+				//页面是否弹动 为了下拉刷新使用
+				bounces : true
+			});
+		}
+		/*
+		*author:zhaoj
+		*function:如果是第一次进入的话先打开menu页面，将教材版本获得到
+		*date：20160504
+		*/
+		function openMenuFirst(zy_from_type){
+			api.openFrame({
+				name : 'zy_menu_frame',
+				scrollToTop : true,
+				allowEdit : false,
+				url : 'zy_menu_frame.html',
+				rect : {
+					x : 0,
+					y : header_h,
+					w : api.winWidth,
+					h : 0,
+				},
+				pageParam : {
+					header_h : header_h,
+					showProgress : 0,
+					zy_from_type : zy_from_type
+				},
+				vScrollBarEnabled : true,
+				hScrollBarEnabled : false,
+				//页面是否弹动 为了下拉刷新使用
+				bounces : true
+			});
+		}
+		/*
+		*author:zhaoj
+		*function:预览
+		*date：20160304
+		*/
+		function display(){
+			api.execScript({
+				name : 'zy_index_window',
+				frameName :'zy_content_frame',
+				script : 'checkPreviewStatus();'
+			});
+		}
+		/**
+		 * 安卓点击返回的时候
+		 * 周枫
+		 * 2015.10.14
+		 */
+		function backForAndroid() {
+			api.addEventListener({
+				name : "keyback"
+			}, function(ret, err) {
+				back();
+			});
+		}
+
+		/**
+		 * 返回应用页面
+		 * 周枫
+		 * 2015.10.11
+		 */
+		function back() {
+			switch(back_type) {
+				case 'index':
+					api.closeWin();
+					break;
+				case 'content':
+					api.hideProgress();
+					api.closeFrame({
+						name : 'zy_content_frame'
+					});
+					$api.css($api.byId('examine'), 'display:none;');
+					reBackType('index','','');
+					break;
+				case 'voice':
+					api.closeFrame({
+						name : 'zy_playVoice_frame'
+					});
+					reBackType('content','','')
+				case 'txt':
+					api.execScript({
+						name : 'zy_index_window',
+						frameName: 'zy_content_frame',
+						script : 'closeBookReader();'
+					});
+					reBackType('content','','')
+					break;
+			}
+		}
+
+		/**
+		 * 重置window标题
+		 * 周枫
+		 * 2015.12.17
+		 */
+		function reWindowName(win_name) {
+			$api.html($api.byId('mTitle'), win_name);
+		}
+
+		/**
+		 * 重置从哪个页面退出
+		 * 周枫
+		 * 2015.12.17
+		 */
+		function reBackType(type,name,progress) {
+			switch(type) {
+				//如果通知列表页面退出
+				case 'index':
+					if(zy_from_t == 1){
+						//定义云，我切换
+						reWindowName(title_btn_y_html);
+					} else {
+						//定义云，我切换
+						reWindowName(title_btn_w_html);
+					}
+					
+					//$api.css($api.byId('menu1'), 'display:block;');
+					$api.css($api.byId('display'), 'display:none;');
+					$api.css($api.byId('num'), 'display:none;');
+					$api.css($api.byId('examine'), 'display:none;');
+					back_type = 'index';
+					break;
+				//如果微课内容页面退出
+				case 'content':
+					reWindowName('资源详情');
+					$api.css($api.byId('menu1'), 'display:none;');
+					$api.css($api.byId('display'), 'display:block;');
+					$api.css($api.byId('num'), 'display:none;');
+					back_type = 'content';
+					break;
+				//如果播放声音页面退出
+				case 'voice':
+					back_type = 'voice';
+					break;
+				//如果播放声音页面退出
+				case 'txt':
+					reWindowName('文档详情');
+					$api.css($api.byId('menu1'), 'display:none;');
+					$api.css($api.byId('display'), 'display:none;');
+					$api.text($api.byId('num'),progress+'%');
+					$api.css($api.byId('num'), 'display:block;');
+					
+					back_type = 'txt';
+					break;
+			}
+		}
+
+		/**
+		 * 切换按钮
+		 * 周枫
+		 * 2016.1.12
+		 */
+		function changeBtnTitle(btn_obj, btn_type) {
+			//如果当前资源，不需要更新
+			if (zy_from_t != btn_type) {
+				var $btn_title = $api.byId('btn_title');
+				var $btn_title_all = $api.domAll($btn_title, 'div');
+				for (var j = 0; j < $btn_title_all.length; j++) {
+					$api.removeCls($btn_title_all[j], 'btn-top-active');
+				}
+				if (btn_type == 1) {
+					zy_from_t = btn_type;
+					$api.addCls(btn_obj, 'btn-top-active');
+					$api.addCls($api.byId('btn_title'), 't_display_b');
+					$api.removeCls($api.byId('back'), 't_display_n');
+					api.execScript({
+						frameName : 'zy_index_frame',
+	                    script: 'closeNav();'
+                    });
+					openZyListFrame(btn_type);
+				} else {
+					zy_from_t = btn_type;
+					$api.addCls(btn_obj, 'btn-top-active');
+					$api.removeCls($api.byId('btn_title'), 't_display_b');
+					$api.removeCls($api.byId('back'), 't_display_n');
+					api.execScript({
+						frameName : 'zy_index_frame',
+	                    script: 'closeNav();'
+                    });
+					openZyListFrame(btn_type);
+				}
+			}
+			
+		}
+
+		/**
+		 * 打开查询条件页面
+		 * 周枫
+		 * 2016.1.12
+		 */
+		var init_knowledge_id_new = 0;
+		var init_knowledge_id_old = 0;
+		function openZyMenuFrame(btn_type) {
+				if (btn_type == 1) {
+					init_knowledge_id_old = $api.getStorage('zy_knowledge_id');
+					$api.css($api.byId('menu1'), 'display:none;');
+					$api.css($api.byId('menu2'), 'display:block;');
+					$api.removeCls($api.byId('btn_title'), 't_display_b');
+					$api.addCls($api.byId('back'), 't_display_n');
+					reWindowName('学段科目');
+					api.openFrame({
+						name : 'zy_menu_frame',
+						scrollToTop : true,
+						allowEdit : false,
+						url : 'zy_menu_frame.html',
+						rect : {
+							x : 0,
+							y : header_h,
+							w : api.winWidth,
+							h : api.winHeight - header_h,
+						},
+						pageParam : {
+							header_h : header_h,
+							showProgress : 1,
+							zy_from_type : -1
+						},
+						vScrollBarEnabled : true,
+						hScrollBarEnabled : false,
+						//页面是否弹动 为了下拉刷新使用
+						bounces : false
+					});
+				} else {
+					if($api.getStorage('zy_km_id')== ''){
+						popAlert('请选择学科、教材版本和知识点');
+						return;
+					}
+					if($api.getStorage('zy_version_id')== ''){
+						popAlert('请选择教材版本和知识点');
+						return;
+					}
+					if($api.getStorage('zy_knowledge_id')== ''){
+						popAlert('请选择知识点');
+						return;
+					}
+					init_knowledge_id_new = $api.getStorage('zy_knowledge_id');
+					$api.css($api.byId('menu2'), 'display:none;');
+					//$api.css($api.byId('menu1'), 'display:block;');
+					$api.removeCls($api.byId('back'), 't_display_n');
+					if (zy_from_t == 1) {
+						reWindowName(title_btn_y_html);
+					} else {
+						reWindowName(title_btn_w_html);
+					}
+					api.closeFrame({
+						name : 'zy_menu_frame'
+					});
+					if (init_knowledge_id_new != init_knowledge_id_old) {
+						openZyListFrame(zy_from_t);
+					}
+				}
+			
+		}
+		/*
+		 *author:zhaoj
+		 *function:弹出Alert提示框
+		 *date：20160503
+		 */
+		function popAlert(message) {
+			api.alert({
+				msg : message
+			}, function(ret, err) {
+			});
+		}
+		/*
+		*author:zhangm
+		*function:设定已经审批过
+		*date：20160727
+		*/
+		function setExamined() {
+			ifex=1;
+		}
+		/*
+		*author:zhangm
+		*function:初始化审批状态
+		*date：20160728
+		*/
+		function initExamined() {
+			ifex=0;
+			resource_exid=-1;
+			if(isadmin==1){
+			$api.css($api.byId('examine'), 'display:block;');
+			}
+			$api.css($api.byId('display'), 'display:block;');
+		}
+		/*
+		*author:zhangm
+		*function:设置审批资源id
+		*date：20160728
+		*/
+		function setExaminedId(id) {
+			
+			resource_exid=id;
+		}
+		/*
+		*author:zhangm
+		*function:审批资源
+		*date：20160727
+		*/
+		function examineSource(){
+			if(resource_exid==-1){
+				popAlert("获取资源失败");
+				return;
+				
+			}
+			api.confirm({
+				title : '提示',
+				msg : '确定审批通过该资源？',
+				buttons : ['确定', '取消']
+			}, function(ret, err) {
+				if (ret) {
+					if (ret.buttonIndex == 1) {
+						if(ifex==0){
+							var BASE_URL_ACTION = $api.getStorage('BASE_URL_ACTION');
+							api.ajax({
+									url :BASE_URL_ACTION+'/yx/publish/setPublishIsTuijian?t=0.4203088690992445&id='+resource_exid+'&is_tuijian=1',
+									method : 'get',
+									timeout : 30,
+									dataType : 'json',
+									headers : {
+									'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+								}
+								}, function(ret, err) {
+									if(ret.success){
+										setExamined();
+										api.toast({
+											msg : "审核成功。",
+											location : 'middle'
+										});
+									}else{
+										popAlert("审核失败");
+									}
+								});
+						}else{
+							api.toast({
+									msg : "该资源已经审核过了。",
+									location : 'middle'
+								});
+						}
+					}
+				}
+			});
+		}
+		
+	</script>
+</html>

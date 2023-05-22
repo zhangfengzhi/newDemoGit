@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>学生考勤详情页</title>
+    <link rel="stylesheet" type="text/css" href="../../../../../css/aui/aui.css"/>
+    <link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+    <style>
+    	.header-img{width:100px;height:100px;margin:0 auto;}
+    	.header-size{width:100px;height:100px;margin:0 auto;margin-top:35px;border-radius:100px;}
+    	.stu-name{width:100px;height:20px;text-align: center;margin-top:5px;}
+    	.border{padding-left: 35px;height:37px;margin:0 auto;margin-top:110px;}
+		.am0{float:left;margin:32px 10px 0 35px;width:45px;height:31px;}
+		.am{width:50px;height:40px;border:1px solid #32A9FB;float:left;margin:22px 15px 0 0;text-align:center;line-height:40px;color:#32A9FB;}
+		.quanxuan-test{position:absolute;left:86px;top: 267px;}
+		.lesson{margin:0 auto;margin-top:3px;}
+		.foot{width:100%;height:50px;background:#32A9FB;position:fixed;bottom:0;left:0;color:#FFFFFF;text-align:center;line-height: 50px;}
+		.border-a{width:76px;height:76px;background:#60CBF3;border-radius:76px;padding:3px 0 0 3px;}
+		.border-b{background:#EFBB46;width:76px;height:76px;border-radius:76px;padding:3px 0 0 3px;}
+		.border-c{background:#EF7489;width:76px;height:76px;border-radius:76px;padding:3px 0 0 3px;}
+		.pm{background:#169BD5 !important;}
+		.quanxuan{width:26px;height:26px;border:1px solid #CCCCCC;margin:17px 0 0 37px;border-radius:5px;}
+		.quanxuans{width:26px;height:26px;background:url(../../../../../image/fun-module/iphone/quanxuan.png) left top no-repeat;background-size:26px;margin:17px 0 0 37px;border-radius:5px;} 
+		.date{float:left;margin-right: 15px;}
+		.select_time{float:left;color:#32A9FB;}
+		.tips{color:#CCCCCC;margin:15px 0 0 83px;padding-bottom:60px;}
+		.pl112{padding-left:90px;}
+		.tip1{color:#CCCCCC;text-align:center;margin-top:15px;display:none;}
+    </style>
+</head>
+<body>
+	<div class="header-img">
+		<img src="../../../../../image/common/header.png" alt="" class="header-size" id="stu_header">
+		<div class="stu-name" id="stu_name">
+		</div>
+	</div>
+	<div class="border">
+		<div>
+			<div class="date">日期:</div>
+			<div class="select_time"id="select_time" onclick="chooseData()"></div>
+		</div>
+	</div>
+	<div class="midcontent" id='midcontent'>
+		<div class="quanxuan" id="quanxuan" onclick="both(1)"></div>
+		<div class="quanxuan-test" >全选</div>
+	</div>
+			<div class="lesson clearfix" id="am_lesson">
+			</div>
+			<script id="am_script" type="text/html">	
+			<div class="am0" id="am">上午:&nbsp;</div>
+			<div class="am_border clearfix pl112" id="am1">
+				<%for(var i=0;i<list.length;i++){%>					
+						<div class="am" onclick="choose(<%=list[i].lesson_num%>)" id="<%=list[i].lesson_num%>"><%=list[i].lesson_num%></div>					
+				<%}%>
+			</div>
+			</script>
+			<div class="lesson clearfix" id="pm_lesson">
+			</div>
+			<script id="pm_script" type="text/html">	
+			<div class="am0"id="pm" >下午:&nbsp;</div>
+				<div class="am_border clearfix pl112" id="pm1">
+				<%for(var i=0;i<list.length;i++){%>					
+						<div class="am" onclick="choose(<%=list[i].lesson_num%>)" id="<%=list[i].lesson_num%>"><%=list[i].lesson_num%></div>					
+				<%}%>
+				</div>
+			</script>
+	<div class="tip1" id="tip1">当前日期暂无考勤课节</div>
+	<div class="tip1" id="tip2">本日休息</div>
+	<div class="tips" id="tips">(仅以上课节需要考勤)</div>
+	<div class="foot" onclick="Savekqnews()" id="foot">
+		<div class="foot-btn">确定</div>
+	</div>
+	
+</body>
+<script type="text/javascript" src="../../../../../script/api.js"></script>
+<script type="text/javascript" src="../../../../../script/base_config.js" ></script>
+<script type="text/javascript" src="../../../../../script/plug-in/template.js" ></script>
+<script type="text/javascript" src="../../../../../script/assembly/log-current-time.js"></script>
+<script type="text/javascript" src="../../../../../script/common/common.js"></script>
+<script type="text/javascript">
+	var frameNameLog = 'xskq_detail_frame';////打开插件的frame
+	var winNameLog = 'xskq_detail_window';//打开插件的window
+	var status_type=0;
+    var person_list = []; 
+    var all_list=[];
+    var daily_time = '';
+	apiready = function(){
+		commonSetTheme({"level":5,"type":0});
+		daily_time = api.pageParam.daily_time;
+		person_list = api.pageParam.person_list;
+		$api.html($api.byId('stu_name'), api.pageParam.stu_name);
+		$api.attr($api.byId('stu_header'), 'src', api.pageParam.header_pic);
+		ChooseStatus(1);
+		//获取时间
+		setCurrentTime();
+		//获取考勤的课节
+		getClassNum();
+	};
+	/*
+	 *author:ws
+	 *function:获取考勤的课节数
+	 *date：20170222
+	 */
+	function getClassNum(){
+		all_list = [];
+		api.ajax({			
+            url : BASE_URL_ACTION + '/space/daily_time/get_class_dailytime_time_list?daily_time='+daily_time+'&class_id='+ api.pageParam.class_id+'&school_id='+$api.getStorage('school_id')+'&class_type='+api.pageParam.class_type,
+            method : 'get',
+            dataType : 'json',
+            timeout : 30,
+            headers : {
+    'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+}            
+        }, function(ret, err) {    
+            if (err) {
+              popToast('对不起，获取失败');
+            } else {
+              if(ret.success){  
+              	  if(ret.err_code==006) {
+              	  	$api.css($api.byId('midcontent'),'display:none');//全选按钮
+				  	$api.css($api.byId('tips'),'display:none');							  		  	
+				  	$api.css($api.byId('foot'),'display:none');	
+				  	$api.css($api.byId('tip1'),'display:none');
+				  	$api.css($api.byId('tip2'),'display:block');
+				  	$api.css($api.byId('am'),'display:none');
+				  	$api.css($api.byId('pm'),'display:none');							  		  	
+				  	$api.css($api.byId('am1'),'display:none');	
+				  	$api.css($api.byId('pm1'),'display:none');
+				  	return;
+              	  } else{
+              	  	  $api.css($api.byId('tip2'),'display:none');	
+              	  	  var list=ret.list;
+	             	   if(list.length==0){
+					  	$api.css($api.byId('midcontent'),'display:none');//全选按钮
+					  	$api.css($api.byId('tips'),'display:none');							  		  	
+					  	$api.css($api.byId('foot'),'display:none');	
+					  	$api.css($api.byId('tip1'),'display:block');
+					  	$api.css($api.byId('am'),'display:none');
+					  	$api.css($api.byId('pm'),'display:none');							  		  	
+					  	$api.css($api.byId('am1'),'display:none');	
+					  	$api.css($api.byId('pm1'),'display:none');		
+					  }else{
+						$api.css($api.byId('midcontent'),'display:block');//全选按钮
+						$api.css($api.byId('tips'),'display:block');							  		  	
+					  	$api.css($api.byId('foot'),'display:block');	
+					  	$api.css($api.byId('tip1'),'display:none');	
+					  	
+					  } 	
+              	  }                            	         
+             	  all_list=list;
+             	  var am_ret = {list:[]};//上午课节
+             	  var pm_ret = {list:[]};//下午课节
+             	  var am_index = 0;//上午第几节课					
+				  var pm_index = 0;//下午第几节课   				  
+				  for(var i=0;i<list.length;i++){    				   
+		          	  if(list[i].lesson_num*1<=ret.morning_num*1){
+		          			am_ret.list[am_index] = list[i];		          		
+		          			am_index++;		         
+		          	  }else{
+		          	  		pm_ret.list[pm_index] = list[i];
+		          			pm_index++;
+		          	  }                                   	    	
+                  	  if(i == list.length-1){
+	                  	  if(am_ret.list.length>0){
+	                  	  	commonAddOrRemoveHideCss('am1',1);
+	                  	  	commonAddOrRemoveHideCss('am',1);
+			          		commonAddOnceHtml('am_lesson','am_script',am_ret);
+			          	  }else{
+			          	  	commonAddOrRemoveHideCss('am1',0);
+			          	  	commonAddOrRemoveHideCss('am',0);
+			          	  }			          	
+						  if(pm_ret.list.length>0){
+						  	commonAddOrRemoveHideCss('pm1',1);
+						  	commonAddOrRemoveHideCss('pm',1);
+			          		commonAddOnceHtml('pm_lesson','pm_script',pm_ret);
+			          	   }else{
+			          	    commonAddOrRemoveHideCss('pm',0);
+			          	   	commonAddOrRemoveHideCss('pm1',0);
+			          	   }
+			          	   huixian();							          	  
+	                  }
+                  }
+                  
+              }
+            }
+        });
+	}
+	/*
+	 *author:ws
+	 *function:打开日期选项
+	 *date：20170222
+	 */
+	function chooseData() {
+		//按照日查询
+		var time = $api.text($api.byId('select_time'));
+		api.openPicker({
+	        type: 'date',
+			date: time,
+	        title:'选择日期'
+	    },function(ret,err){
+			if(err){
+				popToast('网络繁忙，请稍候重试');
+			}else if(ret){
+				var year = ret.year;
+		        var month = ret.month;
+				month = month > 9 ? month : '0'+month;
+		        var day = ret.day;
+				day = day > 9 ? day : '0'+day;
+		        //这是选择的是日期
+				var value=year+'-'+month+'-'+day;
+				setTime(value);
+			}
+	    });
+
+
+	}
+	/*
+	 *author:ws
+	 *function:事件返回window页
+	 *date：20170318
+	 */
+	function getLogData(type, time, year) {
+		timeParam = time;
+		judgeMonth = type;
+		yearDay = year;
+		daily_time = time;
+    	getClassNum();
+	}
+	/*
+	 *author:zhaoj
+	 *function:获取时间(设置时间格式2017年3月)
+	 *date：20160803
+	 */
+	function setTimeValue(year, month) {
+		var Month = month > 9 ? month : '0' + month;
+		var setDateValue = year + '年' + Month + '月';
+		var today = document.getElementById('select_time');
+		yearValue = year;
+		monthValue = Month;
+		judgeMonth = 2;
+		timeParam = Month;
+		$api.html(today, setDateValue);
+	}
+	/*
+	 *author:ws
+	 *function:设置时间格式2017-03-07
+	 *date：20170315
+	 */
+	function setTime(time) {
+		var current = document.getElementById('select_time');
+		timeParam = time;
+		judgeMonth = 1;
+		daily_time = time;
+		$api.text(current, time);
+		getClassNum();
+	}
+	/*
+	*author:cui
+	*function:选择课节数
+	*date：20180316 
+	*/
+	function choose(id){
+		if($api.hasCls($api.byId(id), 'pm')){
+			$api.removeCls($api.byId(id), 'pm');
+			$api.css($api.byId(id), 'color:#32A9FB');
+			$api.removeCls($api.byId('quanxuan'), 'quanxuans');	
+			$api.addCls($api.byId('quanxuan'), 'quanxuan');	
+			deal(0,id);
+		}else{
+			  $api.addCls($api.byId(id), 'pm');
+			  $api.css($api.byId(id), 'color:#ffffff');
+			  var flag_noquanxuan = true;
+			  deal(1,id);
+		      for(var i=0;i<all_list.length;i++){
+		          if($api.hasCls($api.byId(all_list[i].lesson_num), 'pm') == false){
+		              flag_noquanxuan = false;
+		          }
+		      }
+		      if(flag_noquanxuan){
+		      	  $api.attr($api.byId('quanxuan'), 'onclick', 'both(2)');
+		          $api.removeCls($api.byId('quanxuan'),'quanxuan');
+		          $api.addCls($api.byId('quanxuan'),'quanxuans');
+		      }
+		   
+		}
+	}
+	/*
+	*author:cui
+	*function:全选
+	*date：20180316
+	*/
+	function both(type){
+		kejie_list = [];
+		if(status_type==0){
+			popToast('请选择请假课节');
+			return;
+		}
+		switch(type){
+			case 1:
+				$api.attr($api.byId('quanxuan'), 'onclick', 'both(2);');	
+				$api.removeCls($api.byId('quanxuan'), 'quanxuan');	
+				$api.addCls($api.byId('quanxuan'), 'quanxuans');				
+				for(var i=0;i<all_list.length;i++){
+					if(!$api.hasCls($api.byId(all_list[i].lesson_num), 'pm')){
+						$api.addCls($api.byId(all_list[i].lesson_num), 'pm');
+						$api.css($api.byId(all_list[i].lesson_num), 'color:#ffffff');
+					}
+					var param = new Object();
+					param.id = all_list[i].lesson_num;
+					kejie_list.push(param);
+				}
+				break;
+			case 2:
+				$api.attr($api.byId('quanxuan'), 'onclick', 'both(1);');
+				$api.removeCls($api.byId('quanxuan'), 'quanxuans');	
+				$api.addCls($api.byId('quanxuan'), 'quanxuan');	
+				for(var i=0;i<all_list.length;i++){
+					if($api.hasCls($api.byId(all_list[i].lesson_num), 'pm')){
+						$api.removeCls($api.byId(all_list[i].lesson_num), 'pm');
+						$api.css($api.byId(all_list[i].lesson_num), 'color:#32A9FB');						
+					}
+				}
+				kejie_list = [];
+				break;
+		}
+	}
+	/*
+	*author:cui
+	*function:处理数据
+	*date：20180327
+	*/	
+	var kejie_list=[];
+	function deal(type,index){
+		if(type==1){
+			var param=new Object();
+			param.id = index;
+			kejie_list.push(param);
+		}else{
+			for(var i=0;i<kejie_list.length;i++){
+				if(kejie_list[i].id==index){
+					kejie_list.splice(i,1);
+				}
+			}		
+		}
+	}
+	
+	/*
+	*author:zfz
+	*function:保存考勤信息
+	*date：20180327
+	*/
+	function getStageId(callBack){
+		api.ajax({
+		url :BASE_URL_ACTION + '/admin/new_base/getClassInfoById?class_id='+api.pageParam.class_id,
+		method : 'post',
+		timeout : 30,
+		dataType : 'json',
+		headers : {
+'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+	}
+	}, function(ret, err) {
+		if (err) {
+		} else {
+			if(ret.success){
+				callBack(ret.stage_id)
+			}else{
+			}
+		}
+	});
+	}
+		/*
+	*author:cui
+	*function:保存考勤信息
+	*date：20180327
+	*/
+  	
+	function Savekqnews(){
+	    showSelfProgress('加载中...');
+	  	var kejie = '';
+        if(kejie_list.length>0){
+        	for(var i=0;i<kejie_list.length;i++){
+	        	kejie += kejie_list[i].id + ',';
+	        }
+	        kejie = kejie.substring(0,kejie.length-1);
+        }else{
+       		kejie='';
+        }
+        getStageId(function(stage_id){   
+        	api.ajax({
+				url : BASE_URL_ACTION + '/space/daily_time/save_daily_time',
+				method : 'post',
+				timeout : 30,			
+				dataType : 'json',
+				data : {
+					values : {
+						"class_id" : api.pageParam.class_id,
+						"school_id":$api.getStorage('school_id'),
+						"d_data":JSON.stringify(person_list),
+						"lesson_nums":kejie,
+						"identity_id" : $api.getStorage("identity"),
+						"stage_id" : api.pageParam.stage_id,
+						"status":1,
+						"person_id" :$api.getStorage("person_id"),
+						"daily_time":daily_time,
+						"class_type":api.pageParam.class_type,
+						'year':api.pageParam.entrance_year
+					}
+				},
+				headers : {
+		'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+		}
+				}, function(ret, err) {					
+					if (err) {			
+						popToast('对不起，获取失败');
+	    			} else {
+	    				if(ret.success){  
+	    				commonExecScript('xskq_index_window','xskq_index_frame','initData(1);',1);  		
+	                    setTimeout(function() {                        		                            
+	                        commonCloseFrame('xskq_apply_frame');
+	                      }, 1000);  
+	                       popToast('设置成功'); 
+	                    }
+	    			}
+	                api.hideProgress();
+	    	});
+        })
+		
+  	  }
+
+	/*
+	*author:cui
+	*function:选择请假
+	*date：20180316
+	*/
+	function ChooseStatus(status){
+		status_type=status;		
+		onclick_flag = false;
+		switch(status){
+			case 1:
+				if($api.hasCls($api.byId(status+'_st'), 'border-a')){				
+					$api.removeCls($api.byId(status+'_st'), 'border-a');
+					status_type=0;
+				}else{
+					$api.addCls($api.byId(status+'_st'), 'border-a');
+				}				
+			break;			
+		}
+		
+       }
+       /*
+		*author:cui
+		*function:获取学生考勤记录
+		*date：20180316
+		*/
+       function huixian(){ 
+			both(2);  	
+			api.ajax({			
+            url : BASE_URL_ACTION + '/space/daily_time/query_daily_time_byperson_idand_daily_time?daily_time='+daily_time+'&person_id='+ api.pageParam.d_person_id,
+            method : 'get',
+            timeout : 30,
+            dataType : 'json',
+            headers : {
+    'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+}
+        }, function(ret, err) {   
+            if (err) {
+              popToast('对不起，获取考勤信息失败');
+            } else {
+               if(ret.success){
+					var list=ret.list;					
+			    	for(var i=0;i<list.length;i++){                   	
+               			if(list[i].status == 1){            			
+               				choose(list[i].lesson_num);                				
+               			}                  
+        			}           	
+               }
+            }
+        });
+	}
+
+
+</script>
+</html>

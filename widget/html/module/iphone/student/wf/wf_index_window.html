@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<title>办公</title>
+		<link rel="stylesheet" type="text/css" href="../../../../../css/aui/aui.css" />
+		<link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+		<style>
+            body {
+            }
+            .close {
+                position: absolute;
+                margin: 1px 10px 0px 80px;
+                font-size: 15px;
+            }
+		</style>
+	</head>
+	<body>
+		<div id="wrap">
+			<header class="aui-bar aui-bar-nav aui-bar-primary" id="aui-header">
+				<div id="cloud" class="topbar activebar">
+					<div id="back" class="back" onclick="clickReturnBtn();" tapmode="">
+						<i class="aui-iconfont aui-icon-left"></i>返回
+					</div>
+					<div class="mTitle" id="mTitle">
+						理想名师云课
+					</div>
+					<div class="win-menu">
+					   <a id='menu' class="aui-iconfont aui-icon-menu back" onclick="openMenuFrame()"></a>
+					</div>
+				</div>
+			</header>
+			<div  class="aui-content aui-content-padded" id="message-content">
+				<p class="aui-text-center history-date"></p>
+			</div>
+		</div>
+		<script type="text/javascript">
+		    /*
+		     * 功能：获取个人信息
+		     * 作者：张自强
+		     * 时间：20180630
+		     */
+            function getPersonInfo(){
+                getUserInFo(function(flag,data){
+                    var err_info = '';
+                    if(!flag){
+                        err_info = data;
+                    }
+                    var str = {
+                        'personName' : $api.getStorage('person_name'),
+                        'personId'  :  $api.getStorage('person_id'),
+                        'indentity' : $api.getStorage('identity'),
+                        'role_ids' : data,
+                        'err_info':err_info,
+                        'class_name':$api.getStorage('class_name'),
+                        'class_id' : $api.getStorage('class_id')
+                    };
+                    str = JSON.stringify(str);
+                    commonExecScript(api.winName,'wf_index_frame','postPersonInfo('+str+')',1);
+                });
+            }
+            
+            /*
+             * 功能：关闭当前页面
+             * 作者：张自强
+             * 时间：20180706
+             */
+            function closeThisModule(){
+                 api.closeWin();
+            }
+            
+            /*
+             * 功能：获取个人信息
+             * 作者：张自强
+             * 时间：20180709
+             */
+            function getUserInFo(callback){
+                api.ajax({
+	                url:$api.getStorage('BASE_URL_ACTION')+'/ypt/userinfo/getUserInfo?person_id='+$api.getStorage('person_id')+'&identity_id='+$api.getStorage('identity')+'&u_type=5',
+	                method : 'get',
+	                dataType : 'json',
+	                timeout : 30,
+	                headers : {
+    'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+}
+                },function(ret,err){
+                	if(err){
+                	   callback(false,err)
+                	}else{
+                	   if(ret.success){
+                	       callback(true,ret.role_ids);    
+                	   }else{
+                	       callback(false,ret);
+                	   }
+                	}
+                });
+            }
+            
+            
+            /*
+             * 功能：强制竖屏
+             * 作者：张自强
+             * 时间：20180716
+             */
+            function setScreenUp(){
+                commonSetScreen(1);
+            }
+            
+            /*
+             * 功能：自动旋转屏幕
+             * 作者：张自强
+             * 时间：20180716
+             */
+            function setScreenUp(){
+                commonSetScreen(3);
+            }
+        </script>
+		<script type="text/javascript" src="../../../../../script/api.js"></script>
+		<script type="text/javascript" src="../../../../../script/base_config.js"></script>
+		<script type="text/javascript" src="../../../../../script/common/common.js"></script>
+	</body>
+	<script type="text/javascript">
+        //顶部header高度
+        var header_h;
+        var w_h;
+        var statu = 'courseList';
+        apiready = function() {
+            //定位header位置，留出上面电池等空隙，苹果需要
+            commonSetTheme({"level":5,"type":0});
+            var header = $api.byId('aui-header');
+            $api.fixStatusBar(header);
+            header_h = api.pageParam.header_h;
+            w_h = api.winHeight - header_h;
+            backForAndroid();
+            goBgFrame();
+        };
+        
+        function goBgFrame() {
+            api.openFrame({
+                name : 'wf_index_frame',
+                scrollToTop : true,
+                allowEdit : true,
+                url : BASE_URL_ACTION + '/lxmsyk/famousTeacherCloudClass/index_new.html?sys_type=1&page_id=courseList&equipmentType='+api.uiMode,
+                showProgress : true,
+                rect : {
+                    x : 0,
+                    y : header_h,
+                    w : 'auto',
+                    h : api.winHeight - header_h,
+                },
+                pageParam : {
+                    header_h : header_h
+                },
+                vScrollBarEnabled : true,
+                hScrollBarEnabled : false,
+                //页面是否弹动 为了下拉刷新使用
+                bounces : false
+            });
+        }
+        
+        /*
+         * 功能：打开menu页面
+         * 作者：张自强
+         * 时间：20180630
+         */
+        function openMenuFrame(){
+             var pageParamJson = {header_h : api.pageParam.header_h,'statu':statu}
+          commonOpenFrame("wf_menu_frame", "wf_menu_frame.html", 0, false, false, 'rgba(0,0,0,0)', pageParamJson);
+        }
+        
+        /**
+         * 返回应用页面
+         * 周枫
+         * 2015.10.11
+         */
+        function clickReturnBtn() {
+            commonExecScript(api.winName,'wf_index_frame','clickReturnBtn()',1);
+        }
+        
+
+        /**
+         * 安卓点击返回的时候
+         * 周枫
+         * 2015.10.14
+         */
+        function backForAndroid() {
+            api.addEventListener({
+                name : "keyback"
+            }, function(ret, err) {
+                clickReturnBtn();
+            });
+        }
+        
+
+        
+        /*
+         * 功能：切换类型
+         * 作者：张自强
+         * 时间：20180630
+         */
+        function changeStatu(stats){
+            statu = stats;
+            commonExecScript(api.winName,'wf_index_frame','changShowPage("'+statu+'")',1);
+        }  
+        
+        /*
+         * 功能：隐藏menu
+         * 作者：张自强
+         * 时间：20181217
+         */
+        function closeThisMenu(type){
+            commonAddOrRemoveHideCss('menu',type*1);
+        }      
+    </script>
+</html>

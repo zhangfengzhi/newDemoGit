@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <title>语音录入</title>
+    <link rel="stylesheet" type="text/css" href="../../../../../css/aui/aui.css" />
+    <link rel="stylesheet" type="text/css" href="../../../../../css/module/ipad/popup-body.css"/>
+    <link id="j_theme_base" rel="stylesheet" type="text/css" href="" /><style>
+    	body{
+    		background:#fff;
+    	}
+    	.notice_content{display:block;padding-top:20px;width:94%;overflow-y:auto;margin-left:3%;}
+    	.microphone{position:absolute;bottom:65px;width:100%;left:0; }
+    	.microphone img{display:block;margin:0 auto;}
+    	.save{position:absolute;right:3px;top:0;font-size: 16px !important;height:50px;line-height:50px;}
+    	.aui-iconfont{font-size:30px;}
+    	.history-date {
+				font-size: 12px;
+			}
+			#message-content {
+				overflow-y: auto;
+				display: none;
+			}
+			#wrap {
+				display: -webkit-box;
+				display: -webkit-flex;
+				display: flex;
+				-webkit-box-orient: vertical;
+				-webkit-flex-flow: column;
+				flex-flow: column;
+			}
+			.topbar {
+				height: 50px;
+				/*border-bottom: 1px solid #DDDFE3;*/
+				line-height: 50px;
+				text-align: center;
+				display: none;
+				color: #ffffff;
+				font-size: 18px;
+			}
+			.activebar {
+				display: block;
+			}
+			.mTitle {
+				width: 100%;
+				font-size: 18px;
+				text-align:center;
+				display: inline-block;
+				word-break: keep-all;
+				white-space: nowrap;
+				overflow: hidden;
+				text-overflow: ellipsis;
+			}
+			.note-red{
+				padding-top:20px;
+				padding-left:3%;
+				/*text-align:center;*/
+			}
+			.note-red span{
+				display:inline-block;
+			}
+			.note-red .tip-title{
+				display:block;
+				width:100%;
+				text-align:left;
+			}
+			.bgred{background:#FA4848;}
+			
+			.popup-body-new	.commont-content{padding:52px 0 50px 0;}
+	    	.content-name{height:60px;}
+	    	input[type='text'],textarea{border:none;margin-bottom:0;}
+	    	input[type='text']{height:59px;border-bottom:1px dashed #aaaaaa;padding:10px 0;}
+	    	textarea{height:130px;padding:20px;max-height:130px;overflow-y: auto;}
+	    	.popup-body-new .commont-content .position{font-size:16px;padding:20px 0 0 30px;}
+	    	.popup-body-new .commont-content{width: 620px;height: 500px;margin-left: -310px;margin-top: -250px;}
+	    	.popup-body-new .commont-content .btn-left1{right:88px;width:90px;}
+	    	.popup-body-new .commont-content .btn-left2{right:186px;width:90px;}
+    </style>
+</head>
+<body class="popup-body-new common-ipad-xwzxIpad-tea">
+  	<div class="commont-content">
+  		<div class="top fl">
+			<div class="name">语音录入</div>
+			<div class="close fr" onclick="closeFrame();"></div>
+		</div>
+		<div class="content">
+			<div id="tip" class="note-red">
+				<span>
+					<span class="tip-title">温馨提示：<br />
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1.此功能在手机连接网络的情况下，才能使用<br />
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2.如果您在10秒之内不说话，系统将结束录音<br />
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;3.点击“开始录音”按钮，开始录音<br />
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.点击“结束录音”按钮，结束录音<br />
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;5.录音结束后，点击“保存”按钮，保存语音录入内容，返回发布新闻资讯界面<br />
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;6.下方空白处将显示录入的新闻资讯内容
+					</span>
+				</span>
+			</div>
+			<div id="notice_content" class="aui-content-padded notice_content"></div>
+		</div>
+		<div class="btn btn-left2" onclick="record();">开始录音</div>
+		<div class="btn btn-left1" onclick="stop();">结束录音</div>
+		<div class="btn" onclick="save();">保存</div>
+  	</div>
+	
+	
+</body>
+<script type="text/javascript" src="../../../../../script/api.js"></script>
+<script type="text/javascript" src="../../../../../script/common/common.js"></script>
+<script type="text/javascript">
+	var str="";
+	var winWidth;
+	var winHeight;
+	var speechRecognizer;
+	var str_ls='';
+	apiready = function(){
+		commonSetTheme({"level":5,"type":0});
+		winWidth = api.winWidth*0.5;
+		winHeight = api.winHeight;	
+	};
+	/*
+	*author:zhaoj
+	*function:点击语音录入图片
+	*date：20160109
+	*/
+	function record(){	
+		//var el = $api.byId('tip');
+		//$api.css(el,'display:none');
+		popToast('开始录音');
+		var notice_content = $api.byId('notice_content');
+		var al= $api.byId('notice_content');
+//		var height =winHeight-197;
+//		$api.css($api.byId('notice_content'),'max-height:'+height+'px');
+		speechRecognizer = api.require('speechRecognizer');
+		speechRecognizer.record({
+		  vadbos:10000,
+		  vadeos:5000,
+		  rate:16000,
+		  asrptt:1
+		},function(ret,err){
+		   if(ret.status){
+		    	if(ret.wordStr == '。'){
+		    		str_ls = $api.text(notice_content);
+		    	}
+		    	str=str_ls+ret.wordStr;
+		    	if(ret.wordStr == '。'){
+		    		str_ls = str_ls+'。';
+		    	}
+		        $api.text(notice_content,  str );
+		    } else {
+		    }
+		});
+		//openNew();
+	}
+	/*
+	*author:zhaoj
+	*function:结束录音
+	*date：20160726
+	*/
+	function stop(){
+		popToast('结束录音');
+		speechRecognizer.stopRecord();
+	}
+	/*
+	*author:zhaoj
+	*function:打开灰色圆环
+	*date：20160109
+	*/
+	function openNew(){
+		var obj = api.require('speechRecognizer');
+	    obj.addRecordHUD({
+	        centerX: winWidth,
+	        centerY: winHeight - 100,
+	        radius: 60,
+	        transparentR:33,
+	        bg: '#cccccc',
+	        fixed: true
+	    },function(ret,err){
+	    });
+	}
+	/*
+	*author:zhaoj
+	*function:xwzx_index_window.html点击保存按钮
+	*date：20160109
+	*/
+	function save(){
+		str =JSON.stringify( str );
+     	recordSave(str);
+	}
+	/*
+	*author:zhaoj
+	*function:关闭语音录入页面
+	*date：20160109
+	*/
+    function recordSave(str){
+		openTongzhiRecordAddFrame(str); 
+		api.closeFrame({
+			name : 'xwzxIpad_record_frame'
+		});
+    }
+    /*
+	*author:zhaoj
+	*function:改变返回事件的返回参数，将录入的内容放到新闻资讯页面
+	*date：20160109
+	*/
+    function openTongzhiRecordAddFrame(str) {
+        api.execScript({
+			name : 'xwzxIpad_index_window',
+			script : 'reBackType("add");'
+		});
+		api.execScript({
+			name : 'xwzxIpad_index_window',
+			frameName : 'xwzxIpad_add_frame',
+			script : 'recordContent('+str+');'
+		});
+
+//		api.execScript({
+//			name : 'xwzx_index_window',
+//			frameName : 'xwzx_index_frame',
+//			script : 'closeNavBar();'
+//		});
+	}
+	
+	/*
+		*author:zfz
+		*function:关闭页面
+		*date：20171013
+		*/
+		function closeFrame(){
+			commonExecScript('xwzxIpad_index_window','','back();',0);
+		}
+</script>
+</html>

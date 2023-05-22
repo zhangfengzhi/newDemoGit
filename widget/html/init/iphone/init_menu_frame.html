@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<!-- html5：在创建html时为了防止页面缩放等不兼容效果，要创建个viewport  -->
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<!-- 在IOS设备上，有时会将数字转为手机号，这里也要禁止下 -->
+		<meta name="format-detection" content="telephone=no"/>
+		<title>圈子下拉菜单</title>
+		<link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+		<style>
+    	html, body {
+        	background-color: rgba(0,0,0,0) !important;
+   		 }
+    	body{padding:0;margin:0;}
+    	.shadow{position:absolute;left:0;top:0;width:100%;height:100%;z-index: 1;}
+    	.header{width:100%;height:45px;}
+    	.main{width:100%;}
+    	.menu-list{
+    		list-style:none;
+    		background-color: #ffffff;
+			box-shadow: 0px 0px 5px #cccccc;
+			position: relative;
+			width: 165px;
+			float: right;
+			z-index: 2;
+			padding: 0;
+			margin:0;
+		}
+		.menu-list li {
+			height: 48px;
+			line-height:48px;
+			display: block;
+			border-bottom: 1px solid #eeeeee;
+			color: #333;
+			font-family: sans-serif;
+			text-align:center;
+		}
+		.menu-list li .icon-box{width:50px;height:48px;display:inline-block; text-align:center;}
+		.menu-list li span{display:block;width:100%;height:48px;line-height:48px;float:left;text-align:center;}
+		.ellipsis{white-space: nowrap;overflow: hidden;text-overflow: ellipsis;}
+    </style>
+	</head>
+	<body class="init-iphone-body">
+		<div class="shadow" onclick="closeMenuFrame();"></div>
+		<div id="header" class="header"></div>
+		<div id="main" class="main">
+			<ul id="ul" class="menu-list" style="display: none">	
+				<li id="school_id" class="active" onclick="getXY();">
+					<span class="ellipsis">校园</span>
+				</li>
+			</ul>
+		</div>
+	</body>
+	<script type="text/javascript" src="../../../script/api.js"></script>
+	<script type="text/javascript" src="../../../script/base_config.js" ></script>
+	<script type="text/javascript" src="../../../script/common/common.js"></script>
+	<script type="text/javascript">
+		var person_id = 0;
+		var identity_id = 0;
+		var header_h;
+		var pageParamJson = {};
+		var currentPage = 1;
+		var class_list = [];
+		apiready = function () {
+			commonSetTheme({"level":3,"type":0});
+			/*
+			 * 调整menu高度
+			 * header是隐藏的，代表工具栏到手机屏幕最上方的距离
+			 * main代表工具栏下方到手机屏幕最下方的距离
+			 * 有些手机的header_h会将上方的电池那一栏的高度也算进去，所以要特殊设置menu
+			 */
+		    header_h = api.pageParam.header_h;
+		    var head_h = header_h;
+			$api.css($api.byId('header'), 'height:' + head_h + 'px;');
+			$api.css($api.byId('main'), 'height:' + (api.winHeight - api.pageParam.h) + 'px;');
+			$api.getStorage('identity') == 6 ? setStudentMenu():getClass();
+		}
+		/*
+		 * 设置学生的下拉菜单选项
+		 * zhaoj
+		 * 20180131
+		 */
+		function setStudentMenu(){
+			$api.html($api.byId('ul'), '<li id="school_id" onclick="getXY();"><span class="ellipsis">我的学校</span></li><li onclick="getMB();" id="MB"><span class="ellipsis">我的班级</span></li>');
+			//设置选中样式
+			$api.getStorage('bureau_id') == api.pageParam.org_id?$api.addCls($api.byId('school_id'), 'active'):$api.addCls($api.byId('MB'), 'active');
+			$api.css($api.byId('ul'),'display:block');
+		}
+		/*
+		 * 关闭下拉菜单
+		 * zhaoj
+		 * 20180131
+		 */
+		function closeMenuFrame(){
+			commonExecScript('root','','backIndex();',0);
+		}
+		/*
+		 * 打开校园选项
+		 * 张自强
+		 * 20170605
+		 */
+		function getXY(){
+            setParam(104,$api.getStorage('bureau_id'),$api.getStorage('school_name')); 	
+		}
+		/*
+		 * 功能：获取任教班级列表
+		 * 作者：张自强
+		 * 时间：20171012
+		 */
+		function getClass(){
+			api.ajax({
+				url : BASE_URL_ACTION + '/subject/getListSemester',
+				method : 'post',
+				timeout : 30,
+				dataType : 'json',
+				cache : false,
+			}, function(ret, err) {
+				if (err) {
+					popToast('获取学期信息失败，请稍候重试');
+				} else {
+					if(ret.xqlist!=''){
+						if(ret.xqlist.length>0){
+							for(var i=0;i<ret.xqlist.length;i++){
+								if(ret.xqlist[i].SFDQXQ==1){
+									loadRkjhList(ret.xqlist[i].XQ_ID,currentPage);
+								}
+							}
+						}else{
+							$api.css($api.byId('ul'),'display:block');
+						}
+					}
+					else{
+						popToast('获取学期信息失败，请稍候重试');
+					}
+				}
+			});
+		}
+		/*
+		 * author:zfz
+		 * function:获取任课计划相关信息
+		 * data:2016.4.26
+		 */
+		function loadRkjhList(cur_xq_id,currentPage){
+			api.ajax({
+				url : BASE_URL_ACTION + '/person/getTeachPlanByTeacherId',
+				method : 'post',
+				timeout : 30,
+				dataType : 'json',
+				cache : false,
+				data : {
+					values : {
+						"random_num" : creatRandomNum(),
+						'pageNumber':currentPage,
+						"pageSize" : BASE_PAGE_SIZE,
+						"teacher_id":$api.getStorage("person_id"),
+						"xq_id":cur_xq_id
+					}
+				}
+			}, function(ret, err) {
+				api.hideProgress();
+				//通知顶部下拉刷新数据加载完毕，组件会恢复到默认状态
+				commonControlRefresh();
+				if (err) {
+					popToast('获取列表信息失败，请稍候重试');
+					closeMenuFrame();
+		        	$api.css($api.byId('ul'),'display:block');
+				} else {
+					if(ret.success){
+					    if(ret.table_List.length != 0){
+					        var html = '';
+                            currentPage = ret.pageNumber;
+                            totalData = ret.totalRow;
+                            totalPages = ret.totalPage;
+                            var list = ret.table_List;
+                            list = unique(list);
+                            for(var i=0;i<list.length;i++){
+                                if(list[i].CLASS_ID == api.pageParam.org_id){
+                                    $api.removeCls($api.dom($api.byId('ul'), '.active'), 'active');
+                                    var html = '<li class="active" onclick="getBJ('+list[i].CLASS_ID+');"><span class="ellipsis">'+list[i].CLASS_NAME+'</span></li>';
+                                }else{
+                                    var html = '<li onclick="getBJ('+list[i].CLASS_ID+');"><span class="ellipsis">'+list[i].CLASS_NAME+'</span></li>';
+                                }
+                                
+                                $api.before($api.byId('school_id'),html);
+                                var param = new Object();
+                                param.id = list[i].CLASS_ID;
+                                param.name = list[i].CLASS_NAME;
+                                class_list.push(param);
+                                if(i == list.length-1){
+                                    $api.css($api.byId('ul'),'display:block');
+                                }
+                            }  
+					    }else{
+					       $api.css($api.byId('ul'),'display:block');
+					    }
+					}
+					else{
+						$api.css($api.byId('ul'),'display:block');
+						popToast('获取列表信息失败，请稍候重试');
+						closeMenuFrame();
+					}
+				}
+			});
+		}
+		
+		/*
+		 * 功能：选中班级
+		 * 作者:张自强
+		 * 时间：20171012
+		 */
+		function getBJ(org_id){
+			for(var i=0;i<class_list.length;i++){
+				if(org_id == class_list[i].id){
+					showSelfProgress('加载中...');
+					var org_name = class_list[i].name;
+					setParam(105,org_id,org_name); 		
+				}
+			}
+		}
+		/*
+		 * 设置公共的参数
+		 * zhaoj
+		 * 20180131
+		 */
+		function setParam(org_type,org_id,org_name){
+			api.execScript({
+	        	name : 'root',
+	            frameName:'center_index',
+	            script: 'changeQuanziType('+org_type+','+org_id+',"'+org_name+'");'
+	        });
+	        api.hideProgress();
+	        $api.setStorage('quanzi_first_change_id'+ $api.getStorage('person_id'),org_id);
+			$api.setStorage('quanzi_first_change_name'+ $api.getStorage('person_id'),org_name);
+			$api.setStorage('quanzi_first_change_type'+ $api.getStorage('person_id'),org_type);
+			closeMenuFrame();
+		}
+		/*
+		 * 功能：打开我的班级列表
+		 * 作者：张自强
+		 * 时间：20170913 
+		 */
+		function getMB(){
+            setParam(105,$api.getStorage('class_id'),$api.getStorage('class_name')); 	
+		}
+		/*
+		 * author:zfz
+		 * function:班级列表去重
+		 * data:20171014
+		 */
+		function unique(list){
+			 var res = [list[0]];
+			 for(var i = 1; i < list.length; i++){
+			  var repeat = false;
+			  for(var j = 0; j < res.length; j++){
+			   if(list[i].CLASS_ID == res[j].CLASS_ID){
+			    repeat = true;
+			    break;
+			   }
+			  }
+			  if(!repeat){
+			   res.push(list[i]);
+			  }
+			 }
+			 return res;
+			}
+	</script>
+</html>

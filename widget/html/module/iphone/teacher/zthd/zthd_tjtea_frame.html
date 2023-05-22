@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<!-- html5：在创建html时为了防止页面缩放等不兼容效果，要创建个viewport  -->
+	<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+	<!-- 在IOS设备上，有时会将数字转为手机号，这里也要禁止下 -->
+	<meta name="format-detection" content="telephone=no"/>
+    <title>课件</title>
+    <link rel="stylesheet" type="text/css" href="../../../../../css/aui/aui.css" />
+    <link rel="stylesheet" type="text/css" href="../../../../../css/aui_css_new/aui.css" />
+     <link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+     <style>
+    	body{background:#ffffff;}
+    	li{
+    	   height:80px;
+    	   width:100%;
+    	   padding-left:65px;
+    	   border-bottom:1px solid #CDCDCD;
+    	   position:relative;
+    	   }
+    	li .name{
+    	   height:50%;
+    	   line-height:60px;
+    	   width:100%;
+    	   max-width:85%;
+    	}
+    	li .xq{
+    	   height:50%;
+    	   line-height:30px;
+    	   width:100%;
+    	   color:#CDCDCD;
+    	   font-size:14px;
+    	}
+    	li .xq .xq-div{
+    	   float:left;
+    	   width:29%;
+    	   max-width:29%;
+    	}
+    	.mar-left{
+    	   margin-right:1%;
+    	}
+    	.frist-li{
+    	   width:40px;
+    	   height:40px;
+    	   position:absolute;
+    	   right:0;
+    	   top:0;
+    	   background:url(../../../../../image/fun-module/ipad/zthd/top1.png);
+    	   background-size:40px 40px;
+    	}
+    	.frist-second{
+           width:40px;
+           height:40px;
+           position:absolute;
+           right:0;
+           top:0;
+           background:url(../../../../../image/fun-module/ipad/zthd/top2.png);
+           background-size:40px 40px;
+        }
+        .frist-third{
+           width:40px;
+           height:40px;
+           position:absolute;
+           right:0;
+           top:0;
+           background:url(../../../../../image/fun-module/ipad/zthd/top3.png);
+           background-size:40px 40px;
+        }
+	</style>
+</head>
+<body class="index-body common-iphone-zthd-tea">
+	<div class="clearfix">
+		<ul id="zthd_div" class="zuoye-content">
+		<script  type="text/html" id="zthd_script">
+			<%if(list.length == 0){%>
+				<div id="no_quanzi" class="no-data">暂无主题活动统计信息</div>
+			<%}else{%>
+				<%for(var i=0;i< list.length;i++){%>
+					<li onclick="openZthd('<%=list[i].PERSON_ID%>','<%=list[i].PERSON_NAME%>');">
+					    <img style="border-radius:8px;position:absolute;left:8px;top:15px;width:50px;height:50px;"  onerror="this.src='../../../../../image/common/header.png'" src='<%=list[i].avatar_fileid%>'>	
+					    <%if(page_num == 1 && i == 0 && sort_type == 'desc'){%>
+					       <div class="frist-li">&nbsp;</div>
+					    <%}else if(page_num == 1 && i == 1 && sort_type == 'desc'){%>
+					       <%if(three_first_flag || first_flag){%>
+					           <div class="frist-li">&nbsp;</div>
+					       <%}else{%>
+					           <div class="frist-second">&nbsp;</div>
+					       <%}%>
+					    <%}else if(page_num == 1 && i == 2 && sort_type == 'desc'){%>
+					       <%if(three_first_flag){%>
+                               <div class="frist-li">&nbsp;</div>
+                           <%}else if(second_flag){%>
+                               <div class="frist-second">&nbsp;</div>
+                           <%}else{%>
+                               <div class="frist-third">&nbsp;</div>
+                           <%}%>
+					    <%}%>
+						<div class="name ellipsis"><%=list[i].PERSON_NAME%></div>
+						<div class="xq">
+						     <div class="xq-div mar-left ellipsis">活动：<%=list[i].act_count%></div>
+						     <div class="xq-div mar-left ellipsis" style="width:40%;max-width:40%;"> 参与人次：<%=list[i].played_num%></div>
+						     <div class="xq-div ellipsis">作品：<%=list[i].works_num%></div>
+						</div>
+					</li>
+				<%}%>
+			<%}%>
+		</script>
+	</ul>
+	</div>
+</body>
+<script type="text/javascript" src="../../../../../script/api.js"></script>
+<script type="text/javascript" src="../../../../../script/base_config.js" ></script>
+<script type="text/javascript" src="../../../../../script/common/common.js" ></script>
+<script type="text/javascript" src="../../../../../script/plug-in/template.js" ></script>
+<script type="text/javascript">
+	var currentPage = 1;//当前分页数
+	var totalPages = 0;//总页数
+	var totalData = 0;//定义一个变量存储第一次加载返回来的总记录数
+	var start_time = '';//开始时间
+	var end_time = '';//结束时间
+	var sort_column = 1;//排序类型，1：活动数量，2：参与人数，3：作品数量
+	var sort_type = 'desc';//排序方式
+	apiready = function(){
+		initData(1);
+		commonScrollBottomReload();
+		commonRefreshHeaderInfo(); 
+	};
+	
+	/*
+	 * 功能：加载主题活动列表
+	 * 作者：张自强
+	 * 时间：20171023
+	 * 接口提供人：张海
+	 */
+	function initData(current_page){
+		showSelfProgress('加载中...');
+		currentPage = current_page;
+        if(start_time != ''){
+            start_time += ' 00:00:00'
+        }
+        if(end_time != ''){
+            end_time += ' 23:59:59'
+        }
+        var now_selected_type = '';
+        switch(sort_column*1){
+            case 1://1：活动数量
+                now_selected_type = 'act_count';
+                break;
+            case 3://3：参与人数
+                now_selected_type = 'played_num';
+                break;
+            case 2://2：作品数量
+                now_selected_type = 'works_num';
+                break;
+        }
+		api.ajax({
+		        url:BASE_URL_ACTION + '/space/topic/get_topic_act_school_teacher_list?bureau_id='+$api.getStorage('bureau_id')+'&page_num='+currentPage+'&page_size='+BASE_PAGE_SIZE+'&end_time='+end_time+'&start_time='+start_time+'&word_name='+now_selected_type+'&sort='+sort_type+'&random_num='+creatRandomNum(),
+				method : 'get',
+				timeout : 0,
+				dataType : 'json',
+				headers : {
+		'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+	}
+			}, function(ret, err) {
+				totalPages = ret.total_page;
+				totalData = ret.total_row;//定义一个变量存储第一次加载返回来的总记录数
+				if(err){
+					popToast('获取主题活动列表失败，请稍候重试');
+				}else{
+					if(ret.success){
+					    ret.sort_type = sort_type;
+					    var list = ret.list;
+					    var first_flag = false;
+					    var second_flag = false;
+					    var three_first_flag = false;
+					    if(list && list.length >= 2){
+					       switch(sort_column*1){
+					           case 1://活动数量
+					               if(list[0].act_count == list[1].act_count){
+					                   first_flag = true;
+					               }
+					               if(list.length >=3){
+					                   if(list[1].act_count == list[2].act_count){
+                                           second_flag = true;
+                                       }
+                                       if(list[0].act_count == list[1].act_count && list[1].act_count == list[2].act_count){
+                                           three_first_flag = true;
+                                       }
+					               }
+					               break;
+					           case 3://参与人数
+					               if(list[0].played_num == list[1].played_num){
+                                       first_flag = true;
+                                   }
+                                   if(list.length >=3){
+                                       if(list[1].played_num == list[2].played_num){
+                                           second_flag = true;
+                                       }
+                                       if(list[0].played_num == list[1].played_num && list[1].played_num == list[2].played_num){
+                                           three_first_flag = true;
+                                       }
+                                   }
+                                   break;
+                               case 2://作品数量
+                                   if(list[0].works_num == list[1].works_num){
+                                       first_flag = true;
+                                   }
+                                   if(list.length >=3){
+                                       if(list[1].works_num == list[2].works_num){
+                                           second_flag = true;
+                                       }
+                                       if(list[0].works_num == list[1].works_num && list[1].works_num == list[2].works_num){
+                                           three_first_flag = true;
+                                       }
+                                   }
+                                   break;
+					       }
+					    }
+					    ret.first_flag = first_flag;
+					    ret.second_flag = second_flag;
+					    ret.three_first_flag = three_first_flag;
+					    for(var i =0 ; i < ret.list.length; i++){
+					       if(BASE_APP_TYPE == 1){
+                                ret.list[i].avatar_fileid = BASE_IMAGE_PRE + url_path_suffix + ret.list[i].avatar_fileid.substring(0, 2) + "/" +ret.list[i].avatar_fileid + commonReturnPhotoCutSize(1,96,96,ret.list[i].avatar_fileid.substring((ret.list[i].avatar_fileid.length)-3),0);
+                            }else{
+                                ret.list[i].avatar_fileid = BASE_URL_ACTION + BASE_IMAGE_BEGIN + ret.list[i].avatar_fileid.substring(0, 2) + "/" + ret.list[i].avatar_fileid + commonReturnPhotoCutSize(1,96,96,ret.list[i].avatar_fileid.substring((ret.list[i].avatar_fileid.length)-3),0);
+                            }
+					    }
+						commonAddManyHtml('zthd_div','zthd_script',ret);
+					}else{
+						popToast('获取主题活动列表失败，请稍候重试');
+					}
+				}
+				//通知顶部下拉刷新数据加载完毕，组件会恢复到默认状态
+				commonControlRefresh();
+				api.hideProgress();
+			});
+	}
+	
+	/*
+     * 功能：修改时间并加载数据
+     * 作者 ：张自强
+     * 时间：20180912
+     */
+    function changeTimeAndInit(startTime,endTime){
+        start_time = startTime;
+        end_time = endTime;
+        initData(1);
+    }
+    
+    /*
+     * 功能：修改排序方式
+     * 作者：张自强
+     * 时间：20180912
+     */
+    function changeSortType(sortColumn,sortType){
+        sort_column = sortColumn;
+        sort_type = sortType;
+        initData(1);
+    } 
+    
+    /*
+     * 功能：打开某个教师的主题活动列表
+     * 作者：张自强
+     * 时间：20180913
+     */
+    function openZthd(id,name){
+        commonExecScript(api.winName,'','reBackType("tjteaframe","'+name+'");',0);
+        commonExecScript(api.winName,'','changeBtnTitle(0,0);',0);
+        commonExecScript(api.winName,'zthd_index_frame','changeNowPerson("'+id+'",2,"1","'+start_time+'","'+end_time+'",1,1)',1);
+    }
+    
+    /*
+     * 功能：打开menu
+     * 作者：张自强
+     * 时间：20181226
+     */
+    function openTjMenu(){
+        var header_h = api.pageParam.header_h;
+        api.openFrame({
+            name: 'zthd_tjmenu_frame',
+            url: 'zthd_tjmenu_frame.html',
+            bounces: false,
+            rect: {
+                x: 0,
+                y: 0,
+                w: 'auto',
+                h: 'auto'
+            },
+            bgColor : 'rgba(0,0,0,0)',
+            pageParam : {
+                'header_h' : header_h,
+                'sort_type' : sort_type,
+                'sort_column':sort_column,
+                'fromType':2
+            },
+            reload: true
+        }); 
+    }
+</script>
+</html>

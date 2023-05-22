@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>主题活动</title>
+    <link rel="stylesheet" type="text/css" href="../../../../../css/aui/aui.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../../../css/module/common/table-body.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../../../css/module-icon/mode1/iphone/zthd-fonts/zthd-arrow.css" />
+    <link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+    <style>
+    	body{padding:30px 0 20px 0;color:#595757;font-size:18px;}
+    	.title{height:55px;line-height:50px;font-size:25px;text-align:center;color:#fff;background:url(../../../../../image/fun-module/ipad/zthd/tj-bg.png) center 0 no-repeat;background-size:auto 100%;}
+    	.tj-infor ul{text-align:center;padding:30px 25px;}
+    	.tj-infor ul li{display:inline-block;height:42px;line-height:42px;border:1px dashed #F76736;padding:0 15px;border-radius:5px;font-size:20px;}
+    	.fg{display:none;}
+    	.tj-infor ul li{margin: 0 5px}
+    	/*.tj-infor ul li:nth-child(1){margin-right:20px;}
+    	.tj-infor ul li:nth-child(2),.tj-infor ul li:nth-child(4),.tj-infor ul li:nth-child(5){margin:0 20px;}
+    	.tj-infor ul li:nth-child(6){margin-left:20px;}*/
+    	.tj-infor ul li font{color:#F76736;}
+    	.tj-detail{padding:0 25px;}
+    	.table-body th{color:#fff;width:16.8%;}
+    	.table-body th, .table-body td{font-size:18px;line-height:45px;}
+    	.table-body td{padding:0;}
+    	.no-data{padding-top:0;}
+    	.table-body th.active{color:#f76736 !important;}
+    	.unpaly_none_li{display: none;} 
+    	.unpaly_li{display: inline-block;margin: 0 5px} 
+    	.active-click{color:#2980B9}
+    	/*.table-body tr div{display:inline-block;padding-right:20px;position:relative;}
+    	.table-body tr .sort.up{background:url(../../../../../image/fun-module/ipad/zthd/up.png) center center no-repeat;}
+    	.table-body tr .sort.down{background:url(../../../../../image/fun-module/ipad/zthd/down.png) center center no-repeat;}
+    	.table-body tr th.active .sort.up{background:url(../../../../../image/fun-module/ipad/zthd/up-active.png) center center no-repeat;}
+        .table-body tr th.active .sort.down{background:url(../../../../../image/fun-module/ipad/zthd/down-active.png) center center no-repeat;}
+    	.table-body tr .sort.up,.table-body tr .sort.down,.table-body tr th.active .sort.down,.table-body tr th.active .sort.up{background-size:14px auto;}
+    	.table-body tr .sort{display:inline-block;position:absolute;right:0;width:15px;height:100%;float:left;}*/
+    	@media screen and (max-width: 1024px) {
+    	   .fg{display:block;}
+    	   .tj-infor ul li:nth-child(1),.tj-infor ul li:nth-child(4){margin-right:20px;}
+    	   .tj-infor ul li:nth-child(2),.tj-infor ul li:nth-child(6){margin-left:20px;}
+    	   .tj-infor ul li:nth-child(5),.tj-infor ul li:nth-child(7){margin:0 20px;}
+    	}
+    	@media screen and (max-width: 850px) {
+    	   .tj-infor ul li{padding:0 10px;}
+    	}
+    	@media screen and (max-width: 600px) {
+    	   .fg{display:block;}
+           .tj-infor ul li{padding:0;}
+    	}
+    </style>
+</head>
+<body class="common-ipad-zthd-tea">
+	<div class="title">活动统计</div>
+	<div class="tj-infor">
+		<ul id="j_ul">
+			<li>参与人数：<font id="j_played_num"></font></li>
+			<div class="unpaly_none_li" id="j_unplayed_li" onclick="viewUnplayInfo(event);">
+				<li style="border-color: #03A9F4">未参与人数：<font id="j_unplayed_num" style="color: #03A9F4">aa</font></li> 
+			</div>
+			<div class="fg">&nbsp;</div>
+			<li>作品数量：<font id="j_works_num"></font></li>
+			<li>总浏览量：<font id="j_view_num"></font></li>
+			<li>总点赞量：<font id="j_praise_num"></font></li>
+			<li>总评论量：<font id="j_comment_num"></font></li>
+		</ul>
+	</div>
+	<div class="tj-detail">
+		<table  class="table-body">
+			<tr>
+                <th>姓名</th>
+                <th class="active" onclick="order_sort_type(this,'w')">作品数量<div class="zthd-arrow-down2" style="display: inline-block;"></div></th>
+                <th onclick="order_sort_type(this,'v')">浏览量<div class="zthd-arrow-down2" style="display: inline-block;"></div></th>
+                <th onclick="order_sort_type(this,'p')">点赞量<div class="zthd-arrow-down2" style="display: inline-block;"></div></th>
+                <th onclick="order_sort_type(this,'c')">评论量<div class="zthd-arrow-down2" style="display: inline-block;"></div></th>
+            </tr>
+            <tbody id="list_body"></tbody>
+            <script type="text/html" id="list_script">
+                <%if(list.length == 0){%>
+                    <tr><td colspan="5"><div class="no-data">暂时没有数据</div></td></tr>
+                <%}else{%>
+                    <%for(var i = 0; i < list.length; i++){%>
+                        <tr>
+                            <td class="ellipsis"><div class="active-click" onclick="getActivityInfo('<%=list[i].person_name%>','<%=list[i].identity_id%>','<%=list[i].person_id%>',event)"><%=list[i].person_name%></div></td>
+                            <td><%=list[i].works_num%></td>
+                            <td><%=list[i].view_num%></td>
+                            <td><%=list[i].praise_num%></td>
+                            <td><%=list[i].comment_num%></td>
+                        </tr>
+                    <%}%>
+                <%}%>
+            </script>
+		</table >
+	</div>
+</body>
+<script type="text/javascript" src="../../../../../script/api.js"></script>
+<script type="text/javascript" src="../../../../../script/base_config.js" ></script>
+<script type="text/javascript" src="../../../../../script/plug-in/template.js" ></script>
+<script type="text/javascript" src="../../../../../script/common/common.js"></script>
+<script type="text/javascript" src="../../../../../script/plug-in/base64.js" ></script>
+<script type="text/javascript">
+	var currentPage = 1;//当前分页数
+	var totalPages = 0;//总页数
+	var oparam;
+	apiready = function(){
+		commonSetTheme({"level":5,"type":0});
+		oparam = JSON.parse(Base64.decode(api.pageParam.oparam_base64));
+		oparam.order='w';
+        oparam.sort_type='desc';
+		initData(1);
+		commonScrollBottomReload();
+		commonRefreshHeaderInfo();
+	};
+	/*
+    *author:zhaoj
+    *function:改变
+    *date：20171109
+    */
+	function order_sort_type(self,order){
+	   oparam.order = order;
+	   var parent = self.parentNode;
+	    //获取当前节点
+	   var current_span = $api.dom(self, 'span');
+	   if($api.hasCls(self, 'active')){
+	        if ($api.hasCls($api.first(self), 'zthd-arrow-up2')){
+				$api.removeCls($api.first(self), 'zthd-arrow-up2');
+				$api.addCls($api.first(self), 'zthd-arrow-down2');
+				oparam.sort_type = 'desc';
+			}else{
+				$api.addCls($api.first(self), 'zthd-arrow-up2');
+				$api.removeCls($api.first(self), 'zthd-arrow-down2');
+				oparam.sort_type = 'asc';
+			}
+	   }else{
+	       //去掉选中状态
+           var span_active = $api.dom(parent, '.active');
+           $api.removeCls(span_active, 'active');
+	       $api.addCls(self, 'active');
+	       oparam.sort_type = 'desc';
+	   }
+	   initData(1);
+	}
+	/*
+	*author:zhaoj
+	*function:初始化列表
+	*date：20171025
+	*/
+	function initData(page){
+		currentPage = page;
+		get_topic_statlist_by_id();
+	}
+	/*
+	*author:zhaoj
+	*function:通过主题活动id获取活动统计列表.
+	*interface:张海
+	*date：20171025
+	*/
+	function get_topic_statlist_by_id(){
+		showSelfProgress('加载中...');
+		api.ajax({
+			url : BASE_URL_ACTION + '/ypt/space/topic/get_topic_statlist_by_id?random_num='+creatRandomNum()+'&page_num='+currentPage+'&topic_id='+oparam.id+'&page_size='+BASE_PAGE_SIZE_IPAD+'&order='+oparam.order+'&sort_type='+oparam.sort_type,
+			method : 'get',
+			timeout : 30,
+			dataType : 'json',
+			headers : {
+	'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+}
+		}, function(ret, err) {
+			if (err) {
+				popToast('获取统计信息失败，请稍候重试');
+			} else {
+				if(ret.success){
+					totalPages = ret.total_page;
+					commonAddManyHtml('list_body','list_script',ret);
+					
+					get_topic_stat_by_id();
+				}else{	
+					popToast('获取统计信息失败，请稍候重试');
+				}
+			}
+		});
+	}
+	/*
+	*author:zhaoj
+	*function:通过主题活动id获取活动统计列表.
+	*interface:张海
+	*date：20171025
+	*/
+	function get_topic_stat_by_id(){
+		api.ajax({
+			url : BASE_URL_ACTION + '/ypt/space/topic/get_topic_stat_by_id?random_num='+creatRandomNum()+'&page_num='+currentPage+'&topic_id='+oparam.id,
+			method : 'get',
+			timeout : 30,
+			dataType : 'json',
+			headers : {
+	'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+}
+		}, function(ret, err) {
+			if (err) {
+				popToast('获取统计信息失败，请稍候重试');
+			} else {
+				if(ret.success){
+					$api.text($api.byId('j_comment_num'), ret.comment_num);
+					$api.text($api.byId('j_played_num'), ret.played_num);
+					$api.text($api.byId('j_unplayed_num'), ret.not_sum);
+					$api.text($api.byId('j_works_num'), ret.works_num);
+					$api.text($api.byId('j_praise_num'), ret.praise_num);
+					$api.text($api.byId('j_view_num'), ret.view_num);
+					if (oparam.is_publish == 1){
+						if(ret.p_object==1){
+	                    	$api.addCls($api.byId('j_unplayed_li'), "aui-hide");
+	                    }else{
+	                    	$api.addCls($api.byId('j_unplayed_li'), "unpaly_li");
+	                    }
+					}else{
+						$api.addCls($api.byId('j_unplayed_li'), "aui-hide");
+					}
+					
+				}else{	
+					popToast('获取统计信息失败，请稍候重试');
+				}
+			}
+			
+			api.hideProgress();
+			//通知顶部下拉刷新数据加载完毕，组件会恢复到默认状态
+			commonControlRefresh();
+		});
+	}
+	/*
+	*author:wangdongy
+	*function:查看未参与人信息
+	*/
+	function viewUnplayInfo(e){
+		api.execScript({
+                    name : 'zthdIpad_detail_window',
+                    script: 'reBackType("unplay");'
+                });
+		commonOpenFrame('zthdIpad_unplay_info_windown','../../common/zthdIpad/zthdIpad_unplay_info_windown.html', 0, false, false, 'rgba(0,0,0,0)', {topic_id:oparam.id});
+		e.stopPropagation();
+	}
+	/*
+	*author:wangdongy
+	*function:查看作品信息
+	*/
+	function getActivityInfo(person_name,identity_id,person_id,e){
+		api.execScript({
+                    name : 'zthdIpad_detail_window',
+                    script: 'reBackType("worksinfo");'
+                });
+                
+       var data = {
+       		person_name:person_name,
+			identity_id:identity_id,		
+			person_id:person_id,
+			topic_id:oparam.id
+		}
+		
+		commonOpenFrame('zthdIpad_view_worksinfo_windown','../../common/zthdIpad/zthdIpad_view_worksinfo_windown.html', 0, false, false, 'rgba(0,0,0,0)', data);
+		e.stopPropagation();
+	}
+</script>
+</html>

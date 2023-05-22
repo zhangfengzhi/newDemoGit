@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<!-- html5：在创建html时为了防止页面缩放等不兼容效果，要创建个viewport  -->
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<!-- 在IOS设备上，有时会将数字转为手机号，这里也要禁止下 -->
+		<meta name="format-detection" content="telephone=no"/>
+		<title>关于软件frame</title>
+		<link rel="stylesheet" type="text/css" href="../../../css/aui/aui.css" />
+		<link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+		<style>
+			body {
+				background: #f7f9f8;
+			}
+			.h10 {
+				height: 10px;
+				background: #f7f9f8;
+			}
+			.h20 {
+				height: 20px;
+				background: #f7f9f8;
+			}
+			.h1 {
+				height: 1px;
+				background: #CCCCCC;/*margin:0 15px;*/
+			}
+			.fr {
+				float: right;
+			}
+			.firstblock, .secondblock, .thirdblock {
+				background-color: #fff;
+			}
+			/* 设置条目 */
+			.item {
+				height: 50px;
+				line-height: 50px;
+				background-color: #fff;
+			}
+			.presshover {
+				background-color: #FAFAFA;
+			}
+			.banben {
+				text-align: center;
+				padding-bottom: 15px;
+				padding-top: 5px;
+			}
+			.banben div {
+				color: #696969;
+			}
+			/* 设置条目 */
+			.item {
+				height: 50px;
+				line-height: 50px;
+				padding-left: 15px;
+				background-color: #fff;
+			}
+			.item_ico {
+				float: left;
+				width: 30px;
+				padding: 10px 10px 10px 0;
+			}
+			.item_arrow {
+				float: right;
+				width: 16px;
+				padding: 17px 15px 15px 0;
+			}
+			.presshover {
+				background-color: #FAFAFA;
+			}
+			.item_right {
+				color: #696969;
+				font-size: 14px;
+				padding-right: 15px;
+			}
+			.footer{
+			 position:fixed;
+			 bottom:0;
+			 width:100%;
+			 padding:10px 15px;
+			 line-height:25px;
+			 font-size:14px;
+			 text-align:center;
+			 color:#696969;
+			}
+			.fwxy_yhzc{
+			 color:#34A8FA;
+			}
+		</style>
+	</head>
+	<body class="w-iphone-common">
+		<div class="banben">
+			<div><img src="../../../icon/icon.png" height="64" width="64">
+			</div>
+			<div id="j_app_name"></div>
+		</div>
+		<div class="h1"></div>
+		<div class="firstblock display-none">
+			<div class="item" tapmode="presshover" onclick="openConfigSafeWin();">
+				<span>修改密码</span><span id="name" class="item_right aui-pull-right"><i style="margin-left: 10px;" class="aui-iconfont aui-icon-right"></i></span>
+			</div>
+			<div class="h1"></div>
+		</div>
+		<div class="h20"></div>
+		<div class="h1"></div>
+		<div class="secondblock">
+			<div class="item" tapmode="presshover" onclick="clearConversations();">
+				<span>清空会话记录</span><span id="name" class="item_right aui-pull-right"><font id="hh_size"></font></span>
+			</div>
+			<div class="h1"></div>
+			<div class="item" tapmode="presshover" onclick="clearCache()">
+				<span>清理缓存</span><span id="name" class="item_right aui-pull-right"><font id="hc_size"></font></span>
+			</div>
+			<div class="h1"></div>
+			<div id="permissionSetting" class="item aui-hide" tapmode="presshover" onclick="permissionSetting()">
+				<span>权限设置</span><span id="name" class="item_right aui-pull-right"><font id="hc_size"></font></span>
+			</div>
+		</div>
+		<div class="h1"></div>
+		<!--<div class="h20"></div>
+		<div class="h20"></div>
+		<div class="thirdblock">
+			<div class="h1"></div>
+			<div class="item" style="text-align:center;" tapmode="presshover" onclick="logout();">
+				<span>退出登录</span>
+			</div>
+			<div class="h1"></div>
+		</div>-->
+		<div class="footer" id="j_version"></div>
+	</body>
+	<script type="text/javascript" src="../../../script/api.js"></script>
+	<script type="text/javascript" src="../../../script/base_config.js"></script>
+	<script type="text/javascript" src="../../../script/huihua/sqlite_db.js"></script>
+	<script type="text/javascript" src="../../../script/huihua/hh_db.js"></script>
+	<script type="text/javascript" src="../../../script/common/common.js"></script>
+	<script type="text/javascript" src="../../../script/assembly/fs.js"></script>
+	<script type="text/javascript" src="../../../script/wo/w_index_window.js"></script>
+	<script type="text/javascript">
+		var header_h;
+		var BASE_URL_ACTION;
+		var version;
+		apiready = function() {
+			commonSetTheme({"level":3,"type":0});
+			jbDisShowXgmm();
+			header_h = api.pageParam.header_h;
+			BASE_URL_ACTION = $api.getStorage('BASE_URL_ACTION');
+			$api.text($api.byId('j_app_name'), appName_);
+			version = api.appVersion;
+			//alert('appVersion='+api.appVersion+','+'systemVersion='+api.systemVersion+','+'versio='+api.version)
+			var versionDiv = document.getElementById('j_version');
+			var fwxy_yhzc="<div class='fwxy_yhzc'><span onclick='openfwxy()'>服务协议</span>&nbsp;&nbsp;|&nbsp;&nbsp;<span onclick='openyszc()'>隐私政策</span></div>";
+			
+			$api.html(versionDiv, fwxy_yhzc+'软件版本:' + version+'<br/>东北师大理想软件股份有限公司');
+			getAppCache();
+			getDbSize();
+			
+			if (api.systemType != 'ios') {
+				$api.removeCls($api.byId("permissionSetting"), "aui-hide");
+			}
+		}
+		/**
+		 * 打开账号与安全设置页面
+		 * 周枫
+		 * 2016.5.10
+		 */
+		function openConfigSafeWin() {
+			api.openWin({
+				name : 'w_config_safe_window',
+				url : 'w_config_safe_window.html',
+				pageParam : {
+					header_h : header_h,
+				},
+				bounces : false,
+				opaque : false,
+				showProgress : false,
+				vScrollBarEnabled : false,
+				hScrollBarEnabled : false,
+				slidBackEnabled : false,
+				delay : 0,
+				animation : {
+					type : "reveal", //动画类型（详见动画类型常量）
+					subType : "from_right", //动画子类型（详见动画子类型常量）
+					duration : 300
+				},
+			});
+		}
+
+		/**
+		 * 打开通用设置页面
+		 * 周枫
+		 * 2016.5.10
+		 */
+		function openConfigCommonWin() {
+			api.openWin({
+				name : 'w_config_common_window',
+				url : 'w_config_common_window.html',
+				pageParam : {
+					header_h : header_h,
+				},
+				bounces : false,
+				opaque : false,
+				showProgress : false,
+				vScrollBarEnabled : false,
+				hScrollBarEnabled : false,
+				slidBackEnabled : false,
+				delay : 0,
+				bgColor : 'rgba(0,0,0,0)',
+				animation : {
+					type : "reveal", //动画类型（详见动画类型常量）
+					subType : "from_right", //动画子类型（详见动画子类型常量）
+					duration : 300
+				},
+			});
+		}
+
+		/**
+		 * 局版没有修改密码方法
+		 * 周枫
+		 * 2016.08.23
+		 */
+		function jbDisShowXgmm() {
+			var base_name = parseInt($api.getStorage('BASE_APP_TYPE'));
+			if (base_name == 1) {
+				$api.removeCls($api.dom('.firstblock'), 'display-none');
+			}
+		}
+
+		/**
+		 * 获取app缓存文件大小
+		 * 周枫
+		 * 2016.12.10
+		 */
+		function getAppCache() {
+			//异步返回结果：
+			api.getCacheSize(function(ret) {
+				var size = ret.size;
+				var size_zj = commonBytesToSize(size);
+				if($api.getStorage('clearchun_'+$api.getStorage('person_id')) == 1){
+				    $api.text($api.byId('hc_size'), '0 B');
+				}else{
+				    $api.text($api.byId('hc_size'), '' + size_zj + '');
+				}
+			});
+		}
+
+		/**
+		 * 获取app数据库文件大小
+		 * 周枫
+		 * 2016.12.10
+		 */
+		function getDbSize() {
+			var file_path = BASE_FS_NEW_SQDB_PATH + BASE_FS_SQDB_NAME;
+			fsFile.getAttribute(file_path, function(data) {
+				var size = data.attribute.size;
+				var size_zj = commonBytesToSize(size);
+				if($api.getStorage('huanchun_'+$api.getStorage('person_id')) == 1){
+					$api.text($api.byId('hh_size'), '0 B');
+				}else{
+					$api.text($api.byId('hh_size'), size_zj);
+				}
+			});
+		}
+
+		function clearCache() {
+			updateAllGroupMd5Null(function(is_true){
+				api.clearCache(function() {
+					api.toast({
+						msg : '清理完成'
+					});
+					$api.setStorage('clearchun_'+$api.getStorage('person_id'),1);
+					getAppCache();
+					getDbSize();
+				});
+			});
+		}
+		
+		function permissionSetting(){
+			$api.setStorage("keepAlive",1);
+			var keepmodule = api.require('keepAliveModule');
+			keepmodule.startKeep();
+		}
+	</script>
+</html>

@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+		<title>实训管理任务列表frame</title>
+		<link rel="stylesheet" type="text/css" href="../../../../../css/aui/aui.css" />
+		<link rel="stylesheet" type="text/css" href="../../../../../css/module/common/aui-list-swipe.css" />
+		<link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+		<style>
+			html, body {
+			}
+			.aui-img-body {
+				display: inline-block;
+				margin-top: 3px;
+			}
+			.aui-list-view:before {
+				height: 0;
+			}
+			/*.aui-list-view:after{height:0;}*/
+			.aui-user-view-cell:last-child:after {
+				height: 1px;
+			}
+			.aui-list-view::after {
+				height: 0;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="aui-content">
+			<ul class="aui-list-view" id = "task_body"></ul>
+			<script id="task_script" type="text/html" >
+				<% if(list.length == 0){ %>
+				<div class="no-data"><span>暂时没有相关的任务信息</span></div>
+				<% }else{ %>
+				<%for(var i = 0; i < list.length;i++){%>
+				<li class="aui-user-view-cell aui-img" tapmode onclick = "openContent(<%=list[i].id%>)">
+				<img class="aui-img-object aui-pull-left" src="../../../../../image/tasklist.png">
+				<div class="aui-img-body">
+				<span><%=list[i].practice_name%></span>
+				<p class='aui-ellipsis-1'>
+				<%=list[i].create_time%>
+				</p>
+				</div>
+				</li>
+				<input type="hidden" id="practice_name" value="<%=list[i].practice_name%>"/>
+				<%}%>
+				<%}%>
+			</script>
+		</div>
+	</body>
+	<script type="text/javascript" src="../../../../../script/api.js"></script>
+	<script type="text/javascript" src="../../../../../script/plug-in/template.js" ></script>
+	<script type="text/javascript" src="../../../../../script/base_config.js" ></script>
+	<script type="text/javascript" src="../../../../../script/common/common.js"></script>
+	<script type="text/javascript" src="../../../../../script/plug-in/base64.js" ></script>
+	<script type="text/javascript">
+		//总页数
+		var totalPages = 0;
+		//定义一个变量存储第一次加载返回来的总记录数
+		var totalData = 0;
+		//当前页面为第一页
+		var currentPage;
+		//导航条id
+		var bar_id;
+		var header_h;
+		apiready = function() {
+		    commonSetTheme({"level":5,"type":0});
+			header_h = api.pageParam.header_h;
+			BASE_URL_ACTION = $api.getStorage('BASE_URL_ACTION');
+			currentPage = 1;
+			initTaskData(3, currentPage, true);
+			//下拉刷新
+			commonRefreshHeaderInfo();
+			//上拉加载
+            commonScrollBottomReload();
+		};
+		
+		/*
+		 *author:ws
+		 *function:加载数据
+		 *date：20161130
+		 */
+		function initData(currentPage) {
+			if (currentPage > 1) {
+				initTaskData(3, currentPage, false);
+			} else {
+				initTaskData(3, currentPage, true);
+			}
+		}
+		/*
+		 *author:ws
+		 *function:加载数据
+		 *date：20161130
+		 */
+		function initTaskData(index, currentPage, isReload) {
+			api.ajax({
+				url : BASE_URL_ACTION + '/practice/practice_list',
+				method : 'get',
+				dataType : 'json',
+				timeout : 30,
+				data : {
+					values : {
+						//加载数据状态 0全部1待分配单位2待分配人员3进行中4已结束app只显示进行中的
+						"practice_status" : 3, //状态
+						"page_number" : currentPage,
+						"page_size" : BASE_PAGE_SIZE,
+						"person_id" : $api.getStorage("person_id"),
+						"person_id_type" : 2,// 管理员0，带队教师1，指导教师2，学生3
+					}
+				}
+			}, function(ret, err) {
+				//通知顶部下拉刷新数据加载完毕，组件会恢复到默认状态
+				api.refreshHeaderLoadDone();
+				api.hideProgress();
+				if (ret.success) {
+					totalData = ret.totalRow;
+					totalPages = ret.totalPage;
+					if (isReload) {
+						// 重新设置为1
+						currentPage = 1;
+					}
+					commonAddManyHtml('task_body','task_script',ret);
+				} else {
+					api.alert({
+						msg : '获取任务列表失败,请稍后重试'
+					});
+				}
+			});
+		}
+
+        /*
+		 *author:ws
+		 *function:打开点名window页面
+		 *date：20161130
+		 */
+		function openContent(practice_id) {
+            var pageParamJson = {"header_h" : header_h, "practice_id" : practice_id,"practice_name" : Base64.encode($api.trimAll($api.val($api.byId('practice_name'))))};
+			commonOpenWin('sxgl_dm_list_window','sxgl_dm_list_window.html',false,false,pageParamJson);		
+		}
+	</script>
+</html>

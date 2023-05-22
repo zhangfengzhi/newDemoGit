@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<title>主题活动</title>
+		<link rel="stylesheet" type="text/css" href="../../../../../css/aui/aui.css" />
+		<link rel="stylesheet" type="text/css" href="../../../../../css/module/ipad/popup-body.css"/>
+		<link rel="stylesheet" type="text/css" href="../../../../../css/module/common/table-body.css"/>
+		<link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+		<style>
+    		.table-body th, .table-body td{font-size:18px;line-height:45px;}
+    		.table-body td{padding:0; width: 50%;}
+    		.no-data{padding-top:0;}
+    		.content{overflow-y: auto}
+    		.popup-body-new	.commont-content{border-radius: 0px;}
+		</style>
+	</head>
+	<body class="popup-body-new common-ipad-quanziIpad-tea">
+		<div class="commont-content">
+			<table  class="table-body" id="table">
+					<tr>
+                		<th>序号</th>
+                		<th>姓名</th>
+            		</tr>
+            		<tbody id="list_body"></tbody>
+            		<script type="text/html" id="list_script">
+                	<%if(list.length == 0){%>
+                    <tr><td colspan="5"><div class="no-data">暂时没有数据</div></td></tr>
+                	<%}else{%>
+                    <%for(var i = 0; i < list.length; i++){%>
+                    <tr>
+                       <td><%=list[i].index%></td>
+                       <td><%=list[i].person_name%></td>
+                    </tr>
+                    <%}%>
+                	<%}%>
+            		</script>
+				</table >	
+		</div>
+	</body>
+	<script type="text/javascript" src="../../../../../script/api.js"></script>
+	<script type="text/javascript" src="../../../../../script/base_config.js" ></script>
+	<script type="text/javascript" src="../../../../../script/common/common.js" ></script>
+	<script type="text/javascript" src="../../../../../script/assembly/UIAlbumBrowser.js"></script>
+	<script type="text/javascript" src="../../../../../script/assembly/getPicture.js"></script>
+	<script type="text/javascript" src="../../../../../script/assembly/photoBrowser.js"></script>
+	<script type="text/javascript" src="../../../../../script/plug-in/template.js" ></script>
+	<script type="text/javascript">
+		var currentPage = 1;//当前分页数
+		var totalPages = 0;//总页数
+		var oparam;
+		var topic_id = "";
+		apiready = function() {
+			showSelfProgress('加载中...');
+			topic_id = api.pageParam.topic_id;
+//			get_unplay_person_info();
+			initData(1);
+			commonScrollBottomReload();
+			commonRefreshHeaderInfo(); 
+			
+			$api.byId("table").addEventListener('touchmove', touchMove,false);
+		};
+		function initData(current_page){
+		currentPage = current_page;
+		get_unplay_person_info();
+	}
+	function touchMove(e){
+		e.stopPropagation();
+	}
+		/*
+    *author:zhaoj
+    *function:通过主题id获取此主题下的作品列表
+    *interface:张海
+    *date：20171023
+    */
+	function get_unplay_person_info(){
+		console.log(BASE_URL_ACTION + '/ypt/space/topic/get_topic_notworks_stat_byid?random_num='+creatRandomNum()+'&topic_id='+topic_id+'&page_num='+currentPage+'&page_size='+BASE_PAGE_SIZE);
+		api.ajax({
+			url : BASE_URL_ACTION + '/ypt/space/topic/get_topic_notworks_stat_byid?random_num='+creatRandomNum()+'&topic_id='+topic_id+'&page_num='+currentPage+'&page_size='+20,
+			method : 'get',
+			timeout : 0,
+			dataType : 'json',
+			headers : {
+	'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+	}
+			}, function(ret, err) {
+				if(err){
+					popToast('获取人员信息失败，请稍候重试');
+				}else{
+					if(ret.success){
+						for (var i=0;i < ret.list.length;i++)
+						{
+							ret.list[i].index = (currentPage-1)*20+i+1;
+						}
+						totalPages = ret.total_page;
+						commonAddManyHtml('list_body','list_script',ret);
+						api.hideProgress();
+					}else{
+						popToast('获取人员信息失败，请稍候重试');
+					}
+				}
+			api.hideProgress();
+			//通知顶部下拉刷新数据加载完毕，组件会恢复到默认状态
+			commonControlRefresh();
+		});
+	}
+		/*
+		*author:wangdongy
+		*function:关闭页面
+		*date：2017.5.15
+		*/
+		function closeFrame(){
+			api.closeFrame();
+			}
+	</script>
+</html>

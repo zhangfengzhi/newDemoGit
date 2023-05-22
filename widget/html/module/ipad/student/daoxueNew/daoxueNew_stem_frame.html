@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<title>检测</title>
+		<link rel="stylesheet" type="text/css" href="../../../../../css/aui/aui.css" />
+		<link rel="stylesheet" type="text/css" href="../../../../../css/aui_css_new/aui.css" />
+		<link rel="stylesheet" type="text/css" href="../../../../../css/module/common/list_frame.css" />
+		<link rel="stylesheet" type="text/css" href="../../../../../css/module/common/jyeoo/ques_data.css" />
+		<link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+		<style>
+			body {
+				margin: 0;
+				background: rgba(0,0,0,0);
+			}
+			.stem {
+				padding: 20px 5%;
+				max-width:100%;
+				word-break:break-all;
+				color:#98979D;
+			}
+			.stem img {
+				max-width: 90%; height:auto;
+			}
+			.stem div,.stem p,.stem span{word-wrap: break-word;word-break: normal; }
+		</style>
+	</head>
+	<body class="common-ipad-daoxueNewstu">
+		<div id="j_stem" class="stem clearfix">
+		</div>
+	</body>
+	<script type="text/javascript" src="../../../../../script/api.js"></script>
+	<script type="text/javascript" src="../../../../../script/base_config.js" ></script>
+	<script type="text/javascript" src="../../../../../script/plug-in/base64.js" ></script>
+	<script type="text/javascript">
+		apiready = function() {
+			commonSetTheme({"level":5,"type":0});
+			$api.html($api.byId('j_stem'), Base64.decode(api.pageParam.stem));
+		};
+	</script>
+</html>

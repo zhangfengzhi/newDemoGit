@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<!-- html5：在创建html时为了防止页面缩放等不兼容效果，要创建个viewport  -->
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<!-- 在IOS设备上，有时会将数字转为手机号，这里也要禁止下 -->
+		<meta name="format-detection" content="telephone=no"/>
+		<title>学生课件</title>
+		<link rel="stylesheet" type="text/css" href="../../../../../css/aui/aui.css" />
+		<link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+		<style>
+		</style>
+	</head>
+	<body class="common-iphone-kejianJyXs">
+		<div id="wrap">
+			<header class="aui-bar aui-bar-nav aui-bar-primary" id="aui-header">
+				<div id="cloud" class="topbar activebar">
+					<div id="back" class="back" onclick="back();" tapmode="">
+						<i class="aui-iconfont aui-icon-left"></i>返回
+					</div>
+					<div  class="mTitle" id="mTitle">
+						课件
+					</div>
+					
+					
+				</div>
+			</header>
+			<div  class="aui-content aui-content-padded" id="message-content">
+				<p class="aui-text-center history-date"></p>
+			</div>
+		</div>
+	</body>
+	<script type="text/javascript" src="../../../../../script/api.js"></script>
+	<script type="text/javascript" src="../../../../../script/base_config.js" ></script>
+	<script type="text/javascript" src="../../../../../script/common/common.js"></script>
+	<script type="text/javascript" src="../../../../../script/assembly/tongjiData.js"></script>
+	<script type="text/javascript">
+		var back_type = 'index';//从哪个页面退出
+		apiready = function() {
+		    commonSetTheme({"level":5,"type":0});
+			var header_h = api.pageParam.header_h;
+			var pageParamJson={"header_h":header_h};//打开frame页面所需参数
+			commonOpenFrame('kejianJyXs_index_frame', 'kejianJyXs_index_frame.html',header_h+45, true, false,"#ffffff",pageParamJson);	//打开index页面
+			commonBackForAndroid();//安卓关闭
+			commonIosAuiHeader();//定位header位置，留出上面电池等空隙，苹果需要
+			commonOpenTjData($api.getStorage("identity")+'_'+api.winName);//记录统计
+		};
+		/*
+		*author:zhaoj
+		*function:返回页面
+		*date：20160307
+		*/
+		function back() {
+			switch (back_type){
+				case 'index' :
+					commonCloseTjData($api.getStorage("identity")+'_'+api.winName);//记录统计
+					api.closeWin();
+					break;
+				case 'voice':
+					api.closeFrame({name:'common_playaudio_frame'});
+					reBackType('index');
+					break;
+				case 'picture':
+                    
+                    reBackType('index');
+                    break;
+			}
+		}
+		
+		/*
+		 * 功能：重置退出页面
+		 * 作者：张自强
+		 * 时间：20170913
+		 */
+		function reBackType(type){
+			switch (type){
+				case 'index' :
+					back_type = 'index';
+					break;
+				case 'voice' :
+					back_type = 'voice';
+					break;
+				case 'picture':
+                    back_type = 'picture';
+                    break;
+			}
+		}
+	</script>
+</html>

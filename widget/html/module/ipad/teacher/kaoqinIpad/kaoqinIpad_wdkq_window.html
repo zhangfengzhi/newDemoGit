@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<!-- html5：在创建html时为了防止页面缩放等不兼容效果，要创建个viewport  -->
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<!-- 在IOS设备上，有时会将数字转为手机号，这里也要禁止下 -->
+		<meta name="format-detection" content="telephone=no"/>
+		<title>我的考勤</title>
+		<link rel="stylesheet" type="text/css" href="../../../../../css/aui/aui.css" />
+		<link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+		<style>
+			.history-date {
+				font-size: 12px;
+			}
+			#message-content {
+				overflow-y: auto;
+				display: none;
+			}
+			
+			
+			.t_display_n {
+				display: none;
+			}
+			.t_display_b {
+				display: block;
+			}
+			.tag-title{height:65px; line-height:63px;background:#ffffff ;border-bottom:2px solid #E6E6E6;}
+			.tag-title div{width:50%;text-align:center;color:#62656A;}
+			.menu{display:inline-block;width:28px;height:100%;background:url(../../../../../image/fun-module/iphone/kaoqin/static.png) center center no-repeat;background-size: 16px 16px;}
+	.win-menu{height:100%;}
+			.fl{float:left;}
+			.fr{float:right;}
+		</style>
+	</head>
+	<body class="common-ipad-kaoqinIpad-tea">
+		<div id="wrap">
+			<header class="aui-bar aui-bar-nav aui-bar-primary" id="aui-header">
+				<div id="cloud" class="topbar activebar">
+					<div id="back" class="back" onclick="back();" tapmode="">
+						<i class="aui-iconfont aui-icon-left"></i>返回
+					</div>
+					<div  class="mTitle" id="mTitle">
+						我的考勤
+					</div>
+					<div class="win-menu">
+						<!--我的考勤——申请考勤-->
+						<a id='menu' class="menu fr" tapmode="tap-active" onclick="openWindow('kaoqinIpad_myKqtj_window');"></a>
+						<a id='add' class="aui-iconfont aui-icon-add back fr" style="height:100%;" onclick="openAddFrame();"></a>
+						<!--我的考勤——考勤统计-->
+
+					</div>
+				</div>
+				<!--<div class="tag-title">
+					<div id="qingjia" class="fl active" onclick="openQjListFrame();">请假</div>
+					<div id="gongchu" class="fr" onclick="openGcListFrame();">公出</div>
+				</div>-->
+			</header>
+			<div  class="aui-content aui-content-padded" id="message-content">
+				<p class="aui-text-center history-date"></p>
+			</div>
+		</div>
+	</body>
+	<script type="text/javascript" src="../../../../../script/api.js"></script>
+	<script type="text/javascript" src="../../../../../script/common/common.js"></script>
+	<script type="text/javascript" src="../../../../../script/assembly/tongjiData.js"></script>
+	<script type="text/javascript">
+		//顶部header高度
+		var header_h;
+		var ruleType = 0;
+		var back_type = 'index';
+		apiready = function() {
+			commonSetTheme({"level":5,"type":0});
+			//定位header位置，留出上面电池等空隙，苹果需要
+			var header = $api.byId('aui-header');
+			header_h = api.pageParam.header_h;
+			openNavigationBar();
+			//打开我的考勤请假list页面
+			//openQjListFrame();
+			commonIosAuiHeader();//定位header位置，留出上面电池等空隙，苹果需要
+			commonBackForAndroid();//安卓关闭
+			commonOpenTjData($api.getStorage("identity")+'_'+api.winName);
+		};
+		/*
+		*author:zhaoj
+		*function:打开我的考勤请假list页面
+		*date：20160620
+		*/
+		function openQjListFrame(){
+			ruleType = 0;
+			$api.removeCls($api.byId('gongchu'),'active');
+			$api.addCls($api.byId('qingjia'),'active');
+			var pageParamJson = {header_h : header_h}
+			commonOpenFrame('kaoqinIpad_qjlist_frame','kaoqinIpad_qjlist_frame.html', header_h+65, true, false, '#ffffff', pageParamJson);
+		}
+		/*
+		*author:zhaoj
+		*function:打开我的考勤公出list页面
+		*date：20160620
+		*/
+		function openGcListFrame(){
+			ruleType = 1;
+			$api.removeCls($api.byId('qingjia'),'active');
+			$api.addCls($api.byId('gongchu'),'active');
+			var pageParamJson = {header_h : header_h}
+			commonOpenFrame('kaoqinIpad_gclist_frame','kaoqinIpad_gclist_frame.html', header_h+65, true, false, '#ffffff', pageParamJson);
+		}
+
+		/*
+		*author:zhaoj
+		*function:打开考勤汇总菜单页面
+		*date：20160620
+		*/
+		function openWindow(win_name){
+			var pageParamJson = {header_h:header_h,ruleType:ruleType}
+			commonOpenWin(win_name, win_name+'.html', false, false, pageParamJson);
+		}
+		function openAddFrame(){
+			reBackType('add');
+			var pageParamJson = {header_h:header_h,type:ruleType}
+			commonOpenFrame('kaoqinIpad_add_frame', 'kaoqinIpad_add_frame.html', 0, false, false, 'rgba(0,0,0,0)', pageParamJson)
+		}
+		/*
+		*author:zhaoj
+		*function:返回页面
+		*date：20160307
+		*/
+		function back() {
+			switch(back_type) {
+				case 'index':
+					commonRefreshYingyong();
+				  	commonCloseTjData($api.getStorage("identity")+'_'+api.winName);
+				  	commonExecScript('root','cshym_hbg_frame','getKaoqinMenu1(2)',1);
+					api.closeWin();
+					break;
+				case 'add':
+				  	commonCloseFrame('kaoqinIpad_add_frame');
+				  	reBackType('index');
+					break;
+				case 'open_picture':
+				  	reBackType('add');
+					break;
+				case 'mybc':
+					commonCloseFrame('kaoqinIpad_mybc_frame');
+					reBackType('index');
+					break;
+			}
+			
+		}
+		/**
+		 * 重置从哪个页面退出
+		 * 周枫
+		 * 2015.12.17
+		 */
+		function reBackType(type) {
+			switch(type) {
+				//如果列表页面退出
+				case 'index':
+					back_type = 'index';
+					break;
+				//如果添加页面退出
+				case 'add':
+					back_type = 'add';
+					break;
+				//如果添加页面退出
+				case 'picture':
+					back_type = 'picture';
+					break;
+				//如果打开图片退出
+				case 'open_picture':
+					back_type = 'open_picture';
+					break;
+				case 'mybc':
+					back_type = 'mybc';
+					break;
+			}
+		}
+
+		/**
+		 * 安卓点击返回的时候
+		 * 周枫
+		 * 2015.10.14
+		 */
+		function backForAndroid() {
+			api.addEventListener({
+				name : "keyback"
+			}, function(ret, err) {
+				back();
+			});
+		}
+		
+		/*
+	*author:zhaoj
+	*function:打开我的考勤请假、公出切换导航
+	*date：20160625
+	*/
+	function openNavigationBar() {
+			var bar_items = [
+				{
+					title : '请假',
+					titleSelected : '请假',
+					bg : "#ffffff",
+					alpha : 0.8,
+					bgSelected : "#ffffff"
+				},
+				{
+					title : '公出',
+					titleSelected : '公出',
+					bg : "#ffffff",
+					alpha : 0.8,
+					bgSelected : "#ffffff"
+				}
+				
+			];
+			var itemWidth = Math.floor(api.frameWidth/2);
+			
+			var params = {
+					y : header_h+1,
+					file_level:2,
+					h : 65,
+					items : bar_items,
+					winName : 'kaoqinIpad_wdkq_window',
+					frameName : ''
+					};
+			commonMyNavigationBar(params);
+		}
+		
+		/*
+		*作者:zfz
+		*功能:滑动条点击回调函数
+		*日期：20171016
+		*/
+		function callBackNew(id, index) {
+			if(index == 0){ 
+				openQjListFrame();
+			}else{
+				openGcListFrame();
+			}
+		}
+	</script>
+</html>

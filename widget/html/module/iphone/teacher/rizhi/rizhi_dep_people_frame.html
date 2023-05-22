@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+		<title>人员信息页面</title>
+		<link rel="stylesheet" type="text/css" href="../../../../../css/module/common/log-show-content.css" />
+		<link rel="stylesheet" type="text/css" href="../../../../../css/aui_css_new/aui.css" />
+		<link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+		<style>
+			body {
+				background: #f7f9f8;
+			}
+			.img-box {
+				width: 100%;
+				text-align: center;
+			}
+			.bg-icon {
+				margin-top: 90px;
+				height: 150px;
+				width: 150px;
+				border-radius: 30px 30px 30px 30px;
+			}
+			.img-editor-sumbit {
+				width: 100%;
+				text-align: center;
+				bottom: 60px;
+				position: absolute;
+			}
+			.editor-icon {
+				margin-top: 5px;
+				height: 60px;
+				width: 60px;
+				border-radius: 10px 10px 10px 10px;
+			}
+			.text-describe {
+				font-size: 15px;
+				color: #666666;
+				margin-top: 30px;
+			}
+			.time-content {
+				height: 50px;
+				line-height: 40px;
+				padding: 5px 30px 0 15px;
+				color: #141414;
+				background: #ffffff;
+				border-bottom: 1px solid #1abc9c;
+			}
+			.time-content div {
+				display: inline-block;
+				float: right;
+				color: #666666;
+			}
+			.class-name {
+				padding: 20px 10px 10px 75px;
+			}
+			.class-name.person {
+				background: url(../../../../../image/fun-module/iphone/czda_icon.png) 36px 17px no-repeat;
+				background-size: 31px 120px;
+			}
+			.main-content li {
+				height: 120px;
+			}
+			.main-content .left {
+				height: 100%;
+				float: left;
+				width: 64px;
+				padding-left: 0px;
+			}
+			.main-content .left span {
+				display: inline-block;
+				text-align: center;
+				width: 38px;
+				padding: 0 0 0 3px;
+			}
+			.main-content .left .year {
+				font-size: 8px;
+				padding-top: 43px;
+			}
+			.ystjztys {
+				color: #FF9900;
+			}
+			.main-content .left.center {
+				background: url(../../../../../image/fun-module/iphone/czda_bg.png) 42px -168px no-repeat;
+				background-size: 19px 451px;
+			}
+			.main-content .right {
+				float: left;
+				padding: 10px 0 10px 8px;
+				background: url(../../../../../image/fun-module/iphone/czda_bg.png) 0 -213px no-repeat;
+				background-size: 10px 282px;
+				width: 80%;
+			}
+			.main-content .right .detail {
+				border: 1px dashed #1abc9c;
+				height: auto;
+				border-radius: 4px;
+				color: #000000;
+			}
+			.main-content .right .detail .img {
+				width: 90px;
+				height: 100%;
+				float: right;
+				padding-top: 10px;
+			}
+			.main-content .right .detail .img img {
+				width: 80px;
+				height: 80px;
+				border-radius: 5px;
+			}
+			.main-content .right .detail .title, .main-content .right .detail .person-name, .main-content .right .detail .textview {
+				float: left;
+			}
+			.title {
+				padding: 10px 7px 0;
+			}
+			.person-name {
+				font-size: 13px;
+				padding: 9px 7px 0;
+			}
+			.textview {
+				font-size: 13px;
+				padding: 9px 7px 0;
+			}
+			.line {
+				width: 1px;
+				background: #1abc9c;
+				margin-left: 51px;
+			}
+			.ima_notice {
+				padding-left: 0;
+				padding-right: 0;
+				padding-top: 10px;
+				padding-bottom: 0;
+			}
+			.picture-list {
+				width: 40px;
+				height: 40px;
+				padding: 0 0 0 2px;
+			}
+			.button_line {
+				border-bottom: 1px dashed #999;
+				width: 98%;
+				margin-bottom: 3px;
+				padding: 0px 0px 2px 0px;
+			}
+			.content_down {
+				padding: 5px 0px 0px 8px;
+				float: left;
+				width: 100%;
+			}
+			.left-font-size {
+				font-size: 12px;
+			}
+			.ztdx {
+				font-size: 13px;
+				color: #4F4F4F;
+			}
+			.submit_day_style {
+				font-size: 12px;
+				color: #999;
+			}
+		</style>
+	</head>
+	<body class="common-iphone-rizhi">
+		<div id = "wurizhi" >
+		<div class="no-data"><span>暂无日志</span></div>
+		</div>
+		
+		
+	<div id = "yourizhi" class = "clearfix" style="display:none;"></div>
+		<script type="text/html" id="log_person_script">
+			<%for(var i=0; i< list.length; i++){%>
+			<div  class = "clearfix" >
+			<div id="j_name" class="class-name person">
+			<%=list[i].log_date%>
+			</div>
+			<div id="log-body-<%=i+list[i].currentPage*10%>" class="main-content">
+			<ul>
+			<li >
+			<div class="left center clearfix">
+			<span class="year"></span>
+			<span>
+			<font class = "left-font-size" <%if(list[i].log_submit != 1){%> class = "ystjztys"<%}%> ><%=list[i].submit_time%></font>
+			</span>
+			<div id = "line-id" class = "line line-div"></div>
+			</div>
+			<div class="right clearfix">
+			<div class="detail clearfix" id = "content-box-id-<%=i+list[i].currentPage*10%>">
+			<div class = "head-img-box">
+			<img id = "user" class = "head-icon" onerror="this.src='../../../../../image/common/header.png'" src="../../../../../image/common/header.png" data-echo="<%=list[i].a_avatar_url%>" alt="缩略图"/>
+			</div>
+			<div class = "content-box">
+			<div class = "content-detail">
+			<%=list[i].person_name%>
+			<%if(list[i].log_submit == 1){%>
+			<span ><i class="aui-iconfont aui-icon-check aui-text-success"></i>
+			<font class = "ztdx">按时提交</font></span>
+			<%}else{%>
+			<span ><i class="aui-iconfont aui-icon-check aui-text-warning"></i>
+			<font class = "ztdx">延时提交</font></span>
+			<%}%>
+			<div class = "submit_day_style" >
+			<%=list[i].submit_day%>
+			</div>
+			</div>
+			</div>
+			<div class = "content_down">
+			<%if(list[i].going_index == 1){%>
+			<div class = "work-title <%if(list[i].line1 == 1){%>button_line<%}%>">
+			<span class = "going">进行中工作</span>
+			<div class="log-detail">
+			<%=#list[i].content_going%>
+			</div>
+			</div>
+			<%}%>
+			
+			<%if(list[i].complete_index == 1){%>
+			<div class = "work-title <%if(list[i].line2 == 1){%>button_line<%}%>">
+			<span class = "complete">已完成工作</span>
+			<div class="log-detail">
+			<%=#list[i].content_complete%>
+			</div>
+			</div>
+			<%}%>
+			
+			<%if(list[i].delay_index == 1){%>
+			<div class = "work-title <%if(list[i].line3 == 1){%>button_line<%}%>" >
+			<span class = "delay">已推迟工作</span>
+			<div class="log-detail">
+			<%=#list[i].content_delay%>
+			</div>
+			</div>
+			<%}%>
+			
+			<%if(list[i].lag_index == 1){%>
+			<div class = "work-title <%if(list[i].line4 == 1){%>button_line<%}%>">
+			<span class = "lag">已滞后工作</span>
+			<div class="log-detail">
+			<%=#list[i].content_lag%>
+			</div>
+			</div>
+			<%}%>
+				
+			<%if(list[i].remark_index == 1){%>	
+			<div class = "work-title ">
+			<span class = "remark">备注</span></br>
+			<div class="log-detail">
+			<%=#list[i].content_remark%>
+			</div>
+			</div>
+			<%}%>
+			
+			<div id = "pictures_<%=i+list[i].currentPage*10%>" >
+			</div>
+			</div>
+			</div>
+			</div>
+			</li>
+			</ul>
+			</div>
+			</div>
+			<%}%>
+		</script>
+	</body>
+	<script type="text/javascript" src="../../../../../script/api.js"></script>
+	<script type="text/javascript" src="../../../../../script/plug-in/template.js" ></script>
+	<script type="text/javascript" src="../../../../../script/common/common.js"></script>
+	<script type="text/javascript" src="../../../../../script/plug-in/photoBrowser.js"></script>
+	<script type="text/javascript" src="../../../../../script/base_config.js" ></script>
+	<script type="text/javascript" src="../../../../../script/assembly/log-current-time.js"></script>
+	<script type="text/javascript" src="../../../../../script/plug-in/base64.js" ></script>
+	<script type="text/javascript" src="../../../../../script/plug-in/echo.min.js"></script>
+	<script type="text/javascript">
+	    										//顶部高度
+		var header_h;
+		//当前年
+		var yearValue;
+		//当前月
+		var monthValue;
+		//判断是否按月查询  1否 2是
+		var judgeMonth;
+		//时间
+		var timeParam;
+		var openImgArray_data = {
+		"openImgArray_list" : []
+		};
+		//时间月份是否可选
+		var selectFlag = false;
+		var currentPage;
+		//总页数
+		var totalPages;
+		//总页数
+		var checkImgNum = 0;
+		var noLog = 0;
+		var person_id;
+		apiready = function() {
+			commonSetTheme({"level":5,"type":0});
+			person_id = api.pageParam.person_id;
+			header_h = api.pageParam.header_h;
+			judgeMonth = api.pageParam.judgeMonth;
+			timeParam = api.pageParam.timeParam;
+			person_id = api.pageParam.person_id;
+			currentPage = 1;
+			//下拉刷新
+			commonRefreshHeaderInfo();
+			//上拉加载
+			commonScrollBottomReload();
+			//1.先判断是否有数据
+			checkDataNullLog(judgeMonth, timeParam);
+		};
+		/*
+		 *author:ws
+		 *function:上啦加载、下拉刷新回调函数
+		 *date：20170308
+		 */
+		function initData(currentPage) {
+			if (currentPage > 1) {
+				getPersonLogContent(judgeMonth,timeParam,currentPage, false);
+			} else {
+				getPersonLogContent(judgeMonth,timeParam,currentPage, true);
+			}
+		}
+		
+		/*
+		 *author:ws
+		 *function:请接口接口是否有数据
+		 *date：20170308
+		 */
+		function checkDataNullLog(judgeMonth, timeParam) {
+		    judgeMonth = judgeMonth;
+		    timeParam = timeParam;
+			checkDataNull(person_id,judgeMonth, timeParam, function(flag, data) {
+			api.hideProgress();
+				if (flag) {
+					//personLimit 1普通员工2领导  checkLogNull 1无日志内容  2今天有日志内容
+					if (data.data_list[0].checkLogNull == "1") {
+					    noLog = 0;
+						$api.css($api.byId('yourizhi'), 'display:none;');
+						$api.css($api.byId('wurizhi'), 'display:block;');
+						commonExecScript('rizhi_index_window','', 'getIdDelete(0);',0);
+					} else if (data.data_list[0].checkLogNull == "2") {
+					    noLog = 1;
+						$api.css($api.byId('yourizhi'), 'display:block;');
+						$api.css($api.byId('wurizhi'), 'display:none;');
+						getPersonLogContent(judgeMonth,timeParam,1, true);
+					}
+				} else {
+					popBottomToast("网络繁忙，请稍候重试");
+				}
+			})
+		}
+		
+		/*
+		 *author:ws
+		 *function:重新加载数据
+		 *date：20170317
+		 */
+		function checkJump(perId,judgeMonth,timeParam) {
+		    person_id = perId;
+			checkDataNullLog(judgeMonth,timeParam);
+		}
+		
+		/*
+		 *author:ws
+		 *function:
+		 *date：20170302
+		 */
+		function getPersonLogContent(judgeMonth,timeParam,page, isReload) {
+			//showSelfProgress('加载中...');
+			var time='';
+			judgeMonth == 1?time=timeParam:time=$api.getStorage("rizhi_month_time");
+			api.ajax({
+				url : BASE_URL_ACTION + '/dsjxt/rizhi/queryPersonLogContent',
+				method : 'post',
+				dataType : 'json',
+				timeout : 30,
+				data : {
+					values : {
+						"person_id":person_id,
+						"judgeMonth" : judgeMonth, //1按照日查询2按照月查询
+						"timeParam" : time, //日报日期
+						"pageNumber" : currentPage,
+						"pageSize" : 10,
+					}
+				}
+			}, function(ret, err) {
+				commonControlRefresh();
+				api.hideProgress();
+				if (ret) {
+					if (ret.success) {
+						totalPages = ret.totalPage;
+						if (isReload) {
+							// 重新设置为1
+							currentPage = 1;
+							//图片重新区分第几组
+							checkImgNum = 0;
+							//刷新的时候清一下图片数据
+							openImgArray_data = {"openImgArray_list" : []};
+						}
+						var img_data = {
+							"img_list" : []
+						};
+						var length = ret.list.length;
+						for (var i = 0; i < length; i++) {
+						   	var list = ret.list;
+						    var imgParam = new Object();	
+							list[i]["currentPage"] = currentPage;
+							//进行中
+							if (!isEmptyString(list[i].content_going)) {
+							    list[i]["content_going"] = transferBrStr(list[i].content_going);
+								list[i]["going_index"] = 1;
+							}else{
+							    list[i]["content_going"] = "";
+							    list[i]["going_index"] = 2;
+							}
+							//完成
+							if (!isEmptyString(list[i].content_complete)) {
+								list[i]["content_complete"] = transferBrStr(list[i].content_complete);
+								list[i]["complete_index"] = 1;
+							}else{
+							    list[i]["content_complete"] = "";
+							    list[i]["complete_index"] = 2;
+							}
+							//推迟
+							if (!isEmptyString(list[i].content_delay)) {
+								list[i]["content_delay"] = transferBrStr(list[i].content_delay);
+								list[i]["delay_index"] = 1;
+							}else{
+							    list[i]["content_delay"] = "";
+							    list[i]["delay_index"] = 2;
+							}
+							//滞后
+							if (!isEmptyString(list[i].content_lag)) {
+								list[i]["content_lag"] = transferBrStr(list[i].content_lag);
+								list[i]["lag_index"] = 1;
+							}else{
+							    list[i]["content_lag"] = "";
+							    list[i]["lag_index"] = 2;
+							}
+							//备注
+							list[i]["content_remark"] = transferBrStr(list[i].content_remark);	
+							if (!isEmptyString(list[i].content_remark) || !isEmptyString(list[i].log_content)) {
+								list[i]["remark_index"] = 1;
+								list[i]["line4"] = 1;
+							}else{
+							    list[i]["remark_index"] = 2;
+							    list[i]["line4"] = 2;
+							}
+							//区分下划线是否显示
+							//进行中下面的下划线是否显示
+							if (!isEmptyString(list[i].content_complete)) {
+							    list[i]["line1"] = 1;
+							}else if(!isEmptyString(list[i].content_delay)) {
+							    list[i]["line1"] = 1;
+							}else if(!isEmptyString(list[i].content_lag)) {
+							    list[i]["line1"] = 1;
+							}else if(!isEmptyString(list[i].content_remark) || !isEmptyString(list[i].log_content)) {
+							    list[i]["line1"] = 1;
+							}else{
+						    	list[i]["line1"] = 2;
+							}
+							//已完成下面的下划线是否显示
+							if (!isEmptyString(list[i].content_delay)) {
+							    list[i]["line2"] = 1;
+							}else if(!isEmptyString(list[i].content_lag)){
+							    list[i]["line2"] = 1;
+							}else if (!isEmptyString(list[i].content_remark) || !isEmptyString(list[i].log_content)) {
+							    list[i]["line2"] = 1;
+							}else{
+						    	list[i]["line2"] = 2;
+							}
+							//已推迟下面的下划线是否显示
+							if (!isEmptyString(list[i].content_lag)) {
+							    list[i]["line3"] = 1;
+							}else if (!isEmptyString(list[i].content_remark) || !isEmptyString(list[i].log_content)) {
+							    list[i]["line3"] = 1;
+							}else{
+						    	list[i]["line3"] = 2;
+							}
+							list[i]["log_date"] = ret.list[i].log_date.substring(0, 4) + '年' + ret.list[i].log_date.substring(5, 7) + '月' + ret.list[i].log_date.substring(8, 10) + '日';;		
+							list[i]["submit_day"] =ret.list[i].submit_date.substring(0, 4) + '年' + ret.list[i].submit_date.substring(5, 7) + '月' + ret.list[i].submit_date.substring(8, 10) + '日';					
+							list[i]["submit_time"] =ret.list[i].submit_date.substring(11, 16);
+							//判断日期是否显示（提交日期）
+							var file_id = ret.list[i].file_id;
+							var extension = ret.list[i].extension;
+							var a_avatar_url;
+							if ($api.getStorage('BASE_APP_TYPE') == 1) {
+								a_avatar_url = BASE_IMAGE_PRE+"down/Material/" + file_id.substring(0, 2) + "/" + file_id + '.' + extension;
+							} else {
+								a_avatar_url = BASE_URL_ACTION + "/html/thumb/Material/" + file_id.substring(0, 2) + "/" + file_id + '.' + extension;
+							}							
+							list[i]["a_avatar_url"] = a_avatar_url;
+							imgParam.log_content = ret.list[i].log_content;
+							imgParam.log_img = ret.list[i].log_img;
+							img_data.img_list.push(imgParam);	
+						}
+						commonAddManyHtml('yourizhi', 'log_person_script', ret);
+						//附件图片
+						for (var i = 0; i < length; i++) {
+							var pictures = img_data.img_list[i].log_content;
+							var arrImg = img_data.img_list[i].log_img;
+							if (arrImg != "null" && arrImg != "" && arrImg != null) {
+							    var openImgArray = [];
+								openImgArray = arrImg.split(",");
+								openImgArray_data.openImgArray_list.push(openImgArray);
+							}
+							//设置左边竖线的长度
+							var hh = $api.offset($api.byId('content-box-id-' + (i + currentPage * 10)));
+							var h = hh.h - 60;
+							if (pictures != "null" && pictures != "" && pictures != null) {
+							 //左边绿色线根据图片多少在hh的基础上加减值
+                             if (openImgArray.length > 6) {
+									h = hh.h + 30;
+								} else {
+									h = hh.h - 10;
+								}
+								if (BASE_APP_TYPE == 1) {
+									var notice_str1 = '<img';
+									var notice_str2 = '<img flag="'+checkImgNum+'" class="picture-list"';
+									pictures = pictures.replaceAll(notice_str1, notice_str2);
+								} else {
+									var key = '/dsideal_yy';
+									var notice_str3 = '<img';
+									var notice_str4 = '<img flag="'+checkImgNum+'" class="picture-list"';
+									pictures = pictures.replaceAll(notice_str3, notice_str4);
+								}
+								$api.html($api.byId('pictures_' + (i + currentPage * 10)), pictures);
+								checkImgNum = checkImgNum + 1;
+							}
+							//设置左边竖线的长度
+							//var hh = $api.offset($api.byId('content-box-id-' + (i + currentPage * 10)));
+							//var h = hh.h - 50;
+							var titleArray = $api.dom($api.byId('log-body-' + (i + currentPage * 10)), '.line-div');
+							$api.css(titleArray, 'height:' + h + 'px;max-height' + h + 'px;')
+						}
+						//延迟加载图片
+				        setTimeout(function() {echoInit();}, 300);
+					} else {
+						popBottomToast("获取数据失败，请稍候重试");
+					}
+				} else {
+					popBottomToast("获取数据失败，请稍候重试");
+				}
+			});
+		}
+		
+		/*
+		 *author:zhaoj
+		 *function:打开图片
+		 *date：20161202
+		 */
+		function openImage(obj,index) {
+          var objIndex = obj.getAttribute("flag");
+		  var imageBrowser = api.require('imageBrowser');
+			  imageBrowser.openImages({
+				imageUrls : openImgArray_data.openImgArray_list[objIndex],
+				//是否以九宫格方式显示图片
+				showList : false,
+				//showList : true,
+				activeIndex : index
+			});
+		}	
+		    /*
+		 *author:
+		 *function:替换所有的回车换行
+		 *date：20170321
+		 */
+		function transferBrStr(content) {
+			var string = content;
+			try {
+				string = string.replace(/\r\n/g, "<br />")
+				string = string.replace(/\n/g, "<br />");
+			} catch(e) {
+				popAlert(e.message);
+			}
+			return string;
+		}	
+	</script>
+</html>

@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<title>相册下拉菜单</title>
+		<link rel="stylesheet" type="text/css" href="../../../../../css/aui/aui.css"/>
+		<link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+		<style>
+    	html, body {
+        	background-color: rgba(0,0,0,0) !important;
+   		 }
+    	body{padding:0;margin:0;}
+    	.shadow{position:absolute;left:0;top:0;width:100%;height:100%;z-index: 1;}
+    	.header{width:100%;height:45px;}
+    	.main{width:100%;}
+    	.menu-list{
+    		list-style:none;
+    		background-color: #ffffff;
+			box-shadow: 0px 0px 5px #cccccc;
+			position: relative;
+			width: 165px;
+			float: right;
+			z-index: 2;
+			padding: 0;
+			margin:0;
+		}
+		.menu-list li {
+			height: 48px;
+			line-height:48px;
+			display: block;
+			border-bottom: 1px solid #eeeeee;
+			color: #333;
+			font-family: sans-serif;
+			text-align:center;
+		}
+		.menu-list li .icon-box{width:50px;height:48px;display:inline-block; text-align:center;}
+		.menu-list li span{display:block;width:100%;height:48px;line-height:48px;float:left;text-align:center;}
+		.ellipsis{white-space: nowrap;overflow: hidden;text-overflow: ellipsis;}
+    </style>
+	</head>
+	<body class="common-iphone-zthd-tea">
+		<div class="shadow" tapmode onclick="api.closeFrame({name:'zthd_menu_frame'});"></div>
+		<div id="header" class="header"></div>
+		<div id="main" class="main aui-hide">
+			<ul id="ul" class="menu-list">	
+				<li id="type_1" onclick="changePx(1);">
+					<span class="ellipsis">全部活动</span>
+				</li>
+				<li id="type_2" onclick="changePx(2);">
+					<span class="ellipsis">我创建的</span>
+				</li>
+				<li id="type_3" onclick="changePx(3);">
+					<span class="ellipsis">邀请我的</span>
+				</li>
+			</ul>
+		</div>
+	</body>
+	<script type="text/javascript" src="../../../../../script/api.js"></script>
+	<script type="text/javascript" src="../../../../../script/base_config.js" ></script>
+	<script type="text/javascript" src="../../../../../script/common/common.js"></script>
+	<script type="text/javascript">
+		var dic_type;
+		apiready = function () {
+			commonSetTheme({"level":5,"type":0});
+			/*
+			 * 调整menu高度
+			 * header是隐藏的，代表工具栏到手机屏幕最上方的距离
+			 * main代表工具栏下方到手机屏幕最下方的距离
+			 * 有些手机的header_h会将上方的电池那一栏的高度也算进去，所以要特殊设置menu
+			 */
+		    header_h = api.pageParam.header_h;
+		    dic_type = api.pageParam.dic_type;
+			$api.removeCls($api.dom($api.byId('main'), '.active'), 'active');
+			$api.addCls($api.byId('type_'+dic_type), 'active');
+			$api.css($api.byId('header'), 'height:' + header_h + 'px;');
+			$api.css($api.byId('main'), 'height:' + (api.winHeight - header_h) + 'px;');
+			commonAddOrRemoveHideCss('main',1);
+		}
+		/*
+		 * 功能：改变主题活动排序分类
+		 * 作者：张自强
+		 * 时间：20171023
+		 */
+		function changePx(type){
+			commonExecScript('zthd_index_window','zthd_index_frame','changeQx('+type+');',1);
+			commonCloseFrame('zthd_menu_frame');
+		}
+	</script>
+</html>

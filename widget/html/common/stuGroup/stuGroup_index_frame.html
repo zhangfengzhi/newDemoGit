@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <title>分组管理</title>
+    <link rel="stylesheet" type="text/css" href="../../../css/aui_css_new/aui.css" />
+    <link rel="stylesheet" type="text/css" href="../../../css/module/common/jszy_new_common.css" />
+    <link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+    <style>
+    	.num div{
+            background:#34A8FA !important;
+        }
+    </style>
+</head>
+<body class="common-stuGroup">
+	<div id="group_body" class="content"></div>
+			<!--<li>
+				<div class="j_name zhan-kai" onclick="closeChild(this,1);">&nbsp;</div>
+				<div class="name ellipsis" onclick="openStuListGroupWin(1,'MjAxNee6pzHnj60=');">2015级1班</div>
+				<div class="num" onclick="openGroupName(1,'');">
+					<div>添加分组</div>
+				</div>
+				<ul id="j_child_1" class="children clearfix">
+					<li>
+						<div class="j_name jiedian">&nbsp;</div>
+						<div class="name ellipsis" onclick="openStuListGroupWin(0,'5a2m5Lmg6YCA5q2l57uE');">学习退步组</div>
+						<div class="btn2">
+							<div onclick="openGroupName(0,'Sknov5vmraXnu4Q=');">
+								<span>编辑</span>
+							</div>
+							<div>
+								<span>删除</span>
+							</div>
+						</div>
+					</li>
+					<li>
+						<div class="j_name jiedian">&nbsp;</div>
+						<div class="name ellipsis" onclick="openStuListGroupWin(0,'5a2m5Lmg6L+b5q2l57uE');">学习进步组</div>
+						<div class="btn2">
+							<div onclick="openGroupName(0,'Sknov5vmraXnu4Q=');">
+								<span>编辑</span>
+							</div>
+							<div>
+								<span>删除</span>
+							</div>
+						</div>
+					</li>
+				</ul>
+			</li>
+			<li>
+				<div class="jiedian">&nbsp;</div>
+				<div class="name ellipsis" onclick="openStuListGroupWin(1,'MjAxNee6pzLnj60=');">2015级2班</div>
+				<div class="num" onclick="openGroupName(1,'');">
+					<div>添加分组</div>
+				</div>
+			</li>-->
+	<script type="text/html" id="group_script">
+		<%if(list.length == 0){%>
+			<div class="no-data">暂无任教班级</div>
+		<%}else{%>
+			<ul id="j_parent" class="parent clearfix">
+			<%for(var i = 0; i < list.length; i++){%>
+				<li>
+					<div class="j_name <%if(list[i].child_list.length > 0){%>shou-qi<%}else{%>jiedian<%}%>" <%if(list[i].child_list.length > 0){%>onclick="openChild(<%=list[i].id%>);"<%}%>>&nbsp;</div>
+					<div class="name name1 ellipsis" onclick="openStuListGroupWin(1,'<%=list[i].name_base64%>',<%=list[i].id%>,<%=list[i].child_list.length%>);"><%=list[i].name%></div>
+					<div class="num" onclick="openGroupName(1,'',<%=list[i].child_list.length%>,<%=list[i].id%>);">
+						<div>添加分组</div>
+					</div>
+					<%if(list[i].child_list.length > 0){%>
+						<ul id="j_child_<%=list[i].id%>" class="children clearfix display-n">
+							<%for(var j = 0; j < list[i].child_list.length; j++){%>
+								<li>
+									<div class="j_name jiedian">&nbsp;</div>
+									<div class="name name2 ellipsis" onclick="openStuListGroupWin(0,'<%=list[i].child_list[j].name_base64%>',<%=list[i].child_list[j].id%>,<%=list[i].child_list.length%>);"><%=list[i].child_list[j].name%></div>
+									<div class="btn2">
+										<div onclick="openGroupName(0,'<%=list[i].child_list[j].name_base64%>','',<%=list[i].child_list[j].id%>);">
+											<span>编辑</span>
+										</div>
+										<div onclick="deleteGroup(<%=list[i].child_list[j].id%>,'<%=list[i].child_list[j].name%>');">
+											<span>删除</span>
+										</div>
+									</div>
+								</li>
+							<%}%>
+						</ul>
+					<%}%>
+				</li>
+			<%}%>
+			</ul>
+		<%}%>
+	</script>
+</body>
+<script type="text/javascript" src="../../../script/api.js"></script>
+<script type="text/javascript" src="../../../script/plug-in/template.js" ></script>
+<script type="text/javascript" src="../../../script/plug-in/base64.js" ></script>
+<script type="text/javascript" src="../../../script/base_config.js" ></script>
+<script type="text/javascript" src="../../../script/common/common.js" ></script>
+<script type="text/javascript">
+	var BASE_URL_ACTION;
+	var class_id=[];//班级id，记录这个打开的班级是哪个，下回刷新时在展开这个班级下的数据
+	apiready = function(){
+		commonSetTheme({"level":3,"type":0});	
+		BASE_URL_ACTION = $api.getStorage('BASE_URL_ACTION');
+		initData();
+	};
+	/*
+	*author:zhaoj
+	*function:初始化数据
+	*date：20161206
+	*/
+	function initData(){
+		showSelfProgress('加载中...');
+		//获取教师的任教班级
+		getTeachClassBySubject(function(flag,ret){
+			if(flag){
+				if(ret.class_list.length > 0){
+					var class_array = new Array();
+					for(var i = 0; i < ret.class_list.length; i++){
+						class_array.push(ret.class_list[i].CLASS_ID);
+					}
+					var class_string = class_array.toString();
+					//获取分组数据
+					getXxGroup(class_string,function(is_true,data){
+						api.hideProgress();
+						if(is_true){
+							dealData(data);
+						}else{
+							popToast(data);
+						}
+					});
+				}else{
+					api.hideProgress();
+					$api.html($api.byId('group_body'), '<div class="no-data">暂无任教班级</div>');
+				}
+			}else{
+				api.hideProgress();
+				popToast(ret);
+			}
+		});
+	}
+	/*
+	*author:zhaoj
+	*function:打开添加分组页面或编辑分组页面
+	*param:type,1添加，0编辑
+	*date：20161205
+	*/
+	function openGroupName(type,name_base64,length,id){
+		if(type == 1 && length == 6){
+			popToast('分组数量不能超过6个');
+		}else{
+			api.execScript({
+				name : 'stuGroup_index_window',
+				script : 'reBackType("name");'
+			});
+			var pageParamJson = {"type":type,"name_base64":name_base64,"id":id};//打开frame页面json数据
+			commonOpenFrame("stuGroup_group_name_frame","stuGroup_group_name_frame.html",0,false,false,"rgba(0,0,0,0.5)",pageParamJson);
+		}
+	}
+	/*
+	*author:zhaoj
+	*function:打开添加分组页面或编辑分组页面
+	*param:type:1班级，0分组
+	*date：20161205
+	*/
+	function openStuListGroupWin(type,name_base64,id,child_length){
+		var header_h = api.pageParam.header_h;//顶部高度
+		var pageParamJson = {"header_h":header_h,"type":type,"name_base64":name_base64,"id":id,"child_length":child_length};//打开window页面json数据
+		commonOpenWin('stuGroup_stu_list_group_window', 'stuGroup_stu_list_group_window.html', false, false, pageParamJson);
+	}
+	/*
+	*author:zhaoj
+	*function:处理分组数据
+	*date：20161206
+	*/
+	function dealData(ret){
+		var data={"list":[]};
+		//获取一级节点
+		for(var i = 0; i < ret.class_list.length; i++){
+			if(ret.class_list[i].pId == -1){
+				var oparam = new Object;
+				oparam.id = ret.class_list[i].id;
+				oparam.open = ret.class_list[i].open;
+				oparam.class_id = ret.class_list[i].class_id;
+				oparam.title = ret.class_list[i].title;
+				oparam.name = ret.class_list[i].name;
+				oparam.name_base64 = Base64.encode(ret.class_list[i].name);
+				oparam.drag = ret.class_list[i].drag;
+				oparam.child_list = [];
+				data.list.push(oparam);
+			}
+		}
+		//获取二级节点
+		for(var i = 0; i < data.list.length; i++){
+			for(var j = 0; j < ret.class_list.length; j++){
+				if(ret.class_list[j].pId == data.list[i].id){
+					var oparam = new Object;
+					oparam.id = ret.class_list[j].id;
+					oparam.open = ret.class_list[j].open;
+					oparam.class_id = ret.class_list[j].class_id;
+					oparam.title = ret.class_list[j].title;
+					oparam.name = ret.class_list[j].name;
+					oparam.name_base64 = Base64.encode(ret.class_list[j].name);
+					oparam.drag = ret.class_list[j].drag;
+					data.list[i].child_list.push(oparam);
+				}
+			}
+		}
+		commonAddOnceHtml('group_body','group_script',data);
+		setGroupNameCss(data);
+	}
+	/*
+	*author:zhaoj
+	*function:展开班级节点，并设置分组名称的最大宽度
+	*date：20161206
+	*/
+	function setGroupNameCss(data){
+		if(class_id.length>0){
+			for(var i = 0; i < class_id.length; i++){
+				for(var j = 0; j < data.list.length; j++){
+					//给子节点加上正确率
+					if(data.list[j].id == class_id[i] && data.list[j].child_list.length > 0){
+						openChild(class_id[i]);
+					}
+				}
+			}
+		}else{
+			for(var j = 0; j < data.list.length; j++){
+				//给子节点加上正确率
+				if(data.list[j].child_list.length > 0){
+					openChild(data.list[j].id);
+					break;
+				}
+			}
+		}
+		var width1 = api.winWidth -30-75-40;
+		var name1Array = $api.domAll($api.byId('group_body'), '.name1');
+		for(var i = 0; i < name1Array.length; i++){
+			$api.css(name1Array[i],'width:'+width1+'px;')
+		}
+		var width2 = api.winWidth -30-30-40-75;
+		var name2Array = $api.domAll($api.byId('group_body'), '.name2');
+		for(var i = 0; i < name2Array.length; i++){
+			$api.css(name2Array[i],'width:'+width2+'px;')
+		}
+	}
+	/*
+	*author:zhaoj
+	*function:提示删除学生分组信息
+	*date：20161208
+	*/
+	function deleteGroup(group_id,group_name){
+		var msg;
+		if(group_name.length>5){
+			msg = '确定删除分组“'+group_name.substring(0,5)+'...”吗？';
+		}else{
+			msg = '确定删除分组“'+group_name+'”吗？';
+		}
+		popTwoBtnConfirm('提示',msg,'deleteXxGroup('+group_id+')');
+	}
+	/*
+	*author:zhaoj
+	*function:删除学生分组
+	*date：20161206
+	*/
+	function deleteXxGroup(group_id){
+		showSelfProgress('删除中...');
+		api.ajax({
+			url : BASE_URL_ACTION + '/ypt/xx/deleteXxGroup',
+			method : 'post',
+			timeout : 30,
+			dataType : 'json',
+			cache : false,
+			data : {
+				values : {
+					"random_num" : creatRandomNum(),
+					"group_id" : group_id,
+					"person_id" : $api.getStorage("person_id"),
+				}
+			},
+			headers : {
+	'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+	}
+		}, function(ret, err) {
+			if (err) {
+				popTipInfo(2);
+			} else {
+				if(ret){
+					if(ret.success){
+						setTimeout(function(){
+							api.hideProgress();
+							popToast('删除成功');
+							initData();
+						},1500);
+					}else{
+						popTipInfo(2);
+					}
+				}else{
+					popTipInfo(2);
+				}
+			}
+		});
+	}
+	/*
+*author:zhaoj
+*function:获取教师任教班级
+*date：20161206
+*/
+function getTeachClassBySubject(callback){
+	api.ajax({
+		url : BASE_URL_ACTION + '/ypt/person/getTeachClassBySubject',
+		method : 'post',
+		timeout : 30,
+		dataType : 'json',
+		cache : false,
+		data : {
+			values : {
+				"random_num" : creatRandomNum(),
+				"teacher_id" : $api.getStorage("person_id")
+			}
+		},
+		headers : {
+'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+}
+	}, function(ret, err) {
+		if (err) {
+			callback(false,'获取任教班级失败,请稍候重试');
+		} else {
+			if(ret){
+				callback(true,ret);
+			}else{
+				callback(false,'获取任教班级失败,请稍候重试');
+			}
+		}
+	});
+}
+/*
+*author:zhaoj
+*function:获取教师创建的分组
+*date：20161206
+*/
+function getXxGroup(class_ids,callback){
+	api.ajax({
+		url : BASE_URL_ACTION + '/ypt/xx/getXxGroup',
+		method : 'post',
+		timeout : 30,
+		dataType : 'json',
+		cache : false,
+		data : {
+			values : {
+				"random_num" : creatRandomNum(),
+				"class_id" : class_ids,
+				"person_id" : $api.getStorage("person_id")
+			}
+		},
+		headers : {
+'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+}
+	}, function(ret, err) {
+		if (err) {
+			callback(false,'获取分组失败,请稍候重试');
+		} else {
+			if(ret){
+				callback(true,ret);
+			}else{
+				callback(false,'获取分组失败,请稍候重试');
+			}
+		}
+	});
+}
+/*
+*author:zhaoj
+*function:展开孩子节点的数据
+*date：20161505
+*/
+function openChild(id){
+	var flag= false;
+	for(var i = 0; i < class_id.length; i++){
+		if(class_id[i] == id){
+			flag=true;
+			break;
+		}
+	}
+	if(!flag){
+		class_id.push(id);
+	}
+	var node_id=$api.dom(document.getElementById('j_child_'+id).parentNode, '.j_name');
+	$api.removeCls(node_id, 'shou-qi');
+	$api.addCls(node_id, 'zhan-kai');
+	$api.removeCls($api.byId('j_child_'+id),'display-n');
+	$api.removeAttr(node_id,'onclick');
+	$api.attr(node_id,'onclick','closeChild('+id+')');
+}
+/*
+*author:zhaoj
+*function:隐藏孩子节点
+*date：20161205
+*/
+function closeChild(id){
+	for(var i = 0; i < class_id.length; i++){
+		if(class_id[i] == id){
+			class_id.splice(i,1);
+		}
+	}
+	var node_id=$api.dom(document.getElementById('j_child_'+id).parentNode, '.j_name');
+	$api.removeCls(node_id, 'zhan-kai');
+	$api.addCls(node_id, 'shou-qi');
+	$api.addCls($api.byId('j_child_'+id),'display-n');
+	$api.removeAttr(node_id,'onclick');
+	$api.attr(node_id,'onclick','openChild('+id+')');
+}
+</script>
+</html>

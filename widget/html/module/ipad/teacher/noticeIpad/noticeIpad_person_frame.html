@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no" />
+    <title>通知</title>
+    <link rel="stylesheet" type="text/css" href="../../../../../css/aui/aui.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../../../css/module/common/aui-list-swipe.css" />
+    <link rel="stylesheet" type="text/css" href="../../../../../css/module/ipad/left-right-layout.css"/>
+    <link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+    <style>
+    	.manage {display: inline-block;float: right;color:#efefef !important;font-size: 14px;line-height: 45px;padding-left:3px;}
+        .manage a{margin-right:-5px;}
+        .plrtb {padding: 15px;}
+        .plr15 {padding: 0 15px;}
+        .plt15 {padding-bottom:15px}
+        .orgzn-org .name,.group-ul .name,.person-ul .name{width:70%;max-width:70%;float:left;height:45px;line-height: 45px;font-size: 16px;color:#141414;background:#fff;padding-left:10px;height:100%;}
+        .orgzn-org .name font ,.group-ul .name font,.person-ul .name font{font-size: 13px;color: #ABABAB;}
+        .orgzn-org li,.group-ul li,.person-ul li{height:51px;line-height:51px;border-bottom:1px solid #c4c2c2;padding-top:5px;padding-bottom:5px;}
+        .select-input-div{float:left;height:45px;padding-top:10px;padding-right:10px;}
+        .orgzn-title-div{background:#efefef}
+        .first-word{
+            float:left;
+            width:40px;
+            height:40px;
+            border-radius:40px;
+            background:#34a8f6;
+            color:#fff;
+            line-height:40px;
+            text-align:center;
+            font-size:18px;
+        }
+        .person-ul .first-word{
+            background:#1bbc9b;
+        }
+        .now-orgzn{color:#34a8f6}
+        .now-orgzn span{color:#000}
+        .check-role{
+            width:20px;
+            height:20px;
+            border-radius:20px;
+            border:1px solid #3d3c3c;
+            text-align: center;
+            padding-top:5px;
+            padding-left:5px;
+        }
+        .checked div{
+            width:8px;
+            height:8px;
+            border-radius:8px;
+            background:#34a8f6
+        }
+        .type-div{height:50px;line-height:50px;border-bottom:1px solid #c4c2c2;width:100%;text-align:center;border-left:1px solid #c4c2c2}
+    </style>
+</head>
+<body class="common-ipad-noticeIpad-tea">
+	  <!-- 人员 -->
+	  <div class="type-div">人员</div>
+	  <div id="data_person" class="aui-hide" style="border-left:1px solid #c4c2c2">
+	      <div class="orgzn-org" id="person_ul"></div>
+	      <script type="text/html" id="person_script">
+	      <div>
+	          <ul class="person-ul">
+	              <%if(list.length == 0){%>
+	                <div class="no-data">暂无人员</div>
+	              <%}else{%>
+	                <%for(var i=0;i<list.length;i++){%>
+	                      <li class="plr15">
+	                          <div class="select-input-div">
+	                              <%if(list[i].selected){%>
+	                                 <div id="<%=list[i].person_id%>_<%=list[i].person_name%>" class="check-role checked" onclick="selectPersonYuan(this,'<%=list[i].person_id%>','<%=list[i].person_name%>','<%=list[i].org_code%>');">
+	                              <%}else{%>
+	                                 <div id="<%=list[i].person_id%>_<%=list[i].person_name%>" class="check-role" onclick="selectPersonYuan(this,'<%=list[i].person_id%>','<%=list[i].person_name%>','<%=list[i].org_code%>');">
+	                              <%}%>
+	                                   <div></div>
+	                              </div>
+	                          </div>
+	                          <div class="first-word"><%=list[i].person_name.substring(0,1)%></div>
+	                          <div class="aui-iconfont name ellipsis"><%=list[i].person_name%></div> 
+	                      </li>
+	                  <%}%>
+	              <%}%>
+	          </ul>
+	      </div>
+	      </script>
+	  </div>
+	  <div id="no_data" class="no-data">暂无人员</div>
+</body>
+<script type="text/javascript" src="../../../../../script/api.js"></script>
+<script type="text/javascript" src="../../../../../script/plug-in/aui-list-swipe.js"></script>
+<script type="text/javascript" src="../../../../../script/base_config.js" ></script>
+<script type="text/javascript" src="../../../../../script/plug-in/template.js" ></script>
+<script type="text/javascript" src="../../../../../script/plug-in/base64.js" ></script>
+<script type="text/javascript" src="../../../../../script/common/common.js"></script>
+<script type="text/javascript" src="../../../../../script/module/ipad/teacher/noticeIpad.js"></script>
+<script type="text/javascript">
+	
+	apiready = function(){
+		commonSetTheme({"level":5,"type":0});
+	};
+	
+	
+	/*
+	 * 功能：获取群组人员
+	 * 作者：张自强
+	 * 时间：20180731
+	 * 接口：吴缤
+	 */
+	function getGroupPersonList(groupId,name,addType){
+		api.ajax({
+           url:BASE_URL_ACTION+'/new_notice/kjGetGroupPersonList?random_num='+creatRandomNum()+'&group_id='+groupId+'&pageNumber=1&pageSize=10000000',
+           method:'get',
+           dataType:'json',
+           timeout:30,
+           headers : {
+        'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';' 
+            }
+       },function(ret,err){
+       	    if(err){
+       	        popToast('获取群组信息失败');
+       	        commonAddOrRemoveHideCss('data_person',0);
+        	    commonAddOrRemoveHideCss('no_data',1);
+       	    }else{
+       	        if(ret.success){
+       	            var selected_list = ret.list;
+                    if(addType){
+                        var list = $api.getStorage('group_person_list');
+                        if(!list){
+                            list = [];
+                        }
+                        for(var i=0;i<selected_list.length;i++){
+                            var param = new Object();
+                            param.name = selected_list[i].person_name;
+                            param.id = selected_list[i].person_id;
+                            param.type = -3;
+                            param.rode = selected_list[i].org_code;
+                            list.push(param);
+                        }
+                        $api.setStorage('group_person_list',list);
+                    }else{
+                    	if(selected_list.length > 0){
+	                        for(var j=0;j<selected_list.length;j++){
+	                            //1:教育局，2：学校，7：教辅单位，-2：群组，-3人员，-4：下属教育局，-5：下属教辅单位；-6：下属学校，0：内部科室（根节点）,-7：内部科室（子节点      
+	                            checkStatesShow(addType,-2,selected_list[j].person_id,selected_list[j].person_name,'');
+	                            checkShowSelected(-3,selected_list[j].person_id,function(flag){
+	                                ret.list[j].selected = flag;
+	                            });
+	                        }
+	                        commonAddOrRemoveHideCss('data_person',1);
+	        	            commonAddOrRemoveHideCss('no_data',0);
+	                        commonAddOnceHtml('person_ul', 'person_script', ret);
+                        }else{
+                        	commonAddOrRemoveHideCss('data_person',0);
+        	    			commonAddOrRemoveHideCss('no_data',1);
+                        }
+                    }
+       	        }else{
+       	            popToast('获取群组信息失败');
+       	            commonAddOrRemoveHideCss('data_person',0);
+        	    	commonAddOrRemoveHideCss('no_data',1);
+       	        }
+       	    }
+       });
+	}
+	
+	/*
+     * 功能：获取部门下人人员
+     * 作者：张自强
+     * 时间：20180720
+     * 接口：冯丽杰
+     */
+    function getMyWorkspace(orgId,fatherId,showType,now_bureau_id){
+        var query_child = true;
+        if(showType){
+            query_child = false;
+        }
+        api.ajax({
+            url:BASE_URL_ACTION + '/admin/new_base/personInfo_GetPersonInfoList?random_num='+creatRandomNum()+'&b_use=1&bureau_id='+now_bureau_id+'&org_id='+orgId+'&pageNumber=1&pageSize=10000000000&person_name=&query_child='+query_child,
+            method:'get',
+            dataType:'json',
+            timeout:30,
+            headers : {
+        'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';' 
+            }
+        },function(ret,err){
+        	if(err){
+        	   popToast('获取人员列表失败');
+        	}else{
+        	   if(ret.success){
+        	        if(ret.list.length == 0 && !query_child){
+        	           commonAddOrRemoveHideCss('data_person',0);
+        	           commonAddOrRemoveHideCss('no_data',1);
+        	        }else{
+        	           commonAddOrRemoveHideCss('data_person',1);
+        	           commonAddOrRemoveHideCss('no_data',0);
+        	           var selected_list = ret.list;
+        	           for(var j=0;j<selected_list.length;j++){
+                            //1:教育局，2：学校，7：教辅单位，-2：群组，-3人员，-4：下属教育局，-5：下属教辅单位；-6：下属学校，0：内部科室（根节点）,-7：内部科室（子节点      
+                            ret.list[j].org_code = fatherId;
+                            checkShowSelected(-3,selected_list[j].person_id,function(flag){
+                                ret.list[j].selected = flag;
+                            });
+                        }
+                       commonAddOnceHtml('person_ul', 'person_script', {'list':ret.list});
+        	        }
+        	   }else{
+        	       popToast('获取人员列表失败');
+        	   }
+        	}
+        });
+        api.hideProgress();
+    }
+    
+    /*
+     * 功能：选择人员
+     * 作者：张自强
+     * 时间：20180731
+     */
+    function selectPersonYuan(self,id,name,rode,formType){
+    	if(formType*1){
+                commonExecScript(api.winName,'','selectPersonYuan('+id+',"'+name+'","'+rode+'",'+formType+',2,0)',0);
+                checkStatesShow(2,-3,id,name,rode);
+                $api.removeCls($api.byId(id+'_'+name),'checked')
+            }else{
+                if($api.hasCls(self,'checked')){
+                    commonExecScript(api.winName,'','selectPersonYuan('+id+',"'+name+'","'+rode+'",'+formType+',2,0)',0);
+                    checkStatesShow(2,-3,id,name,rode);
+                    $api.removeCls(self,'checked')
+                }else{
+                    commonExecScript(api.winName,'','selectPersonYuan('+id+',"'+name+'","'+rode+'",'+formType+',1,-3)',0);
+                    checkStatesShow(1,-3,id,name,rode);
+                    $api.addCls(self,'checked');
+                }
+            }
+    }
+	
+	/*
+	 * 功能：重置页面
+	 * 作者：张自强
+	 * 时间：20180701
+	 */
+	function reSetFrame(){
+	   commonAddOnceHtml("person_ul", "person_script", {"list":[]});
+	}
+</script>
+</html>

@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>圈子</title>
+    <link rel="stylesheet" type="text/css" href="../../../../../css/aui/aui.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../../../css/module/ipad/popup-body.css"/>
+    <link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+    <style>
+    	.tip{color:#333;text-align:right;font-size:16px;color:#f00;}
+    	textarea{margin:0;height:265px;}
+    	.popup-body-new .commont-content .position{font-size:16px;padding:19px 0 0 30px;}
+    </style>
+</head>
+<body id="j_body" class="popup-body-new common-ipad-quanziIpadstu">
+	<div class="commont-content plr20">
+		<div class="top fl">
+			<div class="name">评论</div>
+			<div class="close fr" onclick="closeFrame();"></div>
+		</div>
+		<div class="content plr20">
+			<textarea id="comt_content" placeholder="鼓励、吐槽、表扬......想说啥就说啥！（最多100字）" maxlength ='100'></textarea>
+		</div>
+		<div class="btn" onclick="messageBoard_addDialog();">保存</div>
+	</div>
+</body>
+<script type="text/javascript" src="../../../../../script/api.js"></script>
+<script type="text/javascript" src="../../../../../script/base_config.js" ></script>
+<script type="text/javascript" src="../../../../../script/common/common.js"></script>
+<script type="text/javascript">
+	apiready = function(){
+		commonSetTheme({"level":5,"type":0});
+		if(api.pageParam.d == 0){
+			$api.text($api.byId('j_name'), '评论');
+		}else{
+			$api.text($api.byId('j_name'), '回复评论');
+		}
+		$api.removeCls($api.byId('j_body'), 'aui-hide');
+	};
+	/*
+	*author:zhaoj
+	*function:关闭页面
+	*date：20170912
+	*/
+	function closeFrame(){
+		commonExecScript('quanziIpad_index_window','','back();',0);
+	}
+	/*
+	*author:zhaoj
+	*function:提示评论还剩多少个字
+	*date：20160318
+	*/
+	function showTip(length,self){
+        var count = 100 - length;
+        if(count == 100){
+        	$api.text($api.byId('tip'),'最多支持100个字符');
+        }else{
+        	$api.text($api.byId('tip'),'剩余'+count+'个字符');
+        }
+        commonRemoveExpression(self);
+    }
+    /*
+	*author:zhaoj
+	*function:发表评论
+	*date：20160319
+	*/
+	function messageBoard_addDialog(){
+		//评论内容
+		var comt_content = $api.val($api.byId('comt_content'));
+		//验证评论内容
+		var comt_content_vad = $api.trimAll(comt_content);
+		if(comt_content_vad.length == 0){
+			popAlert("请填写评论内容！");
+			return;
+		}
+		showSelfProgress('发布中...');
+		textAntispamScan(comt_content_vad,function(flag){
+			if(flag){	//如果不存在敏感词
+				api.ajax({
+					url : BASE_URL_ACTION + '/ypt/bbs/message/save',
+					method : 'post',
+					dataType : 'json',
+					timeout : 30,
+					cache : false,
+					data : {
+						values : {
+							"random_num":creatRandomNum(),
+				            "person_id": $api.getStorage("person_id"),
+				            "person_name":$api.getStorage("person_name"),
+				            "identity_id": $api.getStorage("identity"),
+				            "context": comt_content,
+				            "message_type": 2,
+				            "type_id": "person_blog_article_"+api.pageParam.id,
+				            "parent_id": (api.pageParam.d==0?"":api.pageParam.pid)
+						}
+					},
+					headers : {
+						'Cookie' : 'person_id='+$api.getStorage("person_id")+';identity_id='+$api.getStorage("identity")+'; token='+$api.getStorage("token_ypt")+';'
+					}
+				}, function(ret, err) {
+					if(err){
+						api.hideProgress();
+						popToast('评论失败');
+					}else{
+						if(ret.success){
+							addCommentNum(api.pageParam.id);
+							setTimeout(function() {
+								popToast('评论成功');
+								api.hideProgress();
+								commonExecScript('quanziIpad_index_window','quanziIpad_detail_frame','setIndexFrameCommentNum(1)',1);
+							}, 2800);
+							setTimeout(function() {
+								commonExecScript('quanziIpad_index_window','','back()',0);
+							}, 2900);
+							
+						}else{
+							api.hideProgress();
+							popToast('评论失败');
+						}
+					}
+				});
+			}else{
+				api.hideProgress();
+			}
+		});
+		
+    }
+    /*
+	*author:zhaoj
+	*function:个人评论数加1
+	*date：20160319
+	*/
+    function addCommentNum(article_id){
+    	api.ajax({
+			url : BASE_URL_ACTION + '/blog/addCommentNum',
+			method : 'post',
+			dataType : 'json',
+			timeout : 30,
+			cache : false,
+			data : {
+				values : {
+					"random_num":creatRandomNum(),
+                    "article_id": article_id,
+                    "person_id":$api.getStorage("person_id"),
+                    "identity_id":$api.getStorage("identity")
+				}
+			},
+			headers : {
+				'Cookie' : 'person_id='+$api.getStorage("person_id")+';identity_id='+$api.getStorage("identity")+'; token='+$api.getStorage("token_ypt")+';'
+			}
+		}, function(ret, err) {
+			if(api.pageParam.d==0){
+				creditWriteToQueue(108,'',api.pageParam.person_id,api.pageParam.identity_id,$api.getStorage("person_name")+ "评论了" + api.pageParam.person_name + "的圈子。")
+			}
+		});
+    }
+     
+</script>
+</html>

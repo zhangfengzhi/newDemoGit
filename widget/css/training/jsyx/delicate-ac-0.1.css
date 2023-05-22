@@ -1,0 +1,190 @@
+/*
+ * =========================================================================
+ * DELICATE-AC AUI  APICLOUD 扩展    delicate  QQ：282776801
+ * Verson 0.0.1  测试版
+ * =========================================================================
+ */
+/*公共*/
+
+@font-face {
+	font-family: "deicon";
+	src: url('de_iconfont.ttf') format('truetype'); /* iOS 4.1- */
+}
+
+.de-iconfont {
+	position: relative;
+	font-family: "deicon" !important;
+	font-size: 16px;
+	font-style: normal;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+}
+.de-icon-weixin:before {
+	content: "\e7f0";
+}
+.de-icon-pengyouquan:before {
+	content: "\e610";
+}
+.de-icon-weibo:before {
+	content: "\349f";
+}
+.de-icon-QQ:before {
+	content: "\e604";
+}
+.de-icon-zhifubao:before {
+	content: "\e606";
+}
+.de-icon-lianjie:before {
+	content: "\e69e";
+}
+
+.aui-bar-pro {
+	background-color: #9d5956 !important;
+}
+.aui-bar-white {
+	background-color: #ffffff !important;
+	color: #333333;
+}
+.aui-text-pro {
+	color: #9d5956 !important;
+}
+/*蒙版*/
+@-webkit-keyframes markingFadeIn {
+0% {
+opacity: 0; /*初始状态 透明度为0*/
+}
+50% {
+opacity: 0; /*中间状态 透明度为0*/
+}
+100% {
+opacity: 1; /*结尾状态 透明度为1*/
+}
+}
+.delicate-modal {
+	position: fixed;
+	-webkit-animation-name: markingFadeIn; /*动画名称*/
+	-webkit-animation-duration: 0.3s; /*动画持续时间*/
+	-webkit-animation-iteration-count: 1; /*动画次数*/
+	-webkit-animation-delay: 0s; /*延迟时间*/
+}
+.delicate-modal-bg {
+	width: 100%;
+	height: 100%;
+	background-color: rgba(0,0,0,0.0);
+}
+
+/*模态-头部菜单*/
+.delicate-modal-top {
+	background-color: #FFCC00;
+	position: fixed;
+	padding: 5px;
+}
+.delicate-modal-top-point {
+	position: fixed;
+	width: 0;
+	height: 0;
+	border-left: 5px solid transparent;
+	border-right: 5px solid transparent;
+	border-bottom: 5px solid #fff;
+}
+.delicate-modal-top-view-cell {
+	padding: 5px 10px;
+	border-radius: 2px;
+}
+.delicate-modal-top-view .active {
+	background-color: #cccccc;
+	color: #34A8FA;
+}
+.delicate-modal-top-view .push-dark{
+	background-color: rgba(0,0,0,1.0);
+	color: #ffa604;
+}
+.delicate-modal-top-view .push-light{
+	background-color: rgba(255,255,255,1.0);
+	color: #ffa604;
+}
+
+/*模态-body菜单*/
+.delicate-modal-body {
+	-webkit-box-shadow: 0 0 10px rgba(0, 0, 0, .5);
+	box-shadow: 0 0 10px rgba(0, 0, 0, .5);
+}
+.delicate-modal-body-title, .delicate-modal-body-view-cell {
+	min-height: 50px;
+	line-height: 50px;
+	padding: 0 20px;
+}
+.delicate-modal-body-view {
+	overflow-y: auto;
+}
+/*模态-底部菜单*/
+.delicate-modal-bottom {
+	padding: 10px 0 0 0;
+	background-color: #ffffff;
+	position: fixed;
+	width: 100%;
+	bottom: 0;
+}
+.delicate-modal-bottom-view {
+	min-height: 200px;
+}
+.delicate-modal-bottom-view-cell {
+	height: 100px;
+}
+.delicate-modal-bottom-view-cell .round-basic {
+	width: 60px;
+	height: 60px;
+	border: 1px solid #000000;
+	border-radius: 100%;
+	position: relative;
+	margin: 0 auto;
+}
+.delicate-modal-bottom-view-cell .round-basic span {
+	position: absolute;
+	font-size: 26px;
+	top: 50%;
+	left: 50%;
+	margin-top: -19px;
+	margin-left: -13px;
+}
+.delicate-modal-bottom-view-cell .round-basic span.vali-weixin {
+	font-size: 32px;
+	margin-top: -24px;
+	margin-left: -16px;
+}
+.delicate-modal-bottom-view-cell .round-basic span.vali-pengyouquan {
+	font-size: 31px;
+	margin-top: -23px;
+	margin-left: -16px;
+}
+.delicate-modal-bottom-view-cell .round-basic span.vali-weibo {
+	font-size: 35px;
+	margin-top: -25px;
+	margin-left: -18px;
+}
+.delicate-modal-bottom-view-cell .round-basic span.vali-QQ {
+	font-size: 40px;
+	margin-top: -31px;
+	margin-left: -20px;
+}
+.delicate-modal-bottom-view-cell .round-basic span.vali-zhifubao {
+	font-size: 30px;
+	margin-top: -22px;
+	margin-left: -15px;
+}
+.delicate-modal-bottom-view-cell .round-basic span.vali-lianjie {
+	font-size: 30px;
+	margin-top: -22px;
+	margin-left: -15px;
+}
+.delicate-modal-bottom-view-cell p {
+	padding: 10px 0;
+	color: #000000;
+	height: 40px;
+}
+.delicate-modal-bottom-btn {
+	color: #666666;
+	padding: 10px 0 0 0;
+	height: 45px;
+	border-top: 1px solid #E7E7E7;
+}

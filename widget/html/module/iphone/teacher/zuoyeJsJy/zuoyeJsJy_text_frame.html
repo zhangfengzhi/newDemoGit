@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no"/>
+    <title>检测</title>
+    <link rel="stylesheet" type="text/css" href="../../../../../css/aui/aui.css" />
+    <link id="j_theme_base" rel="stylesheet" type="text/css" href="" /><style>
+		body{
+		  background:rgba(0,0,0,0);
+		  position:relative;
+		  width:161px;
+		  height:59px;
+		}
+		.text-div{
+		  position:absolute;
+		  top:0;
+		  left:0;
+		  border-right:0;
+		  width:130px;
+		  height:50px;
+		  line-height:48px;
+		  text-align:left;
+		  padding-left:20px;
+		  border-radius:5px;
+		  font-size:18px;
+		  font-weight:5px;
+		  border-radius:50px 0 0 50px;
+		  background:#fff;
+		}
+		.jia-div{
+		  position:absolute;
+		  top:0;
+          left:100px;
+		  width:50px;
+		  height:50px;
+		  line-height:42px;
+		  border-radius:50px;
+		  text-align: center;
+		  color:#fff;
+		  font-size:34px;
+		  font-weight:1px;
+		  z-index:999;
+		}
+    </style>
+</head>
+<body id="body" class="common-iphone-zuoye-tea">
+        <div id="text_div" class="text-div aui-hide" onclick="fbTextZy();">综合检测</div><div id="jia" class="jia-div" onclick="changeTextFrameAttr(1);">+<div>
+</body>
+<script type="text/javascript" src="../../../../../script/api.js"></script>
+<script type="text/javascript" src="../../../../../script/base_config.js" ></script>
+<script type="text/javascript" src="../../../../../script/plug-in/template.js" ></script>
+<script type="text/javascript" src="../../../../../script/common/common.js" ></script>
+<script type="text/javascript">
+	apiready = function(){
+		commonSetTheme({"level":5,"type":0});
+		if(api.systemType == 'ios'){
+            $api.css($api.byId('jia'),'line-height:38px;');
+        }
+	};
+	
+	/*
+	 * 功能：显示发布话题检测按钮
+	 * 作者：张自强
+	 * 时间：20180531
+	 */
+	function changeTextFrameAttr(type){
+	   switch(type){
+	       case 1:
+	           var index = 0;
+               var timer = setInterval(function(){
+                      index++;
+                      $api.css($api.byId('jia'),'transform:rotate('+(index*4+10)+'deg);transform:rotate('+(index*4+10)+'deg);-ms-transform:rotate('+(index*4+10)+'deg);-moz-transform:rotate('+(index*4+10)+'deg);-webkit-transform:rotate('+(index*4+10)+'deg);-o-transform:rotate('+(index*4+10)+'deg); ');
+                      if(index == 8){
+                        commonAddOrRemoveHideCss('text_div',1); 
+                      }
+                      if(index == 9){
+                          $api.attr($api.byId('jia'), 'onclick', 'changeTextFrameAttr(2);');
+                          clearInterval(timer);
+                          return;
+                      } 
+                },70); 
+	           break;
+	       case 2:
+	           if(!$api.hasCls($api.byId('text_div'), 'aui-hide')){
+	               var index1 = 0;
+                   var timer1 = setInterval(function(){
+                          index1++;
+                          $api.css($api.byId('jia'),'transform:rotate('+(46-(index1*4+10))+'deg);transform:rotate('+(46-(index1*4+10))+'deg);-ms-transform:rotate('+(46-(index1*4+10))+'deg);-moz-transform:rotate('+(46-(index1*4+10))+'deg);-webkit-transform:rotate('+(46-(index1*4+10))+'deg);-o-transform:rotate('+(46-(index1*4+10))+'deg); ');
+                          if(index1 == 8){
+                            commonAddOrRemoveHideCss('text_div',0); 
+                          }
+                          if(index1 == 9){
+                              $api.attr($api.byId('jia'), 'onclick', 'changeTextFrameAttr(1);');
+                              clearInterval(timer1);
+                              return;
+                          } 
+                    },70); 
+	           }
+	           break;
+	   }
+	}
+	
+	/*
+	 * 功能：发布话题检测
+	 * 作者：张自强
+	 * 时间：20180531
+	 */
+	function fbTextZy(){
+	   var lobal_variable = JSON.parse(api.pageParam.lobal_variable);
+commonExecScript('zuoyeJsJy_index_window','','fbTextZy("'+lobal_variable.stage_id+'","'+lobal_variable.subject_id+'","'+lobal_variable.scheme_id+'","'+lobal_variable.volume_id+'","'+lobal_variable.structure_id+'","'+lobal_variable.package_id+'","'+lobal_variable.res_type_id+'");',0);
+	   changeTextFrameAttr(2);
+	   setTimeout(function(){ 
+$api.css($api.byId('jia'),'transform:rotate(0deg);transform:rotate(0deg);-ms-transform:rotate(0deg);-moz-transform:rotate(0deg);-webkit-transform:rotate(0deg);-o-transform:rotate(0deg);');
+	   },1000);
+	}
+</script>
+</html>

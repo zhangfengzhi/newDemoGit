@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<!-- html5：在创建html时为了防止页面缩放等不兼容效果，要创建个viewport  -->
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<!-- 在IOS设备上，有时会将数字转为手机号，这里也要禁止下 -->
+		<meta name="format-detection" content="telephone=no"/>
+		<title>资源数据页面</title>
+		<link rel="stylesheet" type="text/css" href="../../../css/aui/aui.css" />
+		<style>
+			body {
+				background: #f0f0f0;
+			}
+			.otherinfo p {
+				font-size: 12px;
+				margin-bottom: 5px;
+				padding-left: 10px;
+				white-space: nowrap;
+				overflow: hidden;
+				text-overflow: ellipsis;
+			}
+			.wid50 {
+				width: 50%;
+				margin-top: 5px;
+			}
+			.fl {
+				float: left !important;
+			}
+			.aui-input-row .wid30 {
+				width: 30%;
+				padding: 15px 0 15px 15px;
+			}
+			.aui-input-row .wid70 {
+				width: 70%;
+				white-space: nowrap;
+				overflow: hidden;
+				text-overflow: ellipsis;
+				text-align: right;
+				font-size: 13px;
+				color: #AAAAAA;
+			}
+			.header-img {
+				background: #ffffff;
+				width: 100%;
+				height: 48%;
+				display: block;
+				padding: 10px;
+			}
+			.thumb-img {
+				width: 100%;
+				height: 100%;
+			}
+			.file-name {
+				background: #ffffff;
+				width: 100%;
+				padding: 0 10px;
+			}
+			.name {
+				width: 100%;
+				white-space: nowrap;
+				overflow: hidden;
+				text-overflow: ellipsis;
+				border-bottom: 1px solid #dddddd;
+				height: 45px;
+				line-height: 45px;
+			}
+			#foot_div {
+				display: block;
+				bottom: 0px;
+				right: 1px !important;
+				right: 18px;
+				min-width: 200px;
+				line-height: 30px;
+				position: fixed;
+				text-align: center;
+				color: #fff;
+				background: transparent;
+			}
+			.btn {
+				padding: 0 10px;
+				height: 10%;
+			}
+			.content-body {
+				height: 88%;
+				overflow-y: auto;
+			}
+			.aui-btn-block {
+				padding: 0;
+				height: 100%;
+				line-height: 100%;
+			}
+			.h10 {
+				height: 10px;
+				background: #f0f0f0;
+			}
+			.firstblock {
+				background-color: #fff;
+			}
+			.item {
+				height: 50px;
+				line-height: 50px;
+				margin-left: 10px;
+				background-color: #fff;
+				border-bottom: 1px solid #f0f0f0;
+			}
+			.item_right {
+				color: #696969;
+				font-size: 14px;
+				padding-right: 15px;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="file-name">
+			<div id="file_name" class="name"></div>
+		</div>
+		<div class="header-img">
+			<img id="thumb_img" onerror="this.src='../../../image/yingyong/weike/wk_default.png'" class="thumb-img" src="" />
+		</div>
+		<div class="h10"></div>
+		<!--<div class="aui-col-xs-12  otherinfo">
+		<p id="resource_type" class="wid50 fl"></p>
+		<p id="app_type" class="wid50 fl"></p>
+		<p id="uploader" class="wid50 fl"></p>
+		<p id="upload_mechanism" class="wid50 fl"></p>
+		<p id="upload_time"></p>
+		<p id="audit"></p>
+		<p id="down_count"></p>
+		</div>-->
+		<!--		<div class="aui-content">
+		<form class="aui-input-group" >
+		<div class="aui-input-row">
+		<label class="wid30">上传人</label>
+		<label id="uploader" class="wid70"></label>
+		</div>
+		<div class="aui-input-row">
+		<label class="wid30">上传机构</label>
+		<label id="upload_mechanism" class="wid70"></label>
+		</div>
+		<div class="aui-input-row">
+		<label class="wid30">上传时间</label>
+		<label id="upload_time" class="wid70"></label>
+		</div>
+		<div class="aui-input-row">
+		<label class="wid30">审核人</label>
+		<label id="audit" class="wid70"></label>
+		</div>
+		</form>
+		</div>-->
+		<div class="firstblock">
+			<div class="item">
+				<span>上传人</span><span id="uploader" class="item_right aui-pull-right"></span>
+			</div>
+		</div>
+		<div style="display:none" class="firstblock">
+			<div class="item">
+				<span>上传机构</span><span id="upload_mechanism" class="item_right aui-pull-right"></span>
+			</div>
+		</div>
+		<div class="firstblock">
+			<div class="item">
+				<span id="time_name"></span><span id="upload_time" class="item_right aui-pull-right"></span>
+			</div>
+		</div>
+		<div class="firstblock">
+			<div class="item">
+				<span>审核人</span><span id="audit" class="item_right aui-pull-right"></span>
+			</div>
+		</div>
+		<div class="h10"></div>
+		<script type="text/javascript" src="../../../script/api.js" ></script>
+		<script type="text/javascript" src="../../../script/base_config.js" ></script>
+		<script type="text/javascript" src="../../../script/plug-in/template.js" ></script>
+		<script type="text/javascript" src="../../../script/plug-in/base64.js" ></script>
+	</body>
+	<script type="text/javascript">
+		var netAudio;
+		//播放录音对象
+		var isPlay = false;
+		//是否正在播放录音
+		var format;
+		//定义头高度
+		var header_h;
+		var bookReader;//txt阅读器
+		//文件格式
+		var BASE_URL_ACTION;
+		var BASE_APP_TYPE;
+		apiready = function() {
+			BASE_URL_ACTION = $api.getStorage('BASE_URL_ACTION');
+			BASE_APP_TYPE = $api.getStorage('BASE_APP_TYPE');
+			header_h = api.pageParam.header_h;
+			changeTimeName();
+			getCheckPerson(1, api.pageParam.resource_id_int, '');
+			format = api.pageParam.resource_format;
+			//$api.text($api.byId('resource_type'), Base64.decode(api.pageParam.resource_type_name));
+			//$api.text($api.byId('app_type'), Base64.decode(api.pageParam.app_type_name));
+			//$api.text($api.byId('down_count'), api.pageParam.down_count+'次');
+			$api.text($api.byId('uploader'), Base64.decode(api.pageParam.person_name));
+			$api.text($api.byId('upload_mechanism'), Base64.decode(api.pageParam.org_name));
+			$api.text($api.byId('upload_time'), api.pageParam.create_time.substring(0, 10));
+			$api.text($api.byId('file_name'), Base64.decode(api.pageParam.file_name));
+			$api.attr($api.byId('thumb_img'), 'src', api.pageParam.thumb_url);
+			//给图片添加点击事件
+			$api.attr($api.byId('thumb_img'), 'onclick', 'checkPreviewStatus()');
+			//$api.css($api.byId('foot_div'), 'width:' + api.winWidth + 'px;');
+			api.execScript({
+					name : 'zy_index_window',
+					script : 'initExamined();'
+				});
+			api.execScript({
+					name : 'zy_index_window',
+					script : 'setExaminedId('+api.pageParam.sp_id+');'
+				});
+			var tj=api.pageParam.is_tuijian;
+
+			api.ajax({
+						url : BASE_URL_ACTION + '/yx/resource/getYxResourceById?id=' + api.pageParam.sp_id + '&random_num=' + creatRandomNum(),
+						method : 'get',
+						dataType : 'json',
+						cache : false,
+						headers : {
+							'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+						}
+					}, function(ret, err) { 
+					 if(ret){
+					 	tj=ret.list[0].pub_target;
+					 	
+					 	if(tj==1){
+							api.execScript({
+								name : 'zy_index_window',
+								script : 'setExamined();'
+							});
+						}
+					 }else{
+					 	if(tj==1){
+							api.execScript({
+								name : 'zy_index_window',
+								script : 'setExamined();'
+							});
+						}
+					 }
+			});
+			
+			
+		};
+		/*
+		 *author:zhaoj
+		 *function:预览前处理
+		 *date：20160302
+		 */
+		function checkPreviewStatus() {
+			setViewCount();
+			if (format == 'doc' || format == 'jpeg' || format == 'png' || format == 'gif' || format == 'bmp' || format == 'doc' || format == 'docx' || format == 'ppt' || format == 'pptx' || format == 'asf' || format == 'wmv' || format == 'mpg' || format == 'avi' || format == 'mp4' || format == 'rmvb' || format == 'txt' || format == 'xls' || format == 'xlsx') {
+				if (api.pageParam.preview_status == '1' || api.pageParam.preview_status == '-5') {
+					openFile();
+				} else if (api.pageParam.preview_status == '2') {
+					if(format == 'doc' || format == 'docx' || format == 'ppt' || format == 'pptx' || format == 'xls' || format == 'xlsx'){
+                        openFile();
+                    }else{
+                        popAlert('对不起，该文件生成预览失败。');
+                    }
+				} else {
+					api.ajax({
+						url : BASE_URL_ACTION + '/ypt/checkPreviewStatus?type=1&yunormy=' + api.pageParam.zy_from_type + '&target_id=' + api.pageParam.iid + '&random_num=' + creatRandomNum(),
+						method : 'get',
+						dataType : 'json',
+						cache : false,
+						headers : {
+							'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+						}
+					}, function(ret, err) {
+						if (ret.success) {
+							if (ret.preview_status == "0") {
+								if(format == 'doc' || format == 'docx' || format == 'ppt' || format == 'pptx' || format == 'xls' || format == 'xlsx'){
+                                    openFile();
+                                }else{
+                                    popAlert('对不起，正在生成预览中，请稍候查看。');
+                                }
+							} else if (ret.preview_status == "1") {
+								openFile();
+							} else if (ret.preview_status == "2") {
+								if(format == 'doc' || format == 'docx' || format == 'ppt' || format == 'pptx' || format == 'xls' || format == 'xlsx'){
+                                    openFile();
+                                }else{
+                                    popAlert('对不起，该文件生成预览失败。');
+                                }
+							}
+						}
+					});
+				}
+			} else {
+				openFile();
+			}
+		}
+
+		/*
+		 *author:zhaoj
+		 *function:打开文件
+		 *date：20160302
+		 */
+		function openFile() {
+			if (format == 'jpg' || format == 'jpeg' || format == 'png' || format == 'bmp') {
+				//打开图片
+				openImage(format);
+			} else if (format == 'flv' || format == 'mp4' || format == 'wmv' || format == 'asf' || format == 'mpg' || format == 'avi' || format == 'rmvb') {
+				//打开视频
+				verifyNetwork(format, 1);
+			} else if (format == 'doc' || format == 'docx' || format == 'ppt' || format == 'pptx' || format == 'txt' || format == 'xls' || format == 'xlsx' || format == 'pdf') {
+				//打开文档
+				openDocument(format);
+			} else if (format == 'mp3' || format == 'wav' || format == 'wma') {
+				//打开音频
+				verifyNetwork(format, 2);
+			} else {
+				popAlert('对不起，您的设备不支持当前文件类型，请登录网页版查看。');
+			}
+		}
+
+		/*
+		 *author:zhaoj
+		 *function:浏览统计
+		 *date：20160302
+		 */
+		function setViewCount() {
+			api.ajax({
+				url : BASE_URL_ACTION + '/tongji/tj_view?type_id=1&random_num=' + creatRandomNum(),
+				method : 'get',
+				dataType : 'json',
+				cache : false,
+				headers : {
+					'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+				}
+			}, function(ret, err) {
+			});
+		}
+
+		/*
+		 *author:zhaoj
+		 *function:打开图片
+		 *date：20160302
+		 */
+		function openImage(format) {
+			var img_url;
+			var fj_id = api.pageParam.file_id;
+			if (BASE_APP_TYPE == 1) {
+				img_url = BASE_IMAGE_PRE + url_path_suffix + fj_id.substring(0, 2) + '\/' + fj_id + '.' + format + commonReturnPhotoCutSize(0);
+			} else {
+				img_url = BASE_URL_ACTION + BASE_IMAGE_BEGIN + fj_id.substring(0, 2) + '/' + fj_id + '.' + format + commonReturnPhotoCutSize(0);
+			}
+			img_url = [img_url];
+			if(api.systemType == 'ios'){
+				var privacy = api.require('privacy');
+				privacy.photos(function( ret, err ){      
+				    if( ret.status ){
+				  		openImageBrowser(img_url);
+				    }else{
+						api.alert({
+						    title: '提示',
+						    msg: '请在iPhone的“设置-隐私-照片”选项中，允许'+appName+'访问你的手机相册',
+						    buttons: ['确定']
+						},function( ret, err ){
+						});
+				    }
+				});
+			}else{
+				openImageBrowser(img_url);
+			}
+		}
+		/*
+		 *author:zhaoj
+		 *function:打开图片
+		 *date：20160321
+		 */
+		function openImageBrowser(img_url){
+			var imageBrowser = api.require('imageBrowser');
+			imageBrowser.openImages({
+				imageUrls : img_url,
+				//是否以九宫格方式显示图片
+				showList : false,
+				//showList : true,
+				activeIndex : 0
+			});
+		}
+		/*
+		 *author:zhaoj
+		 *function:打开图片
+		 *date：20160302
+		 */
+		function openVideo(format) {
+			var video_url;
+			var fj_id = api.pageParam.file_id;
+			var m3u8_status = api.pageParam.m3u8_status;
+			if (m3u8_status == '2' && (format == 'asf' || format == 'mpg' || format == 'avi' || format == 'rmvb' || format == 'mp4')) {
+				//已经生成m3u8格式的视频
+				if (BASE_APP_TYPE == 1) {
+					video_url = yun_video_url + fj_id.substring(0, 2) + "/" + fj_id + '.m3u8';
+				} else {
+					video_url = bendi_video_url + fj_id.substring(0, 2) + "/" + fj_id + '.m3u8';
+				}
+			} else if (m3u8_status == '1' && (format == 'asf' || format == 'mpg' || format == 'avi' || format == 'rmvb' || format == 'mp4')) {
+				popAlert('对不起，正在生成预览中，请稍候查看。');
+				return;
+			} else if (m3u8_status == '3' && (format == 'asf' || format == 'mpg' || format == 'avi' || format == 'rmvb' || format == 'mp4')) {
+				popAlert('对不起，该文件生成预览失败。');
+				return;
+			} else {
+				//判断是iphone手机并且最终视频播放格式是flv进行不能播放的提示
+				if (api.systemType == 'ios' && (format == 'asf' || format == 'mpg' || format == 'avi' || format == 'rmvb' || format == 'flv' || format == 'wmv')) {
+					popAlert('对不起，您的设备不支持当前文件类型，请登录云平台查看。');
+					return;
+				} else {
+					if (BASE_APP_TYPE == 1) {
+						if (format == 'asf' || format == 'mpg' || format == 'avi' || format == 'rmvb') {
+							video_url = madie_url + '/down/Preview/' + fj_id.substring(0, 2) + "/" + fj_id + '.flv';
+						} else {
+							video_url = madie_url + '/down/Material/' + fj_id.substring(0, 2) + "/" + fj_id + '.' + format;
+						}
+					} else {
+						if (format == 'asf' || format == 'mpg' || format == 'avi' || format == 'rmvb') {
+							video_url = BASE_URL_ACTION + "/html/down/Preview/" + fj_id.substring(0, 2) + "/" + fj_id + '.flv';
+						} else {
+							video_url = BASE_URL_ACTION + "/html/down/Material/" + fj_id.substring(0, 2) + "/" + fj_id + '.' + format;
+						}
+					}
+				}
+			}
+			videoPlayer = api.require('videoPlayer');
+			videoPlayer.play({
+				texts : {
+					head : {//（可选项）JSON 类型；设置顶部文字
+						title : Base64.decode(api.pageParam.file_name) //（可选项）字符串类型；顶部标题文字；默认：''
+					}
+				},
+				styles : {
+					head : {//（可选项）JSON对象；播放器顶部导航条样式
+						bg : 'rgba(0.5,0.5,0.5,0.7)', //（可选项）字符串类型；顶部导航条背景，支持#、rgb、rgba、img；默认：rgba(0.5,0.5,0.5,0.7)
+						height : 44, //（可选项）数字类型；顶部导航条的高；默认：44
+						titleSize : 20, //（可选项）数字类型；顶部标题字体大小；默认：20
+						titleColor : '#fff', //（可选项）字符串类型；顶部标题字体颜色；默认：#fff
+						backSize : 44, //（可选项）数字类型；顶部返回按钮大小；默认：44
+						backImg : 'fs://img/back.png', //（可选项）字符串类型；顶部返回按钮的背景图片，要求本地路径（widget://、fs://）；默认：返回小箭头图标
+						setSize : 44, //（可选项）数字类型；顶部右边设置按钮大小；默认：44
+						setImg : 'fs://img/set.png' //（可选项）字符串类型；顶部右边设置按钮背景图片，要求本地路径（widget://、fs://）；默认：设置小图标
+					},
+					foot : {//（可选项）JSON对象；播放器底部导航条样式
+						bg : 'rgba(0.5,0.5,0.5,0.7)', //（可选项）字符串类型；底部导航条背景，支持#、rgb、rgba、img；默认：rgba(0.5,0.5,0.5,0.7)
+						height : 44, //（可选项）数字类型；底部导航条的高；默认：44
+						playSize : 44, //（可选项）数字类型；底部播放/暂停按钮大小；默认：44
+						playImg : 'fs://img/back.png', //（可选项）字符串类型；底部播放按钮的背景图片，要求本地路径（widget://、fs://）；默认：播放按钮图标
+						pauseImg : 'fs://img/back.png', //（可选项）字符串类型；底部暂停按钮的背景图片，要求本地路径（widget://、fs://）；默认：暂停按钮图标
+						nextSize : 0, //（可选项）数字类型；底部下一集按钮大小；默认：44
+						//nextImg : 'widget://res/next.png', //（可选项）字符串类型；底部下一集按钮的背景图片，要求本地路径（widget://、fs://）；默认：下一集按钮图标
+						timeSize : 14, //（可选项）数字类型；底部时间标签大小；默认：14
+						timeColor : '#fff', //（可选项）字符串类型；底部时间标签颜色，支持#、rgba、rgb；默认：#fff
+						sliderImg : 'fs://img/slder.png', //（可选项）字符串类型；底部进度条滑块背景图片，要求本地路径（widget://、fs://）；默认：滑块小图标
+						progressColor : '#696969', //（可选项）字符串类型；进度条背景色，支持#、rgba、rgb；默认：#696969
+						progressSelected : '#76EE00' //（可选项）字符串类型；滑动后的进度条背景色，支持#、rgb、rgba；默认：#76EE00
+					}
+				},
+				//coverImg : 'widget://res/loading.png',
+				path : video_url, //（可选项）字符串类型；文档的路径，支持网络和本地（fs://）路径；默认：未传值时不播放
+				//在 android 平台上不支持 widget://
+				autoPlay : true //（可选项）布尔类型；打开时是否自动播放；默认：true（自动播放）
+			}, function(ret, err) {
+			});
+		}
+
+		/*
+		 *author:zhaoj
+		 *function:打开文档
+		 *date：20160303
+		 */
+		function openDocument(format) {
+			var doc_url;
+			var fj_id = api.pageParam.file_id;
+			var fj_title = Base64.decode(api.pageParam.file_name);
+			if (BASE_APP_TYPE == 1) {
+				doc_url = url_path + BASE_MATERIAL_BEGIN + fj_id.substring(0, 2) + '/' + fj_id + '.' + format;
+			} else {
+				doc_url = BASE_URL_ACTION + BASE_MATERIAL_BEGIN + fj_id.substring(0, 2) + '/' + fj_id + '.' + format;
+			}
+			var save_url = BASE_DOWNLOAD_YY_PATH + fj_title + '.' + format;
+			downAndOpenDoc(doc_url, save_url,format);
+		}
+
+		/*
+		 *author:zhaoj
+		 *function:打开音频
+		 *date：20160303
+		 */
+		function openMusic(format) {
+			if (api.systemType == 'ios' && format == 'wma') {
+				popAlert('对不起，您的设备不支持当前文件类型，请登录云平台查看。');
+			} else {
+				var music_url;
+				var fj_id = api.pageParam.file_id;
+				var fj_title = Base64.decode(api.pageParam.file_name);
+				if (BASE_APP_TYPE == 1) {
+					music_url = url_path + BASE_MATERIAL_BEGIN + fj_id.substring(0, 2) + '/' + fj_id + '.' + format;
+				} else {
+					music_url = BASE_URL_ACTION + BASE_MATERIAL_BEGIN + fj_id.substring(0, 2) + '/' + fj_id + '.' + format;
+				}
+				api.openFrame({
+					name : 'zy_playVoice_frame',
+					url : 'zy_playVoice_frame.html',
+					scrollToTop : true,
+					bgColor : 'rgba(0,0,0,0.0)',
+					rect : {
+						x : 0,
+						y : 0,
+						w : api.winWidth,
+						h : api.winHeight,
+					},
+					pageParam : {
+						voicePath : music_url
+					},
+				});
+				api.execScript({
+					name : 'zy_index_window',
+					script : 'reBackType("voice","","");'
+				});
+			}
+		}
+
+		/**
+		 * 打开本地文档文件
+		 * 周枫
+		 * 2015.12.19
+		 */
+		function downAndOpenDoc(fj_url, save_url,format) {
+			api.showProgress({
+				title : '加载中...',
+				modal : false
+			});
+			api.download({
+				url : fj_url,
+				savePath : save_url,
+				//下载过程是否上报
+				report : true,
+				//是否使用本地缓存
+				cache : true,
+				//是否允许断点续传
+				allowResume : true
+			}, function(ret, err) {
+				if (ret.state == 1) {
+					api.hideProgress();
+					accordTypeOpenDoc(save_url,format);
+				}
+				if (ret.state == 2) {
+					api.hideProgress();
+					//popAlert('正在生成预览中，请稍候查看。');
+				}
+			});
+		}
+		/*
+		*author:zhaoj
+		*function:根据文档类型用不同的插件来打开文档
+		*date：20160316
+		*/
+		function accordTypeOpenDoc(save_url,format){
+			if(format == 'txt'){
+				bookReader = api.require('bookReader');
+				bookReader.open({
+					x : 0,
+					y : header_h,
+					w : api.winWidth,
+					h : api.winHeight - header_h,
+				  	filePath : save_url
+				},function(ret, err){
+					if(ret){
+						var progress;
+						if(api.systemType == 'ios'){
+							if(ret.eventType == 'page_begin'){
+								progress = 0;
+							}else if(ret.eventType == 'page_end'){
+								progress = 100;
+							}else{
+								progress = ret.progress.toString();
+								var index = progress.indexOf('.');
+								if(index != -1){
+									progress = progress.substring(0,index+2);
+								}
+								progress = progress*1;
+								if(progress<0){
+									progress=0;
+								}
+							}
+						}else{
+							progress = ret.progress*1;
+						}
+						
+						api.execScript({
+							name : 'zy_index_window',
+							script : 'reBackType("txt","",'+progress+');'
+						});
+					}
+				});
+			}else{
+				var docReader = api.require('docReader');
+				docReader.open({
+					path : save_url
+				}, function(ret, err) {
+					if (ret.status == false) {
+						if (api.systemType == 'android') {
+							popAlert('对不起，本软件暂时不支持查看文档类文件，请先安装一款全面的办公软件（例：WPS），在查看此文件。');
+						}
+					}
+				});
+			}
+		}
+		/*
+		*author:zhaoj
+		*function:关闭txt插件
+		*date：20160316
+		*/
+		function closeBookReader(){
+			bookReader.close();
+		}
+		/*
+		 *author:zhaoj
+		 *function:验证网络是否连接着wifi
+		 *date：20160302
+		 */
+		function verifyNetwork(format, type) {
+			isOnLineStatus(function(is_true, line_type) {
+				if (is_true) {
+					if (line_type == 'wifi') {
+						judgeType(format, type);
+					} else {
+						api.confirm({
+							title : "提示",
+							msg : "您当前正在使用" + line_type + "网络，建议您在wifi网络下播放，是否继续？",
+							buttons : ["继续", "取消"]
+						}, function(ret, err) {
+							var sourceType;
+							if (1 == ret.buttonIndex) {
+								//根据type来判断打开的是什么类型
+								judgeType(format, type);
+							} else {
+								return;
+							}
+						});
+					}
+				} else {
+					api.toast({
+						msg : '请连接网络后使用当前功能~'
+					});
+				}
+			});
+		}
+
+		/*
+		 *author:zhaoj
+		 *function:根据type来判断是打开视频还是其他
+		 *date：20160302
+		 */
+		function judgeType(format, type) {
+			if (type == 1) {
+				//打开视频
+				openVideo(format);
+			} else if (type == 2) {
+				//打开音频
+				openMusic(format);
+			}
+		}
+
+		/*
+		 *author:zhaoj
+		 *function:获取审核人
+		 *date：20160302
+		 */
+		function getCheckPerson(obj_type, obj_id_int, obj_id_char) {
+			api.ajax({
+				url : BASE_URL_ACTION + '/ypt/multiCheck/checkFlow/getLastCheckFlow',
+				method : 'post',
+				dataType : 'json',
+				cache : false,
+				data : {
+					values : {
+						"obj_type" : obj_type,
+						"obj_id_int" : obj_id_int,
+						"obj_id_char" : obj_id_char
+					}
+				},
+				headers : {
+					'Cookie' : 'person_id=' + $api.getStorage("person_id") + ';identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+				}
+			}, function(ret, err) {
+				api.hideProgress();
+				if (ret.success) {
+					$api.text($api.byId('audit'), ret.last_check_flow.person_name);
+				} else {
+					$api.text($api.byId('audit'), '无');
+				}
+			});
+		}
+		/*
+		 *author:zhaoj
+		 *function:根据群组类型更改时间名称
+		 *date：20160315
+		 */
+		function changeTimeName() {
+			var bType = api.pageParam.bType*1;
+			if(bType == 4){
+				$api.text($api.byId('time_name'), '评论时间');
+			}else if(bType == 1){
+				$api.text($api.byId('time_name'), '收藏时间');
+			}else if(bType == 7){
+				$api.text($api.byId('time_name'), '共享时间');
+			}else if(bType == 2 || bType == 3){
+				$api.text($api.byId('time_name'), '推荐时间');
+			}else if(bType == 5){
+				$api.text($api.byId('time_name'), '反馈时间');
+			}else{
+				$api.text($api.byId('time_name'), '上传时间');
+			}
+		}
+		/*
+		 *author:zhaoj
+		 *function:弹出Alert提示框
+		 *date：20160302
+		 */
+		function popAlert(message) {
+			api.alert({
+				msg : message
+			}, function(ret, err) {
+			});
+		}
+	</script>
+</html>

@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<!-- html5：在创建html时为了防止页面缩放等不兼容效果，要创建个viewport  -->
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<!-- 在IOS设备上，有时会将数字转为手机号，这里也要禁止下 -->
+		<meta name="format-detection" content="telephone=no"/>
+		<title>通知数据页面</title>
+		<link rel="stylesheet" type="text/css" href="../../../../../css/aui/aui.css" />
+		<link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+		<style>
+			.clearfix:after {content: ' ';display: block;clear: both;visibility: hidden;line-height: 0;height: 0;}
+			.ellipsis {white-space: nowrap;overflow: hidden;text-overflow: ellipsis;}
+			.title {font-size: 20px;padding: 5px 15px 15px 15px;line-height: 30px;color: #484848;word-break: break-all;word-wrap:break-word;}
+			.preview {padding: 0 15px 10px 15px;color: #C7C7C7;font-size: 12px;}
+			.preview .person-name {max-width: 30%;float: left;}
+			.preview .pre-num {max-width: 30%;float: left;margin-right:5px;}
+			.preview .red{color:#FA4848;}
+			.preview .yellow{color:#F1C40F;}
+			.preview .blue{color:#004dff;}
+			.preview .time{float:right;max-width:35%;}
+			.content {color: #3A3A3A;padding: 10px 15px;word-break: break-all;word-wrap:break-word;}
+			.content table,.content p,.content div{max-width:100% !important;word-break: break-all;word-wrap:break-word;height:auto !important;}
+			.content img{max-width:100%;}			
+			.comment {position:relative;color: #3A3A3A;font-size: 16px;margin:15px 15px;background:#eeeeee;}
+			.shadow {position: absolute;left: 0;top: 0;width: 100%;height: 100%;z-index: -1;background: #000000;opacity: 0;}
+			.no-data {color: #c0c0c0;font-size:14px;padding:10px 0;line-height:18px;}
+			.hr{height:10px;background:#f0f0f0;}
+			.zan-content{padding:9px 8px 8px 35px;line-height:21px;font-size:14px;color:#777777;border-bottom: 1px solid #ffffff;}
+			.zan-content span{word-break: break-all;}
+			.weidu{background: url(../../../../../image/fun-module/iphone/notice/nodu.png) 10px 11px no-repeat; background-size: 18px 15px;}
+			.yidu{background: url(../../../../../image/fun-module/iphone/notice/email.png) 10px 11px no-repeat; background-size: 18px 15px;}
+			.weiqian{background: url(../../../../../image/fun-module/iphone/notice/weiqian.png) 10px 10px no-repeat; background-size: 18px 18px;}
+			.yiqian{background: url(../../../../../image/fun-module/iphone/notice/yiqian.png) 10px 10px no-repeat; background-size: 18px 18px;}
+			.zan-content span{word-break: break-all;}
+			.triangle-down { position:absolute;width: 0; top:-8px;left:10px; height: 0;border-left: 8px solid transparent;border-right: 8px solid transparent;border-bottom: 8px solid #eeeeee; }
+			.updata{line-height:40px;text-align:center; font-size:12px;color: #C7C7C7;border-top:1px dashed #e1e1e1;}
+			.footer-div{
+				position:fixed;
+				height:55px;
+				background:#ffffff;
+				display: block;
+				bottom: 0px;
+				z-index:2;
+				width:100%;
+				box-shadow:3px 0 4px #aaaaaa;
+			}
+			.footer-div{line-height:55px;text-align:center;color:#ffffff;}
+			.kb{height:55px;}
+			.kongbai{height:30px;}
+			.ima_notice{padding-left:0;padding-right:0;padding-top:10px;}
+		    li{list-style:inherit;overflow: visible;color:#9F9F9F;}
+		    ol{padding-left:15px;}
+		    .fujian-ul{width:100%;margin-bottom:10px;padding:0 15px;}
+            .fujian-ul li{width:100%;margin-top:10px;max-width:100%;color:#00f;background:#eaf6fd;padding:5px;}
+            .fujian-div{background:#fff;}
+		</style>
+	</head>
+	<body id="j_body" class="common-iphone-notice">
+		<div id="j_shadow" class="shadow"></div>
+		<div class="aui-content">
+			<div id="j_content" class="clearfix">
+				<!--通知的标题-->	
+				<div id="notice_title_div" class="title"></div>
+				<!--通知的发布人，创建时间和类型-->	
+				<div id="notice_sec_title" class="preview clearfix">
+					<div id="pre_num" class="pre-num"></div>
+					<div id="person_name" class="person-name ellipsis"></div>
+					<div id="time" class="time"></div>
+				</div>
+				<!--通知最后的更新时间-->	
+				<div id="j_updata" class="updata" style="display:none;"></div>
+				<!--文章内容-->	
+				<div id="notice_con_div" class="content"></div>
+				<div id="fujian_ul" class="fujian-ul"></div>
+			</div>
+			<!--已阅读和未阅读人的显示-->			
+			<div id="abc" class="comment" style="display:none;">
+				<div class="triangle-down"></div>
+				<div id="weidu" class="zan-content" style="display:none;">
+					<span id="j_weidu">
+					</span>
+				</div>
+				<div id="yidu" class="zan-content" style="display:none;">
+					<span id="j_yidu">
+					</span>
+				</div>
+			</div>
+		</div>
+		<div class="kongbai"></div>
+		<div id="j_kb" class="kb" style="display:none;"></div>
+		<div id="j_footer" class="footer-div" style="display:none;">
+		 	<div class="bggreen" onclick="setNoticeReceipt();">签收</div>
+		</div>
+	</body>
+	<script type="text/javascript" src="../../../../../script/api.js" ></script>
+	<script type="text/javascript" src="../../../../../script/base_config.js" ></script>
+	<script type="text/javascript" src="../../../../../script/plug-in/template.js" ></script>
+	<script type="text/javascript" src="../../../../../script/common/common.js" ></script>
+	<script type="text/javascript" src="../../../../../script/plug-in/base64.js" ></script>
+	<script type="text/javascript" src="../../../../../script/assembly/photoBrowser.js"></script>
+	<script type="text/javascript" src="../../../../../script/assembly/openResource.js" ></script>
+	<script type="text/javascript">
+		var image_array=[];//所有图片路径
+		var imgAry = [];
+		apiready = function() {
+			commonSetTheme({"level":5,"type":0});
+			getNoticeInfoById(api.pageParam.notice_id);
+		};
+		function getNoticeInfoById(notice_id){
+			commonShowProgress('刷新中...',true);
+			var src_url;
+			if(api.pageParam.is_xxgly == 1){
+				src_url = BASE_URL_ACTION + '/new_notice/kjGetNoticeInfoById?notice_id='+notice_id+'&person_id='+$api.getStorage("person_id")+'&mark_type=1';
+			}else{
+				src_url = BASE_URL_ACTION + '/new_notice/kjGetNoticeInfoById?notice_id='+notice_id+'&person_id='+$api.getStorage("person_id")+'&mark_type=2';
+			}
+			api.ajax({
+				url : src_url,
+				method : 'get',
+				timeout : 0,
+				dataType : 'json',
+				headers : {
+		'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+		}
+				}, function(ret, err) {		
+				    console.log(JSON.stringify(ret));	
+					api.hideProgress();
+					if (err) {
+						popToast('获取通知公告信息失败');
+					} else {
+						if(ret.success){
+						    var rett = ret;
+							commonExecScript('notice_index_window','notice_index_frame','changeState(1);',1);
+							//通知的内容
+							var onerror_html = "this.src='../../../../../image/common/tpsx.png'";
+							var notice_con = Base64.decode(ret.notice_content);
+							var notice_str1 = '<img';
+							var notice_str2 = '<img class="ima_notice" onclick="openPicture(this);" onerror='+onerror_html;
+							if (BASE_APP_TYPE != 1) {
+								var key = '/dsideal_yy';
+								if (notice_con.indexOf(key) != -1) {
+									var key_re = BASE_URL_ACTION;
+									notice_con = notice_con.replaceAll(key, key_re);
+								}
+							}
+							notice_con = notice_con.replaceAll(notice_str1, notice_str2);
+							notice_con = transferBrStr(notice_con);
+							notice_con.replace(/<img [^>]*src=['"]([^'"]+)[^>]*>/gi, function (match, capture) {
+							  image_array.push(capture);
+							});
+							if(rett.attachments && rett.attachments.length>0){//附件
+                                 commonAddOrRemoveHideCss('fujian',1);
+                                 var li_div = '';
+                                 imgAry = [];
+                                var img_index = 0;
+                                for (var i = 0; i < rett.attachments.length; i++){
+                                    var resource_format = rett.attachments[i].file_id.substring(rett.attachments[i].file_id.lastIndexOf('.'),rett.attachments[i].file_id.length);
+                                    if (resource_format=='.png' || rett.attachments[i].resource_format=='jpg' || resource_format == '.bmp' || resource_format =='.gif'){
+                                        var img_url;
+                                        if (BASE_APP_TYPE == 1) {
+                                            img_url = BASE_IMAGE_PRE+"down/Material/" + rett.attachments[i].file_id.substring(0, 2) + "/" + rett.attachments[i].file_id;
+                                        } else {
+                                            img_url = BASE_URL_ACTION + "/html/thumb/Material/" + rett.attachments[i].file_id.substring(0, 2) + "/" + rett.attachments[i].file_id;
+                                        }
+                                        imgAry.push(img_url);
+                                        li_div += '<li class="ellipsis" onclick="openAttachment(,'+img_index+')">'+rett.attachments[i].file_name+'</li>';
+                                        img_index++;
+                                    }else{
+                                        li_div += '<li class="ellipsis" onclick="openAttachment('+rett.attachments[i].resource_id_int+',-1)">'+rett.attachments[i].file_name+'</li>';
+                                    }
+                                }
+                                $api.html($api.byId('fujian_ul'), li_div);
+                             }
+							$api.html($api.byId('notice_con_div'), notice_con);
+							//通知的标题
+							var flag = api.pageParam.flag;
+							if(flag== '[已签]'){
+								$api.html($api.byId('notice_title_div'), '[已签收]' + Base64.decode(ret.notice_title));
+							}else{
+								$api.html($api.byId('notice_title_div'), Base64.decode(ret.notice_title));
+							}
+							//通知的发布人
+							$api.html($api.byId('person_name'), ret.person_name);
+							//类型
+							if(ret.notice_level == 1){
+								$api.text($api.byId('pre_num'), '[日常]');
+								$api.addCls($api.byId('pre_num'), 'yellow');
+							}else if(ret.notice_level == 2){
+								$api.text($api.byId('pre_num'), '[紧急]');
+								$api.addCls($api.byId('pre_num'), 'red');
+							}else{
+								$api.text($api.byId('pre_num'), '[重要]');
+								$api.addCls($api.byId('pre_num'), 'blue');
+							}
+							//时间
+							if(ret.is_update*1 == 1){
+								$api.text($api.byId('j_updata'),'本通知最后于  '+ ret.last_update_time.substring(0,16)+' 编辑');
+								$api.css($api.byId('j_updata'),'display:block;');
+							}
+							$api.text($api.byId('time'), ret.create_time);
+							//已阅读和未阅读的人
+							if(api.pageParam.is_xxgly == 1){
+								if(ret.notice_type == 2){
+									$api.css($api.byId('abc'), 'display:block;');
+									if(ret.rr_list.rr_not.length > 0){
+									    var rr_not_str = '';
+									    for(var i=0;i<ret.rr_list.rr_not.length;i++){
+									       rr_not_str += ret.rr_list.rr_not[i].person_name+','
+									    }
+									    rr_not_str = rr_not_str.substring(0,rr_not_str.length-1);
+										$api.text($api.byId('j_weidu'), rr_not_str);
+										$api.css($api.byId('weidu'),'display:block;');
+									}
+									if(ret.rr_list.rr_yes.length > 0){
+									    var rr_yes_str = '';
+                                        for(var i=0;i<ret.rr_list.rr_yes.length;i++){
+                                           rr_yes_str += ret.rr_list.rr_yes[i].person_name+','
+                                        }
+                                        rr_yes_str = rr_yes_str.substring(0,rr_yes_str.length-1);
+										$api.text($api.byId('j_yidu'), rr_yes_str);
+										$api.css($api.byId('yidu'),'display:block;');
+									}
+									//区分是否需要阅读还是签到
+									if(ret.notice_receipt*1 == 1){
+										$api.addCls($api.byId('yidu'),'yiqian');
+										$api.addCls($api.byId('weidu'),'weiqian');
+									}else{
+										$api.addCls($api.byId('yidu'),'yidu');
+										$api.addCls($api.byId('weidu'),'weidu');
+									}
+								}
+							}
+							//签到按钮的显示
+							if(api.pageParam.is_xxgly != 1){
+								if(ret.notice_type*1 == 2){
+									if(ret.notice_receipt*1 == 1){
+										if(ret.is_receipt*1 == 0){
+											$api.css($api.byId('j_footer'),'display:block;');
+											$api.css($api.byId('j_kb'),'display:block;');
+										}
+									}
+								}
+							}
+						}else{
+							popToast('获取通知公告信息失败');
+						}
+					}
+					//通知顶部下拉刷新数据加载完毕，组件会恢复到默认状态
+					commonControlRefresh();
+			});
+		}
+		/*
+		 *author:zhaoj
+		 *function:签到
+		 *date：20160629
+		 */
+		function setNoticeReceipt(){
+			commonShowProgress('签收中...',true);
+			$api.css($api.byId('j_shadow'),'z-index:3;');
+			api.ajax({
+				url : BASE_URL_ACTION + '/new_notice/setNoticeReceipt?notice_id='+api.pageParam.notice_id+'&person_id='+$api.getStorage("person_id"),
+				method : 'get',
+				timeout : 0,
+				dataType : 'json',
+				headers : {
+		'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+		}
+				}, function(ret, err) {
+					api.hideProgress();
+					if (err) {
+						popToast('签收失败');
+						$api.css($api.byId('j_shadow'),'z-index:-1;');
+					} else {
+						if(ret.success){
+							popToast('签收成功');
+							setTimeout(function(){
+								commonExecScript('notice_index_window','notice_index_frame','changeState(2);',1);
+	                            commonExecScript('notice_content_window','','back();',0)
+							},1000);
+						}else{
+							popToast('签收失败');
+							$api.css($api.byId('j_shadow'),'z-index:-1;');
+						}
+					}
+			});
+		}
+		//替换所有的回车换行
+		function transferBrStr(content) {
+			var string = content;
+			try {
+				string = string.replace(/\r\n/g, "<br />")
+				string = string.replace(/\n/g, "<br />");
+			} catch(e) {
+				popAlert(e.message);
+			}
+			return string;
+		}
+		
+		/*
+		*author:zhaoj
+		*function:打开图片预览
+		*date：20171026
+		*/
+		function openPicture(e){
+			//图片
+			var res_url=$api.attr(e, 'src');
+			//打开图片
+			var index = 0;
+			for(var i = 0; i <image_array.length;i++){
+				if(image_array[i] == res_url){
+					index = i;
+				}
+			}
+			photoBrowser.open(image_array, index);
+		}
+		
+		/*
+        *author:zhaoj
+        *function:打开附件
+        *date：20171023
+        */
+        function openAttachment(resource_id_int,img_index){
+            var param_json = {"is_show_tip":1,"resource_id_int":resource_id_int};
+                commonGetResInfo(param_json,function(flag,ret){
+                    api.hideProgress();
+                    if(flag){
+                        if (ret.resource_format=='png' || ret.resource_format=='jpg' || ret.resource_format == 'bmp' || ret.resource_format =='gif'){
+                            openPictureShowWin(imgAry,img_index);
+                            return;
+                        }
+                    
+                        var oparam ={"res_type":ret.resource_format, "res_path":ret.file_id, "res_title":ret.resource_title,"m3u8_status":ret.m3u8_status,"winName":api.winName,"setBackFun":'reBackType("voice");',"backFun":'back();',"res_id":'open_picture',"pic_back":'hdjs_picture'};
+                    
+     common_openResource.open_new(JSON.stringify(oparam));
+                    }else{
+                        popToast('打开失败，请稍候重试');
+                    }
+                });
+        }
+	</script>
+</html>

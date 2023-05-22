@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<!-- html5：在创建html时为了防止页面缩放等不兼容效果，要创建个viewport  -->
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<!-- 在IOS设备上，有时会将数字转为手机号，这里也要禁止下 -->
+		<meta name="format-detection" content="telephone=no"/>
+		<title>会话列表</title>
+		<link rel="stylesheet" type="text/css" href="../../css/aui_css_new/aui.css" />
+		<link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+		<style>
+			.span_name {
+				width: 20%;
+				/*font-size: 18px;*/
+				/*text-align: center;*/
+				display: inline-block;
+				/*word-break: keep-all;*/
+				white-space: nowrap;
+				overflow: hidden;
+				text-overflow: ellipsis;
+			}
+			.presshover {
+				background-color: #FAFAFA;
+			}
+		</style>
+	</head>
+	<body class="huihua-commont">
+		<section class="aui-content" id="banner">
+			<ul class="aui-list-view">
+				<div id="hhlist_div"></div>
+				<script type="text/html" id="hhlist_script">
+					<% if(result.length == 0){ %>
+						<div style="text-align:center;color:#666;"><span>您还没有会话记录，快去找小伙伴们聊天吧~~</span></div>
+					<% }else{ %>
+						<%for(var i=0; i<result.length; i++) {%>
+							<% if(result[i].targetId == "admin"){ %>
+								<li class="aui-user-view-cell aui-img" id="<%=result[i].targetId %>" alt="<%=result[i].conversationType %>" tapmode onclick="openHhListBefore(this, '<%=result[i].targetId %>','<%=result[i].latestMessageId %>','<%=result[i].person_name %>','<%=result[i].conversationType %>','hh_index','<%=result[i].avatar_url %>');">
+									<div class="aui-swipe-handle">
+										<img class="aui-img-object aui-pull-left" src="<%=result[i].avatar_url %>" onerror="this.src='../../image/person/sys_msg.png'">
+										<div class="aui-img-body">
+											<span><%=result[i].person_name %>
+												<em><%=g_time.getTime(result[i].receivedTime,1) %></em>
+											</span>
+											<% if(result[i].objectName == 'RC:VcMsg') { %>
+												<p class='aui-ellipsis-1'>[语音]</p>
+											<% } %>
+											<% if(result[i].objectName == 'RC:TxtMsg') { %>
+												<%if(result[i].latestMessage.text.indexOf('<br>') != -1){%>
+													<p class='aui-ellipsis-1'>
+														<%=result[i].latestMessage.text.substring(0,(result[i].latestMessage.text.indexOf('<br>'))) %>
+													</p>
+												<% } else if(result[i].latestMessage.text.indexOf('<a href=') != -1){ %>
+													<p class='aui-ellipsis-1'>
+														<%=result[i].latestMessage.text.substring(0,(result[i].latestMessage.text.indexOf('<a href='))) %>点击查看
+													</p>
+												<% } else { %>
+													<p class='aui-ellipsis-1'><%=result[i].latestMessage.text %></p>
+												<% } %>
+											<% } %>
+											<% if(result[i].objectName == 'RC:ImgMsg') { %>
+												<p class='aui-ellipsis-1'>[图片]</p>
+											<% } %>
+										</div>
+									</div>
+									<!--<div class="aui-swipe-right-btn aui-bg-danger" tapmode onclick="deleteHhById(this, '<%=result[i].targetId %>', '<%=result[i].conversationType %>');">
+										<i class="aui-iconfont aui-icon-delete"></i>
+									</div>-->
+									<% if(result[i].unreadMessageCount > 0) { %>
+										<div style="height:0px;">
+											<div class="circle">
+												<p class="circle_p"><%=result[i].unreadMessageCount %></p>
+												<input type="hidden" class="unread_count" value="<%=result[i].unreadMessageCount %>"/>
+											</div>
+										</div>
+									<% } %>
+								</li>
+							<% } %>
+						<% } %>
+					<%for(var i=0; i<result.length; i++) {%>
+						<% if(result[i].targetId != "admin"){ %>
+							<li class="aui-user-view-cell aui-img" id="<%=result[i].targetId %>" alt="<%=result[i].conversationType %>" tapmode onclick="openHhListBefore(this,'<%=result[i].targetId %>','<%=result[i].latestMessageId %>','<%=result[i].person_name %>','<%=result[i].conversationType %>','hh_index','<%=result[i].avatar_url %>');">
+								<% if(result[i].conversationType == "GROUP"){ %>
+									<div class="aui-swipe-handle">
+										<img class="aui-img-object aui-pull-left" src="<%=result[i].avatar_url %>" onerror="this.src='../../image/common/header.png'">
+										<div class="aui-img-body">
+											<span><%=result[i].person_name %><em><%=g_time.getTime(result[i].receivedTime,1) %></em></span>
+											<% if(result[i].objectName == 'RC:VcMsg') { %>
+												<p class='aui-ellipsis-1'><%=result[i].senderName %>：[语音]</p>
+											<% } %>
+											<% if(result[i].objectName == 'RC:TxtMsg') { %>
+												<%if(result[i].latestMessage.text.indexOf('<br>') != -1){%>
+													<p class='aui-ellipsis-1'>
+														<%=result[i].senderName %>：<%=result[i].latestMessage.text.substring(0,(result[i].latestMessage.text.indexOf('<br>'))) %>
+													</p>
+												<% } else if (result[i].latestMessage.text.indexOf('<a href=') != -1){ %>
+													<p class='aui-ellipsis-1'>
+														<%=result[i].latestMessage.text.substring(0,(result[i].latestMessage.text.indexOf('<a href='))) %>点击查看
+													</p>
+												
+												<% } else { %>
+													<p class='aui-ellipsis-1'><%=result[i].senderName %>：<%=result[i].latestMessage.text %></p>
+												<% } %>
+											<% } %>
+											<% if(result[i].objectName == 'RC:ImgMsg') { %>
+												<p class='aui-ellipsis-1'><%=result[i].senderName %>：[图片]</p>
+											<% } %>
+										</div>
+									</div>
+								<% } else { %>
+									<div class="aui-swipe-handle">
+										<img class="aui-img-object aui-pull-left" src="<%=result[i].avatar_url %>" onerror="this.src='../../image/common/header.png'">
+										<div class="aui-img-body">
+											<span><%=result[i].person_name %><em><%=g_time.getTime(result[i].receivedTime,1) %></em></span>
+											<% if(result[i].objectName == 'RC:VcMsg') { %>
+												<p class='aui-ellipsis-1'>[语音]</p>
+											<% } %>
+											<% if(result[i].objectName == 'RC:TxtMsg') { %>
+												<%if(result[i].latestMessage.text.indexOf('<br>') != -1){%>
+													<p class='aui-ellipsis-1'>
+														<%=result[i].latestMessage.text.substring(0,(result[i].latestMessage.text.indexOf('<br>'))) %>
+													</p>
+												<% } else if(result[i].latestMessage.text.indexOf('<a href=') != -1){ %>
+													<p class='aui-ellipsis-1'>
+														<%=result[i].latestMessage.text.substring(0,(result[i].latestMessage.text.indexOf('<a href='))) %>点击查看
+													</p>
+												<% } else { %>
+													<p class='aui-ellipsis-1'>
+														<%=result[i].latestMessage.text %>
+													</p>
+												<% } %>
+											<% }  %>
+											<% if(result[i].objectName == 'RC:ImgMsg') { %>
+												<p class='aui-ellipsis-1'>[图片]</p>
+											<% } %>
+										</div>
+									</div>
+									
+								<% } %>
+									<!--<div class="aui-swipe-right-btn aui-bg-danger" tapmode onclick="deleteHhById(this, '<%=result[i].targetId %>', '<%=result[i].conversationType %>');">
+										<i class="aui-iconfont aui-icon-delete"></i>
+									</div>-->
+									<% if(result[i].unreadMessageCount > 0) { %>
+										<div style="height:0px;">
+											<div class="circle">
+												<p class="circle_p"><%=result[i].unreadMessageCount %></p>
+												<input type="hidden" class="unread_count" value="<%=result[i].unreadMessageCount %>"/>
+											</div>
+										</div>
+									<% } %>
+							</li>
+							
+						<% } %>
+					<% } %>
+				<% } %>
+				</ul>
+			</script>
+		</section>
+		<!--<ul class="aui-user-view">-->
+		<!--会话列表-->
+		<!--<div id="hhlist_div"></div>
+		<script type="text/html" id="hhlist_script">
+		<% if(result.length == 0){ %>
+		<div style="text-align:center;color:#666;"><span>您还没有会话记录，快去找小伙伴们聊天吧~~</span></div>
+		<% }else{ %>
+		<%for(var i=0; i<result.length; i++) {%>
+		<% if(result[i].targetId == "admin"){ %>
+		<li tapmode="presshover" id="<%=result[i].targetId %>" alt="<%=result[i].conversationType %>" class="aui-user-view-cell aui-img" >
+		<input type="hidden" id="targetId<%=result[i].targetId %>" value="<%=result[i].targetId %>"/>
+		<input type="hidden" id="latestMessageId<%=result[i].targetId %>" value="<%=result[i].latestMessageId %>"/>
+		<input type="hidden" id="person_name<%=result[i].targetId %>" value="<%=result[i].person_name %>"/>
+		<input type="hidden" id="conversationType<%=result[i].targetId %>" value="<%=result[i].conversationType %>"/>
+		<input type="hidden" id="hh_index<%=result[i].targetId %>" value="hh_index"/>
+		<input type="hidden" id="avatar_url<%=result[i].targetId %>" value="<%=result[i].avatar_url %>"/>
+		<img class="aui-img-object aui-pull-left" src="<%=result[i].avatar_url %>" onerror="this.src='../../image/person/sys_msg.png'">
+		<div class="aui-img-body" tapmode="presshover">
+		<span><span class="span_name"><%=result[i].person_name %></span><em><%=g_time.getTime(result[i].receivedTime,1) %></em></span>
+		<% if(result[i].objectName == 'RC:VcMsg') { %>
+		<p class='aui-ellipsis-1'>[语音]</p>
+		<% } %>
+		<% if(result[i].objectName == 'RC:TxtMsg') { %>
+		<%if(result[i].latestMessage.text.indexOf('<br>') != -1){%>
+		<p class='aui-ellipsis-1'><%=result[i].latestMessage.text.substring(0,(result[i].latestMessage.text.indexOf('<br>'))) %></p>
+		<% } else { %>
+		<p class='aui-ellipsis-1'><%=result[i].latestMessage.text %></p>
+		<% } %>
+		<% } %>
+		<% if(result[i].objectName == 'RC:ImgMsg') { %>
+		<p class='aui-ellipsis-1'>[图片]</p>
+		<% } %>
+		</div>
+		<% if(result[i].unreadMessageCount > 0) { %>
+		<div style="height:0px;">
+		<div class="circle">
+		<p class="circle_p"><%=result[i].unreadMessageCount %></p>
+		<input type="hidden" class="unread_count" value="<%=result[i].unreadMessageCount %>"/>
+		</div>
+		</div>
+		<% } %>
+		</li>
+		<% } %>
+		<%}%>
+		<%for(var i=0; i<result.length; i++) {%>
+		<% if(result[i].targetId != "admin"){ %>
+		<li tapmode="presshover" id="<%=result[i].targetId %>" alt="<%=result[i].conversationType %>" class="aui-user-view-cell aui-img"  >
+		<input type="hidden" id="targetId<%=result[i].targetId %>" value="<%=result[i].targetId %>"/>
+		<input type="hidden" id="latestMessageId<%=result[i].targetId %>" value="<%=result[i].latestMessageId %>"/>
+		<input type="hidden" id="person_name<%=result[i].targetId %>" value="<%=result[i].person_name %>"/>
+		<input type="hidden" id="conversationType<%=result[i].targetId %>" value="<%=result[i].conversationType %>"/>
+		<input type="hidden" id="hh_index<%=result[i].targetId %>" value="hh_index"/>
+		<input type="hidden" id="avatar_url<%=result[i].targetId %>" value="<%=result[i].avatar_url %>"/>
+		<img class="aui-img-object aui-pull-left" src="<%=result[i].avatar_url %>" onerror="this.src='../../image/common/header.png'">
+		<% if(result[i].conversationType == "GROUP"){ %>
+		<div class="aui-img-body" tapmode="presshover">
+		<span><span class="span_name"><%=result[i].person_name %></span><em><%=g_time.getTime(result[i].receivedTime,1) %></em></span>
+		<% if(result[i].objectName == 'RC:VcMsg') { %>
+		<p class='aui-ellipsis-1'><%=result[i].senderName %>：[语音]</p>
+		<% } %>
+		<% if(result[i].objectName == 'RC:TxtMsg') { %>
+		<%if(result[i].latestMessage.text.indexOf('<br>') != -1){%>
+		<p class='aui-ellipsis-1'><%=result[i].senderName %>：<%=result[i].latestMessage.text.substring(0,(result[i].latestMessage.text.indexOf('<br>'))) %></p>
+		<% } else { %>
+		<p class='aui-ellipsis-1'><%=result[i].senderName %>：<%=result[i].latestMessage.text %></p>
+		<% } %>
+		<% } %>
+		<% if(result[i].objectName == 'RC:ImgMsg') { %>
+		<p class='aui-ellipsis-1'><%=result[i].senderName %>：[图片]</p>
+		<% } %>
+		</div>
+		<% } else { %>
+		<div class="aui-img-body" tapmode="presshover">
+		<span><span class="span_name"><%=result[i].person_name %></span><em><%=g_time.getTime(result[i].receivedTime,1) %></em></span>
+		<% if(result[i].objectName == 'RC:VcMsg') { %>
+		<p class='aui-ellipsis-1'>[语音]</p>
+		<% } %>
+		<% if(result[i].objectName == 'RC:TxtMsg') { %>
+		<%if(result[i].latestMessage.text.indexOf('<br>') != -1){%>
+		<p class='aui-ellipsis-1'><%=result[i].latestMessage.text.substring(0,(result[i].latestMessage.text.indexOf('<br>'))) %></p>
+		<% } else { %>
+		<p class='aui-ellipsis-1'><%=result[i].latestMessage.text %></p>
+		<% } %>
+		<% } %>
+		<% if(result[i].objectName == 'RC:ImgMsg') { %>
+		<p class='aui-ellipsis-1'>[图片]</p>
+		<% } %>
+		</div>
+		<% } %>
+		<% if(result[i].unreadMessageCount > 0) { %>
+		<div style="height:0px;">
+		<div class="circle">
+		<p class="circle_p"><%=result[i].unreadMessageCount %></p>
+		<input type="hidden" class="unread_count" value="<%=result[i].unreadMessageCount %>"/>
+		</div>
+		</div>
+		<% } %>
+		</li>
+		<% } %>
+		<%}%>
+		<% } %>
+		</script>-->
+		<!--</ul>-->
+		<!--</div>-->
+		<script type="text/javascript" src="../../script/api.js"></script>
+		<script type="text/javascript" src="../../script/plug-in/zepto.min.js"></script>
+		<script type="text/javascript" src="../../script/plug-in/template.js"></script>
+		<script type="text/javascript" src="../../script/plug-in/date.js"></script>
+		<!-- 长按控件 周枫 2015.08.05 -->
+		<script type="text/javascript" src="../../script/plug-in/hammer.min.js"></script>
+		<script type="text/javascript" src="../../script/base_config.js"></script>
+		<script type="text/javascript" src="../../script/huihua/sqlite_db.js"></script>
+		<script type="text/javascript" src="../../script/common/common.js"></script>
+		<script type="text/javascript" src="../../script/huihua/hh_db.js"></script>
+		<script type="text/javascript" src="../../script/init/init_config.js"></script>
+		<script type="text/javascript" src="../../script/tongxunlu/txl_index_window.js"></script>
+		<script type="text/javascript" src="../../script/huihua/hh_index_window.js"></script>
+		
+	</body>
+</html>

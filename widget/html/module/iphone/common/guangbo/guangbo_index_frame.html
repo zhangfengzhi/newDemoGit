@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<!-- html5：在创建html时为了防止页面缩放等不兼容效果，要创建个viewport  -->
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<!-- 在IOS设备上，有时会将数字转为手机号，这里也要禁止下 -->
+		<meta name="format-detection" content="telephone=no"/>
+		<title>广播数据页面</title>
+		<link rel="stylesheet" type="text/css" href="../../../../../css/aui/aui.css" />
+		<link rel="stylesheet" type="text/css" href="../../../../../css/module/common/list_frame.css" />
+		<link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+		<style>
+			.h1 {
+				height: 1px;
+				background: #f0f0f0;
+			}
+			.presshover {
+				background-color: #FAFAFA;
+			}
+			.span_name {
+				width: 90%;
+				display: inline-block;
+				white-space: nowrap;
+				overflow: hidden;
+				text-overflow: ellipsis;
+			}
+		</style>
+	</head>
+	<body class="common-iphone-guangbo">
+		<!--广播列表-->
+		<div id="gblist_div"></div> 
+			<script type="text/html" id="gblist_script">
+				<% if(list.length == 0){ %>
+					<div style="text-align:center;color:#666;padding-top:15px;"><span>暂无校园广播</span></div>
+				<% }else{ %>
+					<%for(var i=0; i<list.length; i++) {%>
+						<div class="section3"  onclick="openGuangboContent('<%=list[i].id%>');">
+							<div class="item style1" tapmode="itemhover">
+								<div class="itemlogo userlogo">
+									<img onerror="this.src='../../../../../image/fun-module/ipad/xygb-bg.png'"  src="../../../../../image/fun-module/ipad/xygb-bg.png" alt="" data-echo="<%=list[i].gb_img%>" />
+								</div>
+								<div class="itemshelf">
+									<div class="shelfinfo01">
+										<%=list[i].title %>
+									</div>
+									<div class="shelfinfo04">
+										播音员：<%=list[i].announcer%> 
+									</div>
+									<div  class="shelfinfo06">
+										创建时间：<%=list[i].create_time%>
+									</div>
+									<!--<div  class="shelfinfo06 span_name">
+										描述：<%=list[i].description %>
+									</div>-->
+								</div>
+							</div>
+						</div>
+					<% } %>
+				<% } %>
+			</script>
+	</body>
+	<script type="text/javascript" src="../../../../../script/api.js" ></script>
+	<script type="text/javascript" src="../../../../../script/base_config.js" ></script>
+	<script type="text/javascript" src="../../../../../script/plug-in/base64.js" ></script>
+	<script type="text/javascript" src="../../../../../script/plug-in/template.js" ></script>
+	<script type="text/javascript" src="../../../../../script/plug-in/echo.min.js"></script>
+	<script type="text/javascript" src="../../../../../script/common/common.js" ></script>
+	<script type="text/javascript">
+		//定义头高度
+		var header_h;
+		//总记录数
+		var totalCount = 0;
+		//总页数
+		var totalPages = 0;
+		//定义一个变量存储第一次加载返回来的总记录数
+		var totalData = 0;
+		// 定义一个变量存储第一次加载返回来的总页数
+		var totalPages = 0;
+		//新闻资讯关键字
+		var keyword = '';
+		//当前页面为第一页
+		var currentPage;
+		var school_id;//学校id
+		apiready = function() {
+			commonSetTheme({"level":5,"type":0});
+			header_h = api.pageParam.header_h;					
+			currentPage = 1;
+			school_id = api.pageParam.school_id;
+			//默认是不能发送新闻资讯
+			$api.setStorage('is_add_guangbo', 0);
+			//加载上拉加载数据方法
+			scrollBottomReload();
+			loadGuangboListData(1, true, '');
+			//下拉刷新
+			refreshDataInfo();
+		};
+		/**
+		 * 上拉刷新页面数据
+		 * 周枫
+		 * 2015.11.24
+		 */
+		function scrollBottomReload() {
+			//下移到底部：
+			api.addEventListener({
+				name : 'scrolltobottom',
+				extra : {
+					threshold : 100 //设置距离底部多少距离时触发，默认值为0，数字类型
+				}
+			}, function(ret, err) {
+				if ((currentPage + 1) <= totalPages) {
+					loadGuangboListData(currentPage + 1, false, keyword)
+					currentPage = currentPage + 1;
+					// 页码+1
+				} else {
+					api.toast({
+						msg : '已加载全部数据',
+						location : 'bottom'
+					});
+				}
+			});
+		}
+		/*
+		*作者:zhaoj
+		*功能:设置搜索值，并根据搜索值获取列表数据
+		*日期：20161010
+		*/
+		function setKeyword(key_word){
+			keyword = key_word;
+			currentPage = 1;
+			loadGuangboListData(currentPage, true, keyword)
+		}
+		/**
+		 * 获取新闻资讯列表
+		 * 周枫
+		 * 2015.11.23
+		 */
+		function loadGuangboListData(currentPage, isReload, gb_title) {
+			api.showProgress({
+				title : '加载中...',
+				modal : false
+			});
+			currentPage = isReload ? 1 : currentPage;
+			var org_id;
+			//学校
+			if(isEmptyString(school_id)){
+				org_id = $api.getStorage('bureau_id');
+			}else{
+				org_id = school_id;
+			}
+			//查询请求
+			var list_url = BASE_URL_ACTION + '/space/broadcast/get_broadcastinfo_list?org_id='+org_id+'&org_type=104&page_num=' + currentPage + '&page_size=' + BASE_PAGE_SIZE;
+			//是否有新闻资讯名称
+			keyword = $api.trimAll(gb_title);
+			if (keyword != '') {
+				list_url = list_url + '&search_key=' + gb_title;
+			}
+			api.ajax({
+				url : list_url,
+				method : 'get',
+				dataType : 'json',
+				timeout : 30,
+				cache : false
+			}, function(ret, err) {
+				api.hideProgress();
+				//新闻资讯顶部下拉刷新数据加载完毕，组件会恢复到默认状态
+				commonControlRefresh();
+				if (ret.success) {
+					totalData = ret.total_row;
+					totalPages = ret.total_page;
+					if (isReload) {
+						// 重新设置为1
+						currentPage = 1;
+					}
+					var gb_list = ret.list;
+					var BASE_APP_TYPE = $api.getStorage('BASE_APP_TYPE');
+					for(var i = 0 ; i < getJsonObjLength(gb_list); i++){
+						var gb_img_id = gb_list[i].p_file_id;
+						var gb_img_con = gb_img_id.lastIndexOf(".");
+						var gb_img_ext = gb_img_id.substring(gb_img_con);
+						var gb_img = '';
+						if (BASE_APP_TYPE == 1) {
+//						a_avatar_url = BASE_IMAGE_PRE+"down/Material/" + a_id.substring(0, 2) + "/" + a_id + '.' + a_ext + "@96w_96h_100Q_1x." + a_ext;
+							gb_img = BASE_IMAGE_PRE + BASE_MATERIAL_BEGIN + gb_img_id.substring(0, 2) + "/" + gb_img_id + "@100w_80h_100Q_1x" + gb_img_ext;
+						} else {
+							gb_img = BASE_URL_ACTION + BASE_IMAGE_BEGIN + gb_img_id.substring(0, 2) + "/" + gb_img_id + "@100w_80h_100Q_1x" + gb_img_ext;
+						}
+						gb_list[i]["gb_img"] = gb_img;
+					}
+					var html_type = template.render('gblist_script', ret);
+					if (currentPage == 1) {
+						document.getElementById('gblist_div').innerHTML = html_type;
+					} else {
+						$api.append($api.byId('gblist_div'), html_type);
+					}
+					//延迟加载图片
+					setTimeout(function() {
+						echoInit();
+					}, 300);
+				} else {
+					api.toast({
+	                    msg:'对不起，获取广播列表失败',
+	                    location : 'bottom'
+                    });
+				}
+			});
+		}
+		/**
+		 * 打开广播内容frame
+		 * 周枫
+		 * 2016.10.06
+		 */
+		function openGuangboContent(gb_id) {
+			var notice_id = 0;
+			//先重置新闻资讯window返回哪个页面
+			api.execScript({
+				name : 'guangbo_index_window',
+				script : 'reBackType("content");'
+			});
+			//打开新闻资讯内容frame
+			api.openFrame({
+				name : 'guangbo_content_frame',
+				url : 'guangbo_content_frame.html',
+				rect : {
+					x : 0,
+					y : header_h,
+					w : 'auto',
+					h : api.winHeight - header_h,
+				},
+				pageParam : {
+					gb_id : gb_id
+				},
+				bounces : false,
+				allowEdit : true,
+				scrollToTop : true,
+				bgColor : 'rgba(0,0,0,0)',
+				vScrollBarEnabled : true,
+				hScrollBarEnabled : false,
+				bgColor : '#fff'
+			});
+		}
+
+		function refreshDataInfo() {
+			//绑定下拉刷新历史会话事件
+			api.setRefreshHeaderInfo({
+				visible : true,
+				loadingImg : 'widget://image/local_icon_refresh.png',
+				bgColor : '#FFFFFF',
+				textColor : '#8E8E8E',
+				textDown : '下拉加载更多...',
+				textUp : '松开加载...',
+				showTime : true
+			}, function(ret, err) {
+				//从服务器加载数据，完成后调用commonControlRefresh()方法恢复组件到默认状态
+				commonControlRefresh();
+				//调用获取历史会话监听
+				loadGuangboListData(1, true, '')
+			});
+		}
+	</script>
+</html>

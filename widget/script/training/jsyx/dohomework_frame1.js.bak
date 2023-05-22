@@ -1,0 +1,732 @@
+	var pl_number=1;
+	var pxb_id=0;
+	var kc_id=0;
+	var flag=0;
+	var interval_id = null;
+	var maxTime=0;
+	var minTime=0;
+	var kc_ks=0;
+	var ljsj_has="";
+	var kc_ly="";
+	var header_h;
+	var BASE_URL_ACTION;
+	var BASE_APP_TYPE;
+	//机构分类的数组
+	var img_suffix;
+	var is_flag = true;
+	var img_size;
+	//图片的宽高
+	var openImgArray;
+	var obj_scan;
+	var BASE_SERVER_NAME;
+	var org_name;
+	var	org_id;
+	var	menu_type;
+	var class_id;
+	//记录打开图片地址的数组
+	var BASE_SERVER_NAME;	
+	//填充数据
+	function fillResource(){
+		    var hw_id=api["pageParam"]["hw_id"];
+			var ry_hw_id=api["pageParam"]["ry_hw_id"];
+			var pxb_id=api["pageParam"]["pxb_id"];
+			var state=api["pageParam"]["state"];
+			var person_id=$api.getStorage('person_id');	 
+			var content=$api.byId("zy_content").value;  
+			if(content==''||content==null){
+				api.alert({
+						msg : '检测内容不得为空。'
+				});
+				return null;
+			}
+		    api.confirm({
+			    title: '提交检测',
+			    msg: '提交后不能修改，您确认提交检测吗？',
+			    buttons: ['确定', '取消']
+			}, function(ret, err){
+				var urlJson = JSON.stringify(ret);
+				var txt= $api.strToJson(urlJson);
+			    if( txt.buttonIndex==1 ){
+			         api.ajax({
+					    url: path_url+'/yx/yd/doHomework',
+					    method: 'post',
+					    timeout: 30,
+					    cache:false,
+					    dataTpye:'json',	
+					    data:{
+					    	values: {
+					        	homeworkId: hw_id,
+					        	//id:ry_hw_id,
+					        	pxb_id:pxb_id,
+					        	state:1,
+					        	person_id:person_id,
+					        	hw_content:content	
+					        }        	
+					 	}
+					},function(ret,err){
+					    if (ret) {
+					    api.alert({
+									msg : '检测保存成功。'
+							});
+						toBack();
+						 api.execScript({
+						 	 name: 'xxhomework_window',
+						 	 frameName: 'xxhomework_frame1',
+	                         script: 'fillHomework();'
+                         });
+                         
+					     /* api.toast({
+							    msg: '检测保存成功',
+							    duration:2000,
+							    location: 'middle'
+							});*/
+                         
+					      
+					    }else {
+					         api.alert({
+									msg : '检测保存失败。'
+							});
+					   }
+				});
+			    }
+			});
+	 		
+			
+		}
+	
+/*
+		 *author:zhaoj
+		 *function:打开添加附件选项组件框
+		 *date：20160220
+		 */
+		function openAddFilesOpn(mk_type) {
+			api.actionSheet({
+				title : '最多上传五张图片',
+				cancelTitle : '取消',
+				buttons : ['拍照', '相册'],
+				style : {
+					titleFontColor : '#ff0000'
+				}
+			}, function(ret, err) {
+				if (ret) {
+					if (ret.buttonIndex == 1) {
+						//拍照
+						getPicture("camera");
+					} else if (ret.buttonIndex == 2) {
+						//相册
+						//getPicture("album");
+						album();
+					}
+				} else {
+					//		         alert( JSON.stringify( err ) );
+				}
+			});
+		}
+		/*
+		 *author:zhaoj
+		 *function:打开上传图片的
+		 *date：20160317
+		 */
+		function uploadOpt() {
+			api.actionSheet({
+				cancelTitle : '取消',
+				buttons : ['拍照', '相册']
+			}, function(ret, err) {
+				if (ret) {
+					if (ret.buttonIndex == 1) {
+						getPicture("camera");
+					} else if (ret.buttonIndex == 2) {
+						//getPicture("album");
+						album();
+					}
+				}
+			});
+		}
+
+		/**
+		 * 获取头像
+		 * 周枫
+		 * 2016.1.16
+		 */
+		function getPicture(sourceType) {
+			isOnLineStatus(function(is_true, line_type) {
+				if (is_true) {
+					if (line_type == 'wifi' || line_type == '4g') {
+						openPicture(sourceType);
+					} else {
+						api.confirm({
+							title : "提示",
+							msg : "您当前正在使用" + line_type + "网络，建议您在wifi网络下使用，是否继续？",
+							buttons : ["继续", "取消"]
+						}, function(ret, err) {
+							var sourceType;
+							if (1 == ret.buttonIndex) {
+								openPicture(sourceType);
+							} else {
+								return;
+							}
+						});
+					}
+				} else {
+					api.toast({
+						msg : '请连接网络后使用当前功能~'
+					});
+				}
+			});
+		}
+
+		/**
+		 * 选取图片
+		 * 周枫
+		 * 2016.1.16
+		 */
+		function openPicture(sourceType) {
+			isOnLineStatus(function(is_true, line_type) {
+				var q = 50;
+				if (line_type == 'wifi') {
+					q = 80;
+				}
+				//获取一张图片
+				api.getPicture({
+					sourceType : sourceType,
+					encodingType : 'png',
+					mediaValue : 'pic',
+					//返回数据类型，指定返回图片地址或图片经过base64编码后的字符串
+					//base64:指定返回数据为base64编码后内容,url:指定返回数据为选取的图片地址
+					destinationType : 'url',
+					//是否可以选择图片后进行编辑，支持iOS及部分安卓手机
+					allowEdit : true,
+					//图片质量，只针对jpg格式图片（0-100整数）,默认值：50
+					quality : q,
+					//		targetWidth : 100,
+					//		targetHeight : 1280,
+					saveToPhotoAlbum : true
+				}, function(ret, err) {
+					if (ret) {
+						/*
+						* data:"",                //图片路径
+						base64Data:"",          //base64数据，destinationType为base64时返回
+						*/
+						//alert(JSON.stringify(ret));
+						var img_url = ret.data;
+						if (img_url != "") {
+							setTimeout(function() {
+								//上传图片
+								uploadFiles(img_url, function(is_true, a_file_id, a_ext) {
+							        alert("is_true:"+is_true);
+									if (is_true) {
+										api.hideProgress();
+										//									var file_id= a_file_id;
+										//									var ext = a_ext;
+										//									uploadImg(file_id,ext);
+										var file_id = a_file_id;
+										var ext = a_ext;
+										getImgSize();
+										img_suffix = commonReturnPhotoCutSize(0);
+										if (BASE_APP_TYPE == 1) {
+//											var img_url = "http://image.edusoa.com/down/Material/" + file_id.substring(0, 2) + "/" + file_id + '.' + ext + '@25w_25h_100Q_1x.png';
+											var img_url = "http://image.edusoa.com/down/Material/" + file_id.substring(0, 2) + "/" + file_id + '.' + ext + commonReturnPhotoCutSize(0);
+										} else {
+											var img_url = BASE_URL_ACTION + "/html/thumb/Material/" + file_id.substring(0, 2) + "/" + file_id + '.' + ext + commonReturnPhotoCutSize(0);
+											;
+										}
+										if (getfilesNum() == 4) {
+											$api.css($api.byId('j_add_btn'), 'display:none');
+											addFiles(img_url, 'mr0');
+										} else {
+											addFiles(img_url, '');
+										}
+									} else {
+										popToast(a_file_id);
+									}
+								});
+							}, 1000);
+						}
+					}
+				});
+			});
+		}
+
+		/*
+		 *author:zhaoj
+		 *function:图片格式
+		 *date：20160222
+		 */
+		function getImgSize() {
+			img_size = (api.winWidth - 30) * 0.18;
+			img_size = Math.floor(img_size);
+			var img_format = '@' + img_size + 'w_' + img_size + 'h_100Q_1x.';
+			return img_format;
+		}
+
+		/*
+		 *author:zhaoj
+		 *function:根据模块获取子文件的个数
+		 *date：20160224
+		 */
+		function getfilesNum() {
+			var dlArray = $api.domAll($api.byId('j_files'), '.j_file');
+			return dlArray.length;
+		}
+
+		/*
+		 *author:zhaoj
+		 *function:给模块添加文件
+		 *date：20160224
+		 */
+		function addFiles(img_url, css) {
+			var dl_height = $api.cssVal($api.byId('j_add_btn'), 'height')
+			var dl_html = '<dl class="j_file' + ' ' + css + '" style="height:' + dl_height + ';">' + '<dt class="img" style="width:' + img_size + 'px;height:' + img_size + 'px;" onclick="openImage(this.parentNode,this.parentNode.parentNode)">' + '<img class="j_img" src=' + img_url + ' width="' + (img_size - 1) + '" height="' + (img_size - 4) + '" />' + '</dt>' + '<dd onclick="deleteFile(event,this.parentNode)"><img src="../../image/yingyong/zuoye/shanchu.png" /></dd>' + '</dl>';
+			$api.before($api.byId('j_add_btn'), dl_html);
+		}
+
+		/*
+		 *author:zhaoj
+		 *function:删除当前文件
+		 *date：20160225
+		 */
+		function deleteFile(e, parent) {
+			parent.parentNode.removeChild(parent);
+			var dlArray = $api.domAll($api.byId('j_files'), '.j_file');
+			var length = getfilesNum() - 1;
+			if (length == 3) {
+				$api.removeCls(dlArray[length], 'mr0');
+				$api.css($api.byId('j_add_btn'), 'display:inline-block');
+			}
+			e.stopPropagation();
+		}
+
+		/*
+		 *author:zhaoj
+		 *function:打开图片
+		 *date：20160225
+		 */
+		function openImage(parent, grandpa) {
+			var index;
+			if (parent) {
+				index = 0;
+				while ( parent = parent.previousSibling) {
+					if (parent.nodeType == 1)
+						index++;
+				}
+			}
+			var openImgArray = [];
+			var dlArray = $api.domAll($api.byId('j_files'), '.j_file');
+			for (var i = 0; i < dlArray.length; i++) {
+				openImgArray.push($api.attr($api.dom(dlArray[i], '.j_img'), 'src'));
+			}
+			var imageBrowser = api.require('imageBrowser');
+			imageBrowser.openImages({
+				imageUrls : openImgArray,
+				//是否以九宫格方式显示图片
+				showList : false,
+				//showList : true,
+				activeIndex : index
+			});
+		}
+
+		/*
+		 *author:zhaoj
+		 *function:选择图片
+		 *date：20160225
+		 */
+		function album() {
+			var dlArray = $api.domAll($api.byId('j_files'), '.j_file');
+			var num = 5 - dlArray.length;
+			obj_scan.open({
+				//返回的资源种类,image（图片）,video（视频）,all（图片和视频）
+                type : 'image',
+                max : num,
+                styles : {
+                    bg : '#fff',
+                    mark : {
+                        icon : '',
+                        position : 'bottom_right',
+                        size : 20
+                    },
+                    nav : {
+                        bg : '#eee',
+                        stateColor : '#000',
+                        stateSize : 18,
+                        cancleBg : 'rgba(0,0,0,0)',
+                        cancelColor : '#000',
+                        cancelSize : 18,
+                        finishBg : 'rgba(0,0,0,0)',
+                        finishColor : api.systemType == "android"?'#000':'#fff',
+                        finishSize : 18,
+                        unFinishColor: 'rgba(0,0,0,0)',
+                        titleColor: '#000',
+                    },
+                    bottomTabBar: {
+                        previewTitleColor: "#fff",
+
+                    }
+                }
+			}, function(ret) {
+				if (ret) {
+					if (getJsonObjLength(ret.list) != 0) {
+						alert("递归中");
+						//递归上传图片
+						dgUploadFiles(0, ret.list, function(is_true) {
+							if (is_true) {
+								api.hideProgress();
+							} else {
+								popToast("服务器繁忙，请稍后再试");
+							}
+						});
+					}
+				}
+			});
+		}
+
+		/**
+		 * 递归上传图片
+		 * 周枫
+		 * 2016.3.28
+		 */
+		function dgUploadFiles(p_c, pic_list, callback) {
+			var pic_l = getJsonObjLength(pic_list);
+			if (p_c < pic_l) {
+				var pic_url_old = pic_list[p_c].path;
+				if (api.systemType == 'ios') {
+					//将相册图片地址转换为可以直接使用的本地路径地址
+					obj_scan.transPath({
+						path : pic_url_old
+					}, function(ret) {
+						var pic_url_new = ret.path;
+						uploadFiles(pic_url_new, function(is_true, a_file_id, a_ext) {
+							alert(is_true);
+							if (is_true) {
+								var file_id = a_file_id;
+								var ext = a_ext;
+								getImgSize();
+								img_suffix = commonReturnPhotoCutSize(0);
+								if (BASE_APP_TYPE == 1) {
+									var img_url = "http://image.edusoa.com/down/Material/" + file_id.substring(0, 2) + "/" + file_id + '.' + ext + commonReturnPhotoCutSize(0);
+//									var img_url = "http://image.edusoa.com/down/Material/" + file_id.substring(0, 2) + "/" + file_id + '.' + ext + '@' + api.winWidth + 'w_' + api.winHeight + 'h_100Q_1x.' + ext;
+								} else {
+									var img_url = BASE_URL_ACTION + "/html/thumb/Material/" + file_id.substring(0, 2) + "/" + file_id + '.' + ext + commonReturnPhotoCutSize(0);
+									
+								}
+								if (getfilesNum() == 4) {
+									$api.css($api.byId('j_add_btn'), 'display:none');
+									addFiles(img_url, 'mr0');
+								} else {
+									addFiles(img_url, '');
+								}
+								p_c++;
+								return dgUploadFiles(p_c, pic_list, callback);
+							} else {
+								//						popToast(a_file_id);
+								return dgUploadFiles(p_c, pic_list, callback);
+							}
+						});
+					});
+				} else {
+					uploadFiles(pic_url_old, function(is_true, a_file_id, a_ext) {
+						alert("is_true:"+is_true);
+						if (is_true) {
+							var file_id = a_file_id;
+							var ext = a_ext;
+							getImgSize();
+							img_suffix = commonReturnPhotoCutSize(0);
+							if (BASE_APP_TYPE == 1) {
+								var img_url = "http://image.edusoa.com/down/Material/" + file_id.substring(0, 2) + "/" + file_id + '.' + ext + commonReturnPhotoCutSize(0);
+							} else {
+								var img_url = BASE_URL_ACTION + "/html/thumb/Material/" + file_id.substring(0, 2) + "/" + file_id + '.' + ext + commonReturnPhotoCutSize(0);
+							}
+							if (getfilesNum() == 4) {
+								$api.css($api.byId('j_add_btn'), 'display:none');
+								addFiles(img_url, 'mr0');
+							} else {
+								addFiles(img_url, '');
+							}
+							p_c++;
+							return dgUploadFiles(p_c, pic_list, callback);
+						} else {
+							//						popToast(a_file_id);
+							return dgUploadFiles(p_c, pic_list, callback);
+						}
+					});
+				}
+			} else {
+				callback(true);
+			}
+		}
+
+		/**
+		 * 上传文件
+		 * 周枫
+		 * 2015.11.25
+		 */
+		function uploadFiles(file_path, callback) {
+			api.showProgress({
+				title : '上传中...',
+				modal : true
+			});
+			//扩展名
+			var ldot = file_path.lastIndexOf(".");
+			var ext = file_path.substring(ldot + 1);
+			//			var ext = file_path.substring(ldot + 1).substring(0,3);
+			if (ext != "jpg" && ext != "png" && ext != "JPG" && ext != "PNG") {
+				api.hideProgress();
+				popToast("文件格式只支持png和jpg");
+				return;
+			}
+			if (BASE_APP_TYPE == 1) {
+				var v_guid = newGuid();
+				//图片上传服务器时路径
+				var _key = url_path_suffix + v_guid.substring(0, 2) + "/" + v_guid + "." + ext;
+				notice_img_path = _key;
+				api.ajax({
+					url : BASE_URL_ACTION + '/res/uploadFileToAliyun',
+					method : 'post',
+					timeout : 30,
+					dataType : 'json',
+					returnAll : false,
+					data : {
+						values : {
+							key : _key
+						},
+						files : {
+							file : file_path
+						}
+					}
+				}, function(ret, err) {
+					//					api.hideProgress();
+					
+					if (err) {
+						if (err.statusCode == '200') {
+							callback(true, v_guid, ext);
+						} else {
+							callback(false, '', '');
+						}
+					} else {
+						if (ret.statusCode == '200') {
+							callback(true, v_guid, ext);
+						} else {
+							callback(false, '', '');
+						}
+					}
+				});
+			} else {
+				//局版
+				var v_guid = newGuid();
+				var extension = ext;
+				//图片上传服务器时路径
+				var _key = url_path_suffix + v_guid.substring(0, 2) + "/" + v_guid + "." + ext;
+				notice_img_path = _key;
+				alert(_key);
+				api.ajax({
+					url : BASE_URL_ACTION + '/res/newUpload/',
+					method : 'post',
+					timeout : 30,
+					dataType : 'json',
+					returnAll : false,
+					data : {
+						values : {
+							key : _key
+						},
+						files : {
+							file : file_path
+						}
+					}
+				}, function(ret, err) {
+					//					api.hideProgress();
+					alert(err.statusCode);
+					if (err) {
+						callback(false, '', '');
+					} else {
+						if (ret.success) {
+							callback(true, v_guid, extension);
+						} else {
+							callback(false, '', '');
+						}
+					}
+				});
+			}
+		}
+
+		/*
+		 *author:zhaoj
+		 *function:上传的图片
+		 *date：20160307
+		 */
+		function uploadImg(file_id, ext) {
+			var img_width = api.winWidth - 40;
+			var img_height = Math.floor((api.winWidth - 60));
+			var img_url;
+			img_size = '@' + img_width + 'w_' + img_height + 'h_100Q_1x.' + ext;
+			if (BASE_APP_TYPE == 1) {
+				img_url = "http://image.edusoa.com/down/Material/" + file_id.substring(0, 2) + "/" + file_id + '.' + ext + commonReturnPhotoCutSize(0);
+			} else {
+				img_url = BASE_URL_ACTION + "/html/thumb/Material/" + file_id.substring(0, 2) + "/" + file_id + '.' + ext + commonReturnPhotoCutSize(0);
+			}
+			var img_html = '<p id="add_sucai" class="common-content add-img bgf sucai clearfix">';
+			img_html = img_html + '<img id="sucai_img" class="sucai-img" src=' + img_url + ' width=' + img_width + ' />';
+			img_html = img_html + '<img class="shanchu" width="25" height="25" src="../../image/yingyong/zuoye/shanchu.png" alt="删除" onclick="deleteImg(event,this.parentNode,this.parentNode.parentNode,this);" />'
+			img_html = img_html + '</p>';
+			$api.after($api.byId('add_img'), img_html);
+			$api.html($api.byId('img_title'), '&nbsp;素材&nbsp;');
+			$api.addCls($api.byId('add_img'), 'bb');
+			//给上传素材删除点击事件
+		}
+
+		/*
+		 *author:zhaoj
+		 *function:删除上传图片
+		 *date：20160315
+		 */
+		function deleteImg(e, parent, grandpa, self) {
+			var img = $api.first(parent, 'img');
+			parent.removeChild(img);
+			parent.removeChild(self);
+			grandpa.removeChild(parent);
+			$api.html($api.byId('img_title'), '&nbsp;上传素材&nbsp;<font>（只限一张图片）</font>');
+			$api.removeCls($api.byId('add_img'), 'bb');
+			//给上传素材添加点击事件
+			addClickedEvent('add_img', uploadOpt);
+			e.stopPropagation();
+		}	
+		/*
+		 *author:zhaoj
+		 *function:获取文章的值
+		 *date：20160426
+		 */
+		function getArticleValue() {
+			//文章标题
+			var article_title = "";//$api.val($api.byId('article_title'));
+			//文章文字内容
+			var article_content = $api.val($api.byId('zy_content'));
+			//个人id
+			var person_category_id;
+			//班级id
+			var b_category_id;
+			//学校id
+			var org_category_id;
+			//图片缩略图
+			var thumb_id;
+			//图片缩略图数组
+			var thumb_ids = new Array();
+			//简介
+			var overview;
+			if (article_content.length > 100) {
+				overview = article_content.substring(0, 100);
+			} else {
+				overview = article_content;
+			}
+			//文章加上图片和文字的整体内容
+			var content = article_content;
+			//验证文章标题
+			var article_title_vad = $api.trimAll(article_title);
+			/*if (article_title_vad.length == 0) {
+				popAlert("文章标题请输入1-40个字！");
+				return;
+			}
+			//个人id
+			var grflDiv = document.getElementById('grfl_div');
+			if (!grflDiv.hasAttribute('grflID')) {
+				popAlert("请先进入个人分类页面添加个人分类！");
+				return;
+			} else {
+				person_category_id = grflDiv.getAttribute('grflID');
+			}
+			//班级id
+			var bjflDiv = document.getElementById('bjfl_div');
+			if (!bjflDiv.hasAttribute('bjflID')) {
+				b_category_id = "";
+			} else {
+				b_category_id = bjflDiv.getAttribute('bjflID');
+			}
+			//本校id
+			var bxflDiv = document.getElementById('bxfl_div');
+			if (!bxflDiv.hasAttribute('bxflID')) {
+				org_category_id = "";
+			} else {
+				org_category_id = bxflDiv.getAttribute('bxflID');
+			}
+			//验证文章内容*/
+			var article_content_vad = $api.trimAll(article_content);
+			if (article_content_vad.length == 0) {
+				popAlert("请填写文章内容！");
+				return;
+			}
+			//验证是否有附件
+			var dlArray = $api.domAll($api.byId('j_files'), '.j_file');
+			if (dlArray.length != 0) {
+				if (BASE_APP_TYPE == 2) {
+					for (var i = 0; i < dlArray.length; i++) {
+						if (i == 0) {
+							thumb_id = $api.attr($api.dom(dlArray[i], '.j_img'), 'src');
+							var startIndex = thumb_id.indexOf('/dsideal_yy/');
+							thumb_id = thumb_id.substring(startIndex,thumb_id.length);
+							thumb_id = thumb_id.replaceAll(img_suffix, '');
+						}
+						var img_url = $api.attr($api.dom(dlArray[i], '.j_img'), 'src');
+						img_url = img_url.substring(startIndex,img_url.length);
+						img_url = img_url.replaceAll(img_suffix, '');
+						thumb_ids.push(img_url);
+						var img_html = '<img src="' + img_url + '" alt="" />'
+						content = content + img_html;
+					}
+				} else {
+					for (var i = 0; i < dlArray.length; i++) {
+						if (i == 0) {
+							thumb_id = $api.attr($api.dom(dlArray[i], '.j_img'), 'src');
+							thumb_id = thumb_id.replaceAll(img_suffix, '');
+						}
+						var img_url = $api.attr($api.dom(dlArray[i], '.j_img'), 'src');
+						img_url = img_url.replaceAll(img_suffix, '');
+						var img_html = '<img src="' + img_url + '" alt="" />'
+						thumb_ids.push(img_url);
+						content = content + img_html;
+					}
+				}
+			}
+			var value ={}; 
+			if(menu_type == 0 || menu_type == 1 || menu_type == 104){
+				value={"person_id":$api.getStorage("person_id"),"person_name":$api.getStorage('person_name'),"identity_id" : $api.getStorage("identity"),"business_type" : 1,"title" : article_title,"city_id" : $api.getStorage('city_id'),"district_id" : $api.getStorage('district_id'),"province_id" : $api.getStorage('province_id'),"school_id" : $api.getStorage('school_id'),"person_category_id" : person_category_id,"org_category_id" : org_category_id,"id" : "","content" : content,"overview" : overview,"thumb_id" : thumb_id,"thumb_ids" : JSON.stringify(thumb_ids)};
+			}else{
+				value={"person_id":$api.getStorage("person_id"),"person_name":$api.getStorage('person_name'),"identity_id" : $api.getStorage("identity"),"business_type" : 3,"title" : article_title,"city_id" : $api.getStorage('city_id'),"district_id" : $api.getStorage('district_id'),"province_id" : $api.getStorage('province_id'),"school_id" : $api.getStorage('school_id'),"person_category_id" : person_category_id,"b_category_id" : b_category_id,"org_category_id" : org_category_id,"id" : "","content" : content,"overview" : overview,"thumb_id" : thumb_id,"thumb_ids" : JSON.stringify(thumb_ids),"business_id":org_id,"business_iid":105};
+			}
+			//saveArticle(JSON.stringify(value));
+			alert(JSON.stringify(value));
+		}
+/*
+		 *author:zhaoj
+		 *function:弹出Alert提示框
+		 *date：20160314
+		 */
+		function popAlert(message) {
+			api.alert({
+				msg : message
+			}, function(ret, err) {
+			});
+		}
+
+		/*
+		 *author:zhaoj
+		 *function:弹出Toast提示框
+		 *date：20160314
+		 */
+		function popToast(message) {
+			api.toast({
+				msg : message,
+				location : 'middle'
+			});
+		}
+		function extend(destination, source) { 
+		    for (var property in source) 
+			destination[property] = source[property]; 
+		    return destination; 
+		} 
+	apiready = function(){	
+		var hw_id=api["pageParam"]["hw_id"];
+		var ry_hw_id=api["pageParam"]["ry_hw_id"];
+		var pxb_id=api["pageParam"]["pxb_id"];
+		var state=api["pageParam"]["state"];
+		var person_id=$api.getStorage('person_id');	
+		obj_scan = api.require('UIAlbumBrowser');
+		//fillResource(hw_id,ry_hw_id,pxb_id,state,person_id);
+		
+	}	

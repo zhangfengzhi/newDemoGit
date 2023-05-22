@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>检测批阅</title>
+    <link rel="stylesheet" type="text/css" href="../../../../../css/aui/aui.css"/>
+    <link id="j_theme_base" rel="stylesheet" type="text/css" href="" /><style>
+		img{float:left;width:auto;max-width:100%;height:auto;max-height:100%;}
+    </style>
+</head>
+<body class="common-ipad-zuoyeIpad-tea">
+	<!--<img src=BASE_IMAGE_PRE+"down/App/5C/5C648C65-0FFC-43B4-D46C-57C8414E2785.png" />-->
+	<img src=BASE_IMAGE_PRE+"down/App/8F/8FC785B9-B272-4DAC-F47E-B713E2559B00.jpg" />
+</body>
+<script type="text/javascript" src="../../../../../script/api.js"></script>
+<script type="text/javascript">
+	var drawingBoard;
+	apiready = function(){
+		commonSetTheme({"level":5,"type":0});
+		drawingBoard = api.require('drawingBoard');
+		drawingBoard.open({
+		    rect: {
+		        x: 0,
+		        y: 0,
+		        w: 320,
+		        h: 300
+		    },
+		    styles: {
+		        brush: {
+		            color: '#ff0000',
+		            width: 6
+		        },
+		        bgColor: 'rgba(0,0,0,0)'
+		    },
+		    fixedOn: api.frameName
+		});
+	};
+</script>
+</html>

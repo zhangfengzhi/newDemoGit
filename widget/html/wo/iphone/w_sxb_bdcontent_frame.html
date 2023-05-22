@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+        <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+        <title>绑定页面</title>
+        <link rel="stylesheet" type="text/css" href="../../../css/aui/aui.css"/>
+        <link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+        <style>
+            body {
+                background: #f6f6f6;
+                color: #333;
+                padding:20px;
+            }
+            .fa-div {
+                border-bottom: 1px solid #efefef
+            }
+            .bd-title {
+                height: 45px;
+                line-height: 45px;
+                font-size: 16px;
+                color: #696969
+            }
+            .sxb-mac{
+                font-size:18px;
+                color:red;
+                margin:20px auto;
+            }
+            .img{
+                width:100%;
+                height:100px;
+                background:url(../../../image/wo/sxb_example.png) center center no-repeat;
+                background-size:100% 100%;
+            }
+            .tip{position:absolute;right:0;bottom:-12px;height:20px;line-height:20px;font-size:12px;color:#bbbbbb;}
+        </style>
+    </head>
+    <body id="body" class="w-iphone-common">
+        <div id="bd_title" class="bd-title fa-div">
+                                    
+        </div>
+        <div id="sxb_mac_div" class="sxb-mac aui-hide">
+                               设备码：<span id="sxb_mac"></span>
+        </div>
+        <div id="input_div" class="input-div aui-hide">
+            <input id="fl_val" type="text" oninput='showTip(this.value.length,this);'/>          
+        </div>
+        <div class="bd-title">
+                                示例
+        </div>
+        <div class="img">
+            &nbsp;
+        </div>
+        <div class="bd-title">
+                                罗博示例设备码：1B2A00000F5A
+        </div>
+        <div class="bd-title">
+                                磐度示例设备码：00-1B-10-42-35-D1
+        </div>
+        <button class="aui-btn aui-btn-primary aui-btn-block" style="height:40px;padding-top:6px;margin-top:50px;" name="btn" tapmode onclick="addBd();">
+                确认
+        </button>
+        <button id="re_sys" class="aui-btn aui-btn-primary aui-btn-block aui-hide" style="height:40px;padding-top:6px;margin-top:20px;" name="btn" tapmode onclick="openScanner('sxb')">
+                重新扫码
+        </button>
+    </body>
+    <script type="text/javascript" src="../../../script/api.js"></script>
+    <script type="text/javascript" src="../../../script/base_config.js" ></script>
+    <script type="text/javascript" src="../../../script/plug-in/template.js" ></script>
+    <script type="text/javascript" src="../../../script/common/common.js" ></script>
+    <script type="text/javascript" src="../../../script/init/init_config.js" ></script>
+    <script type="text/javascript" src="../../../script/assembly/tongjiData.js"></script>
+    <script type="text/javascript">
+        var type = 1;//1：扫一扫进入，2：手动输入进入
+        var sxbMac = "";//设备码
+        var name = "";//学生姓名
+        var btn_param = {'affirm_btn':false,'re_sys':false};
+        var now_num;
+        apiready = function() {
+            commonSetTheme({"level" : 3,"type" : 0});
+            now_num = api.pageParam.num
+            api.parseTapmode();
+            type = api.pageParam.type;
+            sxbMac = api.pageParam.sxbMac;
+            name = api.pageParam.name;
+            if(api.systemType != "android"){
+                var dom = $api.domAll($api.byId('body'), '.aui-btn-primary');
+                for(var i = 0; i < dom.length; i++){
+                    $api.css(dom[i],'background-color: #34a8f6 !important;border: 1px solid #34a8f6 !important;');
+                }
+            }
+            $api.html($api.byId('bd_title'),type == 1?"请核对设备码确保准确":"请输入设备码");
+            if(type == 1){
+                commonAddOrRemoveHideCss('sxb_mac_div',1);
+                commonAddOrRemoveHideCss('re_sys',1);
+                $api.html($api.byId('sxb_mac'),sxbMac);
+            }else{
+                commonAddOrRemoveHideCss('input_div',1);
+            }
+            $api.html($api.byId('stu_name'),name);
+            $api.css($api.dom($api.byId('body'), '.img'),'background-size:'+api.winWidth*0.8+'px auto;');
+        };
+        
+        /*
+         * 功能：打开绑定页面
+         * 作者：张自强
+         * 时间：20190219
+         */
+         function openBdFrame(type,num){
+            sxbMac = num;
+            $api.html($api.byId('sxb_mac'),sxbMac);
+         }
+         
+       /*
+        *author:zhaoj
+        *function:提示问题描述或课堂评价描述剩余多少字符
+        *date：20160315
+        */
+        function showTip(length,self){
+//          var count = 12 - length;
+            var str = $api.val(self);
+//          str.substring(0,11);
+            str = $api.trimAll(str);
+            $api.val(self, str.toUpperCase());
+            if(self !=""){
+                commonRemoveExpression(self);
+            }
+        }
+        
+        /*
+         * 功能：添加绑定
+         * 作者：张自强
+         * 时间：20190220
+         */
+        function addBd(){
+            if(btn_param.affirm_btn){
+                return;
+            }else{
+                btn_param.affirm_btn = true;
+            }
+            isBoundMac(function(flag,bd_type,xg_type){
+                if(flag){
+                    api.ajax({
+                        url:BASE_URL_ACTION + '/xx/hwt/boundMac?bound_type=' + bd_type + '&bureau_id='+$api.getStorage('bureau_id')+'&class_id=' + api.pageParam.class_id + '&class_type='+api.pageParam.class_type+'&mac='+sxbMac+'&o_type='+xg_type+'&student_id='+api.pageParam.id,
+                        method:'get',
+                        dataType:'json',
+                        timeout:30
+                    },function(ret,err){
+                        if(err){
+                            btn_param.affirm_btn = false;
+                            popToast('绑定失败');
+                        }else{
+                            if(ret.success){
+                                commonExecScript('w_sxb_bd_window','','changeBdState("'+sxbMac+'")',0);
+                                commonExecScript(api.winName,'w_sxb_bd_frame','changeBdState(1,"'+sxbMac+'")',1);
+                                commonExecScript('w_sxb_class_window','w_sxb_class_frame','changeBd();',1);
+                                commonExecScript('w_sxb_stu_window','w_sxb_stu_frame','changeBd();',1);
+                                api.hideProgress();
+                                popToast('绑定成功');
+                                setTimeout(function(){
+                                    commonExecScript(api.winName,'','openBdFinishFrame("'+sxbMac+'");',0);
+                                },2000);
+                            }else{
+                                btn_param.affirm_btn = false;
+                                popToast(ret.msg);
+                            }
+                        }
+                        api.hideProgress();
+                    });
+                }else{
+                    btn_param.affirm_btn = false;
+                    popToast('绑定失败');
+                }
+            });
+        }
+        
+        /*
+         * 功能：判断学生是否已经绑定设备
+         * 作者：张自强
+         * 时间：20190220
+         */
+        function isBoundMac(callback){
+            if(type == 2){
+                sxbMac = $api.trimAll($api.val($api.byId('fl_val'))).toUpperCase();
+                if(sxbMac.length == 0 ){
+                    setTimeout(function(){
+                        btn_param.affirm_btn = false;
+                    },2500);
+                    popToast("设备码不能为空");
+                    return;
+                }            
+//              if(sxbMac.length < 12){
+//                  setTimeout(function(){
+//                      btn_param.affirm_btn = false;
+//                  },2500);
+//                  popToast("请输入正确的设备码");
+//                  return;
+//              }
+//              var reg = /^[A-Fa-f0-9]{12}$/;
+//              if(!reg.test(sxbMac)){
+//                  setTimeout(function(){
+//                      btn_param.affirm_btn = false;
+//                  },2500);
+//                  popToast("请输入正确的设备码");
+//                  return;
+//              }
+            }
+            showSelfProgress('加载中...');
+            api.ajax({
+                url:BASE_URL_ACTION + '/xx/hwt/isBoundMac?mac=' + sxbMac + '&o_type=1&student_id=' + api.pageParam.id+'&class_id=' + api.pageParam.class_id,
+                method:'get',
+                dataType:'json',
+                timeout:30
+            },function(ret,err){
+                if(err){
+                   popToast('绑定失败');
+                   api.hideProgress();
+                   callback(false,1,1);
+                }else{
+                   if(ret.success){
+                       api.hideProgress();
+                       if(ret.mac_bound && ret.stu_bound && now_num.toUpperCase() == sxbMac.toUpperCase()){//学生已绑定，再次绑定相同的设备
+//                         api.alert("该设备已经被该学生绑定，无需重新绑定！");
+                           api.alert({
+                               title:'提示',
+                               msg:"该设备已经被该学生绑定，无需重新绑定！",
+                               buttons : ["确定"]
+                           },function(ret,err){
+                            btn_param.affirm_btn = false;
+                           });
+                       }else if(ret.mac_bound && ret.stu_bound){//学生和设备码都已经绑定，但是学生现绑定的设备和将要绑定的设备不是同一个
+                           api.confirm({
+                                title : '提示',
+                                msg : "该设备已经被【"+ret.class_name+"】的"+ret.student_name+"绑定，不能重复绑定！您可以点击“绑定新用户”来解除原绑定并绑定新用户",
+                                buttons : ["绑定新用户", "取消"]
+                            }, function(ret, err) {
+                                if (1 == ret.buttonIndex) {
+                                    showSelfProgress('加载中...');
+                                    callback(true,2,2);
+                                }else{
+                                    btn_param.affirm_btn = false;
+                                }
+                            });
+                       }else if(ret.mac_bound){//设备已经被绑定
+                           api.confirm({
+                                title : '提示',
+                                msg : "该设备已经被【"+ret.class_name+"】的"+ret.student_name+"绑定，不能重复绑定！您可以点击“绑定新用户”来解除原绑定并绑定新用户",
+                                buttons : ["绑定新用户", "取消"]
+                            }, function(ret, err) {
+                                if (1 == ret.buttonIndex) {
+                                    showSelfProgress('加载中...');
+                                    callback(true,2,1);
+                                }else{
+                                    btn_param.affirm_btn = false;
+                                }
+                            });
+                       }else if(ret.stu_bound){//学生已经有绑定的设备了
+                           api.confirm({
+                                title : '提示',
+                                msg : "该学生已经绑定其他设备，不能重复绑定！您可以点击“绑定新设备”来解除原绑定并绑定新设备",
+                                buttons : ["绑定新设备", "取消"]
+                            }, function(ret, err) {
+                                if (1 == ret.buttonIndex) {
+                                    showSelfProgress('加载中...');
+                                    callback(true,2,2);
+                                }else{
+                                    btn_param.affirm_btn = false;
+                                }
+                            });
+                       }else{
+                           callback(true,1,1);
+                       }
+                   }
+                }
+            });
+        }
+        
+        /*
+         * 功能：changeBd
+         */
+        function changeBd(nowNum){
+            now_num = nowNum;
+        }
+    </script>
+</html>

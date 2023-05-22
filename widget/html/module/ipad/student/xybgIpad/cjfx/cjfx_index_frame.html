@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <!-- 在IOS设备上，有时会将数字转为手机号，这里也要禁止下 -->
+	<meta name="format-detection" content="telephone=no"/>
+    <title>考试选择列表</title>
+    <link rel="stylesheet" type="text/css" href="../../../../../../css/aui/aui.css" />
+    <link rel="stylesheet" type="text/css" href="../../../../../../css/module/common/cjfxXs.css" />
+    <link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+    <style>
+    	.no-data{background:#fff;}
+    </style>
+</head>
+<body class="common-ipad-cjfx">
+	<div id="j_tip" class="index-tip display-none">如果在以下列表中没有找到您参加的考试，请点击右上角"去认领"按钮认领考试！</div>
+	<ul id="test_body" class="score">
+	</ul>
+	<script type="text/html" id="test_script">
+		<% if(data.data.length == 0){ %>
+			<div class="no-data"><span>暂无考试，<a onclick="showCjfx();">点击可功能演示</a></span></div>
+		<% }else{ %>
+			<%for(var i=0; i<data.data.length; i++) {%>
+				<li onclick="openDetailwin(<%=data.data[i].testId%>,'<%=data.data[i].testType%>','<%=data.data[i].testName%>','<%=data.data[i].stageId%>');">
+					<div class="exam-name"><%=data.data[i].testName%></div>
+					<div class="exam-detail">
+						<span class="time">考试时间：<%=data.data[i].testDate.substring(0,10)%></span>
+						<span class="grade">考试年级：<%=data.data[i].stage%></span>
+						<div class="test-type">考试类别：<%=data.data[i].testType%></div>
+						<div class="subject">考试科目：<%=data.data[i].subjectName%></div>
+					</div>
+				</li>
+			<% } %>
+		<% } %>
+	</script>
+</body>
+<script type="text/javascript" src="../../../../../../script/api.js"></script>
+<script type="text/javascript" src="../../../../../../script/base_config.js" ></script>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    
+<script type="text/javascript" src="../../../../../../script/plug-in/template.js" ></script>
+<script type="text/javascript" src="../../../../../../script/plug-in/base64.js" ></script>
+<script type="text/javascript" src="../../../../../../script/common/common.js" ></script>
+<script type="text/javascript" src="../../../../../../script/module/common/cjfxXs.js"></script>
+<script type="text/javascript">
+	var currentPage=1;//当前页码
+	var totalPages;//总页数
+	var select_list_data={};//所有筛选条件
+	var testName = '';//搜索参数
+	var student_id;
+	var list_data;
+	apiready = function(){
+		commonSetTheme({"level":6,"type":0});
+		if($api.getStorage("identity") == 6){
+			$api.removeCls($api.byId('j_tip'), 'display-none');
+		}
+		showSelfProgress('加载中...');
+		select_list_data.queryDate="";
+		select_list_data.startDate="";
+		select_list_data.endDate="";
+		select_list_data.testType="";
+		
+		student_id = $api.getStorage('person_id');
+		commonGetStudentInfoByParentId(student_id_mr, identity_mr, function(is_true, stu_info_json){
+			if(is_true) {
+				student_id = stu_info_json.student_id;
+				initData(currentPage);
+    		}
+        });
+	};
+	/*
+    *author:zhaoj
+    *function:初始化变量
+    *date：201703120
+    */
+	function firstInitData(){
+	   select_list_data.queryDate="";
+        select_list_data.startDate="";
+        select_list_data.endDate="";
+        select_list_data.testType="";
+	}
+	/*
+	*author:zhaoj
+	*function:初始化数据
+	*date：201703120
+	*/
+	function initData(current_page){
+		currentPage = current_page;
+		getChoiceExam(function(data){
+			totalPages = data.data.pagetotal;
+			list_data = data;
+			commonAddManyHtml('test_body','test_script',data);
+		});
+	}
+	/*
+	*author:zhaoj
+	*function:打开成绩详情页面
+	*date：20170316
+	*/
+	function openDetailwin(testId,testType,testName,stageId){
+		commonOpenWin('cjfx_detail_window', 'cjfx_detail_window.html', false, false, {'header_h':api.pageParam.header_h,"testId":testId,"testType":testType,"testName":testName,"stageId":stageId})
+	}
+	/*
+	*author:zhaoj
+	*function:筛选考试
+	*date：20160624
+	*/
+	function screenTest(data){
+		select_list_data = JSON.parse(data);
+		currentPage=1;
+		initData(currentPage);
+        commonExecScript(api.winName,'','back();',0);
+	}
+	/*
+		*author:zhaoj
+		*function:打开菜单页面
+		*date：20170421
+		*/
+		function openMenuFrame(){
+            commonExecScript(api.winName,'','reBackType("menu");',0);
+			var header_h = api.pageParam.header_h;
+			var pageParamJson={"header_h":header_h,"select_list_data":JSON.stringify(select_list_data)};//打开frame页面所需参数
+			commonOpenFrame('cjfx_menu_frame', 'cjfx_menu_frame.html',header_h, false, false,"rgba(0,0,0,0)",pageParamJson);	//打开index页面
+		}
+		/*
+		*作者:zhaoj
+		*功能:设置搜索值，并根据搜索条件加载相关数据数据
+		*日期：20161024
+		*/
+        function setKeyword(data){
+        	testName = Base64.decode(data);
+        	currentPage=1;
+			initData(currentPage);
+        }
+        
+        
+</script>
+</html>

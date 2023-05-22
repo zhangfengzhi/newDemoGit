@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>主题活动</title>
+    <link rel="stylesheet" type="text/css" href="../../../../../css/aui/aui.css"/>
+    <link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+    <style>
+    	body{font-size:18px;color:#939598;}
+    	.time-axis{padding:75px 0 0 0;}
+    	.time-axis-body{background:none;}
+    	.time-axis-body .time-axis-zy:nth-child(2){margin-top:20px;}
+    	.time-axis-body .time-axis-zy:nth-child(odd){padding-right:10px;}
+    	.time-axis-body .time-axis-zy:nth-child(even){padding-left:10px;}
+    	.time-axis-zy{width:50%;float:left;height:190px;margin-top:20px;}
+    	.time-axis-zy .zy-content{position:relative;border:1px solid #e0e0e0;height:100%;}
+    	.time-axis-zy .zy-content .left{position:absolute;left:15px;bottom:0;height:100%;}
+    	.time-axis-zy .zy-content .left img{width:150px;height:110px;margin-top:15px;}
+    	.time-axis-zy .zy-content .right{position:relative;height:100%;margin:0 20px 0 168px;padding:20px 0;}
+    	.time-axis-zy .zy-content .right .name{height:25px;line-height:22px;font-size:24px;font-weight:400;padding:1px 0 0 10px;}
+    	.time-axis-zy .zy-content .right .time{padding:8px 0 7px 40px;background:url(../../../../../image/fun-module/ipad/zthd/time.png) 13px 12px no-repeat;background-size:25px auto;line-height:25px;}
+    	.person-name,.num{padding:0 0 0 13px;display:inline-block;float:left;max-width:50%;}
+    	.time-axis-zy .zy-content .tip{position:absolute;right:0;top:0;width:60px;height:60px;background:url(../../../../../image/fun-module/ipad/zthd/weifabu.png) center center no-repeat;background-size:100% auto;}
+    	.bottom{position:absolute;bottom:0;width:100%;height:46px;left:0;border-top:1px solid #e0e0e0;}
+    	.bottom .hdtj-btn{width:90px;line-height:30px;font-size:16px;color:#fff;background:#F67362;text-align:center;margin:7px 15px 0 0 !important;border-radius:3px;}
+    	.bottom .bg-green{background:#03A203 !important;}
+    	.nav{padding:20px 24px 20px 24px; display:inline-block;font-size:20px;position: fixed;top:0;left:0;right:0;background:#fff;z-index: 9;}
+    	.nav ul{padding:8px;border-radius:20px;}
+    	.nav ul li{display:inline-block;float:left;padding:0 24px;height:37px;line-height: 37px;border-radius:13px;}
+    	.nav ul li.active{color:#fff;}
+    	.new-hot{position:absolute;left:430px;top:50px;}
+    	.new-hot div{display:inline-block;padding:0 15px;border-right:1px solid #e0e0e0;float:left;font-size:16px;}
+    	.new-hot div:last-child{border-right:none;}
+    	.no-data{padding-top:25px;}
+    	@media screen and (max-width: 1024px) {
+			body{font-size:16px;color:#939598;}
+			.time-axis-zy .zy-content .left img{width:140px;height:110px;margin-top:15px;}
+	    	.time-axis-zy .zy-content .right{position:relative;height:100%;margin:0 10px 0 158px;padding:20px 0;}
+	    	.time-axis-zy .zy-content .right 			.name{height:24px;line-height:18px;font-size:20px;font-weight:400;padding:0px 0 0 10px;}
+			.time-axis-zy .zy-content .right .time{padding:8px 0 8px 40px;background-size:22px auto;line-height:24px;}
+		}
+		.search-ipad{height:auto;}
+		.search-ipad .search-body{margin-top:5px;float:right;}
+		
+		.fl-last{width:50px;float:right;text-align:center;color:red;height:50px;line-height:50px;margin:auto 1%;}
+		.tag-title .fl-last .hot{color:#686868;}
+		.tag-title .fl-last .new{color:#686868;}
+		.img{width:50px;height:50px}
+		
+		input::-webkit-input-placeholder{
+            color:#CDCDCD;
+        }
+        input::-moz-placeholder{   /* Mozilla Firefox 19+ */
+            color:#CDCDCD;
+        }
+        input:-moz-placeholder{    /* Mozilla Firefox 4 to 18 */
+            color:#CDCDCD;
+        }
+        input:-ms-input-placeholder{  /* Internet Explorer 10-11 */ 
+            color:#CDCDCD;
+        }
+        .now-tea-body{padding-top:20px;font-size:22px;font-weight:700;color:#000;}
+        .now-tea-hd-num{font-size:16px;color:#CDCDCD;margin-left:15px;}
+        .now-tea-hd-num font{color:#f76736}
+    </style>
+</head>
+<body class="axis-body common-ipad-zthd-tea">
+	<div class="msg-top"></div>
+	<div id="msg_top_all"></div>
+	<div class="nav clearfix">
+		<ul id="j_nav" class="fl">
+			<li class="active" onclick="changeNav(this,1);">全部活动</li>
+			<li onclick="changeNav(this,2);">我创建的</li>
+			<li onclick="changeNav(this,3);">邀请我的</li>
+		</ul>
+		
+		<div class="fl-last"  id="fl_last" onclick="changeNewHot(1);">
+			<font id="new" class="new">
+				<img src="../../../../../image/fun-module/ipad/zthd/new.png" class="img">
+			</font>
+			<font id="hot" class="hot aui-hide">
+				<img class="img" src="../../../../../image/fun-module/ipad/zthd/hot.png">
+			</font>
+		</div>
+		<div class="search-ipad">
+			<div class="search-body" style="">
+				<input id="search-input" placeholder="请输入关键字" oninput='commonShowOrHideClear(this.value.length,this);' type="text" maxlength="20" />
+				<div id="j_search_clear" class="search-close aui-hide" onclick="commonIpadClearInput();">&nbsp;</div>
+				<div class="search-btn" onclick="startSearch(1);">&nbsp;</div>
+			</div>
+		</div>
+		
+		<!--<div id="j_new_hot" class="new-hot">
+			<div class="active" onclick="changeNewHot(this,1);">最新</div>
+			<div onclick="changeNewHot(this,2);">最热</div>
+		</div>-->
+	</div>
+	<div class="time-axis">
+		<div id="list_body" class="time-axis-body clearfix">
+			<!--<div class="time-axis-zy clearfix">
+				<div class="zy-content" onclick="openDetailWin('eyJuYW1lIjoi6YeR56eL5Y2B5pyI77yM5pyA576O5qCh5ZutIiwidHlwZSI6MCwiaW1nX3VybCI6Ii4uLy4uLy4uL2ltYWdlL2lwYWQvenRoZC96dGhkLnBuZyJ9',event);">
+					<div class="left">
+						<img src="../../../../../image/fun-module/ipad/zthd/zthd.png" />
+					</div>
+					<div class="right">
+						<div class="name">《金秋十月，最美校园》</div>
+						<div class="time">开始日期:2017.10.17-2017.10.22</div>
+						<div class="person-name ellipsis">发起:曲晓燕曲晓燕曲晓燕曲晓燕曲晓燕曲晓燕曲晓燕</div>
+						<div class="num">作品数量:50000</div>
+					</div>
+					<div class="bottom">
+						
+						<div class="hdtj-btn fr" onclick="openDetailWin('eyJuYW1lIjoi6YeR56eL5Y2B5pyI77yM5pyA576O5qCh5ZutIiwidHlwZSI6MywiaW1nX3VybCI6Ii4uLy4uLy4uL2ltYWdlL2lwYWQvenRoZC96dGhkLnBuZyJ9',event);">活动统计</div>
+						<div class="hdtj-btn fr" onclick="openDetailWin('eyJuYW1lIjoi6YeR56eL5Y2B5pyI77yM5pyA576O5qCh5ZutIiwidHlwZSI6MywiaW1nX3VybCI6Ii4uLy4uLy4uL2ltYWdlL2lwYWQvenRoZC96dGhkLnBuZyJ9',event);">删除活动</div>
+					</div>
+					<div class="tip">&nbsp;</div>
+				</div>
+			</div>-->
+		</div>
+		<script type="text/html" id="list_script">
+			<%if(list.length == 0){%>
+				<div class="no-data">暂无主题活动</div>
+			<%}else{%>
+				<%for(var i = 0; i < list.length; i++){%>
+					<div class="time-axis-zy clearfix" id="<%=list[i].id%>">
+						<div class="zy-content" onclick="openDetailWin('<%=list[i].detail_base64%>',event,'<%=list[i].time_text%>',<%=list[i].is_publish%>);">
+							<div class="left">
+								<img src="<%=list[i].thumb_id%>" onerror="this.src='../../../../../image/fun-module/ipad/zthd/zthd.png'" />
+							</div>
+							<div class="right">
+								<div class="name ellipsis"><%=list[i].name%></div>
+								<!--<div class="time">开始日期:<%=list[i].start_time.substring(0,10)%><br/>结束日期:<%=list[i].end_time.substring(0,10)%></div>-->
+								<%if(list[i].is_publish==0){%>
+									<div class="time">活动日期：--</div>
+								<%}else{%>
+									<div class="time">活动日期：<br/><%=list[i].start_time.substring(0,10)%> 至 <%=list[i].end_time.substring(0,10)%></div>
+								<%}%>
+								<div class="person-name ellipsis">发起人:<%=list[i].person_name%></div>
+								<div class="num ellipsis">作品数量:<%=list[i].works_num%></div>
+							</div>
+							<div class="bottom">
+								<div class="hdtj-btn fr bg-green" onclick="openDetailWin('<%=list[i].tj_base64%>',event,'<%=list[i].time_text%>',<%=list[i].is_publish%>);">活动统计</div>
+								<%if(list[i].isShowDelBtn){%>
+									<div class="hdtj-btn fr" onclick="delete_topic_tip(<%=list[i].id%>,'<%=list[i].name%>',event,'<%=list[i].time_text%>',<%=list[i].works_num%>)">删除活动</div>
+								<%}%>
+							</div>
+							<%if(list[i].is_publish==0 && now_isMyCreat){%>
+								<div class="tip">&nbsp;</div>
+							<%}%>
+						</div>
+					</div>
+				<%}%>
+			<%}%>
+		</script>
+	</div>
+</body>
+<script type="text/javascript" src="../../../../../script/api.js"></script>
+<script type="text/javascript" src="../../../../../script/base_config.js" ></script>
+<script type="text/javascript" src="../../../../../script/plug-in/template.js" ></script>
+<script type="text/javascript" src="../../../../../script/common/common.js"></script>
+<script type="text/javascript" src="../../../../../script/plug-in/base64.js" ></script>
+<script type="text/javascript">
+	var currentPage = 1;//当前分页数
+	var totalPages = 0;//总页数
+	var total_json = {};//全局参数
+	var keyword = "";
+	var now_isMyCreat = false;
+	var person_now = $api.getStorage('person_id');//当前人员id
+    var fromType = 1;//从那个页面进入，1：普通教师，2：校管理员统计页面
+    var is_tj_publish = '';//是否是已经发布的‘’：全部，1：已经发布，0：未发布
+    var start_time = '';//开始时间
+    var end_time = '';//结束时间
+    var hdNum = 0;//活动个数
+	apiready = function(){
+		$api.rmStorage('zthd_time_text');
+		commonSetTheme({"level":5,"type":0});
+		total_json.role_flag = 1;//上方导航变量
+		total_json.new_hot_flag = 1;//最新最热切换
+		total_json.time_flag = 1;//左侧导航切换
+		fromType = api.pageParam.fromType;
+        if(fromType == 2){
+          hdNum = api.pageParam.hdNum;
+          $api.after($api.byId('j_nav'), '<div class="fl now-tea-body"><span>当前教师：'+ api.pageParam.person_now_name + '</span> <span id="all_num" class="now-tea-hd-num">共<font id="now_tea_hd_num">' + hdNum + '</font>个活动</span></div>');     
+          commonAddOrRemoveHideCss('j_nav',0);
+          total_json.role_flag = 2;
+          is_tj_publish = "1";
+          person_now = api.pageParam.person_now;
+          commonExecScript(api.winName,'','commonAddOrRemoveHideCss("j_add",0);',0);
+          commonExecScript(api.winName,'','commonAddOrRemoveHideCss("tongji",0);',0);
+        }else{
+          api.closeWin({
+            name : 'zthdIpad_tj_window'
+          });
+        }
+		initData(1);
+		commonScrollBottomReload();
+		commonRefreshHeaderInfo();
+	};
+	/*
+	*author:zhaoj
+	*function:切换最上方导航
+	*param:type=1:全部；type=2:我发布的；type=3：邀请我的；
+	*date：20171023
+	*/
+	function changeNav(self,type){
+		if (type == 2){
+			now_isMyCreat = true;
+		}else{
+			now_isMyCreat = false;
+		}
+		
+		total_json.role_flag = type;//上方导航变量
+		$api.removeCls($api.dom($api.byId('j_nav'), '.active'), 'active');
+		$api.addCls(self, 'active');
+		initData(1);
+	}
+	/*
+	*author:zhaoj
+	*function:切换最新最热导航
+	*param:type=1:最新；type=2:最热；
+	*date：20171023
+	*/
+	function changeNewHot(type){
+		var tip = '';
+		if(type == 1){
+			type = 2;
+			tip='changeNewHot(2);';
+			commonAddOrRemoveHideCss('hot',1);
+			commonAddOrRemoveHideCss('new',0);
+			$api.attr($api.byId('fl_last'), 'onclick', tip);
+		}else{
+			type = 1;
+			tip='changeNewHot(1);';
+			commonAddOrRemoveHideCss('hot',0);
+			commonAddOrRemoveHideCss('new',1);
+			$api.attr($api.byId('fl_last'), 'onclick', tip);
+		}
+	
+		total_json.new_hot_flag = type;//上方导航变量
+//		$api.removeCls($api.dom($api.byId('j_new_hot'), '.active'), 'active');
+//		$api.addCls(self, 'active');
+		initData(1);
+	}
+	/*
+	*author:zhaoj
+	*function:切换左侧导航数据
+	*param:type=1:全部活动；type=2：火热进行；type=3:即将开始；type=4：已经结束；
+	*date：20171023
+	*/
+	function changeTagItem(type){
+		total_json.time_flag = type;//左侧导航变量
+		if(type != 1){
+		  commonAddOrRemoveHideCss('all_num',0);
+		}else{
+		  commonAddOrRemoveHideCss('all_num',1);
+		}
+		initData(1);
+	}
+	/*
+	*author:zhaoj
+	*function:打开主题活动详情页面
+	*date：20171018
+	*/
+	function openDetailWin(oparam_base64,e,time_text,is_publish){
+	    oparam_base64 = {"oparam_base64":oparam_base64,"fromType":fromType};
+		$api.setStorage('zthd_is_publish',is_publish);
+		$api.setStorage('zthd_time_text',time_text);
+		commonOpenWin('zthdIpad_detail_window', 'zthdIpad_detail_window.html', false, false, {'header_h':api.pageParam.header_h,"oparam_base64":oparam_base64});
+		e.stopPropagation();
+	}
+	/*
+	*author:zhaoj
+	*function:初始化列表数据
+	*date：20171019
+	*/
+	function initData(page){
+		currentPage = page;
+		showSelfProgress('加载中...');
+		page == 1 ?msg_top_all.scrollIntoView():'';//切换学科时，定位到最上方 
+		get_topic_list();
+	}
+	/*
+    *author:zhaoj
+    *function:主题活动列表查询
+    *interface:张海
+    *date：20171023
+    */
+	function get_topic_list(){
+	    var url_now = BASE_URL_ACTION + '/ypt/space/topic/get_topic_list?person_id='+person_now+'&identity_id='+$api.getStorage('identity')+'&bureau_id='+$api.getStorage('school_id')+'&page_num='+currentPage+'&page_size='+BASE_PAGE_SIZE+'&new_hot_flag='+total_json.new_hot_flag+'&role_flag='+total_json.role_flag+'&time_flag='+total_json.time_flag + '&keyword=' + keyword + '&is_publish=' + is_tj_publish;
+        if(fromType == 2){
+          url_now = url_now + '&start_time='+api.pageParam.start_time+'&end_time='+api.pageParam.end_time+'&class_id=';
+        }
+		api.ajax({
+			url : url_now,
+			method : 'get',
+			timeout : 0,
+			dataType : 'json',
+			headers : {
+	'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+	}
+			}, function(ret, err) {
+				if(err){
+					popToast('获取主题活动失败，请稍候重试');
+				}else{
+					if(ret.success){
+						totalPages= ret.total_page;
+						for(var i = 0; i < ret.list.length; i++){
+							var oparam = new Object();
+							oparam.name = ret.list[i].name;
+							if(ret.list[i].thumb_id){
+								var img_url='';//图片路径
+						    	if (BASE_APP_TYPE == 1) {
+									img_url = BASE_IMAGE_PRE+"down/Material/" + ret.list[i].thumb_id.substring(0, 2) + "/" + ret.list[i].thumb_id+ commonReturnPhotoCutSize(0);		
+								} else {
+									img_url = BASE_URL_ACTION + "/html/thumb/Material/" + ret.list[i].thumb_id.substring(0, 2) + "/" + ret.list[i].thumb_id + commonReturnPhotoCutSize(0);
+								}
+								oparam.img_url=img_url;
+								ret.list[i].thumb_id = img_url;
+							}else{
+								oparam.img_url='../../../../../image/fun-module/ipad/zthd/zthd.png';
+								ret.list[i].thumb_id = '../../../../../image/fun-module/ipad/zthd/zthd.png';
+							}
+							
+							oparam.type =1;
+							oparam.person_id = ret.list[i].person_id;
+							oparam.identity_id = ret.list[i].identity_id;
+							oparam.person_name = ret.list[i].person_name;
+							oparam.id = ret.list[i].id;
+							oparam.role_flag = total_json.role_flag;
+							oparam.time_text = ret.list[i].time_text;
+							oparam.is_publish = ret.list[i].is_publish;
+							ret.list[i].detail_base64 = Base64.encode(JSON.stringify(oparam));
+							oparam.type =4;
+							ret.list[i].role_flag = total_json.role_flag;
+							ret.list[i].tj_base64 = Base64.encode(JSON.stringify(oparam));
+							ret.now_isMyCreat = now_isMyCreat;
+							commonJudgeRoles(function(type){
+                                if (ret.list[i].person_id == $api.getStorage('person_id')){
+                                    ret.list[i].isShowDelBtn = true;
+                                }else if(type == 3 || type == 5){
+                                    ret.list[i].isShowDelBtn = true;
+                                }else{
+                                    ret.list[i].isShowDelBtn = false;
+                                }    
+                            });
+						}
+						commonAddManyHtml('list_body','list_script',ret);
+					}else{
+						popToast('获取主题活动失败，请稍候重试');
+					}
+				}
+			api.hideProgress();
+			//通知顶部下拉刷新数据加载完毕，组件会恢复到默认状态
+			commonControlRefresh();
+		});
+	}
+	/*
+    *author:zhaoj
+    *function:通过主题活动id删除主题活动,提示一下
+    *date：20171024
+    */
+	function delete_topic_tip(id,name,e,time_text,works_num){
+		var tip = '确定要删除主题活动"'+name+'"吗？';
+		if (time_text == "火热进行"){
+			tip = "该活动正在进行，删除后不可恢复，确定要删除活动吗？";
+		}else if (works_num > 0){
+			tip = "该活动下有作品，删除后活动及活动下的作品不可恢复，确定要删除活动吗？";
+		}
+		
+		popTwoBtnConfirm('提示',tip,'delete_topic_by_id('+id+')');
+		e.stopPropagation();
+	}
+	/*
+    *author:zhaoj
+    *function:通过主题活动id删除主题活动
+    *interface:张海
+    *date：20171024
+    */
+	function delete_topic_by_id(id){
+		showSelfProgress('删除中...');
+		api.ajax({
+			url : BASE_URL_ACTION + '/ypt/space/topic/delete_topic_by_id',
+			method : 'post',
+			timeout : 0,
+			dataType : 'json',
+			data : {
+				values : {
+					"random_num":creatRandomNum(),
+		            "topic_id": id
+				}
+			},
+			headers : {
+	'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+	}
+			}, function(ret, err) {
+				if(err){
+					api.hideProgress();
+					popToast('删除失败，请稍候重试');
+				}else{
+					if(ret.success){
+						setTimeout(function(){
+        					popToast('删除成功');
+	        				api.hideProgress();
+	        				reHdNum();
+	        				$api.remove($api.byId(id));
+	        			},2900);
+					}else{
+						api.hideProgress();
+						popToast('删除失败，请稍候重试');
+					}
+				}
+			});
+	}
+	
+	/*
+	 *作者:zfz
+	 *功能:开始搜索
+	 *日期：20180427
+	 */
+	function startSearch(type) {
+		commonSearch(type, function(data) {
+			setKeyword(data);
+		})
+	}
+	
+	/*
+	 *作者:zfz
+	 *功能:设置搜索值，并根据搜索条件加载相关数据数据
+	 *日期：20180427
+	 */
+	function setKeyword(data) {
+		keyword = $api.trimAll(data);
+		keyword = Base64.decode(keyword);
+		initData(1);
+	}
+	
+	/*
+     * 功能：重新赋值活动数量
+     * 作者：张自强
+     * 时间：20181227
+     */
+    function reHdNum(){
+       $api.html($api.byId('now_tea_hd_num'),--hdNum);
+    }
+</script>
+</html>

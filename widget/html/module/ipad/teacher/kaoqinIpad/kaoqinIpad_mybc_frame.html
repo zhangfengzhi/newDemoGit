@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<title>考勤申请</title>
+		<link rel="stylesheet" type="text/css" href="../../../../../css/aui/aui.css"/>
+		<link rel="stylesheet" type="text/css" href="../../../../../css/module/ipad/popup-body.css"/>
+		<link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+		<style>
+			.popup-body-new	.commont-content{padding:52px 0 50px 0;}
+	    	.content-name{height:60px;}
+	    	input[type='text'],textarea{border:none;margin-bottom:0;}
+	    	.input-time[type="text"]{display: inline-block;width: 40px;padding: 9px 0 6px 0;text-align:center;height:39px;}
+	    	textarea{height:130px;padding:20px;max-height:130px;overflow-y: auto;}
+	    	.popup-body-new .commont-content .position{font-size:16px;padding:20px 0 0 30px;}
+	    	.popup-body-new .commont-content{width: 620px;height: 500px;margin-left: -310px;margin-top: -250px;}
+	    	.vm-line{line-height:60px;}
+	    	.borderb{border-bottom:1px solid #efefef;background:#ffffff;margin: 0 20px;padding: 0;}
+	    	.tip{padding-left:15px;line-height:45px;color:#ff0000;}
+	    	.mt55{margin-top:55px;}
+	    	.j_content{height:60px; overflow:auto;line-height: 25px;}
+		</style>
+	</head>
+	<body class="popup-body-new common-ipad-kaoqinIpad-tea">
+		<div id="j_select_picture" class="select-picture-bg aui-hide">
+			<div class="select-picture">
+				<div class="option" onclick="getAlbum();">图片</div>
+				<div class="option" onclick="openPicture();">拍照</div>
+				<div class="option" onclick="closePicture();">取消</div>
+			</div>
+		</div>
+		<div class="commont-content">
+			<div id="tip" class="tip">注：合计时间根据公司上下班时间进行计算！</div>
+			<div class="top fl">
+				<div class="name">补充附件</div>
+				<div class="close fr" onclick="closeFrame();"></div>
+			</div>
+			<div class="content">
+				<div class="content-name plr20 clearfix vm-line borderb">
+					<label class="fl">请假类型</label>
+					<label id="style" class="fr"></label>
+				</div>
+				<div class="content-name plr20 clearfix vm-line j_content">
+					<label id="j_content"></label>
+				</div>
+				<div class="add-img-file">
+					<ul id="j_files" class="clearfix">
+						<li id="j_add_btn" class="add-btn fl" onclick="selectPicture();">
+							<a class="aui-iconfont aui-icon-add fl"></a>
+						</li>
+					</ul>
+				</div>
+				<div class="content-name plr20 clearfix vm-line borderb">
+					<label class="fl">起始时间</label>
+					<label id="start_time" class="fr"></label>
+				</div>
+				<div class="content-name plr20 clearfix vm-line borderb">
+					<label class="fl">结束时间</label>
+					<label id="end_time" class="fr"></label>
+				</div>
+				<div class="content-name plr20 clearfix vm-line borderb">
+					<label class="fl">合计时间</label>
+					<div id="total_time" class="fr">
+						<input oninput="commonRemoveExpression(this)" id="j_days" class="input-time" type="text" disabled="disabled" />天
+						<input oninput="commonRemoveExpression(this)" id="j_hours" class="input-time" type="text" disabled="disabled" />时
+						<input oninput="commonRemoveExpression(this)" id="j_minutes" class="input-time" type="text" disabled="disabled" />分
+					</div>
+				</div>
+			</div>
+			<div id="j_btn" class="btn" onclick="addLeaveFiles();" style="display:none;">保存</div>
+		</div>
+	</body>
+	<script type="text/javascript" src="../../../../../script/api.js"></script>
+	<script type="text/javascript" src="../../../../../script/base_config.js" ></script>
+	<script type="text/javascript" src="../../../../../script/common/common.js"></script>
+	<script type="text/javascript" src="../../../../../script/common/kaoqinIpad_common.js"></script>
+	<script type="text/javascript" src="../../../../../script/assembly/UIAlbumBrowser.js"></script>
+	<script type="text/javascript" src="../../../../../script/assembly/getPicture.js"></script>
+	<script type="text/javascript" src="../../../../../script/assembly/photoBrowser.js"></script>
+	<script type="text/javascript">
+		var img_size;
+		var BASE_SERVER_NAME;
+		var BASE_URL_ACTION;
+		var BASE_APP_TYPE;
+		var ruleType = 1;//1请假，2公出
+		var addFileID=[];
+		var obj_scan;
+		apiready = function() {
+			commonSetTheme({"level":5,"type":0});
+			BASE_URL_ACTION = $api.getStorage('BASE_URL_ACTION');
+			getLeaveInfoById(1,api.pageParam.leave_id);
+			setImgBtnHeight();
+			ruleType = api.pageParam.rule_type;
+		};
+		/*
+		 *author:zhaoj
+		 *function:设置添加图片按钮的高度
+		 *date：20160623
+		 */
+		function setImgBtnHeight(){
+			var addBtnWidth = $api.cssVal($api.byId('j_add_btn'), 'width');
+			$api.css($api.dom($api.byId('j_add_btn'),'dt'), 'height:'+addBtnWidth+';line-height:'+(addBtnWidth.replaceAll('px','')*1-4)+'px;');
+		}
+		/*
+		 *author:zhaoj
+		 *function:添加点击事件
+		 *date：20160316
+		 */
+		function addClickedEvent(div_name, method_name) {
+			var name = document.getElementById(div_name);
+			name.addEventListener("click", method_name);
+		}
+		
+		
+		/*
+		 *author:zhaoj
+		 *function:根据模块获取子文件的个数
+		 *date：20160224
+		 */
+		function getfilesNum() {
+			var dlArray = $api.domAll($api.byId('j_files'), '.j_img');
+			return dlArray.length;
+		}
+
+		/*
+		*author:zhaoj
+		*function:获取我的请假或公出的详情信息
+		*date：20160624
+		*/
+		function getLeaveInfoById(show_type,leave_id){
+			if(show_type == 1){
+				showSelfProgress('加载中...');
+			}
+			api.ajax({
+				url : BASE_URL_ACTION + '/leave/getLeaveInfoById',
+				method : 'get',
+				timeout : 0,
+				dataType : 'json',
+				data : {
+					values : {
+						"random_num" : creatRandomNum(),
+						"leave_id" : leave_id
+					}
+				},
+				headers : {
+		'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+		}
+				}, function(ret, err) {
+					api.hideProgress();
+					if (err) {
+						popToast('获取详情信息失败');
+					} else {
+						if(ret.success){
+							if(api.pageParam.rule_type == 1){
+								$api.html($api.byId('style'), ret.type_name);
+								$api.text($api.byId('j_reason_title'),'请假事由');
+							}else{
+								$api.html($api.byId('style'), ret.type_name);
+								$api.text($api.byId('j_reason_title'),'公出事由');
+							}
+							$api.text($api.byId('j_content'),ret.content);
+							$api.text($api.byId('start_time'),ret.start_time.substring(0,16));
+							$api.text($api.byId('end_time'),ret.end_time.substring(0,16));
+							$api.val($api.byId('j_days'),ret.days);
+							$api.val($api.byId('j_hours'),ret.hours);
+							$api.val($api.byId('j_minutes'),ret.minutes);
+							for(var i = 0;i < ret.file_list.length; i++){
+								var img_url;
+								
+//								if(BASE_APP_TYPE == 1){
+//									img_url = BASE_IMAGE_PRE+"down/Material/"+ ret.file_list[i].substring(0, 2) + "/" + ret.file_list[i] + commonReturnPhotoCutSize(0);
+//								}else{
+//									img_url = BASE_URL_ACTION + "/html/thumb/Material/" + ret.file_list[i].substring(0, 2) + "/" + ret.file_list[i] + commonReturnPhotoCutSize(0);;
+//								}
+								if (judgeImgCount() == 4) {
+//									$api.css($api.byId('j_files'), 'display:none');
+									var imgArray=ret.file_list[i].split(".");
+									var oparam={"file_id":imgArray[0],"ext":imgArray[1]}
+									showPicture(oparam,1);
+									//addBeforeFiles(img_url, 'mr0');
+									if(api.pageParam.rule_type == 1){
+										$api.text($api.byId('tip'),'*每条请假信息，最多支持5个附件！');
+									}else{
+										$api.text($api.byId('tip'),'*每条公出信息，最多支持5个附件！');
+									}
+								} else {
+									var imgArray=ret.file_list[i].split(".");
+									var oparam={"file_id":imgArray[0],"ext":imgArray[1]}
+									showPicture(oparam,1);
+									//addBeforeFiles(img_url, '');
+								}
+							}
+							if (getfilesNum() != 5) {
+								$api.css($api.byId('j_btn'), 'display:block;');
+							}
+						}else{
+							popToast('获取详情信息失败');
+						}
+					}
+			});
+		}
+		/*
+		*author:zhaoj
+		*function:添加附件
+		*date：20160624
+		*/
+		function addLeaveFiles(){
+			if(addFileID.length == 0){
+				popAlert("还没有补充任何的附件");
+				return false;
+			}
+			$api.css($api.byId('j_shadow'),'z-index:3;');
+			var img_files='';
+			for(var i = 0; i < addFileID.length; i++){
+				if(i == 0){
+					img_files = addFileID[i];
+				}else{
+					img_files = img_files+','+addFileID[i];
+				}
+			}
+			api.ajax({
+				url : BASE_URL_ACTION + '/leave/addLeaveFiles',
+				method : 'post',
+				timeout : 0,
+				dataType : 'json',
+				data : {
+					values : {
+						"random_num" : creatRandomNum(),
+						"leave_id" : api.pageParam.leave_id,
+						"file_id" : img_files
+					}
+				},
+				headers : {
+		'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+		}
+				}, function(ret, err) {
+					api.hideProgress();
+					if (err) {
+						popToast('添加失败');
+						$api.css($api.byId('j_shadow'),'z-index:-1;');
+					} else {
+						if(ret.success){
+							popToast('添加成功');
+							setTimeout(function(){
+								$api.css($api.byId('j_shadow'),'z-index:-1;');
+								api.execScript({
+									name : 'kaoqinIpad_myKqxq_window',
+									frameName : 'kaoqinIpad_myKqxq_frame',
+									script : 'getLeaveInfoById(1);'
+								});
+								closeFrame();
+							},500);
+						}else{
+							popToast('添加失败');
+							$api.css($api.byId('j_shadow'),'z-index:-1;');
+						}
+					}
+			});
+		}
+		/*
+		*author:zhaoj
+		*function:添加附件文件id
+		*date：20160624
+		*/
+		function addFileIDS(v_guid,ext){
+			var imgID = v_guid+'.'+ext;
+			addFileID.push(imgID);
+		}
+		/*
+		*author:zhaoj
+		*function:添加之前的文件
+		*date：20160624
+		*/
+		function addBeforeFiles(img_url, css) {
+			var dl_height = $api.cssVal($api.byId('j_add_btn'), 'height')
+			var dl_html = '<dl class="j_file' + ' ' + css + '" style="height:' + dl_height + ';">' + '<dt class="img" style="width:' + img_size + 'px;height:' + img_size + 'px;" onclick="openImage(this.parentNode,this.parentNode.parentNode)">' + '<img class="j_img" src=' + img_url + ' width="' + (img_size - 1) + '" height="' + (img_size - 4) + '" />' + '</dt><dd></dd></dl>';
+			$api.before($api.byId('j_add_btn'), dl_html);
+		}
+		
+		/*
+	     *author:zhaoj
+	     *function:选择图片
+	     *date：20170914
+	     */
+	    function getAlbum() {
+			var num = 5 - judgeImgCount();
+			if(num != 0){
+				UIAlbumBrowser.open(num,function(data){
+					//递归上传图片
+					commonUiUploadFiles({"data":data,"is_trans":1}, function(ret_data) {
+						for(var i = 0; i < ret_data.length; i++){
+							var json_data = JSON.parse(ret_data[i]);
+		            		var file_id = json_data.file_id;
+							var ext = json_data.ext;
+							var param_json = {"file_id" : file_id,"ext" : ext};
+                            showPicture(param_json);
+                            addFileIDS(file_id,ext);
+						}
+						closePicture();
+					})
+				})
+			}else{
+				popToast('最多上传5张图片');
+			}
+	    }
+	   
+	    
+	    /*
+	 	*author:zhaoj
+	 	*function:显示图片
+	 	*date：20170914
+	 	*/
+	    function showPicture(param_json,type){
+	    	var img_url='';//图片路径
+	    	var img_url_original="";//原图
+	    	if (BASE_APP_TYPE == 1) {
+				img_url = BASE_IMAGE_PRE+"down/Material/" + param_json.file_id.substring(0, 2) + "/" + param_json.file_id + '.' + param_json.ext + commonReturnPhotoCutSize(0);	
+				img_url_original = 	BASE_IMAGE_PRE+"down/Material/" + param_json.file_id.substring(0, 2) + "/" + param_json.file_id + '.' + param_json.ext;		
+			} else {
+				img_url = BASE_URL_ACTION + "/html/thumb/Material/" + param_json.file_id.substring(0, 2) + "/" + param_json.file_id + '.' + param_json.ext + commonReturnPhotoCutSize(0);
+				img_url_original = BASE_URL_ACTION + "/html/thumb/Material/" + param_json.file_id.substring(0, 2) + "/" + param_json.file_id + '.' + param_json.ext;
+			}
+			var error_html ="this.src='../../../../../image/fun-module/common/wk_default.png'";
+	    	var li_html = '<li class="fl">';
+				li_html += '<img class="j_img" onclick="openImg(this);" openSrc="'+img_url_original+'" onerror="'+error_html+'" src="'+img_url+'" />';
+				if(type!=1){
+					var imgfile = param_json.file_id+'.'+param_json.ext;
+					var delect_html = "deleteImg(event,this,'"+imgfile+"');"
+					li_html += '<div class="delete" onclick='+delect_html+'></div>';
+				}
+				li_html += '</li>';
+	    	$api.before($api.byId('j_add_btn'), li_html);
+	    	judgeImgCount();
+	    }
+	    
+	    /*
+	 	*author:zhaoj
+	 	*function:删除图片
+	 	*date：20170915
+	 	*/
+	    function deleteImg(e,self,img_file){
+	    	var parent = self.parentNode;
+	    	var grandpa = parent.parentNode;
+	    	grandpa.removeChild(parent);
+	    	judgeImgCount();
+	    	for(var i = 0; i < addFileID.length; i++){
+				if(addFileID[i]==img_file){
+					addFileID.splice(i,1);
+				}
+			}
+	    	e.stopPropagation();
+	    }
+	    
+	    /*
+	 	*author:zhaoj
+	 	*function:判断图片的数量
+	 	*date：20170915
+	 	*/
+	    function judgeImgCount(){
+	    	var imgArray = $api.domAll($api.byId('j_files'), '.j_img');
+	    	if(imgArray.length == 5){
+	    		$api.addCls($api.byId('j_add_btn'), 'aui-hide');
+	    	}else{
+	    		$api.removeCls($api.byId('j_add_btn'), 'aui-hide');
+	    	}
+	    	return imgArray.length;
+		}
+		
+		/*
+		 *author:zhaoj
+		 *function:打开图片
+		 *date：20160225
+		 */
+		function openImage(parent, grandpa) {
+			var index;
+			if (parent) {
+				index = 0;
+				while ( parent = parent.previousSibling) {
+					if (parent.nodeType == 1)
+						index++;
+				}
+			}
+			var openImgArray = [];
+			var dlArray = $api.domAll($api.byId('j_files'), '.j_img');
+			for (var i = 0; i < dlArray.length; i++) {
+				openImgArray.push($api.attr($api.dom(dlArray[i], '.j_img'), 'src'));
+			}
+			var imageBrowser = api.require('imageBrowser');
+			imageBrowser.openImages({
+				imageUrls : openImgArray,
+				//是否以九宫格方式显示图片
+				showList : false,
+				//showList : true,
+				activeIndex : index
+			});
+		}
+		 /*
+	 	*author:zhaoj
+	 	*function:打开图片
+	 	*date：20170915
+	 	*/
+	    function openImg(self){
+	    	var parent = self.parentNode;
+	    	var grandpa = parent.parentNode;
+	    	//获取当前文件的位置
+	    	var index;
+			if (parent) {
+				index = 0;
+				while ( parent = parent.previousSibling) {
+					if (parent.nodeType == 1)
+						index++;
+				}
+			}
+			var openImgArray = [];
+			var imgArray = $api.domAll($api.byId('j_files'), '.j_img');
+			for (var i = 0; i < imgArray.length; i++) {
+				openImgArray.push($api.attr(imgArray[i], 'openSrc'));
+			}
+			commonExecScript('kaoqinIpad_myKqxq_window','','reBackType("open_picture");',0);
+			//打开图片
+			photoBrowser.open(openImgArray, index);
+	    }
+		
+	    
+	    /*
+		 *author:zhaoj
+		 *function:删除当前文件
+		 *date：20160225
+		 */
+		function deleteFile(e, parent) {
+			parent.parentNode.removeChild(parent);
+			var dlArray = $api.domAll($api.byId('j_files'), '.j_img');
+			var length = getfilesNum() - 1;
+			if (length == 3) {
+				$api.removeCls(dlArray[length], 'mr0');
+				$api.css($api.byId('j_add_btn'), 'display:inline-block');
+			}
+			e.stopPropagation();
+		}
+		/**
+		 * 选择要上传的图片
+		 * 周枫
+		 * 2016.4.27 
+		 */
+		function openPicture(sourceType) {
+			getPicture.open({"type":1},function(data){
+	    		//递归上传图片
+            	commonUiUploadFiles({"data":data,"is_trans":0}, function(ret_data) {
+            		for(var i = 0; i < ret_data.length; i++){
+						var json_data = JSON.parse(ret_data[i]);
+	            		var file_id = json_data.file_id;
+						var ext = json_data.ext;
+						var param_json = {"file_id" : file_id,"ext" : ext};
+                        showPicture(param_json);
+                        addFileIDS(file_id,ext);
+					}
+					closePicture();
+            	})
+	    	});
+		}
+		
+		/*
+		*author:zfz
+		*function:选择图片
+		*date：20171013
+		*/
+		function selectPicture(){
+			$api.removeCls($api.byId('j_select_picture'),'aui-hide');
+		}
+		
+		/*
+		*author:zfz
+		*function:关闭选择图片
+		*date：20171013
+		*/
+		function closePicture(){
+			$api.addCls($api.byId('j_select_picture'),'aui-hide');
+		}
+		
+		/*
+		*author:zfz
+		*function:关闭页面
+		*date：20171013
+		*/
+		function closeFrame(){
+			if(api.pageParam.isWdkq==1){
+				commonExecScript('kaoqinIpad_wdkq_window','','back();',0);
+			}else{
+				commonExecScript('kaoqinIpad_myKqxq_window','','back();',0);
+			}
+		}
+	</script>
+</html>

@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<!-- 在IOS设备上，有时会将数字转为手机号，这里也要禁止下 -->
+		<meta name="format-detection" content="telephone=no"/>
+		<title>广播内容页面</title>
+		<link rel="stylesheet" type="text/css" href="../../../../../css/aui/aui.css" />
+		<link rel="stylesheet" href="../../../../../css/module/iphone/reset.css" />
+		<link rel="stylesheet" href="../../../../../css/module/iphone/audioplayer.css" />
+		<link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+		<style>
+			body {
+				margin: 0;
+				background: rgba(0,0,0,0);
+			}
+			.clearfix:after {
+				content: ' ';
+				display: block;
+				clear: both;
+				visibility: hidden;
+				line-height: 0;
+				height: 0;
+			}
+			.zuoye-name {
+				line-height: 55px;
+				width: 100%;
+			}
+			.answer-title {
+				border-top: 1px solid #f1f1f1;
+				height: 55px;
+				width: 100%;
+				margin-bottom: 20px;
+			}
+			.title {
+				width: 100%;
+				padding-left:10px;
+				float: left;
+				line-height:22px;
+				padding-top:10px;
+			}
+			.answer-title div {
+				height: 35px;
+				display: inline-block;
+				line-height: 35px;
+				margin-top: 13px;
+				padding: 0 10px;
+				color: #ffffff;
+			}
+			.seleted {
+				width: 30%;
+				float: right;
+				text-align: right;
+				white-space: nowrap;
+				overflow: hidden;
+				text-overflow: ellipsis;
+				padding-right:10px;
+			}
+			.seleted1 .num {
+				font-size: 14px;				
+			}
+			.stem {
+				padding: 20px 5%;
+				max-width: 100%;
+				word-break: break-all;
+			}
+			.stem img {
+				max-width: 90%;
+				height: auto;
+			}
+			.stem div, .stem p, .stem span {
+				word-wrap: break-word;
+				word-break: normal;
+			}
+			.footer-btn {display: block;bottom: 0px;width: 100%;height:45px;text-align: right;color: #fff;padding-top: 5px;border-top: 1px solid #e0e0e0;position: fixed;background:#fff;z-index:999;}
+            .footer-btn button{float:right;margin-right:15px;}
+            .blank{height:50px;}
+            .seleted1 {
+				float: right;
+				text-align: right;
+				white-space: nowrap;
+			}
+			.seleted2 {
+				width: 30%;
+				text-align: right;
+				white-space: nowrap;
+				overflow: hidden;
+				text-overflow: ellipsis;
+			}
+		</style>
+	</head>
+	<body id="body" class="common-iphone-guangbo">
+		<div id="gbinfo_div"></div> 
+		<script type="text/html" id="gbinfo_script">
+			<div id="q_title"></div>
+				<div class="q_div" id="q_div">
+					<div class="zuoye-name plr15 clearfix">
+						<div class="title">
+							<%=title %>
+						</div>
+						<div class="seleted1 ellipsis">
+							<font class="num seleted2"><%=announcer %>&nbsp;<%=create_time %></font>
+						</div>
+					</div>
+			<div class="stem clearfix">
+				<div>
+					<div>
+						<p style="font-size:10.5pt; line-height:150%; margin:0pt; orphans:0; text-align:justify; widows:0">
+							<span style="font-family:宋体; font-size:10.5pt"> </span><span style="font-family:宋体; font-size:10.5pt"><%=#description %></span>
+						</p>
+					</div>
+				</div>
+			</div>
+			<div>
+				<img class="ima_notice"  onclick="openPicture(this);" src="<%=gb_img %>" onerror="this.src='../../../../../image/common/tpsx.png'" />
+			</div>
+		</div>
+		</script>
+		<div class="blank">&nbsp;</div>
+		<div class="footer-btn">
+           <button class="aui-btn aui-btn-info" onclick="netAudioPlay();">
+           		播放
+           </button>
+           <button class="aui-btn aui-btn-success" onclick="pause();">
+               	 暂停
+           </button>
+           <button class="aui-btn aui-btn-success" onclick="stop();">
+               	 停止
+           </button>
+       </div>
+	</body>
+	<script type="text/javascript" src="../../../../../script/api.js"></script>
+	<script type="text/javascript" src="../../../../../script/base_config.js" ></script>
+	<script type="text/javascript" src="../../../../../script/plug-in/template.js" ></script>
+	<script type="text/javascript" src="../../../../../script/plug-in/base64.js" ></script>
+	<script type="text/javascript" src="../../../../../script/common/common.js" ></script>
+	<script type="text/javascript" src="../../../../../script/assembly/netAudio.js" ></script>
+	<script type="text/javascript" src="../../../../../script/assembly/photoBrowser.js"></script>
+	<script type="text/javascript">
+		var header_h;		
+		var gb_id;//广播id
+		var gb_audio = '';
+		//播放录音对象
+		var type = true;//第一次点击播放时，显示加载提示框
+		var image_array=[];//所有图片路径
+		apiready = function() {
+			commonSetTheme({"level":5,"type":0});
+			header_h = api.pageParam.header_h;
+			gb_id = api.pageParam.gb_id;		
+			VerificationNetwork();
+		};
+		/*
+		*作者:zhaoj
+		*功能:加载广播内容
+		*日期：20161020
+		*/
+		function loadGbInfo(gb_id) {
+			showSelfProgress('加载中...');
+			api.ajax({
+				url : BASE_URL_ACTION + '/space/broadcast/get_broadcastinfo_byid?id=' + gb_id,
+				method : 'get',
+				timeout : 30,
+				dataType : 'json'
+			}, function(ret, err) {
+				api.hideProgress();
+				if (err) {
+					popToast('广播内容获取失败，请稍候重试');
+				} else {
+					if (ret.success) {
+						//处理图片路径
+						var BASE_APP_TYPE = $api.getStorage('BASE_APP_TYPE');
+						var gb_img_id = ret.p_file_id;
+						var gb_img_con = gb_img_id.lastIndexOf(".");
+						var gb_img_ext = gb_img_id.substring(gb_img_con);
+						var bg_img_h = api.winWidth;
+						var gb_img = '';
+						if (BASE_APP_TYPE == 1) {
+							//						a_avatar_url = BASE_IMAGE_PRE+"down/Material/" + a_id.substring(0, 2) + "/" + a_id + '.' + a_ext + "@96w_96h_100Q_1x." + a_ext;
+							gb_img = BASE_IMAGE_PRE + BASE_MATERIAL_BEGIN + gb_img_id.substring(0, 2) + "/" + gb_img_id;
+						} else {
+							gb_img = BASE_URL_ACTION + BASE_IMAGE_BEGIN + gb_img_id.substring(0, 2) + "/" + gb_img_id;
+						}
+						ret["gb_img"] = gb_img;
+						image_array.push(gb_img);
+						//处理语音路径
+						var gb_audio_id = ret.r_file_id;
+						var gb_audio_con = gb_audio_id.lastIndexOf(".");
+						if (BASE_APP_TYPE == 1) {
+							//						a_avatar_url = BASE_IMAGE_PRE+"down/Material/" + a_id.substring(0, 2) + "/" + a_id + '.' + a_ext + "@96w_96h_100Q_1x." + a_ext;
+							gb_audio = BASE_IMAGE_PRE + BASE_MATERIAL_BEGIN + gb_audio_id.substring(0, 2) + "/" + gb_audio_id;
+						} else {
+							gb_audio = BASE_URL_ACTION + BASE_IMAGE_BEGIN + gb_audio_id.substring(0, 2) + "/" + gb_audio_id;
+						}
+						//downAudio(gb_audio,gb_audio_id,ret);
+						var html_type = template.render('gbinfo_script', ret);
+						document.getElementById('gbinfo_div').innerHTML = html_type;
+					} else {
+	                    popToast('广播内容获取失败，请稍候重试');
+					}
+				}
+			});
+		}
+		/*
+		*作者:zhaoj
+		*功能:验证网络
+		*日期：20161020
+		*/
+		function VerificationNetwork(){
+			isOnLineStatus(function(is_true, line_type) {
+				if (is_true) {
+					if (line_type == 'wifi') {
+							loadGbInfo(gb_id);
+					} else {
+						api.confirm({
+							title : "提示",
+							msg : "您当前正在使用" + line_type + "网络，建议您在wifi网络下使用，是否继续？",
+							buttons : ["继续", "取消"]
+						}, function(ret, err) {
+							var sourceType;
+							if (1 == ret.buttonIndex) {
+								loadGbInfo(gb_id);
+							} else {
+								return;
+							}
+						});
+					}
+				} else {
+					api.toast({
+						msg : '请连接网络后使用当前功能~'
+					});
+				}
+			});
+		}
+		/*
+		*作者:zhaoj
+		*功能:播放音频
+		*日期：20170609
+		*/
+		function netAudioPlay(){
+			if(type){showSelfProgress('加载中...')};
+			netAudio.open(gb_audio,function(flag,ret){
+				if(flag){
+					if(ret.current == 1){
+						api.hideProgress();
+					}else if(ret.complete){
+						popToast('播放结束');
+						commonCloseFrame('guangbo_content_frame');
+					}
+				}else{
+					popToast('播放失败，请稍候重试');
+					api.hideProgress();
+				}
+			});
+		}
+		/*
+		*作者:zhaoj
+		*功能:暂停播放
+		*日期：20170609
+		*/
+		function pause(){
+			type = false;
+			popToast('播放暂停');
+			netAudio.pause();
+		}
+		/*
+		*作者:zhaoj
+		*功能:停止播放
+		*日期：20170609
+		*/
+		function stop(){
+			popToast('播放停止');
+			netAudio.stop();
+		}
+		
+		/*
+		*author:zhaoj
+		*function:打开图片预览
+		*date：20171026
+		*/
+		function openPicture(e){
+			//图片
+			var res_url=$api.attr(e, 'src');
+			//打开图片
+			var index = 0;
+			for(var i = 0; i <image_array.length;i++){
+				if(image_array[i] == res_url){
+					index = i;
+				}
+			}
+			photoBrowser.open(image_array, index);
+		}
+	</script>
+</html>

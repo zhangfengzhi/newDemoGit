@@ -1,0 +1,25 @@
+/*
+/*新的弹出框样式*/
+.popup-body-new{background:rgba(0,0,0,0.3);font-size:18px;}
+.popup-body-new	.commont-content{border-radius:15px;}
+.popup-body-new .commont-content .top{border-radius:15px 15px 0 0;}
+.popup-body-new	.commont-content{position:absolute;top:50%;left:50%;margin-left:-260px;margin-top:-195px;width:520px;height:390px;padding:65px 0 50px 0;background:#fff;}
+.popup-body-new .commont-content .top{position:absolute;height:53px;background:#31A8FA;color:#fff;line-height:53px;width: 100%;top:-1px;left:0;}
+.popup-body-new .commont-content .name{text-align:center;font-size:20px;}
+.popup-body-new .commont-content .position{position:absolute;left:20px;line-height:13px;height:100%;padding:14px 0 0 30px;background:url(../../../image/fun-module/common/position.png) 0 center no-repeat;background-size:24px auto;font-size:12px;}
+.popup-body-new .commont-content .close{position:absolute;right:20px;background:url(../../../image/fun-module/common/close.png) right center no-repeat;background-size:20px auto;width:50px;height:100%;top:0;}
+.popup-body-new .commont-content .content{width:100%;height:100%;}
+.popup-body-new .commont-content .btn{width:60px;position:absolute;right:20px;bottom:15px;line-height:30px;font-size:16px;background:#31A8FA;text-align:center;color:#fff;}
+.popup-body-new .add-img-file{padding:0 20px;}
+.popup-body-new .add-img-file ul{overflow:visible;}
+.popup-body-new .add-img-file ul li{position:relative;width:50px;height:50px;border-radius:1px;border:1px solid #aaa;margin-right:3.75px;text-align:center;overflow:visible;}
+.popup-body-new .add-img-file ul li:nth-child(9){margin-right:0;}
+.popup-body-new .add-img-file ul li .aui-icon-add{color:#aaa;display:inline-block;margin-top:15px;width:100%;height:100%;font-size:45px;}
+.popup-body-new .add-img-file ul li div{color:#fff;font-size:12px;}
+.popup-body-new .add-img-file ul li img{width:100%;height:100%;}
+.popup-body-new .add-img-file ul li .delete{position:absolute;width:15px;height:15px;right:-3px;top:-3px;background:url(../../../image/fun-module/common/shanchu.png) center center no-repeat;background-size:15px auto;}
+/*选择图片的样式*/
+.popup-body-new .select-picture-bg{position:absolute;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);z-index: 999;}
+.popup-body-new .select-picture{position:absolute;top:50%;left:50%;width:170px;height:150px;margin:-75px 0 0 -85px;background:#fff;z-index: 9999;text-align:center;}
+.popup-body-new .select-picture .option{height:50px;line-height:50px;border-bottom:1px solid #eee;}
+.popup-body-new .select-picture .option:last-child{border-bottom:none;}

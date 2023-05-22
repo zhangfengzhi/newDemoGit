@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<!-- html5：在创建html时为了防止页面缩放等不兼容效果，要创建个viewport  -->
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<!-- 在IOS设备上，有时会将数字转为手机号，这里也要禁止下 -->
+		<meta name="format-detection" content="telephone=no"/>
+		<title>新闻资讯数据页面</title>
+		<link rel="stylesheet" type="text/css" href="../../../../../css/aui/aui.css" />
+		<link rel="stylesheet" type="text/css" href="../../../../../css/module/ipad/left-right-layout.css"/>
+		<link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+	</head>
+	<body class="left-layout-body common-ipad-xwzxIpad-tea">
+		<div id="j_top" style="height:0px; overflow:hidden"></div>
+		<div id="j_box_shadow" class="box-shadow aui-hide"></div>
+		<!--新闻资讯列表-->
+		<div class="thumb-content clearfix">
+			<ul id="tzlist_div"></ul>
+			<script type="text/html" id="tzlist_script">
+				<% if(list.length == 0){ %>
+					<div class="no-data">暂无新闻资讯</div>
+				<% }else{ %>
+					<%for(var i=0; i<list.length; i++) {%>
+						<li onclick="openTongzhiContent('<%=list[i].notice_id %>',this);">
+							<img class="thumb-img" src="<%=list[i].thumb_id%>" onerror="this.src='../../../../../image/fun-module/common/xwzx-bg.png'" />
+							<div class="title pr20 pt20 mt10">
+								<span class="ellipsis">
+									
+									<%=list[i].title%>
+									
+								</span>
+							</div>
+							<div class="detail-infor mt20">
+								<div class="person-name ellipsis"><%=list[i].person_name%></div>
+								<div class="time pt5"><%=list[i].create_time.substring(0,16)%></div>
+							</div>
+						</li>
+					<% } %>
+				<% } %>
+			</script>
+		</div>
+	</body>
+	<script type="text/javascript" src="../../../../../script/api.js" ></script>
+	<script type="text/javascript" src="../../../../../script/base_config.js" ></script>
+	<script type="text/javascript" src="../../../../../script/plug-in/base64.js" ></script>
+	<script type="text/javascript" src="../../../../../script/plug-in/template.js" ></script>
+	<script type="text/javascript" src="../../../../../script/plug-in/echo.min.js"></script>
+	<script type="text/javascript" src="../../../../../script/common/common.js" ></script>
+	<script type="text/javascript">
+		//定义头高度
+		var header_h;
+		//总记录数
+		var totalCount = 0;
+		//总页数
+		var totalPages = 0;
+		//定义一个变量存储第一次加载返回来的总记录数
+		var totalData = 0;
+		// 定义一个变量存储第一次加载返回来的总页数
+		var totalPages = 0;
+		//新闻资讯关键字
+		var keyword = '';
+		//定义区域
+		var bur_ids = [];
+		//定义区域
+		var bur_level_ids = [];
+		//定义区域名称
+		var bur_names = [];
+		//定义区域id
+		var org_id = 0;
+		//定义区域等级
+		var org_level = 0;
+		//定义区域名称
+		var org_name = '';
+		//当前页面为第一页
+		var currentPage;
+		var BASE_URL_ACTION;
+		//班级个数
+		var c_length;
+		var bar_items;//滑动条选项
+		apiready = function() {
+			commonSetTheme({"level":5,"type":0});
+			header_h = api.pageParam.header_h;
+			BASE_URL_ACTION = $api.getStorage('BASE_URL_ACTION');
+			currentPage = 1;
+			//默认是不能发送新闻资讯
+			$api.setStorage('is_add_notice', 0);
+			//默认选择第一个
+			$api.setStorage('navbar_selected', 0);
+			commonExecScript('xwzxIpad_index_window','','getOrgList();',0);//切换index列表数据
+			//打开滑动条
+//			openNavigationBar();
+			//加载上拉加载数据方法
+			scrollBottomReload();
+			//下拉刷新
+			refreshDataInfo();
+		};
+		/**
+		 * 获取新闻资讯列表
+		 * 周枫
+		 * 2015.11.23
+		 */
+		function loadTongzhiListData(orgs_id, currentPage, isReload) {
+			showSelfProgress('加载中...');
+			//获取新闻资讯码
+			getNewsRegisterId(orgs_id, org_level, function(is_true, a_id) {
+				if (is_true) {
+					if (a_id == -1) {
+						var list = {};
+						var list_attr = [];
+						list["list"] = list_attr;
+						api.hideProgress();
+						//新闻资讯顶部下拉刷新数据加载完毕，组件会恢复到默认状态
+						commonControlRefresh();
+						var html_type = template.render('tzlist_script', list);
+						document.getElementById('tzlist_div').innerHTML = html_type;
+					} else {
+						currentPage = isReload ? 1 : currentPage;
+						//查询请求
+						var list_url = BASE_URL_ACTION + '/notice/getNoticeList?page_number=' + currentPage + '&page_size=' + BASE_PAGE_SIZE + '&register_id=' + a_id;
+						//是否有新闻资讯名称
+						keyword = $api.trimAll(keyword);
+						list_url = list_url + '&title=' + keyword;
+						api.ajax({
+							url : list_url,
+							method : 'get',
+							timeout : 30,
+							dataType : 'json',
+							cache : false
+						}, function(ret, err) {
+							api.hideProgress();
+							//新闻资讯顶部下拉刷新数据加载完毕，组件会恢复到默认状态
+							commonControlRefresh();
+							if (ret.success) {
+								totalData = ret.total_row;
+								totalPages = ret.total_page;
+								if (isReload) {
+									// 重新设置为1
+									currentPage = 1;
+								}
+								for (var i = 0; i < ret.list.length; i++) {
+									var notice_str1 = '';
+									var notice_str2 = '';
+									if ($api.getStorage('BASE_APP_TYPE') == 1) {
+										notice_str1 = 'src=\"down/Material/';
+										notice_str2 = 'class="ima_notice" src=\"' + BASE_IMAGE_PRE + 'down/Material/';
+									} else {
+										notice_str1 = 'src=\"/dsideal_yy/';
+										notice_str2 = 'class="ima_notice" src=\"' + BASE_URL_ACTION + '\/';
+									}
+									ret.list[i].content = ret.list[i].content.replaceAll(notice_str1, notice_str2);
+								}
+								//得到缩略图路径
+								var BASE_APP_TYPE = $api.getStorage('BASE_APP_TYPE');
+                                for (var i = 0; i < ret.list.length; i++) {
+                                    if(!ret.list[i].thumbnail){
+                                         var image_array=[];
+	                                    	ret.list[i].content.replace(/<img [^>]*src=['"]([^'"]+)[^>]*>/gi, function (match, capture) {
+											  image_array.push(capture);
+											});
+											if(image_array.length > 0){
+												ret.list[i].thumb_id= image_array[0];
+											}else{
+	                                        	ret.list[i].thumb_id='../../../../../image/fun-module/common/xwzx-bg.png';
+	                                        }
+                                    }else{
+                                        var thumb_url = ret.list[i].thumbnail;
+                                        var index = thumb_url.indexOf('/Material');
+                                        if (index != -1) {
+                                            var thumb_id=thumb_url.substring(index+10,thumb_url.length);
+                                            if(BASE_APP_TYPE == 1){
+                                                ret.list[i].thumb_id = BASE_IMAGE_PRE + BASE_MATERIAL_BEGIN+ thumb_id+commonReturnPhotoCutSize(0);
+                                            }else{
+                                                ret.list[i].thumb_id = BASE_URL_ACTION + BASE_IMAGE_BEGIN+ thumb_id+commonReturnPhotoCutSize(0);
+                                            }
+                                        }else{
+                                            ret.list[i].thumb_id = ret.list[i].thumbnail;
+                                        }
+                                    }
+                                }
+								var html_type = template.render('tzlist_script', ret);
+								if (currentPage == 1) {
+									document.getElementById('tzlist_div').innerHTML = html_type;
+								} else {
+									$api.append($api.byId('tzlist_div'), html_type);
+								}
+								//延迟加载图片
+								setTimeout(function() {
+									echoInit();
+								}, 300);
+							} else {
+								api.alert({
+									msg : '对不起，获取新闻资讯列表信息失败'
+								});
+							}
+						});
+					}
+				} else {
+					api.hideProgress();
+					api.toast({
+						msg : a_id
+					});
+				}
+			});
+		}
+
+		/**
+		 * 打开新闻资讯内容frame
+		 * 周枫
+		 * 2015.11.21
+		 */
+		function openTongzhiContent(notice_id,self) {
+			setLiCss(self);
+			commonCloseFrame('xwzxIpad_content_frame');
+			commonExecScript('xwzxIpad_index_window','','openDetailFrame("'+notice_id+'");',0);
+		}
+		/*
+		*author:zfz
+		*function:设置选中样式
+		*date：20171013
+		*/
+		function setLiCss(self){
+			var li_array = $api.domAll($api.byId('tzlist_div'), 'li');
+			for(var i = 0; i < li_array.length; i++){
+				$api.removeCls(li_array[i], 'active');
+			}
+			$api.addCls(self, 'active');
+		}
+		/**
+		 * 打开新闻资讯级别滑动
+		 * 周枫
+		 * 2015.11.21
+		 */
+		function openNavigationBar() {
+			commonCloseNavigationBar();
+			//获取任教班级
+			commonloadClassListData(2, function(is_true, class_list_attr) {
+				if (is_true) {
+					//安装机构类型： 100：全国， 101：省， 102：市， 103：区县， 104：校，105：班级
+					var sys_level = parseInt($api.getStorage('org_level'));
+					if (sys_level == 100) {
+						sys_level = 101;
+					}
+					var i_id = $api.getStorage('identity');
+					if ('undefined' != i_id) {
+						i_id = parseInt(i_id);
+					}
+					//学生和家长最高级到校
+					if (i_id == 6 || i_id == 7) {
+						sys_level = 104;
+					}
+					bar_items = [];
+					//班级个数
+					c_length = class_list_attr.length;
+					//遍历班级存入
+					for (var i = 0; i < c_length; i++) {
+						var arr_class = {
+							title : class_list_attr[i].class_name,
+							id : "0",
+							titleSelected : class_list_attr[i].class_name,
+							bg : "#ffffff",
+							alpha : 0.8,
+							bgSelected : "#ffffff"
+						};
+						bar_items.push(arr_class);
+						bur_ids.push(class_list_attr[i].class_id);
+						bur_names.push(class_list_attr[i].class_name);
+						bur_level_ids.push(105);
+					}
+					//学校id
+					var school_id = $api.getStorage('school_id');
+					if ( typeof (school_id) == 'undefined') {
+						school_id = $api.getStorage('bureau_id');
+					}
+					//学校名字
+					var school_name = $api.getStorage('school_name');
+					if ( typeof (school_name) == 'undefined') {
+						school_name = $api.getStorage('bureau_name');
+					}
+					//区id
+					var district_id = $api.getStorage('district_id');
+					//区名字
+					var district_name = $api.getStorage('district_name');
+					//市id
+					var city_id = $api.getStorage('city_id');
+					//市名字
+					var city_name = $api.getStorage('city_name');
+					//省id
+					var province_id = $api.getStorage('province_id');
+					//省名字
+					var province_name = $api.getStorage('province_name');
+					var arr_school = {
+						title : school_name,
+						titleSelected : school_name,
+						bg : "#ffffff",
+						alpha : 0.8,
+						bgSelected : "#ffffff"
+					};
+					var arr_district = {
+						title : district_name,
+						titleSelected : district_name,
+						bg : "#ffffff",
+						alpha : 0.8,
+						bgSelected : "#ffffff"
+					};
+					var arr_city = {
+						title : city_name,
+						titleSelected : city_name,
+						bg : "#ffffff",
+						alpha : 0.8,
+						bgSelected : "#ffffff"
+					};
+					var arr_province = {
+						title : province_name,
+						titleSelected : province_name,
+						bg : "#ffffff",
+						alpha : 0.8,
+						bgSelected : "#ffffff"
+					};
+					switch(sys_level) {
+						case 101:
+							bar_items.push(arr_school);
+							bur_ids.push(school_id);
+							bur_level_ids.push(104);
+							bar_items.push(arr_district);
+							bur_ids.push(district_id);
+							bur_level_ids.push(103);
+							bar_items.push(arr_city);
+							bur_ids.push(city_id);
+							bur_level_ids.push(102);
+							bar_items.push(arr_province);
+							bur_ids.push(province_id);
+							bur_level_ids.push(101);
+							break;
+						case 102:
+							bar_items.push(arr_school);
+							bur_ids.push(school_id);
+							bur_level_ids.push(104);
+							bar_items.push(arr_district);
+							bur_ids.push(district_id);
+							bur_level_ids.push(103);
+							bar_items.push(arr_city);
+							bur_ids.push(city_id);
+							bur_level_ids.push(102);
+							break;
+						case 103:
+							bar_items.push(arr_school);
+							bur_ids.push(school_id);
+							bur_level_ids.push(104);
+							bar_items.push(arr_district);
+							bur_ids.push(district_id);
+							bur_level_ids.push(103);
+							break;
+						case 104:
+							bar_items.push(arr_school);
+							bur_ids.push(school_id);
+							bur_level_ids.push(104);
+							break;
+					}
+					var params = {
+						y : header_h,
+						items : bar_items,
+						winName : 'xwzxIpad_index_window',
+						frameName : 'xwzxIpad_index_frame'
+					};
+					commonMyNavigationBar(params);
+				} else {
+					api.toast({
+						msg : class_list_json
+					});
+				}
+			});
+		}
+		/*
+		*作者:zhaoj
+		*功能:滑动条回调
+		*日期：20161110
+		*/
+		function callBackNew(id, index) {
+			org_id = bur_ids[index];
+			org_level = bur_level_ids[index];
+			org_name = bar_items[index].title;
+			isAddNotice(org_id);
+			$api.setStorage('navbar_selected', index);
+			$api.setStorage('org_level_bar', bur_level_ids[index]);
+			currentPage = 1;
+			loadTongzhiListData(org_id, currentPage, true);
+		}
+		
+		/**
+		 * 设置区域等级
+		 * zfz
+		 * 20171013
+		 */
+		function getOrgLevel(org_type,org_id_param,currentPage,type,org_name_param){
+			org_id = org_id_param;
+			org_level = org_type;
+			org_name = org_name_param;
+			isAddNotice(org_id);
+			$api.setStorage('xwzx_org_type', org_type);
+			$api.setStorage('xwzx_org_id', org_id_param);
+			$api.setStorage('xwzx_org_name', org_name_param);
+			$api.setStorage('org_level_bar', org_type);
+			currentPage = 1;
+			loadTongzhiListData(org_id, currentPage, type);
+		}
+		/**
+		 * 判断当前人员是否有发送新闻资讯的权限
+		 * 周枫
+		 * 2015.11.25
+		 */
+		function isAddNotice(org_id) {
+			if (org_level == 105 && $api.getStorage('identity') == 5) {
+				//发布通知地区
+				$api.setStorage('gxdq_area_id', org_id);
+				//发布通知地区
+				$api.setStorage('gxdq_area_name', org_name);
+				//是否允许发布通知
+				$api.setStorage('is_add_notice', 1);
+				api.execScript({
+					name : 'xwzxIpad_index_window',
+					script : 'isAddDisplay(true);'
+				});
+			} else {
+				var roid_json = $api.getStorage('roles');
+				var roids = '';
+				for (var i = 0; i < getJsonObjLength(roid_json); i++) {
+					roids = roids + roid_json[i].role_id + ','
+				}
+				$api.setStorage('notice_roids', roids);
+				api.ajax({
+					url : BASE_URL_ACTION + '/ypt/multiCheck/getManageUnit?random_num=' + creatRandomNum() + '&from_url=1&person_id=' + $api.getStorage("person_id") + '&identity_id=' + $api.getStorage("identity") + '&role_ids=' + roids,
+					method : 'get',
+					timeout : 30,
+					dataType : 'json',
+					cache : false,
+					headers : {
+						'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+					}
+				}, function(ret, err) {
+					if (err) {
+						//判断发送通知是否显示
+						$api.setStorage('is_add_notice', 0);
+						api.execScript({
+							name : 'xwzxIpad_index_window',
+							script : 'isAddDisplay(false);'
+						});
+						api.toast({
+							msg : '对不起，获取新闻资讯权限失败'
+						});
+					} else {
+						if (ret.success) {
+							if (getJsonObjLength(ret.area_list) != 0) {
+								var is_result = 0;
+								for (var i = 0; i < getJsonObjLength(ret.area_list); i++) {
+									if (org_id == parseInt(ret.area_list[i].admin_area_id)) {
+										//发布通知地区
+										$api.setStorage('gxdq_area_id', ret.area_list[i].admin_area_id);
+										//发布通知地区
+										$api.setStorage('gxdq_area_name', org_name);
+										//是否允许发布通知
+										$api.setStorage('is_add_notice', 1);
+										is_result++;
+										break;
+									}
+								}
+								setTimeout(function() {
+									if (is_result > 0) {
+										//判断发送通知是否显示
+										$api.setStorage('is_add_notice', 1);
+										api.execScript({
+											name : 'xwzxIpad_index_window',
+											script : 'isAddDisplay(true);'
+										});
+									} else {
+										//判断发送通知是否显示
+										$api.setStorage('is_add_notice', 0);
+										api.execScript({
+											name : 'xwzxIpad_index_window',
+											script : 'isAddDisplay(false);'
+										});
+									}
+								}, 100);
+							} else {
+								//判断发送通知是否显示
+								$api.setStorage('is_add_notice', 0);
+								api.execScript({
+									name : 'xwzxIpad_index_window',
+									script : 'isAddDisplay(false);'
+								});
+							}
+						} else {
+							//判断发送通知是否显示
+							$api.setStorage('is_add_notice', 0);
+							api.execScript({
+								name : 'xwzxIpad_index_window',
+								script : 'isAddDisplay(false);'
+							});
+							api.toast({
+								msg : '对不起，获取新闻资讯权限失败'
+							});
+						}
+					}
+				});
+			}
+		}
+
+		function refreshDataInfo() {
+			//绑定下拉刷新历史会话事件
+			api.setRefreshHeaderInfo({
+				visible : true,
+				loadingImg : 'widget://image/local_icon_refresh.png',
+				bgColor : '#f0f0f0',
+				textColor : '#8E8E8E',
+				textDown : '下拉加载更多...',
+				textUp : '松开加载...',
+				showTime : true
+			}, function(ret, err) {
+				loadTongzhiListData(org_id, 1, true);
+			});
+		}
+
+		/**
+		 * 获取通知码
+		 * 周枫
+		 * 2016.4.25
+		 */
+		function getNewsRegisterId(orgs_id, level_type, callback) {
+			api.ajax({
+				url : BASE_URL_ACTION + '/space/getNewsRegisterId?a_id=' + orgs_id + '&a_identity_id=' + level_type,
+				method : 'get',
+				timeout : 30,
+				dataType : 'json',
+				cache : false
+			}, function(ret, err) {
+				if (err) {
+					callback(false, '对不起，获取新闻资讯信息失败');
+				} else {
+					if (ret.success) {
+						var flag = parseInt(ret.flag);
+						//没注册过通知码
+						if (flag == 0) {
+							callback(true, -1);
+						} else {
+							callback(true, ret.regist_id);
+						}
+					} else {
+						callback(false, '对不起，获取新闻资讯信息失败');
+					}
+				}
+			});
+		}
+		/**
+		 * 上拉刷新页面数据
+		 * 周枫
+		 * 2015.11.24
+		 */
+		function scrollBottomReload() {
+			//下移到底部：
+			api.addEventListener({
+				name : 'scrolltobottom',
+				extra : {
+					threshold : 100 //设置距离底部多少距离时触发，默认值为0，数字类型
+				}
+			}, function(ret, err) {
+				if ((currentPage + 1) <= totalPages) {
+					loadTongzhiListData(org_id, currentPage + 1, false);
+					currentPage = currentPage + 1;
+					// 页码+1
+				} else {
+					api.toast({
+						msg : '已加载全部数据',
+						location : 'bottom'
+					});
+				}
+			});
+		}
+		/*
+		 *作者:wangshuai
+		 *功能:设置搜索值，并根据搜索条件加载相关数据数据
+		 *日期：20161024
+		 */
+		function setKeyword(data) {
+			keyword = data;
+			currentPage = 1;
+			loadTongzhiListData(org_id, currentPage, true);
+		}
+		
+		/*
+		*author:zfz
+		*function:是否显示虚线
+		*date：20171013
+		*/
+		function isShowBoxShow(type){
+			type ? $api.removeCls($api.byId('j_box_shadow'), 'aui-hide') : $api.addCls($api.byId('j_box_shadow'), 'aui-hide');
+		}
+	</script>
+</html>

@@ -1,0 +1,803 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<!-- html5：在创建html时为了防止页面缩放等不兼容效果，要创建个viewport  -->
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<!-- 在IOS设备上，有时会将数字转为手机号，这里也要禁止下 -->
+		<meta name="format-detection" content="telephone=no"/>
+		<title>个人信息frame</title>
+		<link rel="stylesheet" type="text/css" href="../../../css/aui/aui.css" />
+		<link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+		<style>
+			body, html {
+			}
+			.header {
+				display: -webkit-box;
+				display: -webkit-flex;
+				display: flex;
+			}
+			.title {
+				-webkit-box-flex: 1;
+				-webkit-flex: 1;
+				flex: 1;
+			}
+			.login-header a {
+				padding: 30px;
+				background-size: 50px;
+			}
+			.index-header a, .detail-header a {
+				display: block;
+				background-size: 30px;
+				padding: 20px;
+			}
+			.header a {
+				background-repeat: no-repeat;
+				background-position: center;
+			}
+			.login-header .nologin-user {
+				-webkit-transform: rotateY(0deg);
+			}
+			.login-header {
+				height: 100%;
+				/*background-color: #6ab494;*/
+			}
+			.title {
+				text-align: center;
+				padding-top: 15px;
+				padding-bottom: 15px;
+				display: -webkit-box;
+				display: -webkit-flex;
+				display: flex;
+				-webkit-box-orient: vertical;
+				-webkit-flex-flow: column;
+				flex-flow: column;
+			}
+			.name {
+				color: #323237;
+				font-size: 18px;
+				padding-top: 10px;
+			}
+			.login {
+				color: #323237;
+				font-size: 14px;
+			}
+			.bottom li {
+				width: 18.89%;
+				background-size: 30px;
+			}
+			.bottom li a {
+				margin: 15px 10px 0 10px;
+				color: #737377;
+				font-size: 12px;
+			}
+			.h10 {
+				height: 10px;
+				background: #f0f0f0;
+			}
+			.h1 {
+				height: 1px;
+				margin-left: 15px;
+				background: #f0f0f0;
+			}
+			.fr {
+				float: right;
+			}
+			.hint {
+				color: #666;
+				font-size: 12px;
+				margin-right: 5px;
+			}
+			.firstblock, .secondblock, .thirdblock {
+				background-color: #fff;
+			}
+			.loginbg {
+				width: 100%;
+			}
+			.login .personal_logo {
+				position: absolute;
+				left: 0;
+				top: 55px;
+				width: 70px;
+				margin-left: 20px;
+			}
+			.person_arrow {
+				position: absolute;
+				height: 20px;
+				right: 10px;
+				top: 90px;
+			}
+			.login .userinfo {
+				position: absolute;
+				top: 60px;
+				margin-left: 100px;
+			}
+			.login .userinfo .title {
+				font-size: 20px;
+				color: #fff;
+			}
+			.login .userinfo .subtitle {
+				font-size: 14px;
+				color: #fff;
+				border: 1px solid #fff;
+				display: inline-block;
+				padding: 3px;
+				border-radius: 4px;
+				margin-top: 5px;
+			}
+			.login_user dl {
+				position: relative;
+				text-align: left;
+				height: 60px;
+			}
+			.login_user dl dt {
+				width: 66px;
+				position: absolute;
+			}
+			.login_user dd {
+				margin-left: 85px;
+			}
+			.login_user dd span {
+				display: block;
+			}
+			/* 设置条目 */
+			.item {
+				height: 50px;
+				line-height: 49px;
+				padding-left: 15px;
+				background-color: #fff;
+			}
+			.item_ico {
+				float: left;
+				width: 30px;
+				padding: 10px 10px 10px 0;
+			}
+			.item_arrow {
+				float: right;
+				width: 16px;
+				padding: 17px 15px 15px 0;
+			}
+			.presshover {
+				background-color: #FAFAFA;
+			}
+			.item_right {
+				height:50px;
+				color: #696969;
+				font-size: 14px;
+				padding-right: 15px;
+			}
+			.title-left{float:left;width:30%;}
+            .title-right{float:left;width:70%;max-width:70%;text-align:right;}
+		</style>
+	</head>
+	<body class="w-iphone-common">
+		<header>
+			<div class="login-header header ">
+				<!--<a class="close" tapmode="" onclick=""></a>-->
+				<div class="hidden title login_user">
+					<dl>
+						<div class="item" tapmode="presshover" onclick="getPictureHeader();">
+							<span>头像</span><span class="item_right aui-pull-right"><img style="vertical-align: middle;border-radius:50%;" onerror="this.src='../../../image/common/header.png'" src="" id="user" width="64" height="64" /><i style="margin-left: 10px; vertical-align: middle; " class="aui-iconfont aui-icon-right"></i></span>
+						</div>
+					</dl>
+				</div>
+				<!--<a class="setting" tapmode=""></a>-->
+			</div>
+		</header>
+		<div class="h10"></div>
+		<div class="firstblock" id="name_div">
+			<div class="item" tapmode="presshover">
+                <div class="title-left">名字</div><div id="name" class="item_right aui-pull-right title-right ellipsis"></div>
+            </div>
+		</div>
+		<div class="h1"></div>
+		<div class="firstblock" id="login_div">
+			<div class="item" tapmode="presshover">
+                <div class="title-left">账号</div><div id="login" class="item_right aui-pull-right title-right ellipsis"></div>
+            </div>
+		</div>
+		<div class="h1"></div>
+		<div class="firstblock">
+			<div class="item" tapmode="presshover" onclick="updateTelNo();">
+				<span>手机号</span><span id="tel" class="item_right aui-pull-right"></span>
+			</div>
+		</div>
+		<div class="h1"></div>
+		<div id="email_div" class="firstblock aui-hide">
+            <div class="item" tapmode="presshover">
+                <div class="title-left">邮箱地址</div><div id="email" class="item_right aui-pull-right title-right ellipsis"></div>
+            </div>
+        </div>
+		<div class="h1"></div>
+		<div class="firstblock">
+			<div class="item" tapmode="presshover" onclick="getMyselfScannerImg();">
+				<span>我的二维码</span>
+				<span class="item_right aui-pull-right"> <img style="vertical-align: middle;" src="../../../image/common/erweima.png" id="user" width="24" height="24" /> <i style="margin-left: 10px; vertical-align: middle;" class="aui-iconfont aui-icon-right"></i> </span>
+			</div>
+		</div>
+		<div class="h1"></div>
+		<div class="firstblock" id="bureau_div">
+            <div class="item" tapmode="presshover">
+                <div class="title-left">机构名称</div><div id="bureau_name" class="item_right aui-pull-right title-right ellipsis"></div>
+            </div>
+        </div>
+        <div class="h1"></div>
+        <div class="firstblock" onclick="getzxBtn();">
+            <div class="item" tapmode="presshover">
+                <div>注销账号与修改个人信息</div>
+            </div>
+        </div>
+		<div class="h10"></div>
+		<input oninput="commonRemoveExpression(this)" type="hidden" id="tel_hid" />
+		<input oninput="commonRemoveExpression(this)" type="hidden" id="email_hid" />
+		<script type="text/javascript" src="../../../script/api.js" ></script>
+		<script type="text/javascript" src="../../../script/common/common.js" ></script>
+		<script type="text/javascript" src="../../../script/base_config.js" ></script>
+		<script type="text/javascript" src="../../../script/assembly/UIAlbumBrowser.js"></script>
+		<script type="text/javascript" src="../../../script/assembly/getPicture.js"></script>
+	</body>
+	<script type="text/javascript">
+		//头像图片上传服务器路径
+		var person_img_path;
+		var header_h;
+		var BASE_URL_ACTION;
+		var currentPage=1;
+		var other_alert = false;
+		apiready = function() {
+			commonSetTheme({"level":3,"type":0});
+			header_h = api.pageParam.header_h;
+			BASE_URL_ACTION = $api.getStorage('BASE_URL_ACTION');
+			commonRefreshHeaderInfo();//下拉刷新
+			if($api.getStorage('identity') != 7){
+                commonAddOrRemoveHideCss('email_div',1);
+            }
+			initData();
+		};
+		/**
+		 * 加载个人信息
+		 * 周枫
+		 * 2015.12.05
+		 */
+		function loadMyself() {
+			var user = document.getElementById("user");
+			user.src = $api.getStorage('avatar_url');
+			$api.html($api.byId('name'), $api.getStorage('person_name'));
+			$api.attr($api.byId('name_div'), 'onclick','alertName("名字","'+$api.getStorage('person_name')+'",event)');
+			var login_name_show = $api.getStorage('login_name_show');
+			if ( typeof (login_name_show) != "undefined") {
+				var login_name_ypt = login_name_show.substring(0, login_name_show.lastIndexOf("_"));
+				//局云混合带@
+				if (login_name_ypt.lastIndexOf('@') != -1) {
+					var sub_index = login_name_ypt.lastIndexOf('@');
+					login_name_ypt = login_name_ypt.substring(0, sub_index);
+				}
+				$api.html($api.byId('login'), login_name_ypt);
+				$api.attr($api.byId('login_div'), 'onclick','alertName("账号","'+login_name_ypt+'",event)');
+			} else {
+				$api.html($api.byId('login'), "您当前版本需要重新登录后显示账号");
+			}
+			
+			//机构名称
+			bureau_name = ''
+			if ( typeof ($api.getStorage('bureau_name')) != 'undefined') {
+				bureau_name = $api.getStorage('bureau_name');
+			}
+			var tel_hid = $api.val($api.byId('tel_hid'));
+			var email_hid = $api.val($api.byId('email_hid'));
+			if ( typeof (tel_hid) == "undefined" || tel_hid == '' || tel_hid == -1 || isEmptyString(tel_hid) || tel_hid == 'undefined') {
+				$api.html($api.byId('tel'), '暂无信息' + '<i style="margin-left: 10px; vertical-align: middle;" class="aui-iconfont aui-icon-right"></i>');
+			} else {
+				$api.html($api.byId('tel'), tel_hid + '<i style="margin-left: 10px; vertical-align: middle;" class="aui-iconfont aui-icon-right"></i>');
+			}
+			if ( typeof (email_hid) == "undefined" || email_hid == '' || email_hid == -1 || isEmptyString(email_hid) || email_hid == 'undefined' || email_hid == 0 || email_hid == "0") {
+				$api.html($api.byId('email'), '暂无信息');
+			} else {
+				$api.html($api.byId('email'), email_hid);
+				$api.attr($api.byId('email_div'), 'onclick','alertName("邮箱地址","'+email_hid+'",event)');
+			}
+			$api.html($api.byId('bureau_name'), bureau_name);
+			$api.attr($api.byId('bureau_div'), 'onclick','alertName("机构名称","'+bureau_name+'",event)');
+			api.hideProgress();
+		}
+		
+		/*
+         * 功能：
+         */
+        function alertName(title,name){
+            if(other_alert){
+                return;
+            }
+            other_alert = true;
+            api.alert({
+                title:title,
+                msg : name
+            }, function(ret, err) {
+                other_alert = false;
+            });
+        }
+
+
+		/**
+		 * 获取个人信息
+		 * 周枫
+		 * 2016.1.16
+		 */
+		function initData() {
+			showSelfProgress('加载中...');
+			api.ajax({
+				url : BASE_URL_ACTION + '/person/getPersonInfo?random_num=' + creatRandomNum() + '&person_id=' + $api.getStorage("person_id") + '&identity_id=' + $api.getStorage("identity") + '&token=' + $api.getStorage("token_ypt"),
+				method : 'get',
+				dataType : 'json',
+				timeout : 30,
+				cache : false,
+				headers : {
+					'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+				}
+			}, function(ret, err) {
+				api.hideProgress();
+				if (ret) {
+					if (ret.success) {
+						getMyselfAvatarUrlInfo(function(is_true, a_info) {
+							if (is_true) {
+								var a_id = a_info.file_id;
+								var a_ext = a_info.extension;
+								var a_avatar_url = '';
+								if ($api.getStorage('BASE_APP_TYPE') == 1) {
+									a_avatar_url = BASE_IMAGE_PRE+"down/Material/" + a_id.substring(0, 2) + "/" + a_id + '.' + a_ext + commonReturnPhotoCutSize(1,96,96,a_ext,0);
+								} else {
+									a_avatar_url = BASE_URL_ACTION + "/html/thumb/Material/" + a_id.substring(0, 2) + "/" + a_id + '.' + a_ext + commonReturnPhotoCutSize(1,96,96,a_ext,0);
+								}
+								//赋值头像
+								$api.setStorage('avatar_url', a_avatar_url);
+								//赋值真实姓名
+								$api.setStorage('person_name', ret.table_List.person_name);
+								var email_hid = ret.table_List.EMAIL == undefined?ret.table_List.email:ret.table_List.EMAIL;
+								var tel_hid=ret.table_List.TEL == undefined?ret.table_List.tel:ret.table_List.TEL;
+								if ( typeof (tel_hid) == "undefined" || tel_hid == '' || tel_hid == -1 || isEmptyString(tel_hid)) 								{
+									$api.html($api.byId('tel'), '暂无信息' + '<i style="margin-left: 10px; vertical-align: middle;" class="aui-iconfont aui-icon-right"></i>');
+								} else {
+									$api.html($api.byId('tel'), tel_hid + '<i style="margin-left: 10px; vertical-align: middle;" class="aui-iconfont aui-icon-right"></i>');
+								}
+								if (email_hid == 0 || email_hid == "0" || typeof (email_hid) == "undefined" || email_hid == '' || email_hid == -1 || isEmptyString(email_hid)) {
+									$api.html($api.byId('email'), '暂无信息');
+								} else {
+									$api.html($api.byId('email'), email_hid);
+								}
+								$api.val($api.byId('tel_hid'), tel_hid);
+								$api.val($api.byId('email_hid'), email_hid);
+								commonControlRefresh();
+								loadMyself();
+							}
+						});
+					} else {
+						popAlert('对不起，获取个人信息失败');
+					}
+				} else {
+					popAlert('对不起，获取个人信息失败');
+				}
+				//通知顶部下拉刷新数据加载完毕，组件会恢复到默认状态
+				commonControlRefresh();
+			});
+		}
+
+		/**
+		 * 获取头像信息
+		 * 周枫
+		 * 2016.1.16
+		 */
+		function getMyselfAvatarUrlInfo(callback) {
+			var person_id = $api.getStorage("person_id");
+			var identity = $api.getStorage("identity");
+			api.ajax({
+				url : BASE_URL_ACTION + '/person/getPersonTxByYw?random_num=' + creatRandomNum() + '&person_id=' + person_id + '&identity_id=' + identity + '&yw=ypt',
+				method : 'get',
+				dataType : 'json',
+				timeout : 30,
+				cache : false,
+				headers : {
+					'Cookie' : 'person_id=' + person_id + '; identity_id=' + identity + '; token=' + $api.getStorage("token_ypt") + ';'
+				}
+			}, function(ret, err) {
+				if (ret) {
+					if (ret.success) {
+						callback(true, ret);
+					} else {
+						callback(false, '对不起，获取个人头像信息失败');
+					}
+				} else {
+					callback(false, '对不起，获取个人头像信息失败');
+				}
+			});
+		}
+
+		/**
+		 * 获取头像
+		 * 周枫
+		 * 2016.1.16
+		 */
+		function getPictureHeader() {
+			api.actionSheet({
+				title : '',
+				cancelTitle : '取消',
+				buttons : ['图片', '拍照'],
+				style : {
+					titleFontColor : '#ff0000'
+				}
+			}, function(ret, err) {
+				if (ret) {
+					if (ret.buttonIndex == 1) {
+						//相册
+						album();
+					} else if (ret.buttonIndex == 2) {
+						//拍照
+						openPicture();
+					}
+				} 
+			});
+		}
+		/*
+	    *author:zhaoj
+	    *function:打开拍照
+	    *date：20170914
+	    */
+	    function openPicture(){
+	    	getPicture.open({"type":1},function(data){
+	    		openImageClipFrame(data[0].path);
+	    	});
+	    }
+		/*
+		 *author:zhaoj
+		 *function:选择图片
+		 *date：20160225
+		 */
+		function album() {
+			UIAlbumBrowser.open(1,function(data){
+				if(api.systemType == "ios"){
+					 UIAlbumBrowser.transPath(data[0].path,function(pic_url_new){
+				         openImageClipFrame(pic_url_new);
+				     });
+				}else{
+				     openImageClipFrame(data[0].path);
+				}
+			});
+		}
+		/*
+	    *author:zhaoj
+	    *function:打开才将
+	    *date：20171020
+	    */
+	    function openImageClipFrame(img_url){
+	    	var param = {"img_url":img_url,"frameName":api.frameName,"winName":api.winName,"backFun":"getClipImageUrl","type":1000};
+	    	commonOpenImageClipFrame(param);
+	    }
+	    /*
+	    *author:zhaoj
+	    *function:获取裁剪后的图片路径
+	    *date：20171020
+	    */
+	    function getClipImageUrl(img_url){
+	    	//递归上传图片
+		    commonUiUploadFiles({"data":[{"path":img_url,"thumbPath":img_url}],"is_trans":0}, function(ret_data) {
+		    	commonCloseImageClipFrame();
+		    	for(var i = 0; i < ret_data.length; i++){
+	        		var json_data = JSON.parse(ret_data[i]);
+	        		var file_id = json_data.file_id;
+					var ext = json_data.ext;
+			    	saveMyselfAvatarUrlInfo(file_id,ext);
+				}
+		    });
+	    }
+		/**
+		 * 保存头像并保存到缓存
+		 * 周枫
+		 * 2016.1.16
+		 */
+		function saveMyselfAvatarUrlInfo(file_id, ext) {
+			var person_id = $api.getStorage("person_id");
+			var identity = $api.getStorage("identity");
+			api.ajax({
+				url : BASE_URL_ACTION + '/person/setPersonTxByYw?random_num=' + creatRandomNum() + '&person_id=' + person_id + '&identity_id=' + identity + '&yw=ypt&file_id=' + file_id + '&extension=' + ext,
+				method : 'get',
+				dataType : 'json',
+				timeout : 30,
+				cache : false
+			}, function(ret, err) {
+				api.hideProgress();
+				if (ret) {
+					if (ret.success) {
+						var a_avatar_url = '';
+						if ($api.getStorage('BASE_APP_TYPE') == 1) {
+							a_avatar_url = BASE_IMAGE_PRE+"down/Material/" + file_id.substring(0, 2) + "/" + file_id + '.' + ext + commonReturnPhotoCutSize(1,96,96,ext,0);
+						} else {
+							a_avatar_url = BASE_URL_ACTION + "/html/thumb/Material/" + file_id.substring(0, 2) + "/" + file_id + '.' + ext + commonReturnPhotoCutSize(1,96,96,ext,0);
+						}
+						//赋值头像
+						$api.setStorage('avatar_url', a_avatar_url);
+						loadMyself();
+						api.toast({
+							msg : '更新成功'
+						});
+					} else {
+						initData();
+						callback(false, '对不起，获取个人头像信息失败');
+					}
+				} else {
+					initData();
+					callback(false, '对不起，获取个人头像信息失败');
+				}
+			});
+		}
+		/**
+		 * 获取二维码
+		 * 周枫
+		 * 2016.1.16
+		 */
+		function getMyselfScannerImg() {
+			api.openFrame({
+				name : 'w_scan_frame',
+				scrollToTop : true,
+				allowEdit : true,
+				url : 'w_scan_frame.html',
+				rect : {
+					x : 0,
+					y : header_h,
+					w : 'auto',
+					h : api.winHeight - header_h,
+				},
+				vScrollBarEnabled : false,
+				hScrollBarEnabled : false,
+				//页面是否弹动 为了下拉刷新使用
+				bounces : false
+			});
+			commonExecScript(api.winName,'','reBackType("sys")',0);
+		}
+
+		/**
+         * 修改手机号
+         * 周枫
+         * 2016.08.22
+         */
+        function updateTelNo() {
+            if(other_alert){
+              return;
+            }
+            other_alert = true;
+            api.prompt({
+                title : '提示',
+                msg : '请输入手机号',
+                type : 'number',
+                buttons : ['确定', '取消']
+            }, function(ret, err) {
+                other_alert = false;
+                var index = ret.buttonIndex;
+                var text = ret.text;
+                var login_name = $api.getStorage('login_name');
+                login_name = commonNewParamToOldParam(login_name);
+                if (index == 1) {
+                    if(text.length == 11 || text.length == 0){
+                        var reg = /^[1][1-9][0-9]{9}/g;
+                        if(reg.test(text)){
+                            sendSMSForTel(login_name,text);
+                        }else{
+                            if($api.trimAll(text) == ''){
+                                popAlert('手机号码不能为空，请重新输入');
+                                return 0;
+                            }else{
+                                popAlert('手机号格式不对，请重新输入');
+                                return 0;
+                            }
+                        }
+                        
+                    }else{
+                        popToast('请您输入有效的11位手机号码');
+                    }
+                }
+            });
+        }
+        
+        /*
+         * 功能：校验手机号是否重复
+         * 作者：张自强
+         * 时间：20180822
+         * 接口：冯丽杰
+         */
+        function getTelIsExist(text,callback){
+          api.ajax({
+              url:BASE_URL_ACTION + '/admin/new_base/getTelIsExist?tel='+text,
+              method:'get',
+              dataType : 'json',
+              timeout:30,
+              headers : {
+                'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+            }
+          },function(ret,err){
+             if(ret.success){
+                 callback(true);
+             }else{
+                 switch(ret.error*1){
+                     case 1:
+                         popToast('手机号校验失败');
+                         break;
+                     case 2:
+                         popToast('手机号格式不对，请重新输入');
+                         break;
+                     case 3:
+                         popToast('手机号已被占用');
+                         break;
+                     default:
+                        popToast('发送验证码失败');
+                        break;
+                 }
+                 callback(false)
+             }
+          });
+        }
+        
+        /*
+         * 功能:修改手机号码时发送验证码
+         * 作者：张自强
+         * 时间：20180701
+         * 接口：冯丽杰
+         * 参数：type:1:传1 表示是  修改 手机号业务
+         */
+        function sendSMSForTel(login_name,textTel){
+          getTelIsExist(textTel,function(flag){
+              if(flag){
+                  showSelfProgress('请稍候...');
+                  api.ajax({
+                      url:BASE_URL_ACTION + '/ypt/userinfo/sendSMSForTel',
+                      method:'post',
+                      dataType:'json',
+                      timeout : 30,
+                      data:{
+                        values:{
+                           'register_flag':2,
+                           'tel':textTel,
+                           'type':1
+                        }
+                      },
+                      headers : {
+                        'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+                    }
+                  },function(ret,err){
+                     api.hideProgress();
+                     if(err){
+                         switch(err*1){
+                             case 1://验证码发送失败！
+                                 popToast('验证码发送失败');
+                                 break;
+                             case 2://每天每个手机号只允许获取5次短信验证码！
+                                 popToast('每天只允许获取5次短信验证码');
+                                 break;
+                             case 3://频繁获取验证码失败，请1分钟后再发送短信验证码！
+                                 popToast('频繁获取验证码失败，请1分钟后再发送短信验证码');
+                                 break;
+                             case 4://错误手机格式！
+                                 popToast('手机号格式不对');
+                                 break;
+                             default:
+                                popToast('发送验证码失败');
+                                break;
+                         }
+                     }else{
+                         if(ret.success){
+                             rePromptVcode(login_name,textTel);
+                         }else{
+                             popToast(ret.info);
+                         }
+                     }
+                  });
+              }
+          })
+        }
+        
+        /*
+         * 功能：校验验证码是否有效
+         * 作者：张自强
+         * 时间：20180801
+         * 接口：冯丽杰
+         */
+        function valideVodeForTel(login_name,text,vcode){
+           if(vcode == '' || vcode == null || typeof(vcode) == undefined){
+              popToast('验证码不能为空！');
+              setTimeout(function(){
+                  rePromptVcode(login_name,text);
+              },1000);
+           }else{
+               showSelfProgress('请稍候...');
+               api.ajax({
+                    url : BASE_URL_ACTION + '/ypt/userinfo/valideVodeForTel?register_flag=2&vcode='+vcode+'&tel='+text+'&type=1',
+                    method : 'get',
+                    dataType : 'json',
+                    timeout : 30,
+                    cache : false,
+                    headers : {
+                    'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+                }
+                }, function(ret, err) {
+                    api.hideProgress();
+                    if (err) {
+                        switch(err){
+                            case 1:
+                                popToast('验证码错误');
+                                break;
+                            case 2:
+                                popToast('无效验证码');
+                                break;
+                            case 3:
+                                popToast('手机号格式不对');
+                                break;
+                            default:
+                                popToast('校验验证码失败');
+                                break;
+                        }
+                        setTimeout(function(){
+                            rePromptVcode(login_name,text);
+                        },1000);
+                    } else {
+                        if (ret.success) {
+                           setTel(login_name,text);
+                        } else {
+                            popToast(ret.info);
+                            setTimeout(function(){
+                                rePromptVcode(login_name,text);
+                            },1000);
+                        }
+                    }
+                });
+           }
+        }
+        
+        
+        /*
+         * 功能：重新弹出输入密码对话框
+         * 作者：张自强
+         * 时间：20180822
+         */
+        function rePromptVcode(login_name,text){
+          api.prompt({
+                title : '提示',
+                msg : '请输入收到的验证码',
+                type : 'number',
+                buttons : ['确定', '取消']
+            }, function(ret, err) {
+                var index = ret.buttonIndex;
+                var vcode_text = ret.text;
+                if(index == 1){
+                    valideVodeForTel(login_name,text,vcode_text);
+                }
+            });
+        }
+        
+        /*
+         * 功能：保存手机号
+         * 作者：张自强
+         * 时间：201800801
+         */
+        function setTel(login_name,text){
+            api.ajax({
+                url : BASE_URL_ACTION + '/per/setTel?login_name=' + login_name + '&tel=' + text,
+                method : 'get',
+                dataType : 'json',
+                timeout : 30,
+                cache : false
+            }, function(ret, err) {
+                api.hideProgress();
+                if (err) {
+                    popToast('对不起，保存失败！');
+                } else {
+                    if (ret.success) {
+                        $api.val($api.byId('tel_hid'), text);
+                        loadMyself();
+                        popToast('保存成功');
+                    } else {
+                        popToast(ret.info);
+                    }
+                }
+            });
+        }
+        function getzxBtn(){
+            commonExecScript(api.winName,'','openzxWin()',0);
+        }
+	</script>
+</html>

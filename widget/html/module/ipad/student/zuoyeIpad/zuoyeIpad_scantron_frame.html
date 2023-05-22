@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>检测</title>
+    <link rel="stylesheet" type="text/css" href="../../../../../css/aui/aui.css" />
+    <link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+    <style>
+    	body{margin:0;padding-bottom:60px;font-size:18px;}
+    	.clearfix:after{content: ' ';display: block;clear: both;visibility: hidden;line-height: 0;height: 0;}
+    	.zuoye-name{line-height:60px;width:100%;}
+    	.plr15{padding:0 15px;}
+    	.plr30{padding:0 30px;}
+    	.title{height:55px;line-height:55px;color:#606060;}
+    	.question-item ul li{float:left;}
+    	.question-item ul li div{margin:0 auto;text-align:center;}
+    	.question-item ul li div.active{color:#ffffff;background-clip:padding-box;}
+    	.footer-div{
+			position:fixed;
+			height:60px;
+			background:#ffffff;
+			display: block;
+			bottom: 0px;
+			width:100%;
+			box-shadow:3px 0 4px #aaaaaa;
+		}
+		.footer-div .wid50{width:50%;line-height:60px;float:left;text-align:center;color:#666666;}
+		.footer-div .wid100{width:100%;line-height:60px;float:left;text-align:center;color:#666666;}
+		.footer-div .wid50.br{border-right:2px solid #E2E2E2;}
+		.content-div{padding-bottom:65px;}
+    </style>
+</head>
+<body class="common-ipad-zuoyeIpadstu">
+	<div class="content-div clearfix">
+<!--		<div class="zuoye-name plr15 clearfix">
+			<div id="title"></div>
+		</div>-->
+		<!--主观题-->
+		<div id="kg_title" class="title plr15">客观题</div>
+		<div class="question-item plr30">
+			<ul id="objective">
+			</ul>
+		</div>
+		<!--//主观题-->
+		<!--客观题-->
+		<div id="zg_title" class="title plr15">主观题</div>
+		<div class="question-item plr30">
+			<ul id="subjective">
+			</ul>
+		</div>
+	</div>
+	<!--//客观题-->
+	<div id="j_footer" class="footer-div">
+	 	<div id="j_continue_btn" class="wid50 br" style="display:none;" onclick="continueQuestion();">继续答题</div>
+	 	<div id="j_submit_btn_50" class="wid50" onclick="submitZy();">提交检测</div>
+	 	<div id="j_submit_btn_100" class="wid100" style="display:none;" onclick="submitZy();">提交检测</div>
+	</div>
+</body>
+<script type="text/javascript" src="../../../../../script/api.js"></script>
+<script type="text/javascript" src="../../../../../script/base_config.js" ></script>
+<script type="text/javascript" src="../../../../../script/plug-in/base64.js" ></script>
+<script type="text/javascript" src="../../../../../script/common/common.js" ></script>
+<script type="text/javascript">
+	var header_h;
+	var BASE_URL_ACTION;
+	var BASE_APP_TYPE;
+	var zy_id;//检测id
+	var no_answer_sort=0;//没有作答的最小的sort
+	var answered_count=0;
+	var list_length;
+	//人person_id
+	var p_id = 0;
+	//身份id
+	var i_id = 0;
+	apiready = function(){
+		commonSetTheme({"level":5,"type":0});	
+		header_h = api.pageParam.header_h;
+		p_id = $api.getStorage('person_id');
+		i_id = $api.getStorage('identity');
+		BASE_URL_ACTION = $api.getStorage('BASE_URL_ACTION');
+		BASE_APP_TYPE = $api.getStorage('BASE_APP_TYPE');
+		zy_id = api.pageParam.zy_id;
+		getStudentZyProgress();
+		if(api.pageParam.is_stop || i_id == 7){
+			$api.css($api.dom('.content-div'),"padding-bottom:0;");
+			$api.css($api.byId('j_footer'),"display:none");
+		}
+	};
+	/*
+	*author:zhaoj
+	*function:客观题选项
+	*date：20160329
+	*/
+	function objective(sort,is_answered,question_id_char){
+		if(is_answered){
+			uploadHtml('objective',sort,'active');
+			answered_count++;
+		}else{
+			uploadHtml('objective',sort,'');
+			if(no_answer_sort ==0){
+				no_answer_sort = sort
+			}else{
+				if(sort<no_answer_sort){
+					no_answer_sort = sort;
+				}
+			}
+		}
+//		for(var i=0;i<9;i++){
+//			if(i==3||i==9){
+//				uploadHtml('objective',i+1,'active');
+//			}else{
+//				uploadHtml('objective',i+1,'');
+//			}
+//		}
+	}
+	/*
+	*author:zhaoj
+	*function:主观题选项
+	*date：20160329
+	*/
+	function subjective(sort,is_answered,question_id_char){
+		if(is_answered){
+			uploadHtml('subjective',sort,'active');
+			answered_count++;
+		}else{
+			uploadHtml('subjective',sort,'');
+			if(no_answer_sort ==0){
+				no_answer_sort = sort
+			}else{
+				if(sort<no_answer_sort){
+					no_answer_sort = sort;
+				}
+			}
+		}
+//		for(var i=0;i<11;i++){
+//			if(i==4||i==7||i==11){
+//				uploadHtml('subjective',i+1,'active');
+//			}else{
+//				uploadHtml('subjective',i+1,'');
+//			}
+//		}
+	}
+	/*
+	*author:zhaoj
+	*function:客观题和客观题选项添加到页面中
+	*date：20160329
+	*/
+	function uploadHtml(divID,sort,css){
+		var liWidth = Math.floor((api.frameWidth-60)/5);
+		var liHeight = liWidth;
+		var divWidth= Math.floor(liWidth*0.8);
+		var divHeight = divWidth;
+		var borderRad = Math.floor(divWidth*0.5);
+		var checkHtml='checkQuestion('+sort+')';
+		var liHtml = '<li style="width:'+liWidth+'px;height:'+liHeight+'px;" onclick='+checkHtml+'>';
+			if(api.frameWidth>360){
+				liHtml = liHtml+'<div class="'+css+'" style="max-width:60px;max-height:60px;line-height:59px;border-radius:30px !important;">'+sort+'</div>';
+			}else{
+				liHtml = liHtml+'<div class="'+css+'" style="width:'+divWidth+'px;height:'+divHeight+'px;border-radius:'+borderRad+'px !important;line-height:'+(divHeight-1)+'px;max-width:48px;max-height:48px;">'+sort+'</div>';
+			}
+			liHtml = liHtml+'</li>';
+		$api.append($api.byId(divID), liHtml);
+	}
+	/*
+	*author:zhaoj
+	*function:获取学生检测作答进度
+	*date：20160405
+	*/
+	function getStudentZyProgress(){
+		api.showProgress({
+			title : '加载中...',
+			text : '请稍候...',
+			modal : false
+		});
+		commonGetStudentInfoByParentId(p_id, i_id, function(is_true, stu_info_json){
+			if(is_true) {
+				api.ajax({
+					url : BASE_URL_ACTION + '/xx/getStudentZyProgress',
+					method : 'post',
+					timeout : 0,
+					dataType : 'json',
+					data : {
+						values : {
+							"random_num" : creatRandomNum(),
+							"student_id" : stu_info_json.student_id,
+							"zy_id" : zy_id
+						}
+					},
+					headers : {
+			'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+		}
+				}, function(ret, err) {
+					api.hideProgress();
+					if (err) {
+						api.hideProgress();
+						api.toast({
+							msg:'答题卡加载失败，请稍候再试。'
+						});
+						noQuestions();
+					} else {
+						if(ret.success){
+							$api.html($api.byId('title'), "已作答 &nbsp;:&nbsp;"+ret.answer_count+'/'+ret.ti_count);
+							var kg_list = ret.kg_que_list;
+							var zg_list = ret.zg_que_list;
+							list_length = kg_list.length+zg_list.length;
+							if(kg_list.length > 0){
+								for(var i = 0; i < kg_list.length ;i++){
+									objective(kg_list[i].sort,kg_list[i].is_answered,kg_list[i].question_id_char)
+								}
+							}else{
+								$api.css($api.byId('kg_title'),'display:none;');
+							}
+							if(zg_list.length > 0){
+								for(var i = 0; i < zg_list.length;i++){
+									subjective(zg_list[i].sort,zg_list[i].is_answered,zg_list[i].question_id_char)
+								}
+							}else{
+								$api.css($api.byId('zg_title'),'display:none;');
+							}
+							if(zg_list.length == 0 && kg_list.length == 0){
+								noQuestions();
+							}
+							//题目全都答完，不能显示继续答题按钮
+							if(list_length == answered_count){
+								$api.css($api.byId('j_submit_btn_50'),'display:none;');
+								$api.css($api.byId('j_submit_btn_100'),'display:block;');
+							}else{
+								$api.css($api.byId('j_continue_btn'),'display:block;');
+							}
+						}else{
+							api.toast({
+								msg:'答题卡加载失败，请稍候再试。'
+							});
+							noQuestions();
+						}
+					}
+				});
+			} else {
+				api.toast({
+					msg:stu_info_json
+				});
+			}	
+		});
+	}
+	/*
+	*author:zhaoj
+	*function:没有题目时
+	*date：20160405
+	*/
+	function noQuestions(){
+		//$api.html($api.byId('title'), "暂无题目");
+		$api.css($api.byId('kg_title'),'display:none;');
+		$api.css($api.byId('zg_title'),'display:none;');
+		$api.css($api.byId('j_continue_btn'),'display:none;');
+		$api.css($api.byId('j_submit_btn_50'),'display:none;');
+		$api.css($api.byId('j_submit_btn_100'),'display:block;');
+	}
+	/*
+	*author:zhaoj
+	*function:提交答案
+	*date：20160405
+	*/
+	function submitZy(){
+		commonGetStudentInfoByParentId(p_id, i_id, function(is_true, stu_info_json){
+			if(is_true) {
+				answeredCount = list_length-answered_count;
+				var tipMsg;
+				if(answeredCount == 0){
+					tipMsg = '确定要提交检测？';
+				}else{
+					tipMsg = '您还有'+answeredCount+'道题没做，确定要提交检测？';
+				}
+				api.confirm({
+				    title: '提示',
+				    msg: tipMsg,
+				    buttons: ['确定','取消']
+				},function( ret, err ){
+				    if( ret.buttonIndex == 1 ){
+				         api.showProgress({
+							title : '提交中...',
+							text : '请稍候...',
+							modal : true
+						});
+						api.ajax({
+							url : BASE_URL_ACTION + '/xx/submitZy',
+							method : 'post',
+							timeout : 30,
+							dataType : 'json',
+							returnAll : false,
+							data : {
+								values : {
+									"random_num" : creatRandomNum(),
+									"student_id" : stu_info_json.student_id,
+									"identity_id" : stu_info_json.roles[0].role_id,
+									"zy_id" : zy_id
+								}
+							}
+						}, function(ret, err) {
+							if (err) {
+								api.hideProgress();
+								popToast('提交检测失败，请重新提交。');
+							} else {
+								if(ret.success){
+									setTimeout(function(){
+										api.execScript({
+											name : 'zuoyeIpad_write_window',
+											script : 'back()'
+										});
+										api.execScript({
+											name : 'zuoyeIpad_details_window',
+											script : 'back()'
+										});
+										var name ='getStudentZylist('+api.pageParam.subject_id+','+api.pageParam.zy_statu+',1,2)';
+										api.execScript({
+											name : 'zuoyeIpad_index_window',
+											frameName : 'zuoyeIpad_index_frame',
+											script : name
+										});
+									},1000);
+									setTimeout(function(){
+										api.hideProgress();
+										api.execScript({
+											name : 'zuoyeIpad_scantron_window',
+											script : 'back()'
+										});
+									},3000);
+								}else{
+									api.hideProgress();
+									popToast('提交检测失败，请重新提交。');
+								}
+							}
+						});
+				    }
+				});
+			} else {
+				api.toast({
+					msg:stu_info_json
+				});
+			}	
+		});
+	}
+	/*
+	*author:zhaoj
+	*function:点击查看具体某一道题目
+	*date：20160408
+	*/
+	function checkQuestion(sort){
+		sort=sort-1;
+		var name = "reWriteQuestion("+sort+")";
+		api.execScript({
+			name : 'zuoyeIpad_write_window',
+			frameName : 'zuoyeIpad_write_frame',
+			script : name
+		});
+		setTimeout(function(){
+			api.execScript({
+				name : 'zuoyeIpad_scantron_window',
+				script : 'back()'
+			});
+		},150);
+	}
+	/*
+	*author:zhaoj
+	*function:点击继续答题按钮
+	*date：20160408
+	*/
+	function continueQuestion(){
+		if(no_answer_sort == 0){
+		}else{
+			checkQuestion(no_answer_sort);
+		}
+	}
+	/*
+	*author:zhaoj
+	*function:弹出Toast提示框
+	*date：20160407
+	*/
+	function popToast(message){
+		api.toast({
+			msg : message,
+			location : 'middle'
+		});
+	}
+</script>
+</html>

@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>检测</title>
+    <link rel="stylesheet" type="text/css" href="../../../../../css/aui/aui.css" />
+    <link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+    <style>
+		body{background:#f6f6f6;padding:0 15px;}
+		.month{margin-top:10px;width:100%;height:65px;background:url(../../../../../image/fun-module/iphone/zuoyebg.png) top repeat-x; }
+		.month .bg{display:inline-block;height:30px;line-height:30px;padding:0 15px 0 0;margin-top:17px; background:#f6f6f6;}
+		.month .bg div{display:inline-block;height:28px;line-height:28px;padding:0 10px;border-radius:1px;color:#ffffff;}
+    	.zuoye-content li{display:block; width :100%; padding:10px 10px 7px 75px; border-radius:1px;margin-bottom:10px; background:url(../../../../../image/fun-module/ipad/zuoye/zy-list.png) no-repeat 5px center;background-size:55px auto;background-color : #ffffff;}
+    	.zuoye-content li .time{height:20px;font-size:12px;color:#9F9F9F;}
+    	.zuoye-content li .time font{font-size:12px;margin-right:5px;}
+    	.zuoye-content li .name{position:relative;color:#686868;line-height:30px;display:inline-block;margin-top:6px;}
+    	.detail{font-size:12px;color:#A9A9A9;}
+    	.wid100{width:100%;}
+    	.wid98{max-width:97%;padding-right:7%;}
+    	.wid60{width:60%;}
+    	.wid40{width:40%;}
+    	.wid2{width:2%;}
+    	.ellipsis{white-space: nowrap;overflow: hidden;text-overflow: ellipsis;}
+    	.stop-day{color:#FFD34F;}
+    	.mgr5{margin-right:5%;}
+    	.fl{float:left;}
+   		.no-data{text-align:center;color:#666;margin-top:15px;}
+   		.correct-rate{max-width:35%;color:#FE6461;font-size:14px;float:right;margin:0 auto;}
+   		.correct-rate div{text-align:center;margin-bottom:2px;}
+   		.write-homework{max-width:35%;display: inline-block;float:right;}
+   		.write-btn{width:62px;border:1px solid #dcdcdc;font-size:14px;color:#686868;text-align: center;height: 32px;line-height: 32px;border-radius: 1px;}
+   		button{padding:0;background:#f9f9f9;}
+   		button.no-click{color:#bbbbbb;}
+ 		.read{position:absolute;top:12px;right:0;width:5px;height:5px;border-radius:3px;background:#ff0000;display:inline-block;}
+   		.now-year{margin-bottom:-10px;padding-top:10px;}
+    </style>
+</head>
+<body class="common-iphone-zuoyeXsJy">
+	<div id="zy_div" class="clearfix"></div>
+	<script type="text/html" id="zy_script">
+		<% if(length == 0){ %>
+			<div class="no-data"><span>暂无检测</span></div>
+		<% }else{ %>
+			<%if(is_live == 0 && now_year != year){%>
+				<div id="j_year_"<%=year%> class="now-year"><%=year%>年</div>
+			<%}%>
+			<%for(var i=0; i<list.length; i++) {%>
+				<%if(list[i].zy_list.length != 0){%>
+					<%if(list[i].is_live == 0){%>
+						<div class="month">
+							<div class="bg">
+								<div id="j_<%=year%>_<%=list[i].num%>">
+									<%=list[i].month%>
+								</div>
+							</div>
+						</div>
+					<%}%>
+					<ul class="zuoye-content">
+					<%for(var j=0; j<list[i].zy_list.length; j++) {%>
+						<%if(list[i].zy_list[j].zy_tijiao_statu){%>
+							<li onclick="openSubmitWin(<%=list[i].zy_list[j].zy_id%>,'<%=list[i].zy_list[j].zy_name_base64%>',<%=list[i].zy_list[j].is_public%>,'<%=list[i].zy_list[j].zy_desc_base64%>','<%=list[i].zy_list[j].rights%>');">
+								<div class="time wid100"><font><%=list[i].zy_list[j].day%>日</font><%=list[i].zy_list[j].time%></div>
+								<div class="name wid60 ellipsis"><%=list[i].zy_list[j].zy_name%></div>
+								<div class="correct-rate">
+									<div class="clearfix"><%=list[i].zy_list[j].rights%></div>
+									正确率
+								</div>
+								<div class="detail wid100">
+									<span class="tijiao mgr5">共<font><%=list[i].zy_list[j].ti_count%></font>道题</span>
+									<%if(list[i].zy_list[j].is_piyue==2){%>
+										<span  class="tip">已批阅</span>
+									<%}else if(list[i].zy_list[j].is_piyue==1){%>
+										<span  class="tip">批阅中</span>
+									<%}else{%>
+										<span  class="tip">未批阅</span>
+									<%}%>
+								</div>
+							</li>					
+						<%}else{%>	
+							<li  onclick="isFirstRead(<%=list[i].zy_list[j].is_read%>,<%=list[i].zy_list[j].zy_id%>,'<%=list[i].zy_list[j].zy_desc_base64%>','<%=list[i].zy_list[j].zy_name_base64%>',<%=list[i].zy_list[j].is_stop%>);">
+								<div class="time wid100">
+									<font><%=list[i].zy_list[j].day%>日</font>
+									<%=list[i].zy_list[j].time%>
+								</div>
+								<div class="name wid98 ellipsis">
+									<%=list[i].zy_list[j].zy_name%>
+									<%if(!list[i].zy_list[j].is_read){%>
+										<div class="read ellipsis"></div>
+									<%}%>
+								</div>
+								<div class="detail wid100">
+									<span class="tijiao mgr5">共<font><%=list[i].zy_list[j].ti_count%></font>道题</span>
+									<%if(list[i].zy_list[j].is_stop){%>
+										<span  class="tip stop-day">已截止</span>
+									<%}else{%>
+										<span class="tip remain-day"><%=list[i].zy_list[j].time_slot%></span>
+									<%}%>
+								</div>
+							</li>
+						<%}%>
+					<%}%>
+					</ul>
+				<%}%>
+			<% } %>
+		<% } %>
+	</script>
+<!--	<div class="month first-month">
+		<div class="bg">
+			<div id="j_month_4">
+				4月
+			</div>
+		</div>
+	</div>
+	<ul class="zuoye-content">
+		<li  onclick="openWriteWin(event);">
+			<div class="time wid100">
+				<font>17日</font>
+				10:10
+			</div>
+			<div class="name wid100 ellipsis">有理数的几个概念学习,相交线与平行线</div>
+			<div class="read ellipsis"></div>
+			<div class="detail wid100">
+				<span class="tijiao mgr5">已答：<font>0/15</font></span>
+				<span class="tip remain-day">剩余：1天2小时</span>
+			</div>
+		</li>
+		<li onclick="openSubmitWin();">
+			<div class="time wid100"><font>17日</font>10:10</div>
+			<div class="name wid60 ellipsis">有理数乘除法的学习</div>
+			<div class="correct-rate">
+				<div class="clearfix">50%</div>
+				正确率
+			</div>
+			<div class="detail wid100">
+				<span class="tijiao mgr5">已答：<font>10/15</font></span>
+				<span  class="tip">教师已批</span>
+			</div>
+		</li>
+	</ul>
+	<div class="month">
+		<div class="bg">
+			<div id="j_month_3">
+				3月
+			</div>
+		</div>
+	</div>
+	<ul class="zuoye-content">
+		<li onclick="openSubmitWin();">
+			<div class="time wid100"><font>17日</font>10:10</div>
+			<div class="name wid60 ellipsis">多元一次方程组学习</div>
+			<div class="correct-rate">
+				<div class="clearfix">75%</div>
+				正确率
+			</div>
+			<div class="detail wid100">
+				<span class="tijiao mgr5">已答：<font>10/15</font></span>
+				<span  class="tip">教师未批</span>
+			</div>
+		</li>
+		<li  onclick="openWriteWin(event);">
+			<div class="time wid100">
+				<font>17日</font>
+				10:10
+			</div>
+			<div class="name wid100 ellipsis">一次不等式与不等式组学习</div>
+			<div class="detail wid100">
+				<span class="tip mgr5">已答：<font>10/15</font></span>
+				<span  class="tip mgr5">未提交</span>
+				<span  class="tip stop-day">已截止</span>
+			</div>
+		</li>
+	</ul>-->
+</body>
+<script type="text/javascript" src="../../../../../script/api.js"></script>
+<script type="text/javascript" src="../../../../../script/base_config.js" ></script>
+<script type="text/javascript" src="../../../../../script/common/common.js" ></script>
+<script type="text/javascript" src="../../../../../script/plug-in/template.js" ></script>
+<script type="text/javascript" src="../../../../../script/plug-in/base64.js" ></script>
+<script type="text/javascript">
+	var header_h;
+	var BASE_URL_ACTION;
+	var BASE_APP_TYPE;
+	var zy_data;//整理之后的检测列表
+	var currentPage;//当前页码
+	var subject_id;//学科id
+	var zy_statu;//检测的状态，0代表全部，1代表未提交。。。
+	var totalPage;//总页数
+	var subject_items;//学科数组
+	var subjectIdArray;//学科对应的id值
+	var nowTime;
+	var nowMillisecond;
+	//人person_id
+	var p_id = 0;
+	//身份id
+	var i_id = 0;
+	var nowYear;//获取当前年份
+	apiready = function(){
+	    commonSetTheme({"level":5,"type":0});
+		header_h = api.pageParam.header_h;
+		p_id = $api.getStorage('person_id');
+		i_id = $api.getStorage('identity');
+		BASE_APP_TYPE = $api.getStorage('BASE_APP_TYPE');
+		//默认选择第一个
+		$api.setStorage('navbar_selected', 0);
+		getCurrentDate(function(is_true){
+			nowYear = nowTime.getFullYear();
+			initZyData();
+			if(is_true) {
+				getZySubjectList();
+			}
+		});
+		currentPage = 1;
+		//下拉刷新
+		refreshDataInfo();
+		//上拉加载
+		scrollBottomReload();
+	};
+	/*
+	*author:zhaoj
+	*function:初始化检测数据
+	*date：20160324
+	*/
+	function initZyData(){
+		zy_data={"list":[],"length":0,'now_year':nowYear,'year':'','is_live':''};
+	}
+
+	/*
+	*author:zhaoj
+	*function:打开检测详情页面
+	*date：20160324
+	*/
+	function openSubmitWin(zy_id,zy_name,is_public,zy_desc,rights){
+	    var pageParamJson = {
+	        'header_h' : header_h,
+            'zy_id' :zy_id,
+            'zy_name' : zy_name,
+            'is_public' : is_public,
+            'zy_desc' : zy_desc,
+            'rights' : rights
+	    }
+	    commonOpenWin('zuoyeXsJy_submit_window', 'zuoyeXsJy_submit_window.html', false, false, pageParamJson);
+	}
+	/*
+	*author:zhaoj
+	*function:学生是否是第一次查看这个检测
+	*date：20160405
+	*/
+	function isFirstRead(is_read,zy_id,zy_desc,zy_name,is_stop){
+		openDetailsWin(zy_id,zy_desc,zy_name,is_stop,is_read);
+	}
+	/*
+	*author:zhaoj
+	*function:打开写检测页面
+	*date：20160325
+	*/
+	function openWriteWin(zy_id,zy_desc,zy_name,is_stop){
+	    var pageParamJson = {
+            'header_h' : header_h,
+            'zy_id' :zy_id,
+            'zy_name' : zy_name,
+            'zy_desc' : zy_desc,
+            'subject_id' : subject_id,
+            'zy_statu' : zy_statu,
+            'is_stop' :is_stop
+        }
+        commonOpenWin('zuoyeXsJy_write_window', 'zuoyeXsJy_write_window.html', false, false, pageParamJson);
+	}
+	/*
+	*author:zhaoj
+	*function:获取检测列表
+	*date：20160331
+	*/
+	function getStudentZylist(subjectId,zyStatu,current_Page,is_showProgress){
+		commonExecScript('zuoyeXsJy_index_window','','changeZyStatu('+zyStatu+')',0);
+		commonGetStudentInfoByParentId(p_id, i_id, function(is_true, stu_info_json){
+			if(is_true) {
+				if(is_showProgress==1){
+					showSelfProgress('加载中...');
+				}else if(is_showProgress==2){
+				    showSelfProgress('刷新中...');
+				}
+				zy_statu = zyStatu;
+				setZyData(current_Page,zy_data.year);
+				api.ajax({
+					url : BASE_URL_ACTION + '/xx/getStudentZylist',
+					method : 'get',
+					timeout : 30,
+					dataType : 'json',
+					returnAll : false,
+					data : {
+						values : {
+							"random_num" : creatRandomNum(),
+							"student_id" : stu_info_json.student_id,
+							"subject_id" : subjectId,
+							"zy_statu" : zyStatu,
+							"pageSize" : BASE_PAGE_SIZE,
+							"pageNumber" :current_Page,
+							"p_type" : 2,
+							"zy_type" : 1,
+							"keyword" : ""
+						}
+					}
+				}, function(ret, err) {
+					api.hideProgress();
+					if (err) {
+					} else {
+						if(ret.success){
+							var list = ret.zy_list;
+							var nowYear = nowTime.getFullYear();
+							var nowMonth = nowTime.getMonth()+1;
+							var flag=true;
+							if(list.length > 0){
+								for(var i = 0; i < list.length; i++){
+									var startTime = list[i].start_time.replace(/\-/g, "/");
+									startTime = Date.parse(startTime);
+									//起始时间小于或等于当前时间，并且是教师发布的
+									if(startTime <= nowMillisecond && list[i].is_xiafa){
+										var zyYear = list[i].start_time.substring(0,4);
+										var zyMonth = list[i].start_time.substring(5,7);
+										var page=currentPage;//判断同一页面中，分页为1时，第一次切换年份，从头开始渲染数据，第二次切换年份，往后对接数据
+										if(zy_data.year==''||zyYear !=zy_data.year){
+											if(zy_data.year != ''){
+												if(currentPage == 1){
+													flag == false ? page = 2 : page=1;//flag:true代表第一次切换年份，flag：false代表第二次切换年份
+													flag=false;
+												}
+												addTemplateHtml('zy_div', 'zy_script',zy_data,page);
+											}
+											zy_data.year=zyYear;
+											setZyData(1,zyYear);
+										}
+										totalPage = ret.totalPage;
+					                    zy_data.length = ret.totalRow;
+										var param = new Object();
+										//对比现在时间，检测是否截止
+										var endTime = list[i].end_time.replace(/\-/g, "/");
+										endTime = Date.parse(endTime);
+										if(endTime > nowMillisecond){
+											param.is_stop = 0;
+											//获取剩余时间差
+											param.time_slot = GetDateDiff(list[i].end_time);
+										}else{
+											param.is_stop = 1;
+										}
+										param.rights = list[i].rights+'%';
+										param.zy_tijiao_statu = list[i].zy_tijiao_statu;
+										param.day = list[i].start_time.substring(8,10);
+										param.time = list[i].start_time.substring(11,16);
+										param.is_xiafa = list[i].is_xiafa;
+										param.zy_name = list[i].zy_name;
+										param.zy_name_base64 = Base64.encode(list[i].zy_name);
+										param.zy_id = list[i].zy_id;
+										param.zy_desc = list[i].zy_desc;
+										param.zy_desc_base64 = Base64.encode(list[i].zy_desc);
+										param.is_read = list[i].is_read;
+										if(list[i].rights *1>= 0){
+											param.rights = list[i].rights+'%';
+										}else{
+											param.rights = list[i].rights;
+										}
+										param.answered_count = list[i].answered_count;
+										param.ti_count = list[i].ti_count;
+										param.is_piyue = list[i].is_piyue;
+										param.is_public = list[i].is_public;
+										for(var j = 0; j<zy_data.list.length;j++){
+											if(zy_data.list[j].num == zyMonth*1){
+												zy_data.list[j].zy_list.push(param);
+											}
+										}
+									}	
+								}
+							}
+							if(flag){
+								addTemplateHtml('zy_div', 'zy_script',zy_data,current_Page);
+							}else{
+								addTemplateHtml('zy_div', 'zy_script',zy_data,2);
+							}
+						}
+					}
+				});
+				//通知顶部下拉刷新数据加载完毕，组件会恢复到默认状态
+				commonControlRefresh();
+			} else {
+				api.toast({
+					msg:stu_info_json
+				});
+			}	
+		});
+	}
+	/*
+	 *author:zhaoj
+	 *function:渲染html
+	 *date：20160331
+	 */
+	function addTemplateHtml(div_id, script_id, data,current_Page) {
+		var html_type = template.render(script_id, data);
+		if (currentPage == 1 && current_Page == 1) {
+			document.getElementById(div_id).innerHTML = html_type;
+		} else {
+			$api.append($api.byId(div_id), html_type);
+		}
+	}
+	/*
+	* 获得时间差,时间格式为 年-月-日 小时:分钟:秒 或者 年/月/日 小时：分钟：秒
+	* 其中，年月日为全格式，例如 ： 2010-10-12 01:00:00
+	* 返回精度为：秒，分，小时，天
+	*/
+	function GetDateDiff(endTime) {
+		var date2=new Date(endTime.replace(/\-/g, "/"));//new Date();    //结束时间
+		var date3=date2.getTime()-nowMillisecond;  //时间差的毫秒数
+	
+		//------------------------------
+		//计算出相差天数
+		var days=Math.floor(date3/(24*3600*1000))
+		 
+		//计算出小时数
+		var leave1=date3%(24*3600*1000)    //计算天数后剩余的毫秒数
+		var hours=Math.floor(leave1/(3600*1000))
+		//计算相差分钟数
+		var leave2=leave1%(3600*1000)        //计算小时数后剩余的毫秒数
+		var minutes=Math.floor(leave2/(60*1000))
+		//计算相差秒数
+		var leave3=leave2%(60*1000)      //计算分钟数后剩余的毫秒数
+		var seconds=Math.round(leave3/1000)
+		var time;
+		if(days>0){
+			time = "剩余 ："+days+"天 "+hours+"小时 "+minutes+"分钟";
+		}else if(days == 0 && hours > 0){
+			time = "剩余 ："+hours+"小时 "+minutes+"分钟";
+		}else{
+			time = "剩余 ："+minutes+"分钟";
+		}
+		return time;
+	}
+	/*
+	*author:zhaoj
+	*function:设置检测数据的初始化
+	*date：20160401
+	*/
+	function setZyData(type,year){
+		if(type!=1){
+			zy_data.is_live=1;
+		}else{
+			zy_data.is_live=0;
+		}
+		zy_data.list=[];
+		if(type == 1){
+			for(var i = 12; i > 0; i-- ){
+				var k = i;
+				var param = new Object();
+				param.month = k+'月';
+				param.num = k;
+				param.is_live = 0;
+				param.zy_list = [];
+				zy_data.list.push(param);
+			}
+		}else{
+			for(var i = 12; i > 0; i-- ){
+				var k = i;
+				if(!!document.getElementById("j_"+year+"_"+k)){
+					var param = new Object();
+					param.month = k+'月';
+					param.num = k;
+					param.is_live = 1;
+					param.zy_list = [];
+				}else{
+					var param = new Object();
+					param.month = k+'月';
+					param.num = k;
+					param.is_live = 0;
+					param.zy_list = [];
+				}
+				zy_data.list.push(param);
+			}
+		}
+	}
+	/*
+	*author:zhaoj
+	*function:学科导航显示
+	*date：20160329
+	*/
+	function openNavigationBar(subject_items) {
+		//关闭滑动条
+		commonCloseNavigationBar();
+		var params = {
+			y : header_h,
+			items : subject_items,
+			winName:'zuoyeXsJy_index_window',
+			frameName:'zuoyeXsJy_index_frame',
+			file_level:2
+		};
+		commonMyNavigationBar(params);
+	}
+	/*
+	*author:zhaoj
+	*function:学科导航回调
+	*date：20160329
+	*/
+	function callBackNew(id,index) {
+		getCurrentDate(function(is_true){
+			var nowYear = nowTime.getFullYear();
+			zy_data={"list":[],"length":0,'now_year':nowYear,'year':'','is_live':''};
+			if(is_true) {
+				getStudentZylist(id,0,1,1);
+		        subject_id = id;
+				$api.setStorage('navbar_selected', index);
+			}
+		});
+	}
+	/*
+	*author:zhaoj
+	*function:获取学生哪些学科下有检测
+	*date：20160331
+	*/
+	function getZySubjectList(){
+		commonGetStudentInfoByParentId(p_id, i_id, function(is_true, stu_info_json){
+			if(is_true) {
+				showSelfProgress('加载中...');
+				subject_items=[{
+					"title":"全部",
+					"id":0
+				}];
+				api.ajax({
+					url : BASE_URL_ACTION + '/xx/getZySubjectList',
+					method : 'get',
+					timeout : 30,
+					dataType : 'json',
+					returnAll : false,
+					data : {
+						values : {
+							"random_num" : creatRandomNum(),
+							"student_id" : stu_info_json.student_id,
+							"zy_type" : 1
+						}
+					}
+				}, function(ret, err) {
+					if (err) {
+					} else {
+						if(ret.success){
+							var list = ret.subject_list;
+							if(list.length>0){
+								for(var i = 0; i < list.length; i++){
+									var param = new Object();
+									param.title = list[i].subject_name;
+									param.id = list[i].subject_id;
+									subject_items.push(param);
+								}
+							}
+						}
+					}
+					openNavigationBar(subject_items);
+				});
+			} else {
+				api.toast({
+					msg:stu_info_json
+				});
+			}	
+		});
+	}
+	/*
+	*author:zhaoj
+	*function:打开下拉菜单
+	*date：20160328
+	*/
+	function openMenu(statu){
+	var header_ha = header_h
+	   if($api.getStorage('identity')==7){
+                header_ha=header_h-50;
+            }
+		api.openFrame({
+            name: 'zuoyeXsJy_index_menu_frame',
+            url: 'zuoyeXsJy_index_menu_frame.html',
+            bounces: false,
+            rect: {
+                x: 0,
+                y: 0,
+                w: 'auto',
+                h: 'auto'
+            },
+            bgColor : 'rgba(0,0,0,0)',
+            pageParam : {
+				header_h : header_ha,
+				subject_id : subject_id,
+				statu : statu
+			},
+            reload: true
+        });
+	}
+	
+	/*
+	*author:zhaoj
+	*function:打开检测详情页面
+	*date：20160324
+	*/
+	function openDetailsWin(zy_id,zy_desc,zy_name,is_stop,is_read){
+	    var pageParamJson = {
+	        'header_h' : header_h,
+            'zy_id' : zy_id,
+            'zy_desc' : zy_desc,
+            'zy_name' :zy_name,
+            'subject_id' : subject_id,
+            'zy_statu' : zy_statu,
+            'is_stop' :is_stop,
+            'type':1,
+            'is_read':is_read
+	    }
+	    commonOpenWin('zuoyeXsJy_details_window', 'zuoyeXsJy_details_window.html', false, false, pageParamJson);
+	}
+	/**
+	 * 下拉刷新
+	 * 周枫
+	 * 2016.2.29
+	 */
+	function refreshDataInfo() {
+		//绑定下拉刷新历史会话事件
+		api.setRefreshHeaderInfo({
+			visible : true,
+			loadingImg : 'widget://image/local_icon_refresh.png',
+			bgColor : '#F5F5F5',
+			textColor : '#8E8E8E',
+			textDown : '下拉加载更多...',
+			textUp : '松开加载...',
+			showTime : true
+		}, function(ret, err) {
+			//从服务器加载数据，完成后调用commonControlRefresh()方法恢复组件到默认状态
+			//调用获取历史会话监听
+			//打开滑动条
+			getCurrentDate(function(is_true){
+				if(is_true) {
+					zy_data.year='';
+					zy_data.is_live='';
+					currentPage =1;
+					getStudentZylist(subject_id,zy_statu,currentPage,1);
+				}
+			});
+		});
+	}
+	/**
+	 * 上拉刷新页面数据
+	 * 周枫
+	 * 2015.11.24
+	 */
+	function scrollBottomReload() {
+		//下移到底部：
+		api.addEventListener({
+			name : 'scrolltobottom',
+			extra : {
+				threshold : 100 //设置距离底部多少距离时触发，默认值为0，数字类型
+			}
+		}, function(ret, err) {
+			if ((currentPage + 1) <= totalPage) {
+				currentPage = currentPage + 1;
+				getStudentZylist(subject_id,zy_statu,currentPage,1);
+				// 页码+1
+			} else {
+				api.toast({
+					msg : '已加载全部数据',
+					location : 'bottom'
+				});
+			}
+		});
+	}
+	/*
+	*author:zhaoj
+	*function:获取当前时间
+	*date：20160420
+	*/
+	function getCurrentDate(callback){
+		api.ajax({
+			url :BASE_URL_ACTION + '/xx/getCurrentDate',
+			method : 'get',
+			timeout : 30,
+			dataType : 'json',
+			returnAll : false,
+			data : {
+				values : {
+					"random_num" : creatRandomNum()
+				}
+			}
+		}, function(ret, err) {
+			if (err) {
+				nowTime = new Date();
+				nowMillisecond = Date.parse(nowTime);
+			} else {
+				if(ret.success){
+					nowTime = new Date(ret.dateStr2.replace(/\-/g, "/"));
+					nowMillisecond = Date.parse(new Date(ret.dateStr2.replace(/\-/g, "/")));	
+				}else{
+					nowTime = new Date();
+					nowMillisecond = Date.parse(nowTime);
+				}
+			}
+			callback(true);
+		});
+	}
+</script>
+</html>

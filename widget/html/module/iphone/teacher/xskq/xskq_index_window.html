@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<!-- html5：在创建html时为了防止页面缩放等不兼容效果，要创建个viewport  -->
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<!-- 在IOS设备上，有时会将数字转为手机号，这里也要禁止下 -->
+		<meta name="format-detection" content="telephone=no"/>
+		<title>学生考勤</title>
+		<link rel="stylesheet" type="text/css" href="../../../../../css/aui/aui.css" />
+		<link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+		<style>   
+   		.menu{display:inline-block;width:28px;height:100%;background:url(../../../../../image/fun-module/iphone/kaoqin/static.png) 10px 13px no-repeat;background-size: 16px 16px;}
+  
+    </style>
+</head>
+<body>
+	<div id="wrap">
+		<header class="aui-bar aui-bar-nav aui-bar-primary" id="aui-header">
+			<div id="cloud" class="topbar activebar">
+				<div id="back" class="back" onclick="back();" tapmode="">
+					<i class="aui-iconfont aui-icon-left"></i>返回
+				</div>
+				<div  class="mTitle" id="mTitle">
+					学生考勤
+				</div>
+				<div class="win-menu">
+					<a id='menu' class="menu fr" tapmode="tap-active" onclick="getTj()"></a>					
+				</div>
+			</div>
+		</header>
+</body>
+<script type="text/javascript" src="../../../../../script/api.js"></script>
+<script type="text/javascript" src="../../../../../script/plug-in/base64.js" ></script>
+<script type="text/javascript" src="../../../../../script/base_config.js" ></script>
+<script type="text/javascript" src="../../../../../script/common/common.js"></script>
+<script type="text/javascript" src="../../../../../script/assembly/tongjiData.js"></script>
+<script type="text/javascript">
+	apiready = function(){
+		commonSetTheme({"level":5,"type":0});
+		commonBackForAndroid();//安卓关闭
+		commonIosAuiHeader();//定位header位置，留出上面电池等空隙，苹果需要
+		openXskqFrame();
+		
+	};
+	/*
+     *返回
+     * cui
+     * 2018.03.15
+     */
+	function back() {
+		api.closeWin();
+    }
+    /*
+    *打开frame
+    * cui
+    * 2017.12.18
+    */
+	function openXskqFrame(){
+	  	var header_h = api.pageParam.header_h;
+	  	var pageParamJson = {
+	  	'header_h':header_h
+	  	};
+		commonOpenFrame('xskq_index_frame', 'xskq_index_frame.html',header_h+45, false, false,"#F1F1F2",pageParamJson);	
+	}	
+	 /*
+    *打开统计win
+    * cui
+    * 2017.12.18
+    */
+	function getTj(){
+	  	commonExecScript(api.winName,'xskq_index_frame','getTj()',1);
+	}	
+</script>
+</html>

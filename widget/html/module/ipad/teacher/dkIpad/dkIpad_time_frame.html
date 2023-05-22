@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<title>title</title>
+<!--		<link rel="stylesheet" type="text/css" href="../../css/aui/aui.css" />-->
+		<link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+		<style>
+			body {
+				padding: 0;
+				margin: 0;
+				width:100%;
+				height:100%;
+			}
+			.shadow{position:absolute;left:0;top:0;bottom:0;width:100%;height:100%;z-index: 1;background:rgba(0,0,0,0.5);}
+			.title {
+				position: absolute;
+				top:0;
+				background: #ffffff;
+				
+				width: 100%;
+				height: 50px;
+				line-height: 50px;
+				font-size: 20px;
+				z-index: 9999;
+				
+			}
+			.time-back {
+				width: 100%;
+				background: #fff;
+				height: 137px;
+				position: absolute;
+				z-index:2;
+				top:52px;
+			}
+			.btn {
+				position: absolute; 
+				border-top: 1px solid #cccccc;
+				height: 50px;
+				background: #ffffff;
+				width: 100%;
+				bottom: 0;
+				z-index: 2;
+			}
+			.submit {
+				width: 100%;
+				text-align: center;
+				line-height: 50px;
+			}
+			.aui-content{height:240px;position:relative;}
+			.content{position:absolute;top:50%;width:80%;left:10%;margin-top:-120px;}
+		</style>
+	</head>
+	<body class="common-ipad-dakaIpad-tea">
+		<div id="j_shadow" class="shadow" tapmode onclick="api.closeFrame({name:'dkIpad_time_frame'});"></div>
+		<div class="content">
+			<div class="aui-content">
+				<div id='title' class="title">
+					&nbsp;&nbsp;选择年月
+				</div>
+				<div id="time_back" class="time-back"></div>
+				<div id="btn" class="btn">
+					<div id="submit" class="submit" tapmode="" onclick="submit()">
+						确定
+					</div>
+				</div>
+			</div>
+		</div>
+	</body>
+	<script type="text/javascript" src="../../../../../script/api.js"></script>
+	<script type="text/javascript" src="../../../../../script/common/common.js"></script>
+	<script type="text/javascript">	
+		var flag = true;
+		var selectFlag = false;
+		var year;
+		var month;
+		var yearInit;
+		var monthInit;
+		var timeArray;
+		var yearScope;
+		var monthScope=[];
+		apiready = function() {
+			timeArray = [api.pageParam.year,api.pageParam.month];
+			getNowTime();
+			yearScope="1999-"+yearInit;
+			//打开选择时间组件
+			openUICustomPicker();
+		};
+		function openUICustomPicker(){
+			commonSetTheme({"level":5,"type":0});
+			var UICustomPicker = api.require('UICustomPicker');
+			var heigth = api.winHeight*0.5 -68;
+			UICustomPicker.open({
+			    rect: {
+			        x: api.winWidth*0.1,
+			        y: heigth,
+			        w: api.winWidth*0.70,
+			        h: 137
+			    },
+			    styles: {
+			        bg: 'rgba(0,0,0,0)',
+			        normalColor: '#959595',
+			        selectedColor: '#34A8FA',
+			        selectedSize: 30,
+			        tagColor: '#959595',
+			        tagSize: 15
+			    },
+			    data: [{
+			        tag: '年',
+			        scope: yearScope
+			    }, {
+			        tag: '月',
+			        scope: ['1','2','3','4','5','6','7','8','9','10','11','12']
+			    }],
+			    rows: 1,
+			    fixedOn: api.frameName,
+			    autoHide:false,
+			    fixed: true
+			}, function(ret, err){
+			    if( ret ){
+			    	ui_id = ret.id;
+			    	if(flag){
+			    		UICustomPicker.setValue({
+						    id: ui_id,
+						    data: timeArray
+						});
+						flag = false;
+			    	}
+			    	if(ret.eventType == "selected"){
+				       	if(ret.data[0]==yearInit*1 && ret.data[1] > monthInit*1){
+				       		popAlert('暂不支持未来月份，请重新选择!');
+				       	}else{
+				       		selectFlag = true;
+			    			year = ret.data[0];
+				       		month = ret.data[1];
+				       	}
+			    	}
+			    }
+			});
+		}
+		/*
+		*author:zhaoj
+		*function:获取当前时间,返回年月日
+		*date：20160622
+		*/
+		function getNowTime(){
+			time = new Date();
+			yearInit = time.getFullYear();
+			monthInit = time.getMonth() + 1;
+		
+		}
+		/*
+		*author:zhaoj
+		*function:设置时间
+		*date：20160803
+		*/
+		function submit(){
+			if(selectFlag){
+				commonExecScript('dkIpad_index_window','dkIpad_index_frame','setTimeValue('+year+','+month+');',1);
+				commonExecScript('dkIpad_index_window','','reBackType("index");',0);
+				setTimeout(function(){
+					api.closeFrame({name:'dkIpad_time_frame'});
+				},100);
+			}else{
+				api.closeFrame({name:'dkIpad_time_frame'});
+			}
+		}
+	</script>
+</html>

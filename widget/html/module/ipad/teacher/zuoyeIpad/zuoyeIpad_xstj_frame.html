@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>试题统计</title>
+    <link rel="stylesheet" type="text/css" href="../../../../../css/aui/aui.css"/>
+    <link id="j_theme_base" rel="stylesheet" type="text/css" href="" /><style>
+    	body{background:#f6f6f6;color:#333;}
+
+    	.title{padding:20px 0 5px 10px;font-size:14px;border-bottom:1px solid #efefef;border-top:1px solid #efefef;color:#484848;border-left:0 !important;}
+    	.content li{list-style:none;border-bottom:1px solid #efefef;padding:10px 15px;background:#ffffff;margin-bottom:10px;}
+    	.top{padding-bottom:10px;border-bottom:1px dashed #efefef;}
+    	.head-img{width:58px;height:50px;float:left;}
+    	.person-name{line-height:28px;}
+    	.rate{font-size:13px;color:#9F9F9F;min-width:85px;float:left;padding-top:2px;}
+    	.rate font{color:#ff0000;}
+    	.top{padding-bottom:8px;border-bottom:1px dashed #efefef;}
+    	.head-img{width:58px;height:50px;float:left;}
+    	.head-img img{width:50px;height:50px;border-radius:25px;}
+    	.person-name{line-height:28px;}
+    	.no-submit,.submit,.rate{font-size:13px;color:#9F9F9F;float:left;padding-right:12px;padding-top:3px;}
+    	.rate font{color:#ff0000;}
+    	.tx{max-width:50%;}
+    	.bottom div{margin-top:8px;font-size:15px;color:#9F9F9F;}
+    	.bottom div font{float:right;color:#333;}
+    	.submit{color:#FFD34F;}
+    </style>
+</head>
+<body class="common-ipad-zuoyeIpad-tea">
+	<div class="title">按学生分析</div>
+	<ul id="div_body" class="content"></ul>
+	<script type="text/html" id="div_script">
+		<%if(stu_list.length==0){%>
+			<div class="no-data">暂无学生信息</div>
+		<%}else{%>
+			<%for(var i = 0 ;i < stu_list.length; i++){%>
+				<li <%if(stu_list[i].zy_tijiao_statu==1){%>onclick="openStListWindow(<%=stu_list[i].student_id%>,'<%=stu_list[i].avatar_file_id%>','<%=stu_list[i].student_name%>');"<%}else{%>onclick="popToast('该同学还未提交检测！');"<%}%>>
+					<div class="top clearfix">
+						<div class="head-img">
+							<img onerror="this.src='../../../image/common/header.png'" src="<%=stu_list[i].avatar_file_id%>" />
+						</div>
+						<div class="person-name"><%=stu_list[i].student_name%></div>
+						<%if(stu_list[i].rights=='--'){%>
+							<div class="rate">正确率：<font><%=stu_list[i].rights%></font></div>
+						<%}else{%>
+							<div class="rate">正确率：<font><%=stu_list[i].rights%>%</font></div>
+						<%}%>
+						<%if(stu_list[i].zy_tijiao_statu==1){%>
+							<div class="submit">已提交</div>
+						<%}else{%>
+							<div class="no-submit">未提交</div>
+						<%}%>
+					</div>
+					<div class="bottom">
+						<div>零分（未作答）题数<font><%=stu_list[i].no_answer_count%></font></div>
+						<div>零分（做错）题数<font><%=stu_list[i].score_wrong_count%></font></div>
+						<div>满分题数<font><%=stu_list[i].score_rirht_count%></font></div>
+						<div>其他得分题数<font><%=stu_list[i].score_other_count%></font></div>
+					</div>
+				</li>
+			<%}%>
+		<%}%>
+		</script>
+</body>
+<script type="text/javascript" src="../../../../../script/api.js"></script>
+<script type="text/javascript" src="../../../../../script/base_config.js" ></script>
+<script type="text/javascript" src="../../../../../script/plug-in/template.js" ></script>
+<script type="text/javascript" src="../../../../../script/common/common.js" ></script>
+<script type="text/javascript" src="../../../../../script/common/jszy_jy_common.js" ></script>
+<script type="text/javascript">
+	var n_id = 0;//定义滑动条id
+	var bar_ids =[];//滑动条项目对应的id
+	var BASE_URL_ACTION;
+	var BASE_APP_TYPE;
+	var zy_id;//检测id
+	var obj_id;//--班级/群组ID
+	var obj_type = -1;//-1 代表全部，1班级2群组
+	var bar_type=[];
+	apiready = function(){
+		commonSetTheme({"level":5,"type":0});
+		header_h = api.pageParam.header_h;
+		zy_id = api.pageParam.zy_id;
+		BASE_URL_ACTION = $api.getStorage('BASE_URL_ACTION');
+		BASE_APP_TYPE = $api.getStorage('BASE_APP_TYPE');
+	};
+	/*
+	*作者:zhaoj
+	*功能:隐藏数据
+	*日期：20160927
+	*/
+	function hiddenData(){
+		$api.css($api.byId('div_body'),'display:none');
+	}
+	/*
+	*作者:zhaoj
+	*功能:滑动条点击回调函数
+	*日期：20160912
+	*/
+	function callBackNew(id, index) {
+		var bar_index = index;
+		obj_id = bar_ids[bar_index];
+		obj_type =bar_type[bar_index];
+		getZyPublishSubInfo(bar_index);
+	}
+	/*
+	*作者:zhaoj
+	*功能:获取提交详细信息
+	*日期：20160923
+	*/
+	function getZyPublishSubInfo(is_show){
+		is_show !=0 ? showSelfProgress('加载中...'):'';
+		api.ajax({
+			url : BASE_URL_ACTION + '/xx/getZyPublishSubInfo?zy_id='+zy_id+'&obj_type='+obj_type+'&obj_id='+obj_id+'&zy_tijiao_statu=-1&random='+creatRandomNum(),
+			method : 'get',
+			timeout : 30,
+			dataType : 'json',
+			cache : false,
+		}, function(ret, err) {
+			if (err) {
+				api.hideProgress();
+				popToast('获取试题信息失败');
+			} else {
+				if(ret){
+					getZyTongJiByQue(ret.pub_count);
+				}else{
+					api.hideProgress();
+					popToast('获取试题信息失败');
+				}
+			}
+		});
+	}
+	/*
+	*作者:zhaoj
+	*功能:获取试题详细信息
+	*日期：20160921
+	*/
+	function getZyTongJiByQue(totalRow){
+		api.ajax({
+			url : BASE_URL_ACTION + '/xx/getZyTongJiByStu?zy_id='+zy_id+'&obj_type='+obj_type+'&obj_id='+obj_id+'&totalRow='+totalRow+'&pageNumber=1&pageSize='+totalRow+'&random='+creatRandomNum(),
+			method : 'get',
+			timeout : 30,
+			dataType : 'json',
+			cache : false,
+		}, function(ret, err) {
+			api.hideProgress();
+			if (err) {
+				popToast('获取试题信息失败');
+			} else {
+				if(ret){
+					for(var i = 0; i < ret.stu_list.length; i++){
+						var img_url;
+						if(BASE_APP_TYPE == 1){
+							img_url = BASE_IMAGE_PRE + url_path_suffix+ ret.stu_list[i].avatar_file_id.substring(0, 2) + "/" + ret.stu_list[i].avatar_file_id + commonReturnPhotoCutSize(0);
+						}else{
+							img_url = BASE_URL_ACTION + BASE_IMAGE_BEGIN + ret.stu_list[i].avatar_file_id.substring(0, 2) + "/" + ret.stu_list[i].avatar_file_id + commonReturnPhotoCutSize(0);
+						}
+						ret.stu_list[i].avatar_file_id=img_url;
+					}
+					var html_type = template.render('div_script', ret);
+					document.getElementById('div_body').innerHTML = html_type;
+					$api.css($api.byId('div_body'),'display:block');
+				}else{
+					popToast('获取试题信息失败');
+				}
+			}
+		});
+	}
+</script>
+</html>

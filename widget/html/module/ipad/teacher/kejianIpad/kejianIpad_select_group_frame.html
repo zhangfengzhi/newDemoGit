@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <title>选择分组</title>
+    <link rel="stylesheet" type="text/css" href="../../../../../css/aui/aui.css" />
+    <link rel="stylesheet" type="text/css" href="../../../../../css/module/common/jszy_new_common.css" />
+    <link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+</head>
+<body class="common-ipad-kejianIpad common-ipad-kejianIpad-jczy">
+	<div id="shadow" class="shadow"></div>
+	<ul id="group_body" class="select-group">
+		<!--<li class="first">分组列表</li>
+		<li onclick='selectedGrfl(this)' class="active">
+			<div class="select-group-name ellipsis">学习好组</div>
+		</li>
+		<li onclick='selectedGrfl(this)'>
+			<div class="select-group-name ellipsis">学习好组</div>
+		</li>
+		<li onclick='selectedGrfl(this)' >
+			<div class="select-group-name ellipsis">学习好组</div>
+		</li>-->
+	</ul>
+	<script type="text/html" id="group_script">
+		<li class="first">分组列表</li>
+		<%for(var i = 0; i < list.length; i++){%>
+			<%if(list[i].is_select){%>
+				<%for(var j = 0; j < list[i].child_list.length; j++){%>
+					<li onclick='selectedGroup(this,<%=list[i].child_list[j].id%>)' <%if(list[i].child_list[j].active){%>class="active"<%}%>>
+						<div class="select-group-name ellipsis"><%=list[i].child_list[j].name%></div>
+					</li>
+				<%}%>
+			<%}%>
+		<%}%>
+	</script>
+	<div id="j_footer" class="footer-div" class="p-none">
+		<div id="j_wid" class="wid" onclick="saveGroup();">保存</div>
+	</div>
+</body>
+<script type="text/javascript" src="../../../../../script/api.js"></script>
+<script type="text/javascript" src="../../../../../script/plug-in/template.js" ></script>
+<script type="text/javascript" src="../../../../../script/base_config.js" ></script>
+<script type="text/javascript" src="../../../../../script/common/common.js" ></script>
+<script type="text/javascript" src="../../../../../script/module/common/kejianJs.js" ></script>
+<script type="text/javascript">
+	var BASE_URL_ACTION;
+	var selected_group_id;//选择调入群组id
+	var select_person_array;
+	var type;//1班级，0分组
+	apiready = function(){
+		commonSetTheme({"level":5,"type":0});
+		select_person_array = JSON.parse(api.pageParam.select_person_array);
+		type=api.pageParam.type;
+		BASE_URL_ACTION = $api.getStorage('BASE_URL_ACTION');
+		initData();	
+	};
+	/*
+	*author:zhaoj
+	*function:初始化数据
+	*date：20161206
+	*/
+	function initData(){
+		showSelfProgress('加载中...');
+		//获取教师的任教班级
+		getTeachClassBySubject(function(flag,ret){
+			if(flag){
+				if(ret.class_list.length > 0){
+					var class_array = new Array();
+					for(var i = 0; i < ret.class_list.length; i++){
+						class_array.push(ret.class_list[i].CLASS_ID);
+					}
+					var class_string = class_array.toString();
+					//获取分组数据
+					getXxGroup(class_string,function(is_true,data){
+						api.hideProgress();
+						if(is_true){
+							dealData(data);
+						}else{
+							popToast(data);
+						}
+					});
+				}else{
+				}
+			}else{
+				api.hideProgress();                            
+				popToast(ret);
+			}
+		});
+	}
+	/*
+	*author:zhaoj
+	*function:处理分组数据，获取该班级下的分组数据
+	*date：20161206
+	*/
+	function dealData(ret){
+		var id = api.pageParam.id;//获取班级id或者分组id
+		var data={"list":[]};
+		var flag=false;//判断班级是否匹配上
+		//获取一级节点
+		for(var i = 0; i < ret.class_list.length; i++){
+			if(ret.class_list[i].pId == -1){
+				//将json对象放入对应数组中
+				var oparam = new Object;
+				oparam.id = ret.class_list[i].id;
+				oparam.open = ret.class_list[i].open;
+				oparam.class_id = ret.class_list[i].class_id;
+				oparam.title = ret.class_list[i].title;
+				oparam.name = ret.class_list[i].name;
+				oparam.drag = ret.class_list[i].drag;
+				oparam.child_list = [];
+				//匹配班级
+				if(id == ret.class_list[i].id){
+					oparam.is_select = 1;
+					flag = true;
+				}else{
+					oparam.is_select = 0;
+				}
+				data.list.push(oparam);
+			}
+		}
+		//获取二级节点
+		for(var i = 0; i < data.list.length; i++){
+			for(var j = 0; j < ret.class_list.length; j++){
+				if(ret.class_list[j].pId == data.list[i].id){
+					//将json对象放入对应数组中
+					var oparam = new Object;
+					oparam.id = ret.class_list[j].id;
+					oparam.open = ret.class_list[j].open;
+					oparam.class_id = ret.class_list[j].class_id;
+					oparam.title = ret.class_list[j].title;
+					oparam.name = ret.class_list[j].name;
+					oparam.drag = ret.class_list[j].drag;
+					oparam.active = 0;
+					data.list[i].child_list.push(oparam);
+					//如果已经匹配成功，就不在调用该段代码
+					if(!flag){
+						if(id == ret.class_list[j].id){
+							data.list[i].is_select = 1;
+							flag = true;
+						}else{
+							data.list[i].is_select = 0;
+						}
+					}
+				}
+			}
+		}
+		//计算在一个分组中的人数是多少
+		var count = 0;
+		for(var i = 0; i < select_person_array.length;i++){
+			if(select_person_array[i].group_id){
+				if(select_person_array[i].group_id == select_person_array[0].group_id){
+					count++;
+				}
+			}else{
+				break;
+			}
+		}
+		//判断如果设置分组的所有人都在一个组内，就显示他们所在分组的情况
+		if(select_person_array.length == count){
+			if(type){
+				//班级
+				judgeShowGroup(data,select_person_array[0].group_id);
+			}else{
+				//分组
+				judgeShowGroup(data,api.pageParam.id);
+			}
+		}else{
+			commonAddOnceHtml('group_body','group_script',data);
+		}
+	}
+	/*
+	*author:zhaoj
+	*function:判断如果只有一个人调组，并且是否已在一个分组中，如果符合这两个条件，显示它已在的分组
+	*date：20161207
+	*/
+	function judgeShowGroup(data,id){
+		for(var i =0; i < data.list.length; i++){
+			if(data.list[i].is_select){
+				for(var j = 0; j < data.list[i].child_list.length; j++){
+					if(data.list[i].child_list[j].id == id){
+						data.list[i].child_list[j].active = 1;
+						break;
+					}else{
+						data.list[i].child_list[j].active = 0;
+					}
+				}
+			}
+		}
+		commonAddOnceHtml('group_body','group_script',data);
+	}
+	/*
+	*author:zhaoj
+	*function:选择群组
+	*date：20161207
+	*/
+	function selectedGroup(self,id){
+		if($api.hasCls(self, 'active')){
+			$api.removeCls(self, 'active');
+			selected_group_id="";
+		}else{
+			var liArray = $api.domAll($api.byId('group_body'),'li');
+			for(var i = 0; i < liArray.length; i++){
+				$api.removeCls(liArray[i], 'active');
+			}
+			$api.addCls(self, 'active');
+			selected_group_id = id;
+		}
+	}
+	/*
+	*author:zhaoj
+	*function:点击保存按钮，保存学生到分组中；
+	*date：20161207
+	*/
+	function saveGroup(){
+		if(selected_group_id){
+			showSelfProgress('保存中...');
+			quitGroup(0,function(flag){
+				if(flag){
+					addMember();
+				}
+			})
+		}else{
+			popToast('您还没有选择分组');
+		}
+	}
+	/*
+	*author:zhaoj
+	*function:从组内删除
+	*date：20161207
+	*/
+	function quitGroup(index,callback){
+		if(index < select_person_array.length){
+			if(select_person_array[index].id){
+				var group_id;
+				if(type){
+					group_id = select_person_array[index].group_id;
+				}else{
+					group_id = api.pageParam.id;
+				}
+				api.ajax({
+					url : BASE_URL_ACTION + '/ypt/group/quitGroup',
+					method : 'post',
+					timeout : 30,
+					dataType : 'json',
+					cache : false,
+					data : {
+						values : {
+							"random_num" : creatRandomNum(),
+							"memberId" : select_person_array[index].id,
+							"memberType" : 2,
+							"groupId":group_id
+						}
+					},
+					headers : {
+			'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+			}
+				}, function(ret, err) {
+					if (err) {
+						api.hideProgress();
+						popToast('保存失败');
+					} else {
+						if(ret){
+							index++;
+							return quitGroup(index,callback);
+						}else{
+							api.hideProgress();
+							popToast('保存失败');
+						}
+					}
+				});
+			}else{
+				index++;
+				return quitGroup(index,callback);
+			}
+		}else{
+			callback(true);
+		}
+	}
+	/*
+	*author:zhaoj
+	*function:添加学生到分组中
+	*date：20161207
+	*/
+	function addMember(){
+		var pids=[];
+		for(var i = 0; i < select_person_array.length; i++){
+			var oparam = new Object();
+			oparam.person_id=select_person_array[i].student_id;
+			oparam.bureau_id=select_person_array[i].bureau_id;
+			oparam.identity_id=select_person_array[i].identity_id;
+			pids.push(oparam);
+		}
+		api.ajax({
+			url : BASE_URL_ACTION + '/ypt/group/addMember',
+			method : 'post',
+			timeout : 30,
+			dataType : 'json',
+			cache : false,
+			data : {
+				values : {
+					"random_num" : creatRandomNum(),
+					"pids" :JSON.stringify(pids),
+					"groupId":selected_group_id
+				}
+			},
+			headers : {
+	'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+	}
+		}, function(ret, err) {	
+			if (err) {
+				popToast('保存失败');
+				api.hideProgress();
+			} else {
+				if(ret){
+					setTimeout(function(){
+						api.hideProgress();
+						api.execScript({
+							name : 'kejianIpad_stu_list_group_window',
+							frameName : 'kejianIpad_stu_list_group_frame',
+							script : 'initData();'
+						});
+						popToast('保存成功');
+					},1500);
+					setTimeout(function(){
+						api.execScript({
+							name : 'kejianIpad_stu_list_group_window',
+							script : 'back();'
+						});
+					},1600);
+				}else{
+					popToast('保存失败');
+					api.hideProgress();
+				}
+			}
+		});
+	}
+</script>
+</html>

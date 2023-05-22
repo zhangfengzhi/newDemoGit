@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<!-- html5：在创建html时为了防止页面缩放等不兼容效果，要创建个viewport  -->
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<!-- 在IOS设备上，有时会将数字转为手机号，这里也要禁止下 -->
+		<meta name="format-detection" content="telephone=no"/>
+		<title>学生检测批阅</title>
+		<link rel="stylesheet" type="text/css" href="../../../../../css/aui/aui.css" />
+	    <link id="j_theme_base" rel="stylesheet" type="text/css" href="" />		
+		<style>
+			.history-date {
+				font-size: 12px;
+			}
+			#message-content {
+				overflow-y: auto;
+				display: none;
+			}
+			
+			
+			.t_display_n {
+				display: none;
+			}
+			.t_display_b {
+				display: block;
+			}
+			.win-menu{font-size:15px;line-height:48px;height:100%;}
+			.menu{display:inline-block;width:24px;height:100%;background: url(../../image/fun-module/iphonepage_menu_icon.png) center center no-repeat;background-size: 24px 24px;}
+			.ellipsis{white-space: nowrap;overflow: hidden;text-overflow: ellipsis;}
+		</style>
+	</head>
+	<body class="common-ipad-zuoyeIpadstu">
+		<div id="wrap">
+			<header class="aui-bar aui-bar-nav aui-bar-primary" id="aui-header">
+				<div id="cloud" class="topbar activebar">
+					<div id="back" class="back" onclick="back();" tapmode="">
+						<i class="aui-iconfont aui-icon-left"></i>返回
+					</div>
+					<div  class="mTitle ellipsis" id="mTitle">
+					</div>
+					<div class="win-menu">
+					</div>
+				</div>
+			</header>
+			<div  class="aui-content aui-content-padded" id="message-content">
+				<p class="aui-text-center history-date"></p>
+			</div>
+		</div>
+	</body>
+	<script type="text/javascript" src="../../../../../script/api.js"></script>
+	<script type="text/javascript" src="../../../../../script/plug-in/base64.js" ></script>
+	<script type="text/javascript">
+		var header_h;//定位header位置，留出上面电池等空隙，苹果需要
+		var back_type;//返回参数
+		apiready = function() {
+			commonSetTheme({"level":5,"type":0});
+			header_h = api.pageParam.header_h;
+			openOtherProblemFrame();
+			back_type = 'index';
+			var zuoye_title = api.pageParam.zy_name;
+			$api.html($api.byId('mTitle'),Base64.decode(zuoye_title));
+			//安卓关闭
+			if (api.systemType == 'android') {
+				backForAndroid();
+			}
+			//定位header位置，留出上面电池等空隙，苹果需要
+			var header = $api.byId('aui-header');
+			$api.fixStatusBar(header);
+		};
+		/*
+		*author:zhaoj
+		*function:打开下拉菜单
+		*date：20160328
+		*/
+		function openOtherProblemFrame(){
+			api.openFrame({
+	            name: 'zuoyeIpad_problems_other_frame',
+	            url: 'zuoyeIpad_problems_other_frame.html',
+	            bounces: false,
+	            allowEdit : false,
+	            rect: {
+	                x : 0,
+					y : header_h,
+					w : 'auto',
+					h : api.winHeight - header_h,
+	            },
+	            bgColor : 'rgba(0,0,0,0)',
+	            pageParam : {
+					header_h : header_h,
+					zy_id :api.pageParam.zy_id,
+					student_id : api.pageParam.student_id,
+					student_name : api.pageParam.student_name
+				},
+	            reload: true
+	        });
+		}
+		/*
+		*author:zhaoj
+		*function:返回页面
+		*date：20160307
+		*/
+		function back() {
+			api.closeWin();
+		}
+		/**
+		 * 安卓点击返回的时候
+		 * 周枫
+		 * 2015.10.14
+		 */
+		function backForAndroid() {
+			api.addEventListener({
+				name : "keyback"
+			}, function(ret, err) {
+				back();
+			});
+		}
+
+	</script>
+</html>

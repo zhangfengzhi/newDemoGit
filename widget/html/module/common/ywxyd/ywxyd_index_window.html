@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<title>办公</title>
+		<link rel="stylesheet" type="text/css" href="../../../../css/aui/aui.css" />
+		<link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+		<style>
+            body {
+            }
+            .close {
+                position: absolute;
+                margin: 1px 10px 0px 80px;
+                font-size: 15px;
+            }
+		</style>
+	</head>
+	<body>
+		<div id="wrap">
+			<header class="aui-bar aui-bar-nav aui-bar-primary" id="aui-header">
+				<div id="cloud" class="topbar activebar">
+					<div id="back" class="back" onclick="back();" tapmode="">
+						<i class="aui-iconfont aui-icon-left"></i>返回
+					</div>
+					<div class="mTitle" id="mTitle">
+						电子课文
+					</div>
+					<!--<div class="win-menu">
+					<a id='menu' class="aui-iconfont aui-icon-add" ></a>
+					</div>-->
+				</div>
+			</header>
+			<div  class="aui-content aui-content-padded" id="message-content">
+				<p class="aui-text-center history-date"></p>
+			</div>
+		</div>
+		<script type="text/javascript" src="../../../../script/api.js"></script>
+		<script type="text/javascript" src="../../../../script/base_config.js"></script>
+		<script type="text/javascript" src="../../../../script/common/common.js"></script>
+	</body>
+	<script type="text/javascript">
+        //顶部header高度
+        var header_h;
+        var w_h;
+        
+        var random = "-1";
+        
+        apiready = function() {
+            //定位header位置，留出上面电池等空隙，苹果需要
+            commonSetTheme({"level":4,"type":0});
+            var header = $api.byId('aui-header');
+            $api.fixStatusBar(header);
+            header_h = api.pageParam.header_h;
+            w_h = api.winHeight - header_h;
+            openBgFrame();
+            
+            backForAndroid(); //注册Android键盘返回监听
+        };
+
+        function openBgFrame(sso_token) {
+        	random = "-1";
+            api.setGlobalData({ key: 'ywxydKey', value: undefined }); 
+            
+            api.openFrame({
+                name : 'bg_index_frame',
+                scrollToTop : true,
+                allowEdit : true,
+                url : 'https://dsideal.obs.cn-north-1.myhuaweicloud.com/down/ywyxd/main/pages/xueYiDian/xydLoad/index.html', 
+                //url : 'http://10.10.21.48/xue_yi_dian/wx_release/main/pages/xueYiDian/xydLoad/index.html', //测试后退功能的地址
+                showProgress : true,
+                rect : {
+                    x : 0,
+                    y : header_h,
+                    w : 'auto',
+                    h : api.winHeight - header_h, 
+                },
+                pageParam : {
+                    header_h : header_h
+                },
+                vScrollBarEnabled : true,
+                hScrollBarEnabled : false,
+                //页面是否弹动 为了下拉刷新使用
+                bounces : false
+            });
+        }
+        
+        /**
+         * 返回应用页面
+         * 周枫
+         * 2015.10.11
+         * 
+         * 学易点Web页增加方法ywxydBack，处理逐级返回
+         * ywxydBack方法，调用api.setGlobalData设置ywxydKey值
+         * 使用api.getGlobalData确认是否执行了ywxydBack
+         */
+        
+        function clickReturnBtn() {
+        	var callFailed = false;
+        	
+	        if (random != "-1") { 
+				var theKey = api.getGlobalData({ key: 'ywxydKey' });
+				if (theKey) { 
+					if (random != theKey) { //不同，上次Web页未写入ywxydKey的值，认为执行失败，返回应用列表
+						callFailed = true;
+					}
+				} else { //若theKey为undefined，说明Web页未写入ywxydKey的值，认为执行失败，返回应用列表
+					callFailed = true;
+				}
+			}
+			
+			if (callFailed) {
+				api.toast({msg:"页面加载出错！"});
+				setTimeout(function(){ api.closeWin(); }, 1000);
+			} else {
+				random = Math.random().toString();
+				commonExecScript(api.winName, 'bg_index_frame', 'ywxydBack("'+random+'")', 1); 
+			}
+        }
+
+        function back(){
+        	clickReturnBtn();
+        }
+
+        /**
+         * 安卓点击返回的时候
+         * 周枫
+         * 2015.10.14
+         */
+        function backForAndroid() {
+            api.addEventListener({
+                name : "keyback"
+            }, function(ret, err) {
+                clickReturnBtn();
+            });
+        }
+    </script>
+</html>

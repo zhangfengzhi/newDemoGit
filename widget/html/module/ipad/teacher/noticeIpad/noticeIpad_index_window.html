@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<!-- html5：在创建html时为了防止页面缩放等不兼容效果，要创建个viewport  -->
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<!-- 在IOS设备上，有时会将数字转为手机号，这里也要禁止下 -->
+		<meta name="format-detection" content="telephone=no"/>
+		<title>通知</title>
+		<link rel="stylesheet" type="text/css" href="../../../../../css/aui/aui.css" />
+		<link rel="stylesheet" type="text/css" href="../../../../../css/module/ipad/left-right-layout.css"/>
+		<link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+		<style>
+			.left-layout-body .left-tag{width:140px;}
+			.left-layout-body .left-tag .tag-item .parting-line{width:108px;}
+			@media screen and (max-width: 1024px) {
+				.left-layout-body .left-tag{width:140px;}
+				.left-layout-body .left-tag .tag-item .parting-line{width:108px;}
+			}
+			
+			.left-layout-body .left-tag .tag-item{height:65px;}
+			.win-right{width:45%;}
+		</style>
+	</head>
+	<body class="left-layout-body common-ipad-noticeIpad-tea">
+		<div id="wrap">
+			<header class="aui-bar aui-bar-nav aui-bar-primary" id="aui-header">
+				<div id="cloud" class="topbar activebar">
+					<div id="back" class="back" onclick="back();" tapmode="">
+						<i class="aui-iconfont aui-icon-left"></i>返回
+					</div>
+					<div class="mTitle" id="mTitle">
+						<span id="name">通知公告</span>
+					</div>
+					<div class="win-menu">
+						<a id='add' class="aui-iconfont aui-icon-add back" style="display:none;" onclick="openAddFrame('','',1,2);"></a>
+					</div>
+				</div>
+			</header>
+		</div>
+		<div id="j_left_tag" class="left-tag aui-hide">
+			<div id="quanbu" class="tag-item active" onclick="changeTagItem(0,this);">
+				<div id="j_class_name" class="name">全部</div>
+				<div class="parting-line">
+					<div class="left-rectangle fl"></div>
+					<div class="right-rectangle fr"></div>
+					<hr />
+				</div>
+			</div>
+			<div class="tag-item" onclick="changeTagItem(1,this);">
+				<div id="j_class_name" class="name">日常</div>
+				<div class="parting-line">
+					<div class="left-rectangle fl"></div>
+					<div class="right-rectangle fr"></div>
+					<hr />
+				</div>
+			</div>
+			<div class="tag-item" onclick="changeTagItem(2,this);">
+				<div id="j_class_name" class="name">紧急</div>
+				<div class="parting-line">
+					<div class="left-rectangle fl"></div>
+					<div class="right-rectangle fr"></div>
+					<hr />
+				</div>
+			</div>
+			<div class="tag-item" onclick="changeTagItem(3,this);">
+				<div id="j_class_name" class="name">重要</div>
+				<div class="parting-line">
+					<div class="left-rectangle fl"></div>
+					<div class="right-rectangle fr"></div>
+					<hr />
+				</div>
+			</div>
+		</div>
+		<div id="j-right" class="win-right bjtz-right fr aui-hide"></div>	
+	</body>
+	<script type="text/javascript" src="../../../../../script/api.js"></script>
+	<script type="text/javascript" src="../../../../../script/common/common.js"></script>
+	<script type="text/javascript" src="../../../../../script/assembly/tongjiData.js"></script>
+	<script type="text/javascript" src="../../../../../script/plug-in/base64.js" ></script>
+	<script type="text/javascript">
+		//顶部header高度
+		var header_h;
+		var is_xxgly = 0;
+		//是否为学校管理员，0代表不是，1代表是
+		var type = 1;
+		//1公开，2内部
+		var back_type = 'select';
+		//返回参数
+		var BASE_URL_ACTION;
+		var back_type_content=0;
+		apiready = function() {
+			commonSetTheme({"level":5,"type":0});
+			//定位header位置，留出上面电池等空隙，苹果需要
+			var header = $api.byId('aui-header');
+			$api.fixStatusBar(header);
+			header_h = api.pageParam.header_h;
+			BASE_URL_ACTION = $api.getStorage('BASE_URL_ACTION');
+			judgeRoles(function(flag) {
+				if (flag) {
+					reBackType('select');
+					openSelectFrame();
+				} else {
+					reBackType('select');
+					openNoticeIndexFrame();
+				}
+			});
+			if ($api.getStorage('BASE_SERVER_NAME') == 155 || $api.getStorage('BASE_SERVER_NAME') == 'jntq') {
+				$api.text($api.byId('name'), '站内信');
+			} else {
+				$api.text($api.byId('name'), '通知公告');
+			}
+			$api.css($api.byId('j_left_tag'),'top:'+api.pageParam.header_h+'px;max-height:'+(api.winHeight*1-api.pageParam.header_h*1)+'px;height:'+(api.winHeight*1-api.pageParam.header_h*1)+'px;');//设置左侧导航的样式
+			//安卓关闭
+			commonBackForAndroid();
+			commonOpenTjData($api.getStorage("identity")+'_'+api.winName);//记录统计
+			winShow(true);
+		};
+		
+		function winShow(flag){
+			if(flag){
+				$api.removeCls($api.byId('j-right'), 'aui-hide');
+				$api.removeCls($api.byId('j_left_tag'), 'aui-hide');
+			}else{
+				$api.addCls($api.byId('j_left_tag'), 'aui-hide');
+				$api.addCls($api.byId('j-right'), 'aui-hide');
+			}
+		}
+		/*
+		 *author:zhaoj
+		 *function:判断角色，如果存在role_id = 2，说明是学校管理员
+		 *date：20160627
+		 */
+		function judgeRoles(callback) {
+			setNoticeTs(function(is_true) {
+				var rolesArray = $api.getStorage('roles');
+				for (var i = 0; i < rolesArray.length; i++) {
+					if (rolesArray[i].role_id * 1 == 2 || rolesArray[i].role_id * 1 == 61 || rolesArray[i].role_id * 1 == 62 || rolesArray[i].role_id * 1 == 63 || rolesArray[i].role_id * 1 == 64) {
+						is_xxgly = 1;
+						callback(true);
+					}
+				}
+				if (is_xxgly == 0) {
+					callback(false);
+				}
+			});
+		}
+
+		/*
+		 *author:zhaoj
+		 *function:打开通知列表frame页面
+		 *date：20160625
+		 */
+		function openNoticeIndexFrame() {
+			var frame_w = Math.floor(api.winWidth*0.55);
+			var frame_x = 0;
+			if(frame_w <= 614){
+				frame_w=frame_w-140;
+				frame_x = 140;
+			}else{
+				frame_w=frame_w-140;
+				frame_x = 140;
+			}
+			pageParamJson={"header_h":header_h,'w':frame_w,"x":frame_x,"is_xxgly" : is_xxgly};//打开frame页面json数据
+			//打开通知frame页面
+			commonOpenFrame("noticeIpad_index_frame","noticeIpad_index_frame.html",header_h,false,false,"rgba(0,0,0,0)",pageParamJson);
+		}
+
+		/*
+		 *author:zhaoj
+		 *function:打开通知列表frame页面
+		 *date：20160625
+		 */
+		function openSelectFrame() {
+			//打开通知frame页面
+			api.openFrame({
+				name : 'noticeIpad_select_frame',
+				scrollToTop : true,
+				allowEdit : false,
+				url : 'noticeIpad_select_frame.html',
+				rect : {
+					x : 0,
+					y : header_h,
+					w : 'auto',
+					h : api.winHeight - header_h,
+				},
+				pageParam : {
+					header_h : header_h
+				},
+				vScrollBarEnabled : true,
+				hScrollBarEnabled : false,
+				//页面是否弹动 为了下拉刷新使用
+				bounces : false
+			});
+			
+		}
+
+		/*
+		 *author:zhaoj
+		 *function:打开发布通知的window页面
+		 *date：20160625
+		 */
+		function openAddFrame(notice_id,notice_public,send_status,type) {
+			if(back_type=='content'){
+				back_type_content='content';
+			}
+			reBackType('add');
+			//打开新闻资讯内容frame页面
+			var pageParamJson={"header_h":header_h,"type" : type,'notice_id':notice_id,'notice_public':notice_public,'send_status':1};
+//			commonOpenFrame('noticeIpad_add_frame', 'noticeIpad_add_frame.html',0, false, true,"rgba(0,0,0,0)", pageParamJson);
+            commonOpenWin('noticeIpad_add_window', 'noticeIpad_add_window.html', false, false, pageParamJson);
+		}
+
+		/**
+		 * 返回应用页面
+		 * 周枫
+		 * 2015.10.11
+		 */
+		function back() {
+			commonRefreshYingyong();//刷新应用页面的消息提醒数量
+			switch(back_type) {
+				case 'index':
+					commonCloseTjData($api.getStorage("identity")+'_'+api.winName);
+					commonExecScript('root','cshym_hbg_frame','getKaoqinMenu1(2)',1);
+					if(is_xxgly!=1){
+						api.closeWin();
+					}else{
+						api.setFrameAttr({// 显示内容层
+							name : 'noticeIpad_select_frame',
+							hidden : false,
+						});
+						setTimeout(function() {
+							api.closeFrame({
+								name : 'noticeIpad_index_frame'
+							});
+						}, 50);
+						reBackType('select');
+					}
+					break;
+				case 'select':
+					api.setFrameAttr({// 显示内容层
+						name : 'noticeIpad_select_frame',
+						hidden : false,
+					});
+					api.closeWin();
+					break;
+				case 'content':
+					commonExecScript('noticeIpad_index_window','noticeIpad_index_frame','isShowBoxShow(0);',1);//隐藏虚线
+					commonCloseFrame('noticeIpad_content_frame');
+					back_type_content=0;
+					reBackType('index');
+					
+					break;
+				case 'add':
+//					commonCloseFrame('noticeIpad_add_frame');
+                    api.closeWin({
+                        'name' : 'noticeIpad_add_window'
+                    });
+					reBackType('index');
+					break;
+				case 'picture_sel':
+					commonExecScript('noticeIpad_index_window','noticeIpad_add_frame','closePicture();',1);
+					reBackType('add');
+					break;
+				case 'open_picture':
+					
+				  	reBackType('add');
+					break;
+				case 'picture_detail':
+					
+					reBackType('content');
+					break;
+			    case 'picture_add':
+
+			        reBackType('index');
+			        break;
+			}
+		}
+		/*
+		 *作者:zhaoj
+		 *功能:加号按钮是否显示
+		 *日期：20160930
+		 */
+		function addShow(type) {
+			if (type) {
+				$api.css($api.byId('add'), 'display:block;');
+				$api.addCls($api.byId('j_btn_1'), 'btn-top-active');
+			} else {
+				$api.css($api.byId('add'), 'display:none;');
+			}
+		}
+		
+		/**
+		 * 重置从哪个页面退出
+		 * 周枫
+		 * 2015.12.17
+		 */
+		function reBackType(type) {
+			switch(type) {
+				//如果通知公告列表页面退出
+				case 'index':
+					commonCloseTjData(api.winName);//记录统计
+					if(back_type_content=='content'){
+						back_type = 'content';
+					}else{
+						back_type = 'index';
+					}
+					break;
+				//如果从选择页面退出
+				case 'select':
+					addShow(0);
+					back_type = 'select';
+					break;
+				case 'content':
+					back_type = 'content';
+					break;
+				case 'add':
+					back_type = 'add';
+					break;
+				case 'picture_sel':
+					back_type = 'picture_sel';
+					break;
+				case 'open_picture':
+					back_type = 'open_picture';
+					break;
+				case 'picture_detail':
+					back_type = 'picture_detail';
+					break;
+			    case 'picture_add':
+                    back_type = 'picture_add';
+                    break;
+			}
+		}
+
+		/**
+		 * 设置通知未读消息
+		 * 周枫
+		 * 2016.10.15
+		 */
+		function setNoticeTs(callback) {
+			api.ajax({
+				url : BASE_URL_ACTION + '/new_notice/setNoticeTs',
+				method : 'get',
+				timeout : 0,
+				dataType : 'json',
+				data : {
+					values : {
+						"person_id" : $api.getStorage("person_id"),
+						"identity_id" : $api.getStorage("identity")
+					}
+				}
+			}, function(ret, err) {
+				callback(true);
+			});
+		}
+		
+		/**
+		 * 切换通知紧急程度tab 0,1,2,3//分别为全部、日常、紧急、重要
+		 * zfz
+		 * 20171013
+		 */
+		function changeTagItem(type,dom){
+			var tag_item_array = $api.domAll($api.byId('j_left_tag'), 'div.tag-item');
+			for(var i=0;i<tag_item_array.length;i++){
+				$api.removeCls(tag_item_array[i], 'active');
+			}
+			$api.addCls(dom, 'active');
+			commonExecScript('noticeIpad_index_window','noticeIpad_index_frame','changeLevelType('+type+');',1);
+		}
+		
+		/**
+		 * 从选择页面进入时，默认切换标签为全部
+		 * zfz
+		 * 20171117
+		 */
+		function tagChange(){
+			var tag_item_array = $api.domAll($api.byId('j_left_tag'), 'div.tag-item');
+			for(var i=0;i<tag_item_array.length;i++){
+				$api.removeCls(tag_item_array[i], 'active');
+			}
+			$api.addCls($api.byId('quanbu'), 'active');
+		}
+		
+		/*
+		*author:zfz
+		*function:打开详情页面
+		*date：20171013
+		*/
+		function openDetailFrame(oparam){
+		var jsonParam = JSON.parse(Base64.decode(oparam));
+			reBackType('content');
+			var header_h = api.pageParam.header_h;//顶部高度
+			var frame_w = Math.floor(api.winWidth*0.45);
+			var frame_x = Math.floor(api.winWidth*0.55);
+			pageParamJson={"header_h":header_h,'x':frame_x,'w':frame_w,"notice_id":jsonParam.notice_id,"flag":jsonParam.flag,"is_xxgly":jsonParam.is_xxgly};//打开frame页面json数据
+			//打开frame页面
+			commonOpenFrame("noticeIpad_content_frame","noticeIpad_content_frame.html",header_h,false,false,"rgba(0,0,0,0)",pageParamJson);
+			commonExecScript('noticeIpad_index_window','noticeIpad_index_frame','isShowBoxShow(1);',1);//显示虚线
+		}
+	</script>
+</html>

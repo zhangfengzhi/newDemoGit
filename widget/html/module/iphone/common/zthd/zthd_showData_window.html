@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>title</title>
+    <link rel="stylesheet" type="text/css" href="../../../../../css/aui/aui.css"/>
+    <link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+    <style>
+    	body{
+    		
+    	}
+    </style>
+</head>
+<body>
+	<header class="aui-bar aui-bar-nav aui-bar-primary" id="aui-header">
+		<div id="cloud" class="topbar activebar">
+			<div id="back" class="back" onclick="backClick();" tapmode="">
+				<i class="aui-iconfont aui-icon-left"></i>返回
+			</div>
+			<div  class="mTitle" id="mTitle">参与对象</div>
+	</header>
+</body>
+<script type="text/javascript" src="../../../../../script/api.js"></script>
+<script type="text/javascript" src="../../../../../script/base_config.js" ></script>
+<script type="text/javascript" src="../../../../../script/common/common.js"></script>
+<script type="text/javascript">
+	apiready = function(){
+		commonSetTheme({"level":5,"type":0});
+		commonIosAuiHeader();//定位header位置，留出上面电池等空隙，苹果需要
+		commonExecScript(api.winName,'','commonSetWindowName("'+api.pageParam.title+'");',0);
+		if (api.pageParam.type == 0){
+			commonOpenFrame("zthd_view_worksinfo","zthd_view_worksinfo.html",api.pageParam.header_h,false,false,"#FFFFFF",api.pageParam);
+		}else if (api.pageParam.type == 1){
+			commonOpenFrame("zthd_unplay_info","zthd_unplay_info.html",api.pageParam.header_h,false,false,"#FFFFFF",api.pageParam);
+		}
+			
+	};
+	
+	function backClick(){
+		if (api.pageParam.type == 0){
+			commonCloseFrame('zthd_view_worksinfo');
+		}else if (api.pageParam.type == 1){
+			commonCloseFrame('zthd_unplay_info');
+		}
+		
+		api.closeWin();
+	}
+</script>
+</html>

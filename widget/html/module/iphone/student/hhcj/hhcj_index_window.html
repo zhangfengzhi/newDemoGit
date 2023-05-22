@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+        <title>办公</title>
+        <link rel="stylesheet" type="text/css" href="../../../../../css/aui/aui.css" />
+        <link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+        <style>
+            body {
+            }
+            .close {
+                position: absolute;
+                margin: 1px 10px 0px 80px;
+                font-size: 15px;
+            }
+            .zhanwei{height:100%;display: inline-block;float:left;}
+        </style>
+    </head>
+    <body>
+        <header id="aui-header">
+         <a class="zhanwei">&nbsp;</a>
+        </header>
+        <div  class="aui-content aui-content-padded" id="message-content">
+            <p class="aui-text-center history-date"></p>
+        </div>
+        <script type="text/javascript"> 
+            /*
+             * 功能：关闭当前页面
+             * 作者：张自强
+             * 时间：20180706
+             */
+            function closeThisModule(){
+                 commonExecScript('xybg_index_window','','changeBtnTitle(1)',0);
+                 commonExecScript('xybgIpad_index_window','','changeBtnTitle(0,0)',0);
+                 setTimeout(function(){
+                    api.closeWin();
+                 },500);
+            }
+        </script>
+        <script type="text/javascript" src="../../../../../script/api.js"></script>
+        <script type="text/javascript" src="../../../../../script/base_config.js"></script>
+        <script type="text/javascript" src="../../../../../script/common/common.js"></script>
+    </body>
+    <script type="text/javascript">
+        //顶部header高度
+        var header_h;
+        var w_h;
+        var tel_hid = '';
+        apiready = function() {
+            //定位header位置，留出上面电池等空隙，苹果需要
+            commonSetTheme({"level":5,"type":0});
+            var header = $api.byId('aui-header');
+            $api.fixStatusBar(header);
+            var headerPos = $api.offset(header);
+            header_h = headerPos.h;
+            backForAndroid();
+            initData(function(flag,yearID){
+                if(flag){
+	                getGolbalValueByKeys("platformCode",function(boolean,value){
+	                	if(boolean){
+	                		goBgFrame(yearID,value.platformCode);
+	                	}
+	                	
+	                })
+                }
+            })
+        };
+        
+        function goBgFrame(yearID,value) {
+            var date = new Date();
+            date = date.getTime();
+            var login_name_show = $api.getStorage('login_name');
+            var login_name_ypt = login_name_show.substring(0, login_name_show.lastIndexOf("_")); 
+            var password = "userName='"+login_name_ypt+"'&curTime="+date+"&payFlag=true&passWord='8f6f5dbcfa3a4b9d98b35576fcc9a066'";
+            var signature = api.require('signature');
+            signature.md5({
+                data: password
+            }, function(ret, err) {
+                if (ret.status) {
+                    password = ret.value;
+                    getTelByPersonId(function(now_tel){
+                        api.openFrame({
+                            name : 'hhcj_index_frame',
+                            scrollToTop : true,
+                            allowEdit : true,
+                            url : 'https://www.yunchengji.net/sso/h5/ds-app-sso.shtml?dsUserID='+$api.getStorage('person_id')+'&platformCode='+value+'&realName='+$api.getStorage('person_name')+'&userName='+login_name_ypt+'&tel='+now_tel+'&orgID='+$api.getStorage('bureau_id')+'&className='+$api.getStorage('class_name')+'&yearID='+yearID+'&payFlag=true&curTime='+date+'&signValue='+password,
+                            showProgress : true,
+                            rect : {
+                                x : 0,
+                                y : header_h,
+                                w : 'auto',
+                                h : api.winHeight,
+                            },
+                            pageParam : {
+                                header_h : header_h
+                            },
+                            vScrollBarEnabled : true,
+                            hScrollBarEnabled : false,
+                            //页面是否弹动 为了下拉刷新使用
+                            bounces : false
+                        }); 
+                    });
+                } else {
+                    popToast('获取个人信息失败')
+                    return;
+                }
+            });
+        }
+
+        /**
+         * 安卓点击返回的时候
+         * 周枫
+         * 2015.10.14
+         */
+        function backForAndroid() {
+            api.addEventListener({
+                name : "keyback"
+            }, function(ret, err) {
+                closeThisModule();
+            });
+        }      
+        
+        /**
+         * 获取个人信息
+         * 周枫
+         * 2016.1.16
+         */
+        function getTelByPersonId(callback) {
+            showSelfProgress('加载中...');
+            api.ajax({
+                url : BASE_URL_ACTION + '/person/getPersonInfo?random_num=' + creatRandomNum() + '&person_id=' + $api.getStorage("person_id") + '&identity_id=' + $api.getStorage("identity") + '&token=' + $api.getStorage("token_ypt"),
+                method : 'get',
+                timeout : 30,
+                dataType : 'json',
+                cache : false,
+                headers : {
+                    'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+                }
+            }, function(ret, err) {
+                api.hideProgress();
+                if (ret) {
+                    if (ret.success) {
+                        tel_hid = ret.table_List.TEL;
+                        year_now = 
+                        callback(tel_hid);
+                    } else {
+                        tel_hid = '';
+                        callback(tel_hid);
+                    }
+                } else {
+                    tel_hid = '';
+                    callback(tel_hid);
+                }
+            });
+        }
+        
+        
+        /**
+         * 获取个人信息
+         * 周枫
+         * 2016.1.16
+         */
+        function initData(callback) {
+            showSelfProgress('加载中...');
+            api.ajax({
+                url : BASE_URL_ACTION + '/person/getPersonInfo?random_num=' + creatRandomNum() + '&person_id=' + $api.getStorage("person_id") + '&identity_id=' + $api.getStorage("identity") + '&token=' + $api.getStorage("token_ypt"),
+                method : 'get',
+                timeout : 30,
+                dataType : 'json',
+                cache : false,
+                headers : {
+                    'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+                }
+            }, function(ret, err) {
+                api.hideProgress();
+                if (ret) {
+                    if (ret.success && ret.table_List && ret.table_List.entrance_year) {
+                        callback(true,ret.table_List.entrance_year);
+                    } else {
+                        popToast('获取个人信息失败')
+                        callback(false,'');
+                    }
+                } else {
+                    popToast('获取个人信息失败')
+                    callback(false,'');
+                }
+            });
+        }
+
+    </script>
+</html>

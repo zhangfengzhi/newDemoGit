@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<title>学生查看具体题目情况</title>
+		<link rel="stylesheet" type="text/css" href="../../../../../css/aui/aui.css" />
+		<link rel="stylesheet" type="text/css" href="../../../../../css/module/common/testQuestionShow.css" />
+		<link rel="stylesheet" type="text/css" href="../../../../../css/module/common/list_frame.css" />
+		<link rel="stylesheet" type="text/css" href="../../../../../css/module/common/jyeoo/ques_data.css" />
+		<link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+		<style>
+			body {
+				margin: 0;
+				background: rgba(0,0,0,0);
+				color:#98979D;
+			}
+			.clearfix:after {
+				content: ' ';
+				display: block;
+				clear: both;
+				visibility: hidden;
+				line-height: 0;
+				height: 0;
+			}
+			.zuoye-name {
+				line-height: 55px;
+				width: 100%;
+			}
+			.answer-title {
+				border-top: 1px solid #f1f1f1;
+				height: 55px;
+				width: 100%;
+				margin-bottom: 20px;
+			}
+			.title {
+				width: 30%;
+				float: left;
+			}
+			.answer-title div {
+				height: 35px;
+				display: inline-block;
+				line-height: 35px;
+				margin-top: 13px;
+				padding: 0 15px;
+				color: #ffffff;
+			}
+			.seleted{width:90%;float:right;text-align:right;line-height: 46px;}
+	    	.seleted div{display:inline-block;font-size:13px;color:#777;}
+	    	.seleted .wrong-notebook{margin-right:10px;}
+			.stem {
+				padding: 20px 15px;
+				max-width:100%;
+			}
+			.stem img {
+				max-width: 100%;
+			}
+			.option dl {
+				position:relative;
+				border-radius: 5px;
+				min-height: 55px;
+				border: 2px solid #EFF1F1;
+				margin-bottom: 20px;
+			}
+			.option dl dt {
+				position:absolute;
+				top:0px;
+				bottom:-1px;
+				display:block;
+				font-size: 22px;
+				font-weight: 600;
+				width: 12%;
+				height:101%;
+				float: left;
+				background: #EFF1F1;
+		/*		line-height: 53px;*/
+				border-radius: 1px 0 0 1px;
+				text-align: center;
+				color: #666;
+			}
+			.option dl dt div{
+				position:absolute;
+				top:50%;
+				left:50%;
+				margin-top:-10px;
+				margin-left:-8px;
+				height:20px
+			}
+			.option dl dd {
+				width: 85%;
+				float: right;
+				min-height: 55px;
+				line-height: 50px;
+			}
+			.option dl dd div{min-height: 55px;
+				line-height: 50px;max-width:85%;}
+			.option dl dd div p{min-height: 55px !important;
+				line-height: 50px !important;}
+			.option dl dd div p img{
+				vertical-align: middle;
+				margin:10px 0;
+			}
+			.option dl dd img {
+				max-width: 85%;
+			}
+			.option dl dd .judge{position:absolute;right:4%;top:50%;margin-top:-9px;max-width:15%;width:18px;}
+			.option .active dt {
+				color: #ffffff !important;
+			}
+			.option .wrong{border:2px solid #ff0000 !important;}
+    		.option .wrong dt{background:#ff0000  !important;color:#ffffff !important;}
+			.upload-answer button {
+				width: 100%;
+				height: 55px;
+				color: #ffffff;
+				border-radius: 5px;
+				font-size: 16px;
+				margin-bottom: 20px;
+			}
+			.upload-answer button.no-use {
+				background: #f1f1f1;
+				color: #dCdCdc
+			}
+			.upload-answer button .aui-iconfont {
+				margin-right: 5px;
+				font-size: 22px;
+			}
+			.source-img ul {
+				overflow: visible;
+			}
+			.source-img ul li {
+				width: 25%;
+				list-style: none;
+				overflow: visible;
+			}
+			.source-img  img{max-width:100%;}
+			.source-img ul li div {
+				text-align: center;
+				border: 1px solid #f1f1f1;
+				position: relative;
+			}
+			.next {
+				line-height: 55px;
+				text-align: right;
+			}
+			.source-img ul li.voice {
+				position: relative;
+				margin-bottom: 20px;
+				background: url(../../../../../image/yingyong/zuoye/voice.png) left top no-repeat;
+				height: 50px;
+				text-align: left;
+				line-height: 45px;
+				padding-left: 20px;
+				color: #ffffff;
+			}
+			.source-img ul li.voice .delete-voice {
+				position: absolute;
+				right: -13px;
+				top: -7px
+			}
+			.source-img ul li.voice .voice-right {
+				position: absolute;
+				right: -6px;
+				top: 0;
+				display:block;
+				background: url(../../../../../image/yingyong/zuoye/voice-right.png) right top no-repeat;
+			}
+			.source-img img{
+				max-width: 100%;
+			}
+			.right-answer img{max-width:100%;}
+			.plr15 {
+				padding: 0 15px;
+			}
+			.no-data {
+				text-align: center;
+				color: #c0c0c0;
+				background: url(../../../../../image/yingyong/zuoye/kong.png) center top no-repeat;
+				padding-top: 55px;
+				margin-bottom: 20px;
+			}
+			.footer-div{
+				position:fixed;
+				height:55px;
+				background:#ffffff;
+				display: block;
+				bottom: 0px;
+				width:100%;
+				box-shadow:3px 0 4px #aaaaaa;
+			}
+			.no-question-data{text-align:center;color:#666;height:50px;line-height:50px;}
+			.plrb15{padding:0 15px 15px 15px;}
+			.right-answer{color:#9C9C9C;}
+			.check-wrong-button{float:right}
+		</style>
+	</head>
+	<body id="body" class="common-iphone-jstb">
+		<div id="q_title"></div>
+		<div class="q_div default-testQuestionShow" id="q_div">
+		</div>
+		<script type="text/html" id="q_script">
+			<div class="zuoye-name plr15 clearfix">
+				<div id="xt_title" class="title">123</div>
+				<div class="check-wrong-button">
+					<button onclick="openCtXqframe(<%=que_source%>,'<%=html_json.question_id_char%>');" class="aui-btn aui-btn-primary">查看错误详情</button>
+				</div>
+			</div>
+			<%if(html_json){%>
+                <%if(que_source == 1){ %>
+                    <!--东师理想试题展示-->
+                    <div class="stem clearfix">
+                        <%=#commonRemoveQuestionEdit(html_json.question_title)%>
+                    </div>
+					<!--//客观题-->
+					<% if(qt_type == 1){ %>
+						<% if(html_json.question_answer == "正确" || html_json.question_answer == "错误"){ %>
+							<div id="j_option" class="option plr15 clearfix">
+								<dl class="clearfix" answerOption="正确">
+									<dt><div>1</div></dt>
+									<dd>正确
+										<img id="j_right_1" class="judge" style="display:none;" src="../../../../../image/fun-module/iphone/zuoye/right.png" alt="对" />
+										<img id="j_wrong_1" class="judge" style="display:none;" src="../../../../../image/fun-module/iphone/zuoye/wrong.png" alt="对" />
+									</dd>
+								</dl>
+								<dl class="clearfix" answerOption="错误">
+									<dt><div>2</div></dt>
+									<dd>错误
+										<img id="j_right_2" class="judge" style="display:none;" src="../../../../../image/fun-module/iphone/zuoye/right.png" alt="对" />
+										<img id="j_wrong_2" class="judge" style="display:none;" src="../../../../../image/fun-module/iphone/zuoye/wrong.png" alt="对" />
+									</dd>
+								</dl>
+							</div>
+						<%}else{%>
+							<div id="j_option" class="option plr15 clearfix">
+								<%for(var i = 0; i < html_json.question_answer_length; i++){%>
+									<dl class="clearfix" answerOption="<%=html_json.question_answer_first[i]%>">
+										<dt><div><%=html_json.question_answer_first[i]%></div></dt>
+										<dd>
+											<%=#html_json.quetionOption[i]%>
+											<img id="j_right_<%=html_json.question_answer_first[i]%>" class="judge" style="display:none;" src="../../../../../image/fun-module/iphone/zuoye/right.png" alt="正确" />
+											<img id="j_wrong_<%=html_json.question_answer_first[i]%>" class="judge" style="display:none;" src="../../../../../image/fun-module/iphone/zuoye/wrong.png" alt="错误" />
+										</dd>
+									</dl>
+								<%}%>
+							</div>
+						<%}%>
+						<div class="answer-title clearfix">
+							<div>
+								正确答案
+							</div>
+						</div>
+						<div id="j_right_answer" class="source-img plrb15 right-answer clearfix">
+							
+						</div>
+						<div class="answer-title clearfix">
+							<div>
+								题目解析  
+							</div>
+						</div>
+						<div id="j_analysis" class="source-img plrb15 clearfix">
+							<%=#html_json.question_analysis%>
+						</div>
+						<% if(jr_type == 1){ %>
+							<div class="answer-title clearfix">
+								<div>
+									错题标签  
+								</div>
+							</div>
+							<div id="j_wrong_tag" class="source-img plrb15 clearfix">
+								<%=dic_text%>
+							</div>
+						<%}%>
+					<% } else { %>
+						<% if(jr_type == 1){ %>
+							<div id="j_answer_title" class="answer-title clearfix" style="display:none;">
+								<div>
+									我的作答
+								</div>
+							</div>
+							<div class="source-img plr15 clearfix">
+								<div id="j_no_data" class="no-data" style="display:none;">
+									本题您没有作答
+								</div>
+								<ul id="add_answer"></ul>
+							</div>
+						<%}%>
+						<div id="j_right_answer_title" class="answer-title clearfix">
+							<div>
+								正确答案
+							</div>
+						</div>
+						<div id="j_right_answer" class="source-img plrb15 right-answer clearfix">
+							<%=#html_json.question_answer%>
+						</div>
+						<div class="answer-title clearfix">
+							<div>
+								题目解析
+							</div>
+						</div>
+						<div id="j_analysis" class="source-img plrb15 clearfix">
+							<%=#html_json.question_analysis%>
+						</div>
+						<% if(jr_type == 1){ %>
+							<div class="answer-title clearfix">
+								<div>
+									错题标签  
+								</div>
+							</div>
+							<div id="j_wrong_tag" class="source-img plrb15 clearfix">
+								<%=dic_text%>
+							</div>
+						<%}%>
+					<% } %>
+				<% }else{ %>
+					<!--菁优网试题展示-->
+					<div class="stem clearfix">
+                        <%=#commonRemoveQuestionEdit(html_json.Content)%>
+                    </div>
+					<% if(qt_type == 1){ %>
+						<% if(html_json.Answers == "√" || html_json.Answers == "×"){ %>
+							<div id="j_option" class="option plr15 clearfix">
+								<dl class="clearfix" answerOption="√">
+									<dt><div>1</div></dt>
+									<dd>正确
+										<img id="j_right_1" class="judge" style="display:none;" src="../../../../../image/fun-module/iphone/zuoye/right.png" alt="对" />
+										<img id="j_wrong_1" class="judge" style="display:none;" src="../../../../../image/fun-module/iphone/zuoye/wrong.png" alt="对" />
+									</dd>
+								</dl>
+								<dl class="clearfix" answerOption="×">
+									<dt><div>2</div></dt>
+									<dd>错误
+										<img id="j_right_2" class="judge" style="display:none;" src="../../../../../image/fun-module/iphone/zuoye/right.png" alt="对" />
+										<img id="j_wrong_2" class="judge" style="display:none;" src="../../../../../image/fun-module/iphone/zuoye/wrong.png" alt="对" />
+									</dd>
+								</dl>
+							</div>
+						<%}else{%>
+							<!--客观题-->
+							<div id="j_option" class="option plr15 clearfix">
+								<%for(var i = 0; i < html_json.Options.length; i++){%>
+									<dl class="clearfix" answerOption="<%=i%>">
+										<dt><div><%=html_json.Options_first[i]%></div></dt>
+										<dd>
+											<dd><%=#html_json.Options[i]%>
+												<img id="j_right_<%=i%>" class="judge" style="display:none;" src="../../../../../image/fun-module/iphone/zuoye/right.png" alt="对" />
+											<img id="j_wrong_<%=i%>" class="judge" style="display:none;" src="../../../../../image/fun-module/iphone/zuoye/wrong.png" alt="对" />
+											</dd>
+										</dd>
+									</dl>
+								<%}%>
+							</div>
+						<%}%>
+						<div class="answer-title clearfix">
+                            <div>
+                             	   正确答案
+                            </div>
+                        </div>
+                        <div class="source-img plrb15 right-answer img clearfix">
+                            <%if(html_json.Answers == "√" || html_json.Answers == "×"){%>
+                                <%if(html_json.Answers == "√"){%>
+                                   	 正确
+                                <%}else{%>
+                                   	 错误
+                                <%}%>
+                            <%}else{%>
+                                <%for(var i = 0; i < html_json.Answers.length; i++){%>
+                                    <%=html_json.Options_first[html_json.Answers[i]]%>
+                                <%}%>
+                            <%}%>
+                        </div>
+                        <div class="answer-title clearfix">
+                            <div>
+                               	 题目解析
+                            </div>
+                        </div>
+                        <div id="j_analysis" class="source-img plrb15 img clearfix"><%=#html_json.Method%></div>
+                        <% if(jr_type == 1){ %>
+							<div class="answer-title clearfix">
+								<div>
+									错题标签  
+								</div>
+							</div>
+							<div id="j_wrong_tag" class="source-img plrb15 clearfix">
+								<%=dic_text%>
+							</div>
+						<%}%>
+					<% } else { %>
+						<!--主观题-->
+						<div id="j_answer_title" class="answer-title clearfix" style="display:none;">
+							<div>
+								我的作答
+							</div>
+						</div>
+						<div class="source-img plr15 clearfix">
+							<div id="j_no_data" class="no-data" style="display:none;">
+								本题您没有作答
+							</div>
+							<ul id="add_answer"></ul>
+						</div>
+						<div id="j_teacher_score_title" class="answer-title clearfix" style="display:none;">
+							<div>
+								该题正误
+							</div>
+						</div>
+						<div id="j_teacher_score" class="source-img plrb15 right-answer clearfix" style="display:none;">
+						</div>
+						<div id="j_teacher_comment_title" class="answer-title clearfix" style="display:none;">
+							<div>
+								教师批语
+							</div>
+						</div>
+						<div id="j_teacher_comment" class="source-img plrb15 right-answer clearfix" style="display:none;">
+						</div>
+						<div class="answer-title clearfix">
+                            <div>
+                               	 题目解析
+                            </div>
+                        </div>
+                        <div id="j_analysis" class="source-img plrb15 img clearfix"><%=#html_json.Method%></div>
+                        <% if(jr_type == 1){ %>
+							<div class="answer-title clearfix">
+								<div>
+									错题标签  
+								</div>
+							</div>
+							<div id="j_wrong_tag" class="source-img plrb15 clearfix">
+								<%=dic_text%>
+							</div>
+						<%}%>
+					<% } %>
+				<% } %>
+			<%}else{%>
+                <div class="no-question-data">该题目信息正在生成，请稍候查看</div>
+            <%}%>   
+		</script>
+	</body>
+	<script type="text/javascript" src="../../../../../script/api.js"></script>
+	<script type="text/javascript" src="../../../../../script/base_config.js" ></script>
+	<script type="text/javascript" src="../../../../../script/plug-in/template.js" ></script>
+	<script type="text/javascript" src="../../../../../script/plug-in/base64.js" ></script>
+	<script type="text/javascript" src="../../../../../script/assembly/Merge.js"></script>
+	<script type="text/javascript" src="../../../../../script/common/common.js" ></script>
+	<script type="text/javascript" src="../../../../../script/plug-in/echo.min.js"></script>
+	<script type="text/javascript">
+		var header_h;
+		var que_id_char = '';
+		apiready = function() {
+			commonSetTheme({"level":5,"type":0});
+			header_h = api.pageParam.header_h;
+			que_id_char = api.pageParam.que_id_char;
+			var que_source = api.pageParam.que_source;
+			var jy_subject_en_name = api.pageParam.jy_subject_en_name;
+			getDetail(que_id_char,que_source,jy_subject_en_name);
+		};
+		
+		/*
+		 * 功能：获取试题详情
+		 * 作者：张自强
+		 * 时间：20171012
+		 */
+		function getDetail(que_id_char,queSource,name){
+			api.ajax({
+				url : BASE_URL_ACTION + '/xx/getQueHtmlInfo?random_num='+creatRandomNum()+'&question_id_char='+que_id_char+'&que_source='+queSource+'&jy_subject_en_name='+name+'&person_id=' + $api.getStorage('person_id') + '&identity_id=' +  $api.getStorage("identity"),
+				method : 'get',
+				dataType : 'json',
+				timeout:30,
+				 headers : {
+		'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+	}
+			}, function(ret, err) {
+				if(err){
+					popToast('获取试题信息失败，请稍候重试');
+				}else{
+					if(ret.success){
+						ret.commonRemoveQuestionEdit=commonRemoveQuestionEdit;
+						if(ret.que_source == 1){
+							ret.html_json.question_title = Base64.decode(ret.html_json.question_title);
+							ret.html_json.question_analysis = Base64.decode(ret.html_json.question_analysis);
+							ret.html_json.question_answer = Base64.decode(ret.html_json.question_answer);
+							var key = '/dsideal_yy';
+							var key_re = BASE_URL_ACTION;
+							ret.html_json.question_title = ret.html_json.question_title.replaceAll(key, key_re);
+							ret.html_json.question_answer = ret.html_json.question_answer.replaceAll(key, key_re);
+							ret.html_json.question_analysis = ret.html_json.question_analysis.replaceAll(key, key_re);
+						}
+						commonAddOnceHtml('q_div', 'q_script', ret);		
+						$api.html($api.byId('xt_title'),api.pageParam.qt_name);
+					}else{
+						popToast('获取试题信息失败，请稍候重试');
+					}
+				}
+			});
+		}
+		
+		/*
+		 * 功能：打开题目详情页面
+		 * 作者：张自强
+		 * 时间：20171012
+		 */
+		function openCtXqframe(que,id){
+			var pageParamJson={
+				"header_h":api.pageParam.header_h,
+				"que_source":que,
+				"question_id_char":que_id_char,
+				"jy_subject_en_name" : api.pageParam.jy_subject_en_name,
+				"zy_id":api.pageParam.zy_id
+				};//打开frame页面所需参数
+			commonOpenWin('jstb_ctxq_window', 'jstb_ctxq_window.html', false, false, pageParamJson);
+		}
+	</script>
+</html>

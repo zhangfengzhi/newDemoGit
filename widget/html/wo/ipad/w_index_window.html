@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <!-- html5：在创建html时为了防止页面缩放等不兼容效果，要创建个viewport  -->
+        <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+        <!-- 在IOS设备上，有时会将数字转为手机号，这里也要禁止下 -->
+        <meta name="format-detection" content="telephone=no"/>
+        <title>我</title>
+        <link rel="stylesheet" type="text/css" href="../../../css/aui/aui.css" />
+        <link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+        <style> 
+            body{font-size:18px;}
+            .login-header a {  padding: 30px;  background-size: 50px; }
+            .index-header a, .detail-header a { display: block; background-size: 30px;  padding: 20px;}
+            .header a {  background-repeat: no-repeat; }
+            .close { background-image: url("../../../image/close_icon_normal@2x.png"); }
+            .setting { background-image: url("../../../image/setting_icon_normal@2x.png"); }
+            .login-header .nologin-user { -webkit-transform: rotateY(0deg);}
+            .login-header {border-bottom:1px solid #ddd;}
+            .name { color: #323237; font-size: 18px; padding-top: 10px;}
+            .login { color: #323237; font-size: 14px; }
+            .bottom li { width: 18.89%; background-size: 30px;}
+            .bottom li a {margin: 15px 10px 0 10px;color: #737377;font-size: 12px;}
+            .plugin { background-image: url("../../../image/plugin_icon_setting@2x.png"); }
+            .offline { background-image: url("../../../image/pluginboard_icon_offline@2x.png");}
+            .night { background-image: url("../../../image/pluginboard_icon_night@2x.png");}
+            .search { background-image: url("../../../image/pluginboard_icon_search@2x.png");}
+            .more { background-image: url("../../../image/pluginboard_icon_more@2x.png");}
+            .h10 { height: 10px; background: #f7f9f8;}
+            .h1 {  height: 1px; margin-left: 15px;  background: #f7f9f8;}
+            .h20 { height: 20px; background: #f7f9f8;}
+            .fr {float: right; }
+            .hint { color: #666; font-size: 12px; margin-right: 5px; }
+            .firstblock, .secondblock, .thirdblock { background-color: #fff; }
+            /* 头部登陆 */
+            .loginbg {  width: 100%; }
+            .login .personal_logo { position: absolute; left: 0;top: 55px;width: 70px;margin-left: 20px; }
+            .person_arrow {  position: absolute; height: 20px; right: 10px; top: 90px; }
+            .login .userinfo { position: absolute; top: 60px; margin-left: 100px;}
+            .login .userinfo .subtitle { font-size: 14px; color: #fff; border: 1px solid #fff; display: inline-block; padding: 3px; border-radius: 4px; margin-top: 5px; }
+            .login_user{padding:15px;width:100%;}
+            .login_user dl { position: relative;text-align: left; height: 60px; }
+            .login_user dl dt { width: 66px;  position: absolute;  }
+            .login_user dl dt img{border-radius:30px;}
+            .login_user dd { margin-left: 60px;background:none !important;}
+            .login_user dd span {display: block; word-break:break-all;white-space: nowrap;overflow: hidden; text-overflow:ellipsis;}
+            /* 设置条目 */
+            .item { height: 50px; line-height: 50px; background-color: #fff;}
+            .item_ico { float: left; width: 30px;padding: 10px 10px 10px 0;}
+            .item_arrow { float: right; width: 16px;padding: 17px 15px 15px 0;}
+            .presshover { background-color: #FAFAFA;}
+            .item_right { color: #696969;font-size: 14px; padding-right: 15px;}
+            .rkjh_div img, .help_div img, .set_up_div img, .xyk_div img, .integra_div img{width: 24px; height: 24px; vertical-align: middle; margin-right: 15px;}
+            .close_div img{
+                width: 20px; height: 20px; vertical-align: middle; margin-right: 18px;margin-left: 2px
+            }
+            .rkjh_div span, .help_div span, .set_up_div span, .xyk_div span, .integra_div span, .close_div span { vertical-align: middle; padding-top: 1px;}    
+            .body-left{width:180px; position: fixed;border-right:1px solid #ddd; height:100%;background:#fff;}
+        </style>
+    </head>
+    <body class="w-ipad-common">
+        <header class="aui-bar aui-bar-nav aui-bar-primary" id="aui-header">
+            <div id="cloud" class="topbar activebar">
+                <div id="back" class="back" onclick="back();" tapmode="">
+                    <i class="aui-iconfont aui-icon-left"></i>返回
+                </div>
+                <div class="mTitle" id="mTitle">
+                    个人中心
+                </div>
+                <div class="win-menu">
+                    <a id="set" class="aui-iconfont aui-icon-sitting aui-hide"  onclick="openSetRkjhFrame();">
+                        <!--设置任课计划-->                       
+                    </a>
+                    <a id="save" class="aui-iconfont aui-icon-check aui-hide" onclick="addRkjh();">
+                        <!--保存设置的任课计划-->                        
+                    </a>
+                    <a id="savejc" class="aui-iconfont aui-icon-check aui-hide" onclick="saveSchemeProgress();">
+                        <!--保存设置的教材-->                      
+                    </a>
+                </div>
+            </div>
+        </header>
+        <div id="body-left" class="body-left">
+                <div class="login-header header">
+                    <div class="login_user" stlye="position:relative" tapmode="presshover" onclick="openMyInfoIpad();">
+                        <dl>
+                            <dt>
+                                <img onerror="this.src='../../../image/common/header.png'" src='' id="user" style="vertical-align: middle;" width="48" height="48" />
+                            </dt>
+                            <dd>
+                                <span class="name" id="name"></span>
+                                <span class="login" id="login"></span>
+                            </dd>
+                        </dl>
+                    </div>
+                </div>
+    
+            <div class="h10"></div>
+            <div class="aui-content">
+                <ul class="aui-list-view">
+                    <li class="aui-list-view-cell xyk_li" data-win="list_arrow" tapmode="presshover" onclick="openItemWinIpad('w_xyk_frame');" style="display: none;">
+                        <div class="aui-arrow-right xyk_div"><img src="../../../image/wo/xyk.png"><span>校园卡</span>
+                        </div>
+                    </li>
+                    <li class="aui-list-view-cell rkjh_li" data-win="list_arrow" tapmode="presshover" onclick="openItemWinIpad('w_rkjh_frame');" style="display: none;">
+                        <div class="aui-arrow-right rkjh_div"><img src="../../../image/wo/the_plan.png"><span>任课计划</span>
+                        </div>
+                    </li>
+                    <li class="aui-list-view-cell sxb_li" data-win="list_arrow" tapmode="presshover" onclick="openBleActivity();" style="display: none;">
+                        <div class="rkjh_div"><img src="../../../image/wo/sxb.png"><span>手写板</span>
+                        </div>
+                    </li>
+                    <li class="aui-list-view-cell" data-win="list_arrow" tapmode="presshover" onclick="openItemWinIpad('w_help_center_frame');">
+                        <div class="aui-arrow-right help_div"><img src="../../../image/wo/help.png"><span>帮助中心</span>
+                        </div>
+                    </li>
+                    <li class="aui-list-view-cell" data-win="list_arrow" tapmode="presshover" onclick="openItemWinIpad('w_config_frame');">
+                        <div class="aui-arrow-right set_up_div"><img src="../../../image/wo/set_up.png"><span>关于软件</span>
+                        </div>
+                    </li>
+                    <li class="aui-list-view-cell" data-win="list_arrow" tapmode="presshover" onclick="logout();">
+                        <div class="close_div"><img src="../../../image/wo/close.png"><span>退出登录</span>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <script type="text/javascript" src="../../../script/api.js"></script>
+        <script type="text/javascript" src="../../../script/base_config.js"></script>
+        <script type="text/javascript" src="../../../script/init/init_config.js"></script>
+        <script type="text/javascript" src="../../../script/common/common.js"></script>
+        <script type="text/javascript" src="../../../script/wo/w_index_window.js"></script>
+    </body>
+    
+    <script type="text/javascript">
+        var header_h;
+        var back_type = 'index';//返回参数
+        var frame_name="w_info_frame";
+        var handWriteBoard;
+        apiready = function() {
+            commonSetTheme({"level":3,"type":0});
+            header_h = api.pageParam.header_h;
+            commonIosAuiHeader();//定位header位置，留出上面电池等空隙，苹果需要
+            commonBackForAndroid();//安卓关闭
+            $api.css($api.byId('body-left'),'top:'+header_h+'px');//设置左侧导航的样式
+            //加载页面个人信息
+            loadMyself();
+            openMyInfoIpad();
+            //初始化页面加载项目
+            initItem();
+            
+            handWriteBoard = api.require('handWriteBoard');//手写板模块
+        };
+        
+        
+        
+        /**
+         * 返回应用页面
+         * 周枫
+         * 2015.10.11
+         */
+        function back() {
+            api.closeWin();
+        }
+        
+        
+        /*
+        *author:zhaoj
+        *function:添加了任课计划
+        *date：20160510
+        */
+        function addRkjh(){
+            $api.setStorage('rkjh_person_id',$api.getStorage("person_id"));
+            commonExecScript('w_index_window','w_setrkjh_frame','saveClassInfo();',1);
+        }
+        
+        function openMyInfoIpad() {
+            displaySaveRkjh(false);
+            displaySetRkjh(false);
+            displaySaveJc(false);
+            if(frame_name!="w_info_frame"){
+                commonCloseFrame(frame_name);
+            }
+            var frame_w=api.winWidth-180;
+            var frame_x = 180;
+            pageParamJson={"header_h":header_h,'w':frame_w,"x":frame_x};
+            commonOpenFrame('w_info_frame', 'w_info_frame.html', header_h, true, false, '#ffffff',pageParamJson);
+            frame_name = "w_info_frame";
+        }
+        
+        /**
+         * 打开应用Window
+         * zfz
+         * 20171020
+         */
+        function openItemWinIpad(frame_name_this) { 
+            frame_name = frame_name_this;
+            var frame_w = api.winWidth;
+            frame_w=frame_w-180;
+            var frame_x = 180;
+            pageParamJson={"header_h":header_h,'w':frame_w,"x":frame_x};
+            if (frame_name == 'w_xyk_frame') {
+//              var code = "";
+//              var idy_id = $api.getStorage('idy_id')*1;
+//              if(idy_id == 0){
+//                  code = 'hbg_rcbg_xyk';
+//              }else if(idy_id == 1 || idy_id == 2){
+//                  code = 'hsh_xyk';
+//              }
+//              getCrmInfoByPerson(code,function(flag,infor){
+//                  if(flag){
+                        displaySaveRkjh(false);
+                        displaySetRkjh(false);
+                        displaySaveJc(false);
+                        commonCloseFrame(frame_name);
+                        
+                        commonJudgeRoles(function(type){
+		                	if (type == 5){
+			                	commonOpenWin("xyk_work_window", '../common/xyk_work/xyk_work_window.html', false, false, {
+			                        'header_h' : header_h
+			                    });
+			                }else{
+			                	//更换校园卡需要密码验证
+                        checkPsd(function(is_true) {
+                            if (is_true) {          
+                                //更换校园卡
+                                commonOpenFrame(frame_name, frame_name + '.html', header_h, false, false, '#ffffff',pageParamJson);
+		                            } else {
+		                                popBottomToast("对不起，登录密码不正确，不能使用校园卡功能。");
+		                            }
+		                        });
+			                }
+		                });
+//                  }else{
+//                      popAlert(infor);
+//                  }
+//              });
+            } else {
+                displaySaveRkjh(false);
+                displaySetRkjh(false);
+                displaySaveJc(false);
+                commonCloseFrame(frame_name);
+                if(frame_name=='w_rkjh_frame'){
+                    displaySaveRkjh(false);
+                    displaySetRkjh(true);
+                }
+                if(frame_name=='w_szjc_frame'){
+                    reBackType('szjc');
+                }
+                commonOpenFrame(frame_name, frame_name + '.html', header_h, false, false, '#ffffff',pageParamJson);
+                
+            }
+        }
+        
+        /*
+        *author:zfz
+        *function:设置任课计划保存按钮是否显示
+        *date：20171020
+        */
+        function displaySaveRkjh(flag){
+            if(flag){
+                $api.removeCls($api.byId('save'),'aui-hide');
+            }else{
+                $api.addCls($api.byId('save'),'aui-hide');
+            }
+        }
+        
+        /*
+        *author:zfz
+        *function:添加任课计划按钮是否显示
+        *date：20171020
+        */
+        function displaySetRkjh(flag){
+            if(flag){
+                $api.removeCls($api.byId('set'),'aui-hide');
+            }else{
+                $api.addCls($api.byId('set'),'aui-hide');
+            }
+        }
+        
+        /*
+        *author:zfz
+        *function:设置教材保存按钮是否显示
+        *date：20171021
+        */
+        function displaySaveJc(flag){
+            if(flag){
+                $api.removeCls($api.byId('savejc'),'aui-hide');
+            }else{
+                $api.addCls($api.byId('savejc'),'aui-hide');
+            }
+        }
+        
+        /*
+        *author:zhaoj
+        *function:设置任课计划页面
+        *date：20160510
+        */
+        function openSetRkjhFrame(){
+            commonCloseFrame('w_rkjh_frame');
+            reBackType('set');
+            var frame_w = api.winWidth-180;
+            var frame_x = 180;
+            pageParamJson={"header_h":header_h,'w':frame_w,"x":frame_x};
+            commonOpenFrame('w_setrkjh_frame', 'w_setrkjh_frame.html', header_h, false, false, '#ffffff',pageParamJson);
+        }
+        
+        /*
+        *author:zfz
+        *function:添加了任课计划(保存任课计划)
+        *date：20160510
+        */
+        function addRkjh(){
+            $api.setStorage('rkjh_person_id',$api.getStorage("person_id"));
+            commonExecScript('w_index_window','w_setrkjh_frame','saveClassInfo();',1);
+        }
+        
+        /*
+        *author:zfz
+        *function:保存教材设置
+        *date：20171021
+        */
+        function saveSchemeProgress(){
+            commonExecScript('w_index_window','w_szjc_frame','saveSchemeProgress();',1);
+        }
+        
+        /**
+         * 返回应用页面
+         * zfz
+         * 20171021
+         */
+        function back() {
+            switch(back_type) {
+                case 'index':
+                    api.closeWin();
+                    break;
+                case 'set':   //设置任课计划页面
+                    displaySaveRkjh(false);
+                    displaySetRkjh(true);
+                    commonCloseFrame('w_setrkjh_frame');
+                    openItemWinIpad('w_rkjh_frame');
+                    reBackType('index');
+                    break;
+                case 'manage':
+                    displaySaveRkjh(false);
+                    displaySetRkjh(true);
+                    commonCloseFrame('w_rkjh_manage_frame');
+                    reBackType('index');
+                    break;
+                case 'szjc':
+                    displaySaveJc(false);
+                    reBackType('index');
+                    break;
+            }
+        }
+        
+        
+        /**
+         * 重置从哪个页面退出
+         * 周枫
+         * 2015.12.17
+         */
+        function reBackType(type) {
+            switch(type) {
+                case 'index':
+                    back_type = 'index';
+                    break;
+                case 'set':
+                    displaySaveRkjh(true);
+                    displaySetRkjh(false);
+                    back_type = 'set';
+                    break;
+                case 'manage':
+                    displaySaveRkjh(false);
+                    displaySetRkjh(false);
+                    back_type = 'manage';
+                    break;
+                case 'szjc':
+                    displaySaveJc(true);
+                    back_type = 'szjc';
+                    break;
+            }
+        }
+        
+        /**
+         * 连接手写板
+         */
+        function openBleActivity(){
+        	handWriteBoard.openBleActivity(function (ret){});
+        }
+    </script>
+</html>

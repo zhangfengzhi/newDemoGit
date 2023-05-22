@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no" />
+    <title>通知</title>
+    <link rel="stylesheet" type="text/css" href="../../../../../css/aui/aui.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../../../css/module/common/aui-list-swipe.css" />
+    <link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+    <style>
+    	.notice-name{display:inline-block;max-width:100%;}
+    	.ellipsis{white-space: nowrap;overflow: hidden;text-overflow: ellipsis;}
+    	.author-name{max-width:100%;}
+    	.tip-image{position:absolute;top:-12px;right:-15px;width:35px;}
+    	.aui-swipe-div{position:relative;}
+    	.aui-list-view:before{height:0;}
+    	.aui-user-view-cell:last-child:after {position: absolute;left: 15px;right: 0;bottom: 0;height: 1px;content: '';background-color: #c8c7cc;-webkit-transform: scaleY(.5);transform: scaleY(.5);}
+    	.aui-list-view::after{height:0;}
+    	.no-data{color:#666666;text-align:center;line-height:45px;}
+    	.aui-list-view .aui-img-object{width:60px;}
+    	.red{color:#ff0000 !important;}
+    	.aui-user-view-cell .aui-img-object { max-width: 100px !important;height: 80px !important; width: 100px !important;  line-height: 48px !important;border-radius: 2px; padding: 2px;border: 1px solid #e7e7e7;}
+    	.aui-user-view-cell p{margin-top:8px;}
+    	.aui-img-body .notice-name{padding-top:3px;}
+    	.type-div{height:10px;background:#efefef;width:100%;}
+    </style>
+</head>
+<body class="common-iphone-notice">
+	<section class="aui-content" id="banner">
+		<ul id="tz_body" class="aui-list-view">
+		</ul>
+		<script type="text/html" id="tz_script">
+			<% if(list.length == 0){ %>
+				<div class="no-data"><span>暂无通知公告</span></div>
+			<% }else{ %>
+				<%for(var i=0; i<list.length; i++) {%>
+					<li class="aui-user-view-cell aui-img" tapmode onclick="showMsg(this,<%=list[i].notice_id%>,'<%=list[i].flag%>','<%=list[i].update_text%>','<%=list[i].notice_title%>','<%=list[i].send_status%>',<%=list[i].notice_public%>);">
+		            	<div class="aui-swipe-div <%if(is_xxgly){%>aui-swipe-handle<%}%>">
+			                <img class="aui-img-object aui-pull-left" onerror="this.src='../../../../../image/fun-module/common/bjtz.png'"  src="<%=list[i].img_src%>" />
+			                <div class="aui-img-body">
+			                    <div class="notice-name ellipsis" id="title_<%=list[i].notice_id%>"><%=#list[i].update_text%><%if(list[i].flag != -1){%><%=#list[i].flag%>&nbsp;&nbsp;<%}%><%=list[i].notice_title%></div>
+			                    <p class="author-name">创建人:&nbsp;&nbsp;<%=list[i].person_name%></p>
+			                    <p>创建时间:&nbsp; <%=list[i].create_time%></p>
+			                </div>
+			                <img class="tip-image" src="../../../../../image/fun-module/iphone/notice/<%=list[i].level%>.png" />
+		                </div>
+		            	<!--<div class="aui-swipe-right-btn aui-bg-danger" type="1" noticeID=<%=list[i].notice_id%> tapmode onclick="rightBtn(this);">删除</div>-->
+		            </li>
+		            <div class="type-div"></div>
+				<% } %>
+			<% } %>
+		</script>
+	</section>
+</body>
+<script type="text/javascript" src="../../../../../script/api.js"></script>
+<script type="text/javascript" src="../../../../../script/plug-in/aui-list-swipe.js"></script>
+<script type="text/javascript" src="../../../../../script/base_config.js" ></script>
+<script type="text/javascript" src="../../../../../script/plug-in/template.js" ></script>
+<script type="text/javascript" src="../../../../../script/common/common.js"></script>
+<script type="text/javascript">
+	var BASE_URL_ACTION;
+	var header_h;//顶部header高度
+	var is_xxgly;//是否为学校管理员，0代表不是，1代表是
+	var currentPage = 1;//第几页
+	var totalPage = 1;//总页数
+	var levelValue = 0;//类型 0代表全部
+	var swipe;
+	var type = 1;
+	var n_id;
+	var flag_now = '';//打开的通知的未签未阅状态
+	var id_now;//打开的通知id
+	var update_text_now;//打开的通知的已改未改状态
+	var title_now;//打开的通知的标题
+	apiready = function(){
+		commonSetTheme({"level":5,"type":0});
+		header_h = api.pageParam.header_h;
+		is_xxgly = api.pageParam.is_xxgly;
+		BASE_URL_ACTION = $api.getStorage('BASE_URL_ACTION');
+		initData();
+		if(is_xxgly){
+		  openTextBtn(); 
+		}
+		refreshDataInfo();//下拉刷新
+		scrollBottomReload();//上拉刷新
+	};
+	function showMsg(el,notice_id,flag,updateText,title,sendStatus,noticePublic){
+	    switch(api.pageParam.is_xxgly*1){
+	       case 0://接受的通知
+	           flag_now = flag;
+               id_now = notice_id;
+               title_now = title;
+               update_text_now = updateText
+               openContentWindow(notice_id,flag);
+	           break;
+	       case 1://发布的通知
+	            var buttons = [];
+                if(sendStatus*1 == 0){
+                   buttons = ['查看','发布','编辑','删除'];
+                }else{
+                   buttons = ['查看','撤销'];
+                }
+                api.actionSheet({
+                    cancelTitle: '取消',
+                    buttons: buttons,
+                    style:{
+                        titleFontColor:'#ff0000'
+                    }
+                },function( ret, err ){
+                    if( ret ){
+                        if(ret.buttonIndex == 1){
+                            flag_now = flag;
+                            id_now = notice_id;
+                            title_now = title;
+                            update_text_now = updateText
+                            openContentWindow(notice_id,flag);
+                        }else if(ret.buttonIndex == 2){
+                            if(sendStatus*1 == 0){//发布
+                                openEditWindow(notice_id,noticePublic,sendStatus);
+                            }else{//撤销
+                                kjCancelNotice(notice_id);
+                            }
+                        }else if(ret.buttonIndex == 3){
+                            if(sendStatus*1 == 0){//编辑
+                                openEditWindow(notice_id,noticePublic,sendStatus)
+                            }
+                        }else if(ret.buttonIndex == 4){
+                            if(sendStatus*1 == 0){//删除
+                                delNotice(notice_id);
+                            }
+                        }
+                    }
+                });
+               break;
+	    }
+	}
+	
+	/*
+	 * 功能：撤销通知
+	 * 作者：张自强
+	 * 时间：20180730
+	 */
+	function kjCancelNotice(notice_id){
+	   api.ajax({
+            url : BASE_URL_ACTION + '/new_notice/kjCancelNotice',
+            method : 'post',
+            timeout : 0,
+            dataType : 'json',
+            data : {
+                values : {
+                    'notice_id' : notice_id
+                }
+            },
+            headers : {
+    'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+    }
+            }, function(ret, err) {
+                if (err) {
+                    popToast('撤销失败');
+                } else {
+                    if(ret.success){
+                        initData();
+                        popToast('撤销成功');
+                    }else{
+                       popToast('撤销失败');
+                    }
+                }
+        });
+	}
+	function rightBtn(obj){
+		var type = obj.getAttribute('type')*1;
+		var noticeID = obj.getAttribute('noticeID')*1;
+			if(type == 1){
+				delNotice(noticeID);
+			}else{
+				openEditWindow(noticeID)
+			}
+	}
+	/*
+	*author:zhaoj
+	*function:打开选择权限的window页面
+	*date：20160625
+	*/
+	function openContentWindow(notice_id,flag){
+		var header_h = api.pageParam.header_h;
+		commonOpenWin('notice_content_window','notice_content_window.html', false, false,{header_h : header_h,is_xxgly : is_xxgly,notice_id : notice_id,flag : flag});
+	}
+	/*
+	*author:zhaoj
+	*function:打开选择权限的window页面
+	*date：20160625
+	*/
+	function openEditWindow(notice_id,notice_public,send_status){
+		var header_h = api.pageParam.header_h;
+        commonOpenWin('notice_add_window','notice_add_window.html', false, false,{'header_h' : header_h,'notice_id':notice_id,'type':1,'notice_public':notice_public,'send_status':send_status});
+	}
+	/*
+	 *author:zhaoj
+	 *function:初始化右滑按钮的点击事件
+	 *date：20160625
+	 */
+	function initSwipe(){
+		$('.aui-swipe-right-btn').each(function () {
+	       $(this).tap(function(event) {
+	            var type = $(this).attr('type')*1;
+				var noticeID = $(this).attr('noticeID')*1;
+				if(type == 1){
+					delNotice(noticeID);
+				}else{
+					openEditWindow(noticeID)
+				}
+	        });
+	    });
+	}
+	/*
+	 *author:zhaoj
+	 *function:更改type值
+	 *date：20160702
+	 */
+	function changeType(num){
+		if(num == 1){
+			type = 1;
+		}else{
+			type = 2;
+		}
+		currentPage = 1;
+		initData();
+	}
+	/*
+	 * 功能：修改类型
+	 * 作者：张自强
+	 * 时间：20171123
+	 */
+	function changeGgType(type){
+		levelValue = type;
+		$api.setStorage('notice_level_id',levelValue);
+		currentPage = 1;
+		initData();
+	}
+	/*
+    *author:zhaoj
+    *function:初始化数据
+    *date：20171103
+    */
+	function initData(){
+	   getNoticeList(1,1,levelValue,'',function(data){
+            dealData(data,function(flag){
+                api.parseTapmode();
+                // 初始化
+//              swipe = new ListSwipe();
+                //initSwipe();
+            })
+        });
+	}
+	
+	/*
+	*author:zhaoj
+	*function:获取通知的列表数据
+	*date：20160627
+	*/
+	function getNoticeList(is_show,current_page,level,page_size,callback){
+		if(is_show){showSelfProgress('加载中...');}
+		if(page_size != ''){
+			pageSize = page_size;
+		}else{
+			pageSize = BASE_PAGE_SIZE;
+		}
+		var src_url;
+		if(is_xxgly){
+//			src_url = BASE_URL_ACTION + '/new_notice/getManageSendNoticeList?person_id='+$api.getStorage("person_id")+'&type='+type+'&level='+level+'&pageNumber='+current_page+'&pageSize='+pageSize+'&bureau_id='+$api.getStorage('bureau_id')+'&random_num='+creatRandomNum();
+            src_url = BASE_URL_ACTION + '/new_notice/kjGetSendNoticeList?person_id='+$api.getStorage("person_id")+'&level='+level+'&pageNumber='+current_page+'&pageSize='+pageSize+'&bureau_id='+$api.getStorage('bureau_id')+'&random_num='+creatRandomNum();
+		}else{
+			src_url = BASE_URL_ACTION + '/new_notice/kjGetMyNoticeList?person_id='+$api.getStorage("person_id")+'&level='+level+'&bureau_id='+$api.getStorage('bureau_id')+'&pageNumber='+current_page+'&pageSize='+pageSize+'&random_num='+creatRandomNum();
+		}
+		api.ajax({
+			url : src_url,
+			method : 'get',
+			timeout : 0,
+			dataType : 'json',
+			headers : {
+	'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+	}
+			}, function(ret, err) {
+				api.hideProgress();
+				var data={"list": []};
+				if (err) {
+					callback(data,true);
+				} else {
+					if(ret.success){
+						totalPage = ret.totalPage;
+						callback(ret,true);
+					}else{
+						callback(data,true);
+					}
+				}
+				//通知顶部下拉刷新数据加载完毕，组件会恢复到默认状态
+				commonControlRefresh();
+		});
+	}
+	/*
+	*author:zhaoj
+	*function:处理数据
+	*date：20160627
+	*/
+	function dealData(data,callback){
+		data.is_xxgly = is_xxgly;
+		for(var i = 0; i < data.list.length; i++){
+			data.list[i].create_time = data.list[i].create_time;
+			switch(data.list[i].level_name){
+				case "日常":
+					data.list[i].level = 1;
+					break;
+				case "紧急":
+					data.list[i].level = 2;
+					break;
+				case "重要":
+					data.list[i].level = 3;
+					break;
+				default:
+					break;
+			}
+			if(api.pageParam.is_xxgly*1 == 0){
+    			data.list[i].send_status = '';
+    	       	data.list[i].flag = '';
+    		    data.list[i].notice_public = 0;
+			}
+			if(data.list[i].thumb_id == "default.png"){
+				data.list[i].img_src = "../../../../../image/fun-module/common/bjtz.png";
+			}else{
+				var img_url;
+				if (BASE_APP_TYPE == 1) {
+					img_url = BASE_IMAGE_PRE+"down/Material/" + data.list[i].thumb_id.substring(0, 2) + "/" + data.list[i].thumb_id;
+				} else {
+					img_url = BASE_URL_ACTION + "/html/thumb/Material/" + data.list[i].thumb_id.substring(0, 2) + "/" + data.list[i].thumb_id;
+				}
+				data.list[i].img_src = img_url;
+			}
+			if(data.list[i].flag=='[未签]' || data.list[i].flag=='[未阅]'){
+				data.list[i].flag='<span class="red">'+data.list[i].flag+'</span>';
+			}
+			if(data.list[i].is_update == 1){
+				data.list[i].update_text='<span class="red">[已改]</span>';
+			}else{
+				data.list[i].update_text='';
+			}
+		}
+		commonAddManyHtml('tz_body', 'tz_script', data);
+		callback(true);
+	}
+	/**
+	 * 下拉刷新
+	 * 周枫
+	 * 2016.2.29
+	 */
+	function refreshDataInfo() {
+		//绑定下拉刷新历史会话事件
+		api.setRefreshHeaderInfo({
+			visible : true,
+			loadingImg : 'widget://image/local_icon_refresh.png',
+			bgColor : '#F0F0F0',
+			textColor : '#8E8E8E',
+			textDown : '下拉加载更多...',
+			textUp : '松开加载...',
+			showTime : true
+		}, function(ret, err) {
+			//从服务器加载数据，完成后调用commonControlRefresh()方法恢复组件到默认状态
+			//调用获取历史会话监听
+			//打开滑动条
+				currentPage = 1;
+				getNoticeList(1,1,levelValue,'',function(data){
+					dealData(data,function(flag){
+						api.parseTapmode();
+						// 初始化
+//						swipe = new ListSwipe();
+						//initSwipe();
+					})
+				});
+			});
+	}
+	/**
+	 * 上拉刷新页面数据
+	 * 周枫
+	 * 2015.11.24
+	 */
+	function scrollBottomReload() {
+		//下移到底部：
+		api.addEventListener({
+			name : 'scrolltobottom',
+			extra : {
+				threshold : 100 //设置距离底部多少距离时触发，默认值为0，数字类型
+			}
+		}, function(ret, err) {
+			if ((currentPage + 1) <= totalPage) {
+				currentPage = currentPage + 1;
+				getNoticeList(1,currentPage,levelValue,'',function(data){
+					dealData(data,function(flag){
+						api.parseTapmode();
+						// 初始化
+//						swipe = new ListSwipe();
+						//initSwipe();
+					});
+				});
+				// 页码+1
+			} else {
+				popToast('已加载全部数据');
+			}
+		});
+	}
+	/*
+	 *author:zhaoj
+	 *function:删除通知
+	 *date：20160629
+	 */
+	function delNotice(notice_id){
+		commonShowProgress('删除中...',true);
+		api.ajax({
+			url : BASE_URL_ACTION + '/new_notice/delNotice?notice_id='+notice_id,
+			method : 'get',
+			timeout : 0,
+			dataType : 'json',
+			headers : {
+	'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+	}
+			}, function(ret, err) {
+				api.hideProgress();
+				if (err) {
+					popToast('删除失败');
+				} else {
+					if(ret.success){
+						popToast('删除成功');
+						var page_size = currentPage*BASE_PAGE_SIZE;
+						currentPage = 1;
+						getNoticeList(0,1,levelValue,page_size,function(data){
+							dealData(data,function(flag){
+								api.parseTapmode();
+								// 初始化
+//								swipe = new ListSwipe();
+								//initSwipe();
+							});
+						});
+					}else{
+						popToast('删除失败');
+					}
+				}
+		});
+	}
+	/*
+	*作者:zhaoj
+	*功能:关闭滑动条
+	*日期：20160913
+	*/
+	function closeNav(){
+        commonCloseNavigationBar();
+    }
+    
+    /*
+     * 功能：修改装填
+     * 作者：张自强
+     * 时间：20171116
+     */
+    function changeState(type){
+		var str  = '';
+    	switch(type){
+			case 1:
+				if(flag_now == '<span class="red">[未阅]</span>'){
+					str += update_text_now + '[已阅]&nbsp;&nbsp' + title_now;
+					$api.html($api.byId('title_'+id_now), str);
+				}
+				break;
+			case 2:
+				if(flag_now == '<span class="red">[未签]</span>'){
+					str += update_text_now + '[已签]&nbsp;&nbsp' + title_now;
+					$api.html($api.byId('title_'+id_now), str);
+				}
+				break;
+			    	
+    	}
+    }
+    
+    
+    /*
+     * 功能：打开添加综合检测按钮
+     * 作者；张自强
+     * 时间：20180606
+     */
+    function openTextBtn(){
+       var pageParamJson = {
+            'header_h':api.pageParam.header_h,
+        };
+       api.openFrame({
+            name : 'notice_text_frame',
+            scrollToTop : false,
+            allowEdit : false,
+            url : 'notice_text_frame.html',
+            rect : {
+                x : api.winWidth-82,
+                y : api.winHeight*0.9-44,
+                w : 53,
+                h : 53,
+            },
+            pageParam : pageParamJson,
+            bgColor : 'rgba(0,0,0,0)',
+            vScrollBarEnabled : false,
+            hScrollBarEnabled : false,
+            //页面是否弹动 为了下拉刷新使用
+            bounces : false
+        });
+    }
+</script>
+</html>

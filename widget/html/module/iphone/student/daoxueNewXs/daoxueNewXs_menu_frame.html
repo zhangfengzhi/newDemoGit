@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<title>题本下拉菜单</title>
+		<link rel="stylesheet" type="text/css" href="../../../../../css/aui/aui.css" />
+		<link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+		<style>
+			html, body {
+				background-color: transparent;
+				background: rgba(0,0,0,0);
+			}
+			body {
+				padding: 0;
+				margin: 0;
+			}
+			.shadow {
+				position: absolute;
+				left: 0;
+				top: 0;
+				width: 100%;
+				height: 100%;
+				z-index: 1;
+			}
+			.header {
+				width: 100%;
+				height: 45px;
+			}
+			.main {
+				width: 100%;
+			}
+			.menu-list {
+				list-style: none;
+				background-color: #ffffff;
+				box-shadow: 0px 0px 5px #cccccc;
+				position: relative;
+				width: 150px;
+				float: right;
+				z-index: 2;
+				padding: 0;
+				margin: 0;
+			}
+			.menu-list li {
+				height: 48px;
+				line-height: 48px;
+				display: block;
+				border-bottom: 1px solid #eeeeee;
+				color: #333;
+				font-family: sans-serif;
+				text-align:center;
+			}
+			.menu-list li .icon-box {
+				width: 60px;
+				height: 48px;
+				display: inline-block;
+				float: left;
+			}
+			.menu-list li span {
+				display: inline-block;
+				height: 48px;
+				line-height: 48px;
+			}
+			.menu-list li .tiwen {
+				background: url(../../../../../image/fun-module/iphone/zuoye/talk.png) 15px center no-repeat;
+				background-size: 31px 28px;
+			}
+			.menu-list li .chouqu {
+				background: url(../../../../../image/fun-module/iphone/zuoye/weike.png) 15px center no-repeat;
+				background-size: 31px 27px;
+			}
+			.menu-list li .zuowei{background: url(../../../../../image/fun-module/iphone/zuoye/look.png) 15px center no-repeat; background-size: 31px 31px;}
+			.menu-list li .shuoming {
+				background: url(../../../../../image/fun-module/iphone/daoxue/explain.png) 15px center no-repeat;
+				background-size: 31px 27px;
+			}
+		</style>
+	</head>
+	<body class="common-iphone-tibenJy">
+		<div class="shadow" tapmode onclick="api.closeFrame({name:'daoxueNewXs_menu_frame'});"></div>
+		<div id="header" class="header"></div>
+		<div id="main" class="main">
+			<ul class="menu-list">
+				<li id="taolun" onclick="openTalk();">
+                    <span>交流讨论</span>
+                </li>
+			</ul>
+		</div>
+	</body>
+	<script type="text/javascript" src="../../../../../script/api.js"></script>
+	<script type="text/javascript" src="../../../../../script/base_config.js" ></script>
+    <script type="text/javascript" src="../../../../../script/common/common.js" ></script>
+	<script type="text/javascript">
+		var header_h;
+		//获取最后一条id
+        var old_msg_id = -1;
+		apiready = function() {
+		    commonSetTheme({"level":5,"type":0});
+			header_h = api.pageParam.header_h;
+			$api.css($api.byId('header'), 'height:' + header_h + 'px;');
+			$api.css($api.byId('main'), 'height:' + (api.winHeight - header_h) + 'px;');
+			
+			//获取最后一条id的监听
+			api.addEventListener({
+				name : 'setOldMessageId'
+			}, function(ret) {
+				if (ret && ret.value) {
+					var value = ret.value;
+					old_msg_id = value.old_msg_id;
+				}
+			});
+		};
+		
+        
+        
+        /**
+         * 打开班级群组会话
+         * 周枫
+         * 2016.04.13
+         */
+        function openTalk() {
+            setTimeout(function() {
+                var identity_id = parseInt($api.getStorage('identity'));
+                var target_id = '';
+                switch(identity_id) {
+                    case 5:
+                        target_id = 'class_' + $api.getStorage('class_id') + '_' + $api.getStorage('BASE_SERVER_NAME');
+                        break;
+                    case 6:
+                        target_id = 'class_' + $api.getStorage('class_id') + '_' + $api.getStorage('BASE_SERVER_NAME');
+                        break;
+                    case 7:
+                        target_id = 'plass_' + $api.getStorage('class_id') + '_' + $api.getStorage('BASE_SERVER_NAME');
+                        break;
+                }
+                var title = $api.getStorage('class_name');
+                if ('undefined' == typeof (title) || null == title) {
+                    title = '班级讨论';
+                }
+                execHhList(target_id, title, "GROUP" );
+            }, 100);                    
+        }
+
+        /**
+         * 打开班级群组会话
+         * 周枫
+         * 2016.04.13
+         */
+        function execHhList(target_id, title, conver_type) {
+            var avatar_url = 'widget:\/\/image\/person\/class.png';
+            var send_txt = '';
+            var person_id = $api.getStorage("person_id");
+            var identity_id = $api.getStorage("identity");
+            api.ajax({
+                url: BASE_URL_ACTION+'/rongcloud/syncUserRongYunGroup?group_id='+target_id,
+                method:'get',
+                timeout:30,
+                dataType:'json'
+            },function(ret,err){
+                setTimeout(function() {
+                    send_txt = "交流讨论：大家好，关于这个导学，咱们一起看一下吧！";
+                    sendText(send_txt + "<a href=\"javascript:openDaoXue('"+api.pageParam.id+"','"+api.pageParam.name+"');\">点击查看</a>", send_txt+"<a href=\"javascript:openDaoXue('"+api.pageParam.id+"','"+api.pageParam.name+"');\">点击查看</a>", 'GROUP', target_id);
+                    api.closeFrame({name:'daoxueNewXs_menu_frame'});
+                }, 1000);
+                commonExecScript('root','hh_index','openHhList("' + target_id + '",' + old_msg_id + ',"' + title + '","' + conver_type + '","zjgb",\"' + avatar_url + '\");',1);
+            });
+        }
+        
+        
+        /**
+         * 发送文本消息
+         * 周枫
+         * 2015.08.08
+         * @param {Object} sendMsg3
+         */
+        function sendText(send_msg_old, sendMsg, conver_type, target_id) {
+            //向会话列表页发送消息事件
+            api.sendEvent({
+                name : 'sendMessage',
+                extra : {
+                    type : 'text',
+                    targetId : '' + target_id + '',
+                    content : sendMsg,
+                    contentOld : send_msg_old,
+                    conversationType : conver_type,
+                    extra : ''
+                }
+            });
+        }
+	</script>
+</html>

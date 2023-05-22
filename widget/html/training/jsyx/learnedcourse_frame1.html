@@ -1,0 +1,61 @@
+<!DOCTYPE html>	
+<html>	
+<head>	
+	<meta charset="utf-8">	
+	<title>frame</title>	
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>	
+	<link rel="stylesheet" type="text/css" href="../../../css/training/jsyx/api.css" />	
+    <link rel="stylesheet" type="text/css" href="../../../css/training/jsyx/common.css" />	
+	
+	<style>	
+		html, body {width: 100%;min-height: 100%;background: #f0f0f0;}	
+		.h80 {height: 80px;}	
+		.h40 {height: 40px;}	
+		.h20 {height: 20px;}	
+    	.h10 {height: 10px;background: #f0f0f0;}	
+		.h1 {height: 1px;margin-left: 15px;background: #f0f0f0;}	
+		.fr {float: right;}	
+		.fl {float: left;}	
+		.hightitem {background-color: #fff;}	
+		.home-tuan-list .item {position: relative; display: block; padding-left: 10px; }	
+		.home-tuan-list .cnt {padding: 7px 10px 10px 0; display: box; display: -webkit-box;display: -webkit-flex;display: flex; height: 78px;  background-size: auto 1px; }	
+		.home-tuan-list .pic {margin-right: 10px; background: center; }	
+		.home-tuan-list img {width: 90px; height: 66px; margin-top: 7px; margin-bottom: 5px; border-radius: 3px; }	
+		.home-tuan-list .wrap {-webkit-box-flex: 1; -webkit-flex: 1;flex: 1;}	
+		.home-tuan-list .wrap2 {display: table; height: 88px; width: 100%; }	
+		.home-tuan-list .content {-webkit-box-flex: 1;-webkit-flex: 1;flex: 1; box-flex: 1; display: table-cell; vertical-align: middle; }	
+		.home-tuan-list .shopname {color: #333; /*line-height: 16px;*/ font-size: 17px; max-width: 11em; white-space: nowrap; word-wrap: normal; text-overflow: ellipsis; overflow: hidden; min-height: 10px; padding-bottom: 2px; padding-top: 3px; display: inline-block;}	
+		.hide{display:none;}
+		.home-tuan-list .comment {margin-bottom: 6px; position: relative; }	
+		.home-tuan-list .comment span {vertical-align: middle; color: #666; font-size: 12px;}	
+		.home-tuan-list .classify {color: #666; font-size: 14px;}	
+		.selectdiv{height: 60px;line-height: 60px; border-bottom: 1px #34A8FA  solid;}
+		.selectdiv span{width:100px; font-size: 18px; margin-left: 10px;  color: #696969}
+		.selectdiv select{ width:50%;height: 32px; line-height: 32px; color: #828181; background:#fafafa; border: 1px #c1c1c1 solid; }
+		.changDiv{height: 42px;line-height: 42px; vertical-align: middle;border-top:1px solid #e6ded6;border-bottom:1px solid #cccccc; background-color: #f5f6f7;}
+		.changDiv label{height: 42px;line-height: 42px;width:50%;text-align: center; font-size: 16px;}
+		.bg{color:#FFFFFF; background-color: #34A8FA ; }
+	</style>	
+</head>	
+<body>	
+	<div class="selectdiv" id="selectdiv">
+		<span>选择培训班</span>
+		<select id="pxbSelect" onchange="changePxb(this.value)">
+		</select>
+	</div>
+	<div  id="changDiv" class="changDiv">
+		<label class="title_left bg" id="title_left" onclick="changeDiv(this)">必修</label><label class="title_right" id="title_right" onclick="changeDiv(this)" >选修</label>
+	</div>
+	<!-- 1 列表 -->	
+	<div class="home-tuan-list" id="kcDiv_bx">	
+	</div>
+	<div class="home-tuan-list hide" id="kcDiv_xx">	
+	</div>	
+	<script type="text/javascript" src="../../../script/api.js"></script>	
+	<script type="text/javascript" src="../../../script/base_config.js"></script>
+	<script type="text/javascript" src="../../../script/training/jsyx/constant.js"></script>	
+	<script type="text/javascript" src="../../../script/training/jsyx/delicate-ac-0.1.js"></script>
+	<script type="text/javascript" src="../../../script/training/jsyx/learnedcourse_frame1.js"></script>
+</body>	
+</body>	
+</html>	

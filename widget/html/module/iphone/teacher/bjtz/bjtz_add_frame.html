@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<!-- html5：在创建html时为了防止页面缩放等不兼容效果，要创建个viewport  -->
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<!-- 在IOS设备上，有时会将数字转为手机号，这里也要禁止下 -->
+		<meta name="format-detection" content="telephone=no"/>
+		<title>班级通知新建页面</title>
+		<link rel="stylesheet" type="text/css" href="../../../../../css/aui/aui.css" />
+		<link id="j_theme_base" rel="stylesheet" type="text/css" href="" /><style>
+			body{background:#F8F7F3;}
+			.h1 {
+				height: 1px;
+				background: #f0f0f0;
+			}
+			#foot_div {
+				display: block;
+				bottom: 0px;
+				right: 1px !important;
+				right: 18px;
+				min-width: 200px;
+				line-height: 30px;
+				position: fixed;
+				/*border: 1px solid #fff;*/
+				text-align: center;
+				color: #fff;
+				background: transparent;
+			}
+			.aui-iconfont {
+				float: right;
+			}
+			.progress {
+				margin-top: 2px;
+				width: 200px;
+				height: 14px;
+				margin-bottom: 10px;
+				overflow: hidden;
+				background-color: #f5f5f5;
+				border-radius: 4px;
+				-webkit-box-shadow: inset 0 1px 2px rgba(0,0,0,.1);
+				box-shadow: inset 0 1px 2px rgba(0,0,0,.1);
+			}
+			.progress-bar {
+				background-color: rgb(92, 184, 92);
+				background-image: linear-gradient(45deg, rgba(255, 255, 255, 0.14902) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.14902) 50%, rgba(255, 255, 255, 0.14902) 75%, transparent 75%, transparent);
+				background-size: 40px 40px;
+				box-shadow: rgba(0, 0, 0, 0.14902) 0px -1px 0px 0px inset;
+				box-sizing: border-box;
+				color: rgb(255, 255, 255);
+				display: block;
+				float: left;
+				font-size: 12px;
+				height: 20px;
+				line-height: 20px;
+				text-align: center;
+				transition-delay: 0s;
+				transition-duration: 0.6s;
+				transition-property: width;
+				transition-timing-function: ease;
+				width: 266.188px;
+			}
+			.question-file {
+				padding: 10px 15px;
+			}
+			.question-file dl {
+				position: relative;
+				width: 18%;
+				display: inline-block;
+				text-align: center;
+				float: left;
+				margin-right: 2.5%;
+			}
+			.question-file dl dd {
+				position: absolute;
+				z-index: 1px;
+				top: -10px;
+				right: -10px;
+				width: 25px;
+				height: 25px;
+				text-align: center;
+				line-height: 30px;
+			}
+			.question-file dl dd img {
+				width: 13px;
+				height: 13px;
+			}
+			.question-file dl.mr0 {
+				margin: 2px 2px;
+			}
+			.question-file dl img {
+				width: 100%;
+			}
+			.question-file dl dt.add-img{
+				border-radius: 8px;
+				border: 2px solid #C4C4C4;
+			}
+			.question-file dl .img {
+				border-radius: 8px;
+				border: 2px solid #C4C4C4;
+			}
+			.question-file dl .img img {
+				border-radius: 6px;
+			}
+			.clearfix:after {
+				content: ' ';
+				display: block;
+				clear: both;
+				visibility: hidden;
+				line-height: 0;
+				height: 0;
+			}
+			.add-img .aui-iconfont{float:none;}
+			i.aui-iconfont{color:#C4C4C4;font-size:23px;font-weight:bolder;}
+			a.ly,a.lm{color:#333 !important;max-width:10%;height:100%;text-align:center;padding:13px 10px 10px 10px;}
+			.footer-div{
+				position:fixed;
+				height:55px;
+				background:#ffffff;
+				display: block;
+				bottom: 0px;
+				z-index:2;
+				width:100%;
+				box-shadow:3px 0 4px #aaaaaa;
+			}
+			input[type="text"],.aui-input-row textarea{margin-bottom: 0 !important;width: 100%;line-height: 20px;padding: 12px 15px 6px 15px;border: 0;border-radius: 0px;}
+			.aui-input-row{border-bottom:1px solid #efefef;background:#ffffff;}
+			.aui-input-row label{width:auto;max-width:30%;}
+			.common-btn {width:100%;}
+			.plrtb {padding: 15px;}
+			.bgf {background: #ffffff;}
+			.mb10 {margin-bottom: 10px !important;}
+			.hr{height:10px;}
+			.aui-btn-block{margin-bottom:0;padding:8px 0;}
+		</style>
+	</head>
+	<body class="common-iphone-bjtz-tea">
+		<div class="aui-content">
+			<div class="aui-input-row">
+				<input oninput="commonRemoveExpression(this)" id="notice_title" class="name-input" type="text" placeholder="请输入标题，最多支持30个字符" maxlength ='30' />
+			</div>
+			<div class="aui-input-row" style="border-bottom:none;">
+				<textarea onscroll="this.rows++;" id="notice_content" rows="7" placeholder="请输入内容（必填）"></textarea>
+			</div>
+			<div class="aui-input-row">
+				<div id="j_files" class="question-file clearfix">
+					<dl id="j_add_btn" class="mr0" onclick="openAddFilesOpn()">
+						<dt class="add-img">
+							<i class="aui-iconfont aui-icon-camera"></i>
+						</dt>
+						<dd></dd>
+					</dl>
+				</div>
+			</div>
+			<div id="ossfile"></div>
+			<div id="xwzx_img_div" style="display: none;">
+				<ul class="aui-list-view aui-grid-view">
+					<li class="aui-list-view-cell aui-img aui-col-xs-12">
+						<img id="xwzx_img" class="aui-img-object" src="">
+					</li>
+				</ul>
+			</div>
+		</div>
+		<div class="hr bb"></div>
+		<p class="common-btn bgf plrtb mb10 mt10">
+			<button class="aui-btn aui-btn-primary aui-btn-block" name="btn" onclick="return addNotice();">
+				确定
+			</button>
+		</p>
+	</body>
+	<script type="text/javascript" src="../../../../../script/api.js" ></script>
+	<script type="text/javascript" src="../../../../../script/base_config.js" ></script>
+	<script type="text/javascript" src="../../../../../script/plug-in/template.js" ></script>
+	<script type="text/javascript" src="../../../../../script/plug-in/base64.js" ></script>
+	<script type="text/javascript" src="../../../../../script/common/common.js" ></script>
+	<script type="text/javascript" src="../../../../../script/assembly/UIAlbumBrowser.js"></script>
+	<script type="text/javascript" src="../../../../../script/assembly/getPicture.js"></script>
+	<script type="text/javascript">
+		//管辖地区id
+		var gxdq_area_id;
+		//管辖地区名字
+		var gxdq_area_name;
+		//管辖地区级别
+		var gxdq_area_level;
+		//附件图片上传服务器路径
+		var notice_img_path;
+		var header_h;
+		var registerId;//注册码id
+		apiready = function() {
+			commonSetTheme({"level":5,"type":0});
+			$api.css($api.byId('foot_div'), 'width:' + api.winWidth + 'px;');
+			gxdq_area_id = $api.getStorage('gxdq_area_id');
+			gxdq_area_name = $api.getStorage('gxdq_area_name');
+			gxdq_area_level = $api.getStorage('org_level_bar');
+			setImgBtnHeight();
+			$api.html($api.byId('gxdq_label'), gxdq_area_name);
+			header_h = api.pageParam.header_h;
+		};
+		/*
+		 *author:zhaoj
+		 *function:设置添加图片按钮的高度
+		 *date：20160508
+		 */
+		function setImgBtnHeight(){
+			var addBtnWidth = $api.cssVal($api.byId('j_add_btn'), 'width');
+			$api.css($api.dom($api.byId('j_add_btn'),'dt'), 'height:'+addBtnWidth+';line-height:'+(addBtnWidth.replaceAll('px','')*1-4)+'px;');
+		}
+
+		var is_add = true;
+		/**
+		 * 发布通知
+		 * 周枫
+		 * 2015.11.15
+		 */
+		function addNotice() {
+			isHaveRegisterId(function(is_true, register_id){
+				if(is_true) {
+					if (is_add) {
+						is_add = false;
+						var notice_title = $api.val($api.byId('notice_title'));
+						if (notice_title == '') {
+							api.alert({
+								msg : '对不起，请输入班级通知标题'
+							}, function(ret, err) {
+								$api.byId('notice_title').focus();
+							});
+							is_add = true;
+							return false;
+						}
+						var notice_content = $api.val($api.byId('notice_content'));
+						if (notice_content == '') {
+							api.alert({
+								msg : '对不起，请输入班级通知内容'
+							}, function(ret, err) {
+								$api.byId('notice_content').focus();
+							});
+							is_add = true;
+							return false;
+						}
+						var text = notice_content.substring(0,100);
+						notice_content = '<p>' + notice_content + '</p><br/>';
+						var thumbnail='';//缩略图id
+						//验证是否有附件
+						var dlArray = $api.domAll($api.byId('j_files'), '.j_file');
+						if (dlArray.length != 0) {
+							thumbnail = $api.attr($api.dom(dlArray[0], '.j_img'), 'src');
+							var index = thumbnail.indexOf('@');
+							thumbnail = thumbnail.substring(0,index);
+							if (BASE_APP_TYPE == 2) {
+								for (var i = 0; i < dlArray.length; i++) {
+									var img_url = $api.attr($api.dom(dlArray[i], '.j_img'), 'src');
+									var startIndex = img_url.indexOf('/dsideal_yy/');
+									img_url = img_url.substring(startIndex,img_url.length);
+									img_url = img_url.replaceAll(img_suffix, '');
+									var img_html = '<img src="' + img_url + '" alt="" />'
+									notice_content = notice_content+ img_html;
+								}
+							} else {
+								for (var i = 0; i < dlArray.length; i++) {
+									var img_url = $api.attr($api.dom(dlArray[i], '.j_img'), 'src');
+									img_url = img_url.replaceAll(img_suffix, '');
+									var img_html = '<img src="' + img_url + '" alt="" />'
+									notice_content = notice_content+ img_html;
+								}
+							}
+						}
+						var roids = $api.getStorage('notice_roids');
+						showSelfProgress('发布中...');
+						api.ajax({
+							url : BASE_URL_ACTION + '/ypt/notice/addNotice',
+							method : 'post',
+							dataType : 'json',
+							timeout : 30,
+							cache : false,
+							data : {
+								values:{
+									content : notice_content,
+									identity_id : $api.getStorage('identity'),
+									notice_type : 1,
+									org_id : api.pageParam.ord_id,
+									org_type : 105,
+									person_id : $api.getStorage('person_id'),
+									register_id : api.pageParam.register_id,
+									title : notice_title,
+									overview : text,
+									thumbnail : thumbnail
+								}
+							},
+							headers : {'Cookie' : 'person_id='+$api.getStorage("person_id")+'; identity_id='+$api.getStorage("identity")+'; token='+$api.getStorage("token_ypt")+';'
+ }
+						}, function(ret, err) {
+							if (ret.success) {
+								setTimeout(function() {
+									api.execScript({
+										name : 'bjtz_index_window',
+										frameName : 'bjtz_index_frame',
+										script : 'initData(1);'
+									});
+								}, 2500);
+								setTimeout(function() {
+									is_add = false;
+									api.hideProgress();
+									api.execScript({
+										name : 'bjtz_index_window',
+										script : 'back();'
+									});
+								}, 3000);
+							} else {
+								api.hideProgress();
+								is_add = true;
+								popToast("发布失败");
+							}	
+							if(err){
+								api.hideProgress();
+								is_add = true;
+								popToast("发布失败");
+							}		
+						});
+					} else {
+						api.hideProgress();
+						is_add = true;
+					}
+				} else {
+					popToast(register_id);
+				}
+			});
+			
+			
+		}
+
+		function reWriteNotice() {
+			api.confirm({
+				title : "提示",
+				msg : "现有班级通知内容将被清空，您确定重置吗？",
+				buttons : ["确定", "取消"]
+			}, function(ret, err) {
+				//定义图片来源类型
+				var sourceType;
+				if (1 == ret.buttonIndex) {
+					$api.val($api.byId('notice_title'), '');
+					$api.val($api.byId('notice_content'), '');
+					$api.css($api.byId('xwzx_img_div'), 'display:none');
+					var imgHtml = '<dl id="j_add_btn" class="mr0" onclick="openAddFilesOpn()"><dt class="add-img"><i class="aui-iconfont aui-icon-camera"></i></dt><dd></dd></dl>';
+					$api.html($api.byId('j_files'),imgHtml);
+					setImgBtnHeight();
+					$api.val($api.byId('avatar_url'), '');
+					$api.byId('notice_title').focus();
+				} else if (2 == ret.buttonIndex) {
+					return;
+				}
+			});
+		}
+
+		
+		
+		/**
+		 * 发布通知前判断是否存在registerid 
+		 * 周枫
+		 * 2016.4.27
+		 */
+		function isHaveRegisterId(callback){
+			api.ajax({
+				url : BASE_URL_ACTION + '/space/getNewsRegisterId?a_id=' + gxdq_area_id+ '_1_bjgg' + '&a_identity_id=' + gxdq_area_level,
+				method : 'get',
+				dataType : 'json',
+				timeout : 30,
+				cache : false
+			}, function(ret, err) {
+				if(err) {
+					callback(false,'对不起，获取班级通知信息失败');
+				} else {
+					if(ret.success) {
+						var flag = ret.flag;
+						//没注册过通知码
+						if(flag==0) {
+							getRegisterId(function(is_true, register_id){
+								if(is_true) {
+									callback(true,register_id);
+								} else {
+									callback(false,register_id);
+								}
+							});
+						} else {
+							callback(true, ret.regist_id);
+						}
+					} else {
+						callback(false,'对不起，获取班级通知信息失败');
+					}
+				}
+			});
+		}
+		
+		/**
+		 * 获取注册码
+		 * 周枫
+		 * 2016.4.27 
+		 */
+		function getRegisterId(callback){
+			api.ajax({
+				url : BASE_URL_ACTION + '/ypt/notice/applyRegisterId',
+				method : 'get',
+				dataType : 'json',
+				timeout : 30,
+				cache : false,
+				headers : {
+ 'Cookie' : 'person_id='+$api.getStorage("person_id")+'; identity_id='+$api.getStorage("identity")+'; token='+$api.getStorage("token_ypt")+';'
+ }
+			}, function(ret, err) {
+				if(err) {
+					callback(false,'对不起，获取注册码失败');
+				} else {
+					if(ret.success) {
+						var register_id = ret.register_id;
+						setNewsRegisterId(register_id, function(is_true, info){
+							if(is_true) {
+								callback(true,register_id);
+							} else {
+								callback(false,info);
+							}
+						});
+					} else {
+						callback(false,'对不起，获取注册码失败');
+					}
+				}
+			});
+		}
+		
+		/**
+		 * 保存注册码到空间通知
+		 * 周枫
+		 * 2016.4.27 
+		 */
+		function setNewsRegisterId(register_id, callback){
+			api.ajax({
+				url : BASE_URL_ACTION + '/ypt/space/setNewsRegisterId?regist_id='+register_id+'&a_id='+gxdq_area_id+'&a_identity_id='+gxdq_area_level,
+				method : 'get',
+				dataType : 'json',
+				timeout : 30,
+				cache : false,
+				headers : {
+ 'Cookie' : 'person_id='+$api.getStorage("person_id")+'; identity_id='+$api.getStorage("identity")+'; token='+$api.getStorage("token_ypt")+';'
+ }
+			}, function(ret, err) {
+			
+				if(err) {
+					callback(false,'对不起，保存注册码失败');
+				} else {
+					if(ret.success) {
+						callback(true,ret.info);
+					} else {
+						callback(false,'对不起，保存注册码失败');
+					}
+				}
+			});
+		}
+		/**
+		 * 打开相册选择附件
+		 * 周枫
+		 * 2016.6.22 
+		 */
+		function openAddFilesOpn(mk_type) {
+			api.actionSheet({
+				title : '',
+				cancelTitle : '取消',
+				buttons : ['图片', '拍照'],
+				style : {
+					titleFontColor : '#ff0000'
+				}
+			}, function(ret, err) {
+				if (ret) {
+					if (ret.buttonIndex == 1) {
+						//相册
+						album();
+					} else if (ret.buttonIndex == 2) {
+						//拍照
+						openPicture();
+					}
+				} 
+			});
+		}
+		/*
+		 *author:zhaoj
+		 *function:选择图片
+		 *date：20160225
+		 */
+		function album() {
+			var dlArray = $api.domAll($api.byId('j_files'), '.j_file');
+			var num = 5 - dlArray.length;
+			if(num != 0){
+				UIAlbumBrowser.open(num,function(data){
+					//递归上传图片
+		            commonUiUploadFiles({"data":data,"is_trans":1}, function(ret_data) {
+		            	for(var i = 0; i < ret_data.length; i++){
+		            		var json_data = JSON.parse(ret_data[i]);
+		            		var file_id = json_data.file_id;
+							var ext = json_data.ext;
+							getImgSize();
+							img_suffix = commonReturnPhotoCutSize(0);
+							if (BASE_APP_TYPE == 1) {
+								var img_url = BASE_IMAGE_PRE+"down/Material/" + file_id.substring(0, 2) + "/" + file_id + '.' + ext + commonReturnPhotoCutSize(0);
+							} else {
+								var img_url = BASE_URL_ACTION + "/html/thumb/Material/" + file_id.substring(0, 2) + "/" + file_id + '.' + ext + commonReturnPhotoCutSize(0);
+								
+							}
+							if (getfilesNum() == 4) {
+								$api.css($api.byId('j_add_btn'), 'display:none');
+								addFiles(img_url, 'mr0');
+							} else {
+								addFiles(img_url, '');
+							}
+		            	}
+		            });
+				});
+			}else{
+				popToast('最多上传5张图片');
+			}
+		}
+		/*
+	    *author:zhaoj
+	    *function:打开拍照
+	    *date：20170914
+	    */
+	    function openPicture(){
+	    	getPicture.open({"type":1},function(data){
+	    		//递归上传图片
+	            commonUiUploadFiles({"data":data,"is_trans":0}, function(ret_data) {
+	            	for(var i = 0; i < ret_data.length; i++){
+	            		var json_data = JSON.parse(ret_data[i]);
+	            		var file_id = json_data.file_id;
+						var ext = json_data.ext;
+						getImgSize();
+						img_suffix = commonReturnPhotoCutSize(0);
+						if (BASE_APP_TYPE == 1) {
+							var img_url = BASE_IMAGE_PRE+"down/Material/" + file_id.substring(0, 2) + "/" + file_id + '.' + ext + commonReturnPhotoCutSize(0);
+						} else {
+							var img_url = BASE_URL_ACTION + "/html/thumb/Material/" + file_id.substring(0, 2) + "/" + file_id + '.' + ext + commonReturnPhotoCutSize(0);
+							
+						}
+						if (getfilesNum() == 4) {
+							$api.css($api.byId('j_add_btn'), 'display:none');
+							addFiles(img_url, 'mr0');
+						} else {
+							addFiles(img_url, '');
+						}
+	            	}
+	            });
+	    	});
+	    }
+		/*
+		 *author:zhaoj
+		 *function:根据模块获取子文件的个数
+		 *date：20160224
+		 */
+		function getfilesNum() {
+			var dlArray = $api.domAll($api.byId('j_files'), '.j_file');
+			return dlArray.length;
+		}
+
+		/*
+		 *author:zhaoj
+		 *function:给模块添加文件
+		 *date：20160224
+		 */
+		function addFiles(img_url, css) {
+			var img_size = (api.winWidth - 30) * 0.18;
+			img_size = Math.floor(img_size);
+			var dl_height = $api.cssVal($api.byId('j_add_btn'), 'height');
+			dl_height = dl_height.substring(0,dl_height.length-2)*(1.15)+'px';
+			var dl_html = '<dl class="j_file' + ' ' + css + '" style="height:' + dl_height + ';margin:2px 2px">' ;
+			    dl_html = dl_html + '<dt class="img" style="width:' + img_size + 'px;height:' + img_size + 'px;" onclick="openImage(this.parentNode,this.parentNode.parentNode)">';
+			    dl_html = dl_html + '<img class="j_img" src=' + img_url + ' width="' + (img_size - 1) + '" height="' + (img_size - 4) + '" /></dt>';
+			    dl_html = dl_html + '<dd onclick="deleteFile(event,this.parentNode)"><img src="../../../../../image/fun-module/common/shanchu.png" /></dd></dl>';
+			$api.before($api.byId('j_add_btn'), dl_html);
+		}
+
+		/*
+		 *author:zhaoj
+		 *function:删除当前文件
+		 *date：20160225
+		 */
+		function deleteFile(e, parent) {
+			parent.parentNode.removeChild(parent);
+			var dlArray = $api.domAll($api.byId('j_files'), '.j_file');
+			var length = getfilesNum() - 1;
+			if (length <= 4) {
+				$api.removeCls(dlArray[length], 'mr0');
+				$api.css($api.byId('j_add_btn'), 'display:inline-block');
+			}
+			e.stopPropagation();
+		}
+
+		/*
+		 *author:zhaoj
+		 *function:打开图片
+		 *date：20160225
+		 */
+		function openImage(parent, grandpa) {
+			var index;
+			if (parent) {
+				index = 0;
+				while ( parent = parent.previousSibling) {
+					if (parent.nodeType == 1)
+						index++;
+				}
+			}
+			var openImgArray = [];
+			var dlArray = $api.domAll($api.byId('j_files'), '.j_file');
+			for (var i = 0; i < dlArray.length; i++) {
+				openImgArray.push($api.attr($api.dom(dlArray[i], '.j_img'), 'src'));
+			}
+			var imageBrowser = api.require('imageBrowser');
+			imageBrowser.openImages({
+				imageUrls : openImgArray,
+				//是否以九宫格方式显示图片
+				showList : false,
+				//showList : true,
+				activeIndex : index
+			});
+		}
+		
+		/*
+         *author:zhaoj
+         *function:图片格式
+         *date：20160222
+         */
+        function getImgSize() {
+            img_size = (api.winWidth - 30) * 0.18;
+            img_size = Math.floor(img_size);
+            var img_format = '@' + img_size + 'w_' + img_size + 'h_100Q_1x.';
+            return img_format;
+        }
+	</script>
+</html>

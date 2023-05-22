@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>学生互相查看页面</title>
+    <link rel="stylesheet" type="text/css" href="../../../../../css/aui/aui.css" />
+    <link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+    <style>
+	.history-date {
+		font-size: 12px;
+	}
+	#message-content {
+		overflow-y: auto;
+		display: none;
+	}
+	.menu{display:inline-block;width:24px;height:100%;background: url(../../../../../image/fun-module/iphone/page_menu_icon.png) center center no-repeat;background-size: 24px 24px;}
+	.win-menu{height:100%;}
+    </style>
+</head>
+<body class="common-iphone-zuoyeXsJy">
+	<div id="wrap">
+			<header class="aui-bar aui-bar-	nav aui-bar-primary" id="aui-header">
+				<div id="cloud" class="topbar activebar">
+					<div id="back" class="back" onclick="back();" tapmode="">
+						<i class="aui-iconfont aui-icon-left"></i>返回
+					</div>
+					<div class="mTitle" id="mTitle"></div>
+					<div class="win-menu">
+					</div>
+				</div>
+			</header>
+			<div  class="aui-content aui-content-padded" id="message-content">
+				<p class="aui-text-center history-date"></p>
+			</div>
+		</div>
+</body>
+<script type="text/javascript" src="../../../../../script/api.js"></script>
+<script type="text/javascript" src="../../../../../script/plug-in/base64.js" ></script>
+<script type="text/javascript" src="../../../../../script/common/common.js" ></script>
+<script type="text/javascript">
+	//顶部header高度
+	var header_h;
+	var class_id;//班级id
+	var class_name;//班级名称
+	var subject_id;//学科id
+	//返回参数
+	var back_type = 'list';
+	apiready = function(){
+	    commonSetTheme({"level":5,"type":0});
+		header_h = api.pageParam.header_h;
+		zy_name = api.pageParam.zy_name;
+		commonSetWindowName(Base64.decode(zy_name));
+		opeHxckFrame();
+		//安卓关闭
+		commonBackForAndroid();
+		//定位header位置，留出上面电池等空隙，苹果需要
+		commonIosAuiHeader();
+	};
+	/*
+	*author:zhaoj
+	*function:打开日点名frame
+	*date：20160113
+	*/
+	function opeHxckFrame(){
+		//打开通知frame页面
+		var pageParamJson = {
+		    'header_h' : header_h,
+            'zy_id' :api.pageParam.zy_id,
+            'zy_name' : api.pageParam.zy_name
+		};
+		commonOpenFrame('zuoyeXsJy_hxck_frame', 'zuoyeXsJy_hxck_frame.html', header_h, false, true, '#fff', pageParamJson);
+	}
+	/*
+	*author:zhaoj
+	*function:返回
+	*date：20160127
+	*/
+	function back() {
+		api.closeWin();
+	}
+	/*
+	*author:zhaoj
+	*function:座位排序结束保存
+	*date：20160127
+	*/
+	function save() {
+		commonExecScript('dm_seat_window','dm_seat_frame','endSeatSort();',1)
+		reBackType('list');
+	}
+</script>
+</html>

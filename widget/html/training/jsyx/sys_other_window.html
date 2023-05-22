@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<!-- html5：在创建html时为了防止页面缩放等不兼容效果，要创建个viewport  -->
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<!-- 在IOS设备上，有时会将数字转为手机号，这里也要禁止下 -->
+		<meta name="format-detection" content="telephone=no"/>
+		<title>扫一扫</title>
+		<link rel="stylesheet" type="text/css" href="../../../css/training/jsyx/aui.css" />
+		<style>
+			.history-date {
+				font-size: 12px;
+			}
+			#message-content {
+				overflow-y: auto;
+			}
+			#wrap {
+				height: 100%;
+				display: -webkit-box;
+				display: -webkit-flex;
+				display: flex;
+				-webkit-box-orient: vertical;
+				-webkit-flex-flow: column;
+				flex-flow: column;
+			}
+			.topbar {
+				background: #34A8FA;
+				height: 50px;
+				/*border-bottom: 1px solid #DDDFE3;*/
+				line-height: 50px;
+				text-align: center;
+				display: none;
+				color: #ffffff;
+				font-size: 18px;
+			}
+			.activebar {
+				display: block;
+			}
+			.back {
+				position: absolute;
+				padding: 1px 10px 0px 10px;
+				height: 29px;
+				font-size: 15px;
+				/*color: #EFEDED;*/
+				/*z-index: 99999;*/
+			}
+			.mTitle {
+				width: 50%;
+				font-size: 18px;
+				text-align: center;
+				display: inline-block;
+				word-break: keep-all;
+				white-space: nowrap;
+				overflow: hidden;
+				text-overflow: ellipsis;
+			}
+		</style>
+	</head>
+	<body>
+		<div id="wrap">
+			<header class="aui-bar aui-bar-nav aui-bar-primary" id="aui-header">
+				<div id="cloud" class="topbar activebar">
+					<div id="back" class="back" onclick="back();" tapmode="">
+						<i class="aui-iconfont aui-icon-left"></i>
+					</div>
+					<div class="mTitle" id="mTitle">
+					</div>
+				</div>
+			</header>
+			<div class="aui-content aui-content-padded" id="message-content">
+				<p class="aui-text-center history-date"></p>
+			</div>
+		</div>
+	</body>
+	<script type="text/javascript" src="../../../script/api.js"></script>
+	<script type="text/javascript">
+		//顶部header高度
+		var header_h;
+		apiready = function() {
+			//定位header位置，留出上面电池等空隙，苹果需要
+			var header = $api.byId('aui-header');
+			$api.fixStatusBar(header);
+			header_h = api.pageParam.header_h;
+			var error = api.pageParam.error;
+			var url;
+			var Expression=/http(s)?:\/\/([\w-]+\.)+[\w-]+(\/[\w- .\/?%&=]*)?/;//判断是否为url
+			var objExp=new RegExp(Expression);
+			var el = $api.byId("btn");
+			var mTitle = $api.byId('mTitle');
+			$api.text(mTitle, '扫码签到');
+			if(objExp.test(error)==true){
+				url = error;
+			}else{
+				url='sys_other_frame.html';
+			}
+			//打开frame
+			api.openFrame({
+				name : 'sys_other_frame',
+				scrollToTop : true,
+				allowEdit : true,
+				url : url,
+				rect : {
+					x : 0,
+					y : header_h,
+					w : api.winWidth,
+					h : api.winHeight-header_h,
+				},
+				pageParam:{
+					error : error
+				},
+				//页面是否弹动 为了下拉刷新使用
+				bounces : false
+			});
+			//安卓关闭
+			if (api.systemType == 'android') {
+				backForAndroid();
+			}
+		};
+		/**
+		 * 返回应用页面
+		 * 周枫
+		 * 2015.10.11
+		 */
+		function back() {
+			api.closeWin();
+		}
+		
+		/**
+		 * 安卓点击返回的时候
+		 * 周枫
+		 * 2015.10.14
+		 */
+		function backForAndroid() {
+			api.addEventListener({
+				name : "keyback"
+			}, function(ret, err) {
+				back();
+			});
+		}
+	</script>
+</html>

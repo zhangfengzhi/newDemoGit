@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<!-- html5：在创建html时为了防止页面缩放等不兼容效果，要创建个viewport  -->
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<!-- 在IOS设备上，有时会将数字转为手机号，这里也要禁止下 -->
+		<meta name="format-detection" content="telephone=no"/>
+		<title>资源数据页面</title>
+		<link rel="stylesheet" type="text/css" href="../../../../../css/aui/aui.css" />
+		<link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+		<style>
+			body {
+				background: #f0f0f0;
+			}
+			.otherinfo p {
+				font-size: 12px;
+				margin-bottom: 5px;
+				padding-left: 10px;
+				white-space: nowrap;
+				overflow: hidden;
+				text-overflow: ellipsis;
+			}
+			.wid50 {
+				width: 50%;
+				margin-top: 5px;
+			}
+			.fl {
+				float: left !important;
+			}
+			.aui-input-row .wid30 {
+				width: 30%;
+				padding: 15px 0 15px 15px;
+			}
+			.aui-input-row .wid70 {
+				width: 70%;
+				white-space: nowrap;
+				overflow: hidden;
+				text-overflow: ellipsis;
+				text-align: right;
+				font-size: 13px;
+				color: #AAAAAA;
+			}
+			.header-img {
+				background: #ffffff;
+				width: 100%;
+				height: 48%;
+				display: block;
+				padding: 10px;
+			}
+			.thumb-img {
+				width: 100%;
+				height: 100%;
+			}
+			.file-name {
+				background: #ffffff;
+				width: 100%;
+				padding: 0 10px;
+			}
+			.name {
+				width: 100%;
+				white-space: nowrap;
+				overflow: hidden;
+				text-overflow: ellipsis;
+				border-bottom: 1px solid #dddddd;
+				height: 45px;
+				line-height: 45px;
+			}
+			#foot_div {
+				display: block;
+				bottom: 0px;
+				right: 1px !important;
+				right: 18px;
+				min-width: 200px;
+				line-height: 30px;
+				position: fixed;
+				text-align: center;
+				color: #fff;
+				background: transparent;
+			}
+			.btn {
+				padding: 0 10px;
+				height: 10%;
+			}
+			.content-body {
+				height: 88%;
+				overflow-y: auto;
+			}
+			.aui-btn-block {
+				padding: 0;
+				height: 100%;
+				line-height: 100%;
+			}
+			.h10 {
+				height: 10px;
+				background: #f0f0f0;
+			}
+			.firstblock {
+				background-color: #fff;
+			}
+			.item {
+				height: 50px;
+				line-height: 50px;
+				margin-left: 10px;
+				background-color: #fff;
+				border-bottom: 1px solid #f0f0f0;
+			}
+			.item_right {
+				color: #696969;
+				font-size: 14px;
+				padding-right: 15px;
+			}
+		</style>
+	</head>
+	<body class="common-ipad-daoxueIpad">
+		<div class="header-img">
+			<img id="thumb_img" onerror="this.src='../../../../../image/fun-module/common/wk_default.png'" class="thumb-img" src="" />
+		</div>
+		<div class="h10"></div>
+		<!--<div class="aui-col-xs-12  otherinfo">
+		<p id="resource_type" class="wid50 fl"></p>
+		<p id="app_type" class="wid50 fl"></p>
+		<p id="uploader" class="wid50 fl"></p>
+		<p id="upload_mechanism" class="wid50 fl"></p>
+		<p id="upload_time"></p>
+		<p id="audit"></p>
+		<p id="down_count"></p>
+		</div>-->
+		<!--		<div class="aui-content">
+		<form class="aui-input-group" >
+		<div class="aui-input-row">
+		<label class="wid30">上传人</label>
+		<label id="uploader" class="wid70"></label>
+		</div>
+		<div class="aui-input-row">
+		<label class="wid30">上传机构</label>
+		<label id="upload_mechanism" class="wid70"></label>
+		</div>
+		<div class="aui-input-row">
+		<label class="wid30">上传时间</label>
+		<label id="upload_time" class="wid70"></label>
+		</div>
+		<div class="aui-input-row">
+		<label class="wid30">审核人</label>
+		<label id="audit" class="wid70"></label>
+		</div>
+		</form>
+		</div>-->
+		<div class="firstblock">
+			<div class="item">
+				<span>上传人</span><span id="uploader" class="item_right aui-pull-right"></span>
+			</div>
+		</div>
+		<div class="firstblock">
+			<div class="item">
+				<span id="time_name"></span><span id="upload_time" class="item_right aui-pull-right"></span>
+			</div>
+		</div>
+		<div class="firstblock">
+			<div class="item">
+				<span>审核人</span><span id="audit" class="item_right aui-pull-right"></span>
+			</div>
+		</div>
+		<div class="h10"></div>
+		<script type="text/javascript" src="../../../../../script/api.js" ></script>
+		<script type="text/javascript" src="../../../../../script/base_config.js" ></script>
+		<script type="text/javascript" src="../../../../../script/plug-in/template.js" ></script>
+		<script type="text/javascript" src="../../../../../script/plug-in/base64.js" ></script>
+		<script type="text/javascript" src="../../../../../script/common/common.js" ></script>
+		<script type="text/javascript" src="../../../../../script/assembly/executeApp.js" ></script>
+		<script type="text/javascript" src="../../../../../script/assembly/openResource.js" ></script>
+		<script type="text/javascript" src="../../../../../script/assembly/photoBrowser.js"></script>
+	</body>
+	<script type="text/javascript">
+		var netAudio;
+		//播放录音对象
+		var isPlay = false;
+		//是否正在播放录音
+		var format;
+		//定义头高度
+		var header_h;
+		var bookReader;//txt阅读器
+		//文件格式
+		var BASE_URL_ACTION;
+		var BASE_APP_TYPE;
+		var preview_status;
+		var file_id;
+		var iid;
+		apiready = function() {
+			commonSetTheme({"level":5,"type":0});
+			BASE_URL_ACTION = $api.getStorage('BASE_URL_ACTION');
+			BASE_APP_TYPE = $api.getStorage('BASE_APP_TYPE');
+			header_h = api.pageParam.header_h;
+			getResourceByIDInt();
+		};
+		function getResourceByIDInt(){
+			showSelfProgress('加载中...');
+			api.ajax({
+				url : BASE_URL_ACTION + '/ypt/resource/getResourceByIDInt',
+				method : 'get',
+				timeout : 30,
+				dataType : 'json',
+				returnAll : false,
+				data : {
+					values : {
+						"random_num" : creatRandomNum(),
+						"resource_id_int" :api.pageParam.data_resource_id_int
+					}
+				},
+				headers : {
+	'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+	}
+			}, function(ret, err) {
+				api.hideProgress();
+				if (err) {
+					popToast('获取数据失败，请稍候重试');
+				} else {
+					if(ret.success){
+						changeTimeName();
+						getCheckPerson(1, api.pageParam.data_resource_id_int, '');
+						format = ret.resource_format;
+						file_id = ret.file_id;
+						m3u8_status = ret.m3u8_status;
+						preview_status = ret.preview_status;
+						iid = ret.iid;
+						$api.text($api.byId('uploader'), ret.person_name);
+						$api.text($api.byId('upload_time'), ret.create_time.substring(0, 10));
+						var zy_thumb_url = '';
+						if (BASE_APP_TYPE == 1) {
+							zy_thumb_url = url_path + BASE_THUMB_BEGIN + ret.thumb_id.substring(0, 2) + '\/' + ret.thumb_id + BASE_THUMB_END;
+						} else {
+							zy_thumb_url = BASE_URL_ACTION + BASE_THUMB_BEGIN + ret.thumb_id.substring(0, 2) + '/' + ret.thumb_id + BASE_THUMB_END;
+						}
+						$api.attr($api.byId('thumb_img'), 'src', zy_thumb_url);
+						//给图片添加点击事件
+						$api.attr($api.byId('thumb_img'), 'onclick', 'checkPreviewStatus()');		
+					}else{
+						popToast('获取数据失败，请稍候重试');
+					}
+				}
+			});
+		}
+		/*
+		 *author:zhaoj
+		 *function:预览前处理
+		 *date：20160302
+		 */
+		function checkPreviewStatus() {
+			setViewCount();
+			format = format.toLowerCase();
+			if (format == 'doc' || format == 'jpeg' || format == 'png' || format == 'gif' || format == 'bmp' || format == 'doc' || format == 'docx' || format == 'ppt' || format == 'pptx' || format == 'asf' || format == 'wmv' || format == 'mpg' || format == 'avi' || format == 'mp4' || format == 'rmvb' || format == 'txt') {
+				if (preview_status == '1' || preview_status == '-5') {
+					//打开文件
+					common_openResource.open(format,file_id,file_id,m3u8_status,api.winName,'reBackType("voice_zy");','back();',api.pageParam.data_resource_id_int);
+				} else if (preview_status == '2') {
+					if(format == 'txt' || format == 'doc' || format == 'docx' || format == 'ppt' || format == 'pptx'){
+                        common_openResource.open(format,file_id,file_id,m3u8_status,api.winName,'reBackType("voice_zy");','back();',api.pageParam.data_resource_id_int);
+                    }else{
+                        popAlert('对不起，该文件生成预览失败。');
+                    }
+				} else {
+					api.ajax({
+						url : BASE_URL_ACTION + '/ypt/checkPreviewStatus?type=1&yunormy=1' + '&target_id=' + iid + '&random_num=' + creatRandomNum(),
+						method : 'get',
+						dataType : 'json',
+						cache : false,
+						timeout : 30,
+						headers : {
+							'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+						}
+					}, function(ret, err) {
+						if (ret.success) {
+							if (preview_status == "0") {
+								popAlert('对不起，正在生成预览中，请稍候查看。');
+							} else if (ret.preview_status == "1") {
+								//打开文件
+								common_openResource.open(format,file_id,file_id,m3u8_status,api.winName,'reBackType("voice_zy");','back();',api.pageParam.data_resource_id_int);
+							} else if (preview_status == "2") {
+								if(format == 'txt' || format == 'doc' || format == 'docx' || format == 'ppt' || format == 'pptx' || format == 'xls' || format == 'xlsx'){
+                        common_openResource.open(format,file_id,file_id,m3u8_status,api.winName,'reBackType("voice_zy");','back();',api.pageParam.data_resource_id_int);
+                                }else{
+                                    popAlert('对不起，该文件生成预览失败。');
+                                }
+							}
+						}
+					});
+				}
+			} else {
+				//打开文件
+				common_openResource.open(format,file_id,file_id,m3u8_status,api.winName,'reBackType("voice_zy");','back();',api.pageParam.data_resource_id_int);
+			}
+		}
+		/*
+		 *author:zhaoj
+		 *function:浏览统计
+		 *date：20160302
+		 */
+		function setViewCount() {
+			api.ajax({
+				url : BASE_URL_ACTION + '/tongji/tj_view?type_id=1&random_num=' + creatRandomNum(),
+				method : 'get',
+				dataType : 'json',
+				cache : false,
+				timeout : 30,
+				headers : {
+					'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+				}
+			}, function(ret, err) {
+			});
+		}
+		/*
+		 *author:zhaoj
+		 *function:获取审核人
+		 *date：20160302
+		 */
+		function getCheckPerson(obj_type, obj_id_int, obj_id_char) {
+			api.ajax({
+				url : BASE_URL_ACTION + '/ypt/multiCheck/checkFlow/getLastCheckFlow',
+				method : 'post',
+				dataType : 'json',
+				timeout : 30,
+				cache : false,
+				data : {
+					values : {
+						"obj_type" : obj_type,
+						"obj_id_int" : obj_id_int,
+						"obj_id_char" : obj_id_char
+					}
+				},
+				headers : {
+					'Cookie' : 'person_id=' + $api.getStorage("person_id") + ';identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+				}
+			}, function(ret, err) {
+				api.hideProgress();
+				if (ret.success) {
+					$api.text($api.byId('audit'), ret.last_check_flow.person_name);
+				} else {
+					$api.text($api.byId('audit'), '无');
+				}
+			});
+		}
+		/*
+		 *author:zhaoj
+		 *function:根据群组类型更改时间名称
+		 *date：20160315
+		 */
+		function changeTimeName() {
+			$api.text($api.byId('time_name'), '上传时间');
+		}
+	</script>
+</html>

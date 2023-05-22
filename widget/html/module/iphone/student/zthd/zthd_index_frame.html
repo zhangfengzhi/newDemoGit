@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<!-- html5：在创建html时为了防止页面缩放等不兼容效果，要创建个viewport  -->
+	<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+	<!-- 在IOS设备上，有时会将数字转为手机号，这里也要禁止下 -->
+	<meta name="format-detection" content="telephone=no"/>
+    <title>主题活动列表页</title>
+    <link rel="stylesheet" type="text/css" href="../../../../../css/aui/aui.css" />
+    <link rel="stylesheet" type="text/css" href="../../../../../css/aui_css_new/aui.css" />
+    <link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+    <style>
+    	body{background:#ffffff;}
+		.month{width:100%;height:40px;}
+		.month .bg{display:inline-block;height:65px;line-height:30px;background:#f6f6f6;max-width:100%;}
+		.month .bg div{display:inline-block;height:45px;line-height:45px;border-radius:1px;}
+		.zuoye-content{padding-top:10px;padding: 15px 10px 15px 10px;}
+    	.zuoye-content li{display:block; width :99%; padding:7px 0px 0 30px; border-radius:1px;margin-left:3px;height:110px;position:relative;color:#939598;font-size:14px;margin-bottom:10px;}
+    	.zuoye-content li > img{left: 10px;height: 90px;width: 110px;position: absolute;top:9px;}
+    	.zuoye-content li .list_right{padding-left: 90px;}
+    	.zuoye-content li .name{padding-left:8px;font-size:16px;}
+    	.zuoye-content li .time{margin-top:6px;background:url(../../../../../image/fun-module/ipad/zthd/time.png) 0 2px no-repeat;background-size: 15px auto;padding-left: 20px;margin-left:9px;}
+    	.zuoye-content li .end-time{margin-top:6px;padding-left: 20px;margin-left:9px;}
+    	.zuoye-content li .name_person_div{margin-top:5px;padding-left:8px;}
+    	.zuoye-content li .name_person{float:left;width:50%;font-size:13px;}
+    	.ml12{margin-left:5px;}
+    	.ellipsis{white-space: nowrap;overflow: hidden;text-overflow: ellipsis; word-break: break-all;}
+    	.stop-day{color:#FFD34F;}
+    	.mgr5{margin-right:5%;}
+    	.fl{float:left;}
+   		.no-data{text-align:center;color:#666;margin-top:15px;}
+		.y-canyu{background:url(../../../../../image/fun-module/ipad/zthd/tip.png) no-repeat top right;background-size:45px 45px;}
+		.tip{position:absolute;right:0;top:0;width:40px;height:40px;background:url(../../../../../image/fun-module/ipad/zthd/yifabu.png) center center no-repeat;background-size:100% auto;}
+	</style>
+</head>
+<body class="common-iphone-zthdstu index-body">
+	<div id="j_zsd" class="index-zsd"></div>
+	<div id="j_wdja" class="clearfix">
+		<div class="aui-searchbar-wrap demo" id="search">
+			<div class="aui-searchbar aui-border-radius" tapmode onclick="commonDoSearch();">
+				<i class="aui-iconfont aui-icon-search"></i>
+				<div class="aui-searchbar-text">
+					请输入关键字
+				</div>
+				<div class="aui-searchbar-input">
+					<form action="javascript:startSearch(1);">
+						<input oninput="commonRemoveExpression(this)" type="text" placeholder="" id="search-input" maxlength ='20'>
+					</form>
+				</div>
+				<i class="aui-iconfont aui-icon-roundclosefill" tapmode onclick="commonClearInput()"></i>
+			</div>
+			<div class="aui-searchbar-cancel aui-text-info" tapmode onclick="commonCancelSearch()">
+				取消
+			</div>
+		</div>
+		<ul id="zthd_div" class="zuoye-content">
+		<script  type="text/html" id="zthd_script">
+			<%if(list.length == 0){%>
+				<div id="no_quanzi" class="no-data">暂无主题活动</div>
+			<%}else{%>
+				<%for(var i=0;i< list.length;i++){%>
+					<li id="<%=list[i].id%>" onclick="selectZT(<%=list[i].id%>,'<%=list[i].thumb_id%>','<%=list[i].name%>',<%=list[i].person_id%>,'<%=list[i].detail_base64%>',event,'<%=list[i].time_text%>');">
+						<img onerror="this.src='../../../../../image/fun-module/ipad/zthd/zthd.png'" src="<%=list[i].thumb_id%>" alt="" data-echo="">		
+						<div class="list_right">
+							<div class="name ellipsis" >
+								<%=list[i].name%>&nbsp;&nbsp;
+							</div>
+							<!--<div class="time ellipsis" >
+								开始日期：<%=list[i].start_time.substring(0,10)%>
+							</div>
+							<div class="end-time ellipsis" >
+								结束日期：<%=list[i].end_time.substring(0,10)%>
+							</div>-->
+							
+							<div class="time ellipsis" >
+								活动日期：
+							</div>
+							<div class="end-time ellipsis" >
+								<%=list[i].start_time.substring(0,10)%> 至 <%=list[i].end_time.substring(0,10)%>
+							</div>
+							
+							<div class="name_person_div">
+								<div class="name_person ellipsis">
+									发起人：<%=list[i].person_name%>
+								</div>
+								<div class="name_person ellipsis ml12" style="width:45%;">
+									作品数量：<%=list[i].works_num%>
+								</div>
+							</div>
+						</div>	
+					</li>
+				<%}%>
+			<%}%>
+		</script>
+	</ul>
+	</div>
+</body>
+<script type="text/javascript" src="../../../../../script/api.js"></script>
+<script type="text/javascript" src="../../../../../script/base_config.js" ></script>
+<script type="text/javascript" src="../../../../../script/plug-in/template.js" ></script>
+<script type="text/javascript" src="../../../../../script/plug-in/moment.min.js" ></script>
+<script type="text/javascript" src="../../../../../script/plug-in/zh-cn.js" ></script>
+<script type="text/javascript" src="../../../../../script/plug-in/base64.js" ></script>
+<script type="text/javascript" src="../../../../../script/common/common.js" ></script>
+<script type="text/javascript" src="../../../../../script/module/common/kejianJs.js" ></script>
+<script type="text/javascript" src="../../../../../script/assembly/executeApp.js" ></script>
+<script type="text/javascript" src="../../../../../script/assembly/openResource.js" ></script>
+<script type="text/javascript" src="../../../../../script/assembly/photoBrowser.js"></script>
+<script type="text/javascript">
+	var currentPage = 1;//当前分页数
+	var totalPages = 0;//总页数
+	var totalData = 0;//定义一个变量存储第一次加载返回来的总记录数
+	var new_hot_flag = 1;//排序分类，1最新，2最热
+	var role_flag = 1;//查询权限，1.全部，2.我发布的，3.邀请我的
+	var time_flag = 1;//时间标识，	1,全部，2，即将开始,3,火热进行，4，已经结束
+	var keyword = "";
+	apiready = function(){
+		$api.rmStorage('zthd_time_text');
+	    commonSetTheme({"level":5,"type":0});
+		initData(1);
+		commonScrollBottomReload();
+		commonRefreshHeaderInfo(); 
+	};
+	
+	/*
+	 * 功能：加载主题活动列表
+	 * 作者：张自强
+	 * 时间：20171023
+	 * 接口提供人：张海
+	 */
+	function initData(current_page){
+		showSelfProgress('加载中...');
+		currentPage = current_page;
+		api.ajax({
+				url : BASE_URL_ACTION + '/ypt/space/topic/get_topic_list?person_id='+$api.getStorage('person_id')+'&identity_id='+$api.getStorage("identity")+'&bureau_id='+$api.getStorage('bureau_id')+'&page_num='+currentPage+'&page_size='+BASE_PAGE_SIZE+'&new_hot_flag='+new_hot_flag+'&role_flag='+role_flag+'&time_flag='+time_flag + '&keyword=' + keyword,
+				method : 'get',
+				timeout : 0,
+				dataType : 'json',
+				headers : {
+		'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+	}
+			}, function(ret, err) {
+				totalPages = ret.total_page;
+				totalData = ret.total_row;//定义一个变量存储第一次加载返回来的总记录数
+				if(err){
+					popToast('获取主题活动列表失败，请稍候重试');
+				}else{
+					if(ret.success){
+						for(var i = 0; i < ret.list.length; i++){
+							var oparam = new Object();
+							oparam.name = ret.list[i].name;
+							if(ret.list[i].thumb_id){
+								var img_url='';//图片路径
+						    	if (BASE_APP_TYPE == 1) {
+									img_url = BASE_IMAGE_PRE+"down/Material/" + ret.list[i].thumb_id.substring(0, 2) + "/" + ret.list[i].thumb_id+ commonReturnPhotoCutSize(0);		
+								} else {
+									img_url = BASE_URL_ACTION + "/html/thumb/Material/" + ret.list[i].thumb_id.substring(0, 2) + "/" + ret.list[i].thumb_id + commonReturnPhotoCutSize(0);
+								}
+								oparam.img_url=img_url;
+								ret.list[i].thumb_id = img_url;
+							}else{
+								oparam.img_url='../../../../../image/fun-module/ipad/zthd/zthd.png';
+							}
+							oparam.type =1;
+							oparam.person_id = ret.list[i].person_id;
+							oparam.id = ret.list[i].id;
+							oparam.time_text = ret.list[i].time_text;
+							oparam.identity_id = ret.list[i].identity_id;
+							oparam.person_name = ret.list[i].person_name;
+							oparam.person_id = ret.list[i].person_id;
+							ret.list[i].detail_base64 = Base64.encode(JSON.stringify(oparam));
+							oparam.type =4;
+							ret.list[i].tj_base64 = Base64.encode(JSON.stringify(oparam));
+						}
+						commonAddManyHtml('zthd_div','zthd_script',ret);
+					}else{
+						popToast('获取主题活动列表失败，请稍候重试');
+					}
+				}
+				//通知顶部下拉刷新数据加载完毕，组件会恢复到默认状态
+				commonControlRefresh();
+				api.hideProgress();
+			});
+	}
+	
+	/*
+	 * 功能：选中某一主题
+	 * 作者：张自强
+	 * 时间：20171020
+	 */
+	function selectZT(id,thumb_id,name,person_id,oparam_base64,e,time_text){
+		$api.setStorage('zthd_time_text',time_text);
+		var buttons_arra = [];
+//		if(person_id == $api.getStorage('person_id')){
+//			if (is_publish == 1){
+//				buttons_arra = ['查看活动','活动统计','取消发布','删除活动'];
+//			}else{
+//				buttons_arra = ['查看活动','活动统计','发布活动','删除活动'];
+//			}
+//		}else{
+			buttons_arra = ['查看活动','活动统计'];
+//		}
+		commonOpenActionSheet('', '取消', '', buttons_arra,function(index){
+			if(index == 1){
+				openZtXq(1,thumb_id,id,name,oparam_base64,person_id);
+				commonExecScript('zthd_index_window','','reBackType("hd");',0);
+			}else if(index == 2){
+				openZtXq(4,thumb_id,id,name,oparam_base64,person_id);
+				commonExecScript('zthd_index_window','','reBackType("hd");',0);
+			}else if (index == 3 && person_id == $api.getStorage('person_id')){
+				if (is_publish == 1){
+					publishActivity();
+				}else{
+					cancelPublishActivity();
+				}
+			}else if(index == 4 && person_id == $api.getStorage('person_id')){
+				popTwoBtnConfirm('提示','确定删除"'+name+'"主题活动吗?','deleteZt('+id+');');
+			}
+			e.stopPropagation();
+		});
+	}
+	
+	/*
+	 * 功能：查看活动
+	 * 作者：张自强
+	 * 时间：20171020
+	 */
+	function openZtXq(type,thumb_id,id,name,oparam_base64,person_id){
+		var header_h = api.pageParam.header_h;
+		var pageParamJson={"header_h":header_h,'type' : type,'id':id,'thumb_id':thumb_id,'title':name,'oparam_base64':oparam_base64,'person_id':person_id};//打开frame页面所需参数
+		commonOpenWin('zthd_hd_window', 'zthd_hd_window.html', false, false, pageParamJson)
+	}
+	
+	/*
+	 * 功能：修改时间标识
+	 * 作者:张自强
+	 * 时间：20171023
+	 */
+	function changeTimeFlag(type){
+		time_flag = type;
+		initData(1);
+	}
+	
+	/*
+	 * 功能：修改活动主题的查询权限
+	 * 作者：张自强
+	 * 时间：20171023
+	 */
+	function changeQx(type){
+		commonExecScript('zthd_index_window','','reNameWin('+type+');',0);
+		role_flag = type;
+		initData(1);
+	}
+	
+	/*
+	 * 功能：改变主题活动排序分类
+	 * 作者：张自强
+	 * 时间：20171023
+	 */
+	function changePx(type){	
+		new_hot_flag = type;
+		initData(1);
+	}
+	
+	/*
+	 * 功能：根据主题ID删除主题活动
+	 * 作者：张自强
+	 * 时间：20171025
+	 */
+	function deleteZt(id){
+		api.ajax({
+			url : BASE_URL_ACTION + '/ypt/space/topic/delete_topic_by_id',
+			method : 'post',
+			timeout : 0,
+			dataType : 'json',
+			data : {
+				values :{
+					'topic_id':id
+				}
+			},
+			headers : {
+	'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+}
+		}, function(ret, err) {
+			totalPages = ret.total_page;
+			totalData = ret.total_row;//定义一个变量存储第一次加载返回来的总记录数
+			if(err){
+				popToast('删除失败');
+			}else{
+				if(ret.success){
+					popToast('删除成功');
+					$api.remove($api.byId(id));
+				}else{
+					popToast('删除失败');
+				}
+			}
+			//通知顶部下拉刷新数据加载完毕，组件会恢复到默认状态
+			commonControlRefresh();
+			api.hideProgress();
+		});
+	}
+	
+	/*
+	 *作者:zfz
+	 *功能:开始搜索
+	 *日期：20180427
+	 */
+	function startSearch(type) {
+		commonSearch(type, function(data) {
+			setKeyword(data);
+		})
+	}
+	
+	/*
+	 *作者:zfz
+	 *功能:设置搜索值，并根据搜索条件加载相关数据数据
+	 *日期：20180427
+	 */
+	function setKeyword(data) {
+		keyword = $api.trimAll(data);
+		keyword = Base64.decode(keyword);
+		initData(1);
+	}
+</script>
+</html>

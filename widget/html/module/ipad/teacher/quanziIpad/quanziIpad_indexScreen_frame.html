@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>title</title>
+    <link rel="stylesheet" type="text/css" href="../../../../../css/aui/aui.css" />
+	<link rel="stylesheet" type="text/css" href="../../../../../css/aui/aui-flex.css" />
+	<link rel="stylesheet" type="text/css" href="../../../../../css/module/iphone/init-screen.css" />
+    <style>
+    	.screen-title-div{
+    		/*margin: 0px 5%;*/
+    		padding: 20px 5%;
+    		/*background: #CCCCCC*/
+    		border-bottom: 1px solid #CCCCCC;
+    	}
+		.title-div{
+			width: calc(40% - 50px);
+		}
+		.title{
+			max-width: 100%;
+			height: 1.2rem;
+			margin-right: 0px;
+			overflow : hidden;
+		    text-overflow: ellipsis;
+		    display: -webkit-box;
+		    -webkit-line-clamp: 1;
+		    -webkit-box-orient: vertical;
+		    word-break: break-all; /* 追加这一行代码 */
+		}
+		.title-div i{
+			font-size: 20px;
+		}
+		.identity-div{
+			width: 30%;
+			text-align: right;
+		}
+		.space-div{
+			width: 50px;
+		}
+		.selections-div{
+			padding: 10px 5%;
+			border-bottom: 1px solid #CCCCCC;
+		}
+		.selection-div{
+			display: inline-block;
+		}
+		.selection-div span{
+			word-break: break-all;
+		}
+		.classBtn,.groupBtn{
+			margin: 10px;
+		}
+		.aui-btn-default{
+			background-color: #FFFFFF;
+			color: #AAAAAA;
+		}
+		.aui-btn-info{
+			background-color: #31a8fa;
+			color: #FFFFFF;
+		}
+    </style>
+</head>
+<body>
+	<div id="no_quanzi" class="no-data aui-hide">暂无圈子</div>
+	<div id="no_class" class="no-data aui-hide">暂无班级</div>
+	<div id="screen-div">
+		<div id="title-div" class="screen-title-div aui-flex-col">
+			<div class="title-div aui-flex-col" onclick="titleDropDownClick()">
+				<div id="title" class="title"></div>
+				<i id="dropDownIcon" class="aui-iconfont aui-icon-unfold"></i>
+			</div>
+			<div class="space-div"></div>
+			<div id="teacher-div" class="identity-div">
+				<input id="teacherCheckBox" class="aui-checkbox" type="checkbox" checked="checked" onchange="getIdentitySelect(this)"/>
+				<label for="teacherCheckBox">教师发布的</label>
+			</div>
+			<div id="student-div" class="identity-div">
+				<input id="studentCheckBox" class="aui-checkbox" type="checkbox" checked="checked" onchange="getIdentitySelect(this)"/>
+				<label for="studentCheckBox">学生发布的</label>
+			</div>
+		</div>
+		
+		<div id="selections-div" class="selections-div aui-hide">
+			<div id="class-div" class="aui-hide">
+				<script id="class-script" type="text/html">
+					<%for (var i = 0; i < list.length; i++){%>
+						<div class="selection-div">
+							<div class="classBtn aui-btn aui-btn-default" onclick="btnSelectChange(this,'<%=list[i].class_name%>','<%=list[i].class_id%>',true)"><%=list[i].class_name%></div>
+						</div>
+					<%}%>
+				</script>
+			</div>
+			
+			<div id="group-div" class="aui-hide">
+				<script id="group-script" type="text/html">
+					<%for (var i = 0; i < list.length; i++){%>
+						<div class="selection-div">
+							<div class="groupBtn aui-btn aui-btn-default" onclick="btnSelectChange(this,'<%=list[i].group_name%>','<%=list[i].group_id%>',true)"><%=list[i].group_name%></div>
+						</div>
+					<%}%>
+				</script>
+			</div>
+		</div>
+	</div>
+</body>
+<script type="text/javascript" src="../../../../../script/api.js"></script>
+<script type="text/javascript" src="../../../../../script/base_config.js" ></script>
+<script type="text/javascript" src="../../../../../script/plug-in/template.js" ></script>
+<script type="text/javascript" src="../../../../../script/common/common.js"></script>
+<script type="text/javascript" src="../../../../../script/common/init_common.js"></script>
+<script type="text/javascript">
+	var currentPage = 1;//当前分页数
+	var type;
+	var org_type;
+	var org_id;
+	var classList;//班级数组
+	var groupList;//群组数组
+	var classBtnAry;//班级按钮数组
+	var groupBtnAry;//群组按钮数组
+	var selectBtn;//存储选中的按钮dom元素
+	var titleDom = $api.byId('title');
+	var showDiv = $api.byId('selections-div');
+	var identityIdAry = [];//教师学生学生
+	var icon = $api.byId('dropDownIcon');
+	var list_url;
+	var teacher_div = $api.byId('teacher-div');
+	var student_div = $api.byId('student-div');
+	var title_div = $api.byId('title-div');
+	var teacher = $api.byId('teacherCheckBox');
+    var student = $api.byId('studentCheckBox');
+	apiready = function(){
+		if ($api.getStorage('identity') == '5'){
+//			teacher.checked = true;
+//			student.checked = false;
+			identityIdAry.push(5,6);
+		}else if ($api.getStorage('identity') == '6'){
+			if (api.pageParam.isInit){
+				teacher.checked = false;
+			}
+			else{
+				identityIdAry.push(5);
+			}
+			student.checked = true;
+			identityIdAry.push(6);
+		}
+		
+		type = api.pageParam.type;
+		
+		if (type == 0){
+			$api.addCls(title_div, 'aui-hide');
+			$api.text(titleDom, '我');
+			org_type = 1;
+			commonExecScript('quanziIpad_index_window','',"reWriteTitle('我')",0);
+			getUrl();
+			openQuanziIndexFrame();
+		}else if (type == 1 || type == 2 || type == 3){
+			if ($api.getStorage("idy_type") != "work"){
+				identityIdAry.push(6);
+			}
+			$api.addCls(icon, 'aui-hide');
+			$api.addCls(title_div, 'aui-hide');
+			var jigou_name = '';
+			org_type = $api.getStorage('org_level');
+			console.log(type)
+			if (type == 1){
+				org_type = 101;
+    			org_id = $api.getStorage('province_id');
+    			jigou_name = $api.getStorage('province_name');
+			}else if (type == 2){
+				org_type = 102;
+				org_id = $api.getStorage('city_id');
+				jigou_name = $api.getStorage('city_name');
+			}else if (type == 3){
+				org_type = 103;
+				org_id = $api.getStorage('district_id');
+				jigou_name = $api.getStorage('district_name');
+			}
+    		commonExecScript('quanziIpad_index_window','','reWriteTitle("'+ jigou_name + '")',0);
+			$api.text(titleDom, jigou_name);
+			getUrl();
+			openQuanziIndexFrame();
+		}else if (type == 4){
+			$api.addCls(icon, 'aui-hide');
+			commonExecScript('quanziIpad_index_window','',"reWriteTitle('我的学校')",0);
+			$api.text(titleDom, '我的学校');
+			org_type = 104;
+    		org_id = $api.getStorage('school_id');
+    		getUrl();
+    		openQuanziIndexFrame();
+		}else if (type == 5){
+			commonExecScript('quanziIpad_index_window','',"reWriteTitle('我的班级')",0);
+			org_type = 105;
+			if ($api.getStorage('identity') == '5'){
+				getClass();
+			}else if ($api.getStorage('identity') == '6'){
+				$api.addCls(icon, 'aui-hide');
+				org_id = $api.getStorage('class_id');
+				$api.text(titleDom, $api.getStorage('class_name'));
+				getUrl();
+    			openQuanziIndexFrame();
+			}
+		}else if (type == 6){
+			$api.addCls(teacher_div, 'aui-hide');
+			$api.addCls(student_div, 'aui-hide');
+			commonExecScript('quanziIpad_index_window','',"reWriteTitle('我的群组')",0);
+			org_type = 106;
+			getGroup();
+		}
+	};
+	
+	/**
+	 *获取班级
+	 * 王俭
+	 * 2018.4.20
+	 * [{"class_name":"初中一班","class_id":862}] 
+	 */
+	function getClass(){
+		api.showProgress({
+			title : '加载中',
+			text : '请稍候...',
+			modal : true
+		});
+
+		loadClassListData(function(is_true, class_list_arr){
+			if(is_true) {
+				api.hideProgress();
+				if (class_list_arr.length == 0){
+					$api.addCls($api.byId('screen-div'), 'aui-hide');
+					$api.removeCls($api.byId('no_class'), 'aui-hide');
+				}else{
+					var ret = {'list':class_list_arr};
+					classList = class_list_arr;
+					commonAddManyHtml('class-div','class-script',ret);
+					classAry = document.getElementsByClassName('classBtn');
+					selectBtn = classAry[0];
+					$api.addCls(selectBtn, 'aui-btn-info');
+					$api.removeCls($api.byId('class-div'), 'aui-hide');
+					btnSelectChange(selectBtn,classList[0].class_name,classList[0].class_id,false);
+				}
+			} else {
+				api.hideProgress();
+				popToast('获取班级信息失败，请稍候重试');
+//      		commonExecScript("init_screen_window","","back()",0);
+				$api.removeCls($api.byId('no_quanzi'), 'aui-hide');
+			}
+		});
+	}
+	
+	/**
+	 *获取群组
+	 * 王俭
+	 * 2018.4.20
+	 * {"list":[{"group_id":900000020,"category_s":[[{"id":2686,"org_person_id":900000020,"business_iid":106,"level":1,"person_name":null,"article_num":0,"sequence":1,"identity_id":106,"name":"默认分类","business_id":900000020,"is_del":0,"business_type":2}]],"group_name":"123"}]}
+	 */
+	function getGroup(){
+    	api.ajax({
+	    	url : BASE_URL_ACTION+'/blog_expand/get_group_bypersonid?random_num='+creatRandomNum()+'&person_id='+$api.getStorage("person_id")+'&identity_id='+$api.getStorage("identity"),
+			method : 'get',
+			timeout : 30,
+			dataType : 'json',
+			headers : {
+				'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+			}
+        },function(ret,err){
+        	if(err){
+        		api.hideProgress();
+        		popToast('获取群组信息失败，请稍候重试');
+        		$api.removeCls($api.byId('no_quanzi'), 'aui-hide');
+//      		commonExecScript("init_screen_window","","back()",0);
+        	}else{
+        		groupList = ret.list;
+        		commonAddManyHtml('group-div','group-script',ret);
+        		groupAry = document.getElementsByClassName('groupBtn');
+				api.hideProgress();
+				selectBtn = groupAry[0];
+				$api.addCls(selectBtn, 'aui-btn-info');
+				$api.removeCls($api.byId('group-div'), 'aui-hide');
+				btnSelectChange(selectBtn,groupList[0].group_name,groupList[0].group_id,false);
+			}
+        });
+    }
+    
+    /**
+     * 获取人员选择
+     * 王俭
+     * 2018.5.12 
+     */
+    function getIdentitySelect(self){
+    	if (!teacher.checked && !student.checked){
+			self.checked = true;
+			popToast('教师与学生至少选中一个！');
+			return;
+		}
+    	identityIdAry.splice(0,identityIdAry.length);
+    	if (teacher.checked){
+    		identityIdAry.push(5);
+    	}
+    	
+    	if(student.checked){
+    		identityIdAry.push(6);
+    	}
+    	
+    	getUrl();
+    	api.execScript({
+            name : 'quanziIpad_index_window',
+            frameName : 'quanziIpad_index_frame',
+            script: 'initData(1,"'+ list_url + '");'
+        });
+    }
+    
+    /**
+     * 点击标题打开或关闭列表
+     * 王俭
+     * 2018.5.12 
+     */
+    function titleDropDownClick(){
+    	if ($api.getStorage('identity') == '5'){
+			if (type < 5){
+	    		return;
+	    	}
+		}else if ($api.getStorage('identity') == '6'){
+			if (type < 6){
+	    		return;
+	    	}
+		}
+    	if ($api.hasCls(showDiv, 'aui-hide')){
+    		$api.removeCls(showDiv, 'aui-hide');
+    		$api.removeCls(icon,'aui-icon-unfold');
+	    	$api.addCls(icon,'aui-icon-fold');
+    	}else{
+    		$api.addCls(showDiv, 'aui-hide');
+    		$api.removeCls(icon,'aui-icon-fold');
+	    	$api.addCls(icon,'aui-icon-unfold');
+    	}
+    	openQuanziIndexFrame();
+    }
+    
+    /**
+     * btn切换
+     * 王俭
+     * 2018.5.12 
+     */
+    function btnSelectChange(dom,name,id,isRefresh){
+    	org_id = id;
+    	if (selectBtn){
+    		$api.removeCls(selectBtn, 'aui-btn-info');
+    	}
+    	$api.addCls(dom, 'aui-btn-info');
+    	selectBtn = dom;
+    	$api.text(titleDom, name);
+    	getUrl();
+    	if (isRefresh){
+    		api.execScript({
+	            name : 'quanziIpad_index_window',
+	            frameName : 'quanziIpad_index_frame',
+	            script: 'initData(1,"'+ list_url + '");'
+	        });
+	        titleDropDownClick();
+    	}else{
+    		openQuanziIndexFrame();
+    	}
+    	
+    }
+    
+    function getUrl(){
+		if(org_type == 0 ||org_type == 101 || org_type == 102|| org_type == 103){
+			list_url = BASE_URL_ACTION + '/blog/orgArticleList?';
+		}else if(org_type == 105 || org_type == 106){
+			//班级
+			list_url = BASE_URL_ACTION + '/blog_expand/list_article_expand?';
+		}else if(org_type == 104){
+			//学校圈子
+			list_url = BASE_URL_ACTION + '/blog/orgArticleList?';
+		}else{
+			list_url = BASE_URL_ACTION + '/blog/search?';
+		}
+		//查询类型（title，content）
+		var tempUrl = list_url + 'search_type=title&pagesize=' + BASE_PAGE_SIZE +  '&random_num='
+		 + creatRandomNum();
+		list_url = tempUrl + "&identity_id=" + identityIdAry;
+		console.log(org_type)
+		if(org_type == 1){
+		//我的圈子
+			list_url = tempUrl + '&person_id=' + $api.getStorage('person_id')+ '&business_type=1' + '&identity_id='
+			 + $api.getStorage('identity');
+		}else if(org_type == 101 || org_type == 102|| org_type == 103){
+			//机构圈子
+			list_url = list_url + '&org_id=' + org_id + '&org_type=' + org_type + '&business_type=7';
+		}else if(org_type == 105){//班级
+			list_url = list_url + '&business_id=' + org_id + '&business_type=3' + '&business_iid=' + org_type;
+		}else if(org_type == 104){
+			//学校圈子
+			list_url = list_url +'&org_id=' + org_id + '&org_type=' + org_type + '&business_type=7';
+		}else if(org_type == 106){
+			list_url = tempUrl + '&business_type=2' + '&business_id=' + org_id + '&business_iid=' + org_type;
+		}
+	}
+	
+	function openQuanziIndexFrame(){
+		$api.removeCls($api.byId('screen-div'), 'aui-hide');
+		var temp = $api.offset($api.byId('screen-div'));
+		var frame_y = temp.t + temp.h + api.pageParam.header_h;
+		var pageParamJson = {
+			'type' : type,
+			'header_h' : 0,
+			'w':api.pageParam.w,
+			"x":api.pageParam.x,
+			"list_url":list_url,
+		};
+		commonOpenFrame('quanziIpad_index_frame','quanziIpad_index_frame.html', frame_y, false, false, '#ffffff', pageParamJson) 
+	}
+</script>
+</html>

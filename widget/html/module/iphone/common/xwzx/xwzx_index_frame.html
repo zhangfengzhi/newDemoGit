@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<!-- html5：在创建html时为了防止页面缩放等不兼容效果，要创建个viewport  -->
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<!-- 在IOS设备上，有时会将数字转为手机号，这里也要禁止下 -->
+		<meta name="format-detection" content="telephone=no"/>
+		<title>新闻资讯数据页面</title>
+		<link rel="stylesheet" type="text/css" href="../../../../../css/aui/aui.css" />
+		<link rel="stylesheet" type="text/css" href="../../../../../css/module/common/list_frame.css" />
+		<link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+		<style>
+			.h1 {
+				height: 1px;
+				background: #f0f0f0;
+			}
+			.presshover {
+				background-color: #FAFAFA;
+			}
+			.span_name {
+				width: 80%;
+				/*font-size: 18px;*/
+				/*text-align: center;*/
+				display: inline-block;
+				/*word-break: keep-all;*/
+				white-space: nowrap;
+				overflow: hidden;
+				text-overflow: ellipsis;
+			}
+			.aui-content-padded {
+				margin: 0;
+				padding: 45px 0 10px 0;
+			}
+		</style>
+	</head>
+	<body class="common-iphone-xwzx">
+		<!--新闻资讯列表-->
+		<div class="aui-content-padded">
+			<div id="tzlist_div"></div>
+			<script type="text/html" id="tzlist_script">
+				<% if(list.length == 0){ %>
+					<div style="text-align:center;color:#666;padding-top:15px;">
+						<span>暂无新闻资讯</span>
+					</div>
+				<% }else{ %>
+					<%for(var i=0; i<list.length; i++) {%>
+						<div class="section3"  onclick="openTongzhiContent('<%=list[i].notice_id %>');">
+							<div class="item style1" tapmode="itemhover">
+								<%if(list[i].thumb_id != "") {%>
+								<div class="itemlogo userlogo">
+									<%if(list[i].thumb_id == '../../../../../image/yingyong/weike/wk_default.png'){%> <img onerror="this.src='../../../../../image/fun-module/common/xwzx-bg.png'"  src="../../../../../image/fun-module/common/xwzx-bg.png" alt="" data-echo="../../../../../image/fun-module/common/xwzx-bg.png" />
+									<%}else{%> <img onerror="this.src='../../../../../image/fun-module/common/xwzx-bg.png'"  src="../../../../../image/fun-module/common/xwzx-bg.png" alt="" data-echo="<%=list[i].thumb_id%>" />
+									<%}%>
+								</div>
+								<div class="itemshelf">
+									<div class="shelfinfo01">
+										<%=list[i].title %>
+									</div>
+									<div class="shelfinfo04">
+										创建人：<%=list[i].person_name %>
+									</div>
+									<div  class="shelfinfo06">
+										创建时间：<%=list[i].create_time %>
+									</div>
+								</div>
+								<% } else { %>
+								<div class="itemlogo userlogo">
+									<img onerror="this.src='../../../../../image/fun-module/common/xwzx-bg.png'"  src="../../../../../image/fun-module/common/xwzx-bg.png" alt="" data-echo="<%=list[i].thumb_id%>" />
+								</div>
+								<div class="itemshelf">
+									<div class="shelfinfo01">
+										<%=list[i].title %>
+									</div>
+									<div class="shelfinfo04">
+										作者：<%=list[i].person_name %>
+									</div>
+									<div  class="shelfinfo06">
+										发布：<%=list[i].create_time.substring(0,10) %>
+									</div>
+								</div>
+								<% } %>
+							</div>
+						</div>
+					<% } %>
+				<% } %>
+			</script>
+		</div>
+	</body>
+	<script type="text/javascript" src="../../../../../script/api.js" ></script>
+	<script type="text/javascript" src="../../../../../script/base_config.js" ></script>
+	<script type="text/javascript" src="../../../../../script/plug-in/base64.js" ></script>
+	<script type="text/javascript" src="../../../../../script/plug-in/template.js" ></script>
+	<script type="text/javascript" src="../../../../../script/plug-in/echo.min.js"></script>
+	<script type="text/javascript" src="../../../../../script/common/common.js" ></script>
+	<script type="text/javascript">
+		//定义头高度
+		var header_h;
+		//总记录数
+		var totalCount = 0;
+		//总页数
+		var totalPages = 0;
+		//定义一个变量存储第一次加载返回来的总记录数
+		var totalData = 0;
+		// 定义一个变量存储第一次加载返回来的总页数
+		var totalPages = 0;
+		//新闻资讯关键字
+		var keyword = '';
+		//定义区域
+		var bur_ids = [];
+		//定义区域
+		var bur_level_ids = [];
+		//定义区域名称
+		var bur_names = [];
+		//定义区域id
+		var org_id = 0;
+		//定义区域等级
+		var org_level = 0;
+		//定义区域名称
+		var org_name = '';
+		//当前页面为第一页
+		var currentPage;
+		//班级个数
+		var c_length;
+		var bar_items=[];//滑动条选项
+		var index_now = 0;
+		apiready = function() {
+			commonSetTheme({"level":5,"type":0});
+			api.winName == 'xwzx_index_window'?initDataFirst():'';
+		};
+		/*
+		*author:zhaoj
+		*function:点击下方的新闻资讯按钮才开始加载数据
+		*date：20171009
+		*/
+		function initDataFirst(){
+			header_h = api.pageParam.header_h;
+			currentPage = 1;
+			//默认是不能发送新闻资讯
+			$api.setStorage('is_add_notice', 0);
+			//默认选择第一个
+			$api.setStorage('navbar_selected', 0);
+			//打开滑动条
+			openNavigationBar();
+			//加载上拉加载数据方法
+			commonScrollBottomReload();//上拉加载更多数据
+		}
+		/*
+		*author:zhaoj
+		*function:点击下方的新闻资讯按钮才开始加载数据
+		*date：20171009
+		*/
+		function clearData(){
+			$api.html($api.byId('tzlist_div'), '');
+		}
+		/**
+		 * 获取新闻资讯列表
+		 * 周枫
+		 * 2015.11.23
+		 */
+		function initData(current_page) {
+			currentPage = current_page;
+			commonShowProgress('加载中...',false);
+			//获取新闻资讯码
+			getNewsRegisterId(org_id, org_level, function(is_true, a_id) {
+				if (is_true) {
+					if (a_id == -1) {
+						var list = {};
+						list["list"] = [];
+						api.hideProgress();
+						//新闻资讯顶部下拉刷新数据加载完毕，组件会恢复到默认状态
+						commonControlRefresh();
+						commonAddManyHtml('tzlist_div','tzlist_script',list);
+					} else {
+						//查询请求
+						var list_url = BASE_URL_ACTION + '/notice/getNoticeList?page_number=' + current_page + '&page_size=' + BASE_PAGE_SIZE + '&register_id=' + a_id;
+						//是否有新闻资讯名称
+						keyword = $api.trimAll(keyword);
+						list_url = list_url + '&title=' + keyword;
+						api.ajax({
+							url : list_url,
+							method : 'get',
+							timeout : 30,
+							dataType : 'json',
+							cache : false
+						}, function(ret, err) {
+							api.hideProgress();
+							//新闻资讯顶部下拉刷新数据加载完毕，组件会恢复到默认状态
+							commonControlRefresh();
+							if(err){
+								popToast('获取新闻资讯失败,请稍候重试');
+								commonAddManyHtml('tzlist_div','tzlist_script',{"list":[]});
+							}else{
+								if (ret.success) {
+									totalData = ret.total_row;
+									totalPages = ret.total_page;
+									for (var i = 0; i < ret.list.length; i++) {
+										var notice_str1 = '';
+										var notice_str2 = '';
+										if ($api.getStorage('BASE_APP_TYPE') == 1) {
+											notice_str1 = 'src=\"down/Material/';
+											notice_str2 = 'class="ima_notice" src=\"' + BASE_IMAGE_PRE + 'down/Material/';
+										} else {
+											notice_str1 = 'src=\"/dsideal_yy/';
+											notice_str2 = 'class="ima_notice" src=\"' + BASE_URL_ACTION + '\/';
+										}
+										ret.list[i].content = ret.list[i].content.replaceAll(notice_str1, notice_str2);
+									}
+									//得到缩略图路径
+									var BASE_APP_TYPE = $api.getStorage('BASE_APP_TYPE');
+	                                for (var i = 0; i < ret.list.length; i++) {
+	                                    if(!ret.list[i].thumbnail){
+	                                        var image_array=[];
+	                                    	ret.list[i].content.replace(/<img [^>]*src=['"]([^'"]+)[^>]*>/gi, function (match, capture) {
+											  image_array.push(capture);
+											});
+											if(image_array.length > 0){
+												ret.list[i].thumb_id= image_array[0];
+											}else{
+	                                        	ret.list[i].thumb_id='../../../../../image/fun-module/common/xwzx-bg.png';
+	                                        }
+	                                    }else{
+	                                        var thumb_url = ret.list[i].thumbnail;
+	                                        var index = thumb_url.indexOf('/Material');
+	                                        if (index != -1) {
+	                                            var thumb_id=thumb_url.substring(index+10,thumb_url.length);
+	                                            if(BASE_APP_TYPE == 1){
+	                                                ret.list[i].thumb_id = BASE_IMAGE_PRE + BASE_MATERIAL_BEGIN+ thumb_id+commonReturnPhotoCutSize(0);
+	                                            }else{
+	                                                ret.list[i].thumb_id = BASE_URL_ACTION + BASE_IMAGE_BEGIN+ thumb_id+commonReturnPhotoCutSize(0);
+	                                            }
+	                                        }else{
+	                                            ret.list[i].thumb_id = ret.list[i].thumbnail;
+	                                        }
+	                                    }
+	                                }
+									commonAddManyHtml('tzlist_div','tzlist_script',ret);
+									//延迟加载图片
+									setTimeout(function() {
+										echoInit();
+									}, 300);
+								} else {
+									popToast('获取新闻资讯失败,请稍候重试');
+									commonAddManyHtml('tzlist_div','tzlist_script',{"list":[]});
+								}
+							}
+						});
+					}
+				} else {
+				    commonAddManyHtml('tzlist_div','tzlist_script',{"list":[]});
+					api.hideProgress();
+					popToast(a_id);
+				}
+			});
+		}
+
+		/**
+		 * 打开新闻资讯内容frame
+		 * 周枫
+		 * 2015.11.21
+		 */
+		function openTongzhiContent(notice_id) {
+			//打开新闻资讯内容frame页面
+			var pageParamJson={"header_h":header_h,'notice_id':notice_id};
+			commonOpenWin('xwzx_content_window', 'xwzx_content_window.html', false, false, pageParamJson);
+		}
+
+		/**
+		 * 打开新闻资讯级别滑动
+		 * 周枫
+		 * 2015.11.21
+		 */
+		function openNavigationBar() {
+		  bar_items=[];//滑动条选项
+			commonCloseNavigationBar();
+			var org_level = parseInt($api.getStorage('org_level'));
+            getSpaceMenu(function(flag,ret){
+                if(flag){
+                    for(var i = 0; i < ret.org_list.length; i++){
+                        if(ret.org_list[i].org_level >= org_level){
+                            var oparam = new Object();
+                            oparam.id = ret.org_list[i].org_id;
+                            if(ret.org_list[i].flag == 0 && (ret.org_list[i].org_level == 101 || ret.org_list[i].org_level == 102||ret.org_list[i].org_level == 103)){
+                                oparam.title = ret.org_list[i].org_name+'教育局';
+                            }else{
+                                oparam.title = ret.org_list[i].org_name;
+                            }
+                            oparam.menu_type = ret.org_list[i].org_level;
+                            bar_items.push(oparam); 
+                        }
+                    }
+                    bar_items.sort(desc); //升序排序 
+                    var params = {
+                        y : header_h,
+                        items : bar_items,
+                        winName : api.winName,
+                        frameName : api.frameName
+                    };
+                    commonMyNavigationBar(params);
+                }else{
+                    commonAddManyHtml('tzlist_div','tzlist_script',{"list":[]});
+                }
+            });
+		}
+		/*
+		*作者:zhaoj
+		*功能:滑动条回调
+		*日期：20161110
+		*/
+		function callBackNew(id, index) {
+			index_now = index;
+			org_id = bar_items[index].id;
+			org_level = bar_items[index].menu_type;
+			org_name = bar_items[index].title;
+			$api.setStorage('navbar_selected', index);
+            $api.setStorage('org_level_bar', bar_items[index].menu_type);
+			isAddNotice(org_id);
+			currentPage = 1;
+			initData(currentPage);
+		}
+		/*
+        *作者:zhaoj
+        *功能:获取这个人所在的机构
+        *日期：20161121
+        */
+        function getSpaceMenu(callback){
+            api.ajax({
+                url :BASE_URL_ACTION + '/space/common/getSpaceMenu?random_num='+creatRandomNum()+'&person_id='+$api.getStorage("person_id")+'&identity_id='+$api.getStorage("identity"),
+                method : 'get',
+                timeout : 30,
+                dataType : 'json',
+                headers : {
+        'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' +$api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+            }
+            }, function(ret, err) {
+                if (err) {
+                    callback(false,0);
+                } else {
+                    if(ret.success){
+                        callback(true,ret);
+                    }else{
+                        callback(false,0);
+                    }
+                }
+            });
+        }
+        /*
+        *作者:zhaoj
+        *功能:json数据排序
+        *日期：20161121
+        */
+        var colId="menu_type"  
+        var desc = function(x,y)  {  
+            return (x[colId] < y[colId]) ? 1 : -1  
+        } 
+		/**
+		 * 判断当前人员是否有发送新闻资讯的权限
+		 * 周枫
+		 * 2015.11.25
+		 */
+		function isAddNotice(org_id) {
+			if (org_level == 105 && $api.getStorage('identity') == 5) {
+				//发布通知地区
+				$api.setStorage('gxdq_area_id', org_id);
+				//发布通知地区
+				$api.setStorage('gxdq_area_name', org_name);
+				//是否允许发布通知
+				$api.setStorage('is_add_notice', 1);
+				commonExecScript(api.winName,'','commonAddOrRemoveHideCss("j_xwzx_add",1);',0);
+			} else {
+				var roid_json = $api.getStorage('roles');
+				var roids = '';
+				for (var i = 0; i < getJsonObjLength(roid_json); i++) {
+					roids = roids + roid_json[i].role_id + ','
+				}
+				$api.setStorage('notice_roids', roids);
+				api.ajax({
+					url : BASE_URL_ACTION + '/ypt/multiCheck/getManageUnit?random_num=' + creatRandomNum() + '&from_url=1&person_id=' + $api.getStorage("person_id") + '&identity_id=' + $api.getStorage("identity") + '&role_ids=' + roids,
+					method : 'get',
+					dataType : 'json',
+					timeout : 30,
+					cache : false,
+					headers : {
+						'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+					}
+				}, function(ret, err) {
+					if (err) {
+						//判断发送通知是否显示
+						commonExecScript(api.winName,'','commonAddOrRemoveHideCss("j_xwzx_add",0);',0);
+						popToast('获取新闻资讯权限失败,请稍候重试');
+					} else {
+						if (ret.success) {
+							if (getJsonObjLength(ret.area_list) != 0) {
+								var is_result = 0;
+								for (var i = 0; i < getJsonObjLength(ret.area_list); i++) {
+									if (org_id == parseInt(ret.area_list[i].admin_area_id)) {
+										//发布通知地区
+										$api.setStorage('gxdq_area_id', ret.area_list[i].admin_area_id);
+										//发布通知地区
+										$api.setStorage('gxdq_area_name',org_name);
+										//是否允许发布通知
+										$api.setStorage('is_add_notice', 1);
+										is_result++;
+										break;
+									}
+								}
+								setTimeout(function() {
+									if (is_result > 0) {
+										//判断发送通知是否显示
+										commonExecScript(api.winName,'','commonAddOrRemoveHideCss("j_xwzx_add",1);',0);
+									} else {
+										//判断发送通知是否显示
+										commonExecScript(api.winName,'','commonAddOrRemoveHideCss("j_xwzx_add",0);',0);
+									}
+								}, 100);
+							} else {
+								commonExecScript(api.winName,'','commonAddOrRemoveHideCss("j_xwzx_add",0);',0);
+							}
+						} else {
+							//判断发送通知是否显示
+							commonExecScript(api.winName,'','commonAddOrRemoveHideCss("j_xwzx_add",0);',0);
+							popToast('获取新闻资讯权限失败,请稍候重试');
+						}
+					}
+				});
+			}
+		}
+
+		/**
+		 * 获取通知码
+		 * 周枫
+		 * 2016.4.25
+		 */
+		function getNewsRegisterId(orgs_id, level_type, callback) {
+			api.ajax({
+				url : BASE_URL_ACTION + '/space/getNewsRegisterId?a_id=' + orgs_id + '&a_identity_id=' + level_type,
+				method : 'get',
+				timeout : 30,
+				dataType : 'json',
+				cache : false
+			}, function(ret, err) {
+				if (err) {
+					callback(false, '对不起，获取新闻资讯失败');
+				} else {
+					if (ret.success) {
+						var flag = parseInt(ret.flag);
+						//没注册过通知码
+						if (flag == 0) {
+							callback(true, -1);
+						} else {
+							callback(true, ret.regist_id);
+						}
+					} else {
+						callback(false, '对不起，获取新闻资讯失败');
+					}
+				}
+			});
+		}
+		/**
+		 * 发布新闻资讯
+		 * 周枫
+		 * 2015.11.21
+		 */
+		function openTongzhiAddFrame() {
+			//打开新闻资讯内容frame页面
+			var pageParamJson={"header_h":header_h,'winName':api.winName};
+			commonOpenWin('xwzx_add_window', 'xwzx_add_window.html', false, false, pageParamJson);
+		}
+		
+		/*
+		 * 功能：从详情页返回后的回调
+		 * 作者：张自强
+		 * 时间：20171108
+		 */
+		function contentCallBack(){
+			isAddNotice(org_id);
+		}
+	</script>
+</html>

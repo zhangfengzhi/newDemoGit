@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<!-- html5：在创建html时为了防止页面缩放等不兼容效果，要创建个viewport  -->
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<!-- 在IOS设备上，有时会将数字转为手机号，这里也要禁止下 -->
+		<meta name="format-detection" content="telephone=no"/>
+		<title>修改密码frame</title>
+		<link rel="stylesheet" type="text/css" href="../../../css/aui/aui.css" />
+		<link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+		<style>
+			.h10 {height: 10px;background: #f7f9f8;}
+			.h20 {height: 20px;background: #f7f9f8;}
+			.h1 {height: 1px;background: #CCCCCC;/*margin:0 15px;*/}
+		</style>
+	</head>
+	<body class="w-iphone-common">
+		<div class="h10"></div>
+		<div class="aui-content">
+			<div class="aui-input-row">
+				<label>原密码</label>
+				<input oninput="commonRemoveExpression(this)" style="margin-top: 4px;" id="old_pwd" type="password" onkeyup= "value=value.replace(/[\W]/g, '')"
+                                     onbeforepaste= "clipboardData.setData('text',clipboardData.getData('text').replace(/[\W]/g, '')) " maxlength="12" placeholder="请输入6~12位英文或数字">
+			</div>
+			<div class="aui-input-row">
+				<label>新密码</label>
+				<input oninput="commonRemoveExpression(this)" style="margin-top: 4px;" id="new_pwd" type="password" onkeyup= "value=value.replace(/[\W]/g, '')"
+                                     onbeforepaste= "clipboardData.setData('text',clipboardData.getData('text').replace(/[\W]/g, '')) " maxlength="12" placeholder="请输入6~12位英文或数字">
+			</div>
+			<div class="aui-input-row">
+				<label>密码确认</label>
+				<input oninput="commonRemoveExpression(this)" style="margin-top: 4px;" id="re_new_pwd" type="password" onkeyup= "value=value.replace(/[\W]/g, '')"
+                                     onbeforepaste= "clipboardData.setData('text',clipboardData.getData('text').replace(/[\W]/g, '')) " maxlength="12" placeholder="请输入6~12位英文或数字">
+			</div>
+		</div>
+		<script type="text/javascript" src="../../../script/api.js"></script>
+		<script type="text/javascript" src="../../../script/base_config.js"></script>
+		<script type="text/javascript" src="../../../script/common/common.js"></script>
+	</body>
+	<script type="text/javascript">
+		var header_h;
+		var BASE_URL_ACTION;
+		apiready = function() {
+			commonSetTheme({"level":3,"type":0});
+			header_h = api.pageParam.header_h;
+			BASE_URL_ACTION = $api.getStorage('BASE_URL_ACTION');
+			
+		};
+		
+		/**
+		 * 保存密码
+		 * 周枫
+		 * 2016.5.10 
+		 */
+		function savePersonPassword(){
+			var old_pwd = $api.val($api.byId('old_pwd'));
+			var new_pwd = $api.val($api.byId('new_pwd'));
+			var re_new_pwd = $api.val($api.byId('re_new_pwd'));
+			if(old_pwd == ""){
+				api.alert({
+					msg : "请输入原密码"
+                },function(ret,err){
+                	$api.byId('old_pwd').focus();
+                });
+                return false;
+			}
+			if(new_pwd == ""){
+				api.alert({
+					msg : "请输入新密码"
+                },function(ret,err){
+                	$api.byId('new_pwd').focus();
+                });
+                return false;
+			}
+			if(re_new_pwd == ""){
+				api.alert({
+					msg : "请输入确认密码"
+                },function(ret,err){
+                	$api.byId('re_new_pwd').focus();
+                });
+                return false;
+			}
+			if(re_new_pwd != new_pwd){
+				api.alert({
+					msg : "两次输入的密码不一致，请重新输入"
+                },function(ret,err){
+                	$api.byId('re_new_pwd').focus();
+                });
+                return false;
+			}
+			showSelfProgress('修改中...');	
+			api.ajax({
+				url : BASE_URL_ACTION + '/ypt/personal/changePwd?random_num='+creatRandomNum()+'&pwd_original='+old_pwd+'&pwd_new='+new_pwd,
+				method : 'get',
+				dataType : 'json',
+				cache : false,
+				timeout : 30,
+				headers : {
+ 'Cookie' : 'person_id='+$api.getStorage("person_id")+'; identity_id='+$api.getStorage("identity")+'; token='+$api.getStorage("token_ypt")+';'
+ }
+			}, function(ret, err) {				
+				if(err) {
+					api.hideProgress();
+					api.toast({
+	                    msg:'对不起，密码修改失败'
+                    });
+				} else {
+					if(ret.success) {			
+	                    setTimeout(function(){
+	                        api.toast({
+		                    	msg:'修改成功'
+	                        });
+	                    	setTimeout(function(){
+	                    	    api.hideProgress();
+	                    	    api.execScript({
+								name : 'w_config_safe_window',
+								script : 'back()'
+							});
+	                     },1000);
+	                    },1000);	                    
+					} else {
+						api.hideProgress();
+						api.toast({
+		                    msg:ret.info
+	                    });
+					}
+				}
+			});
+		}
+		
+	</script>
+</html>

@@ -1,0 +1,1420 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<!-- html5：在创建html时为了防止页面缩放等不兼容效果，要创建个viewport  -->
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<!-- 在IOS设备上，有时会将数字转为手机号，这里也要禁止下 -->
+		<meta name="format-detection" content="telephone=no"/>
+		<title>学业报告</title>
+		<link rel="stylesheet" type="text/css" href="../../../../../css/aui/aui.css" />
+		<link rel="stylesheet" type="text/css" href="../../../../../css/module/common/table-body.css"/>
+		<link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+		<style>
+			body{background:#ffffff;}
+			.ul{width:100%;padding:10px 0;padding-left:2%;border-bottom:2px solid #efeff4;display:none}
+			.ul .grade{color:#3498db;font-size:14px;text-align:center;padding:10px 2px;border-radius: 10px;width:48%;display:inline-block;}
+			.head{background:url(../../../../../image/fun-module/ipad/xybg/ketang-head.png) top center no-repeat;background-size:90% 50px;width:100%;height:50px;position:relative;text-align:center;font-size:18px;line-height:46px;color:#A94A04;}
+	    	.center{border:10px solid #EEE0AA;width:68%;margin:0 auto;border-radius: 10px;margin-top:-20px;padding-top:5px;}
+	    	.center li:first-child{background:url(../../../../../image/fun-module/ipad/xybg/1.png) 15px top no-repeat;background-size:20px auto;padding-left:40px;border-bottom:1px dashed #EEE0AA;margin:15px auto;color:#996600;padding-bottom:15px;}
+	    	.center li:nth-child(2){background:url(../../../../../image/fun-module/ipad/xybg/2.png) 15px top no-repeat;background-size:20px auto;word-break: break-all;padding-left:40px;border-bottom:1px dashed #EEE0AA;margin:15px auto;color:#996600;padding-bottom:15px;}
+	    	.center li:nth-child(3){background:url(../../../../../image/fun-module/ipad/xybg/3.png) 15px top no-repeat;background-size:20px auto;border-bottom:none;word-break: break-all;padding-left:40px;margin:15px auto;color:#996600}
+	    	.right{width:100%;margin-bottom:5px}
+	    	.right .detail{margin-left:15px;margin-top:15px;}
+	    	.right .yuan{right:0 !important;}
+			.right .name_first{left:0;}
+			.right hr{margin-right:10px;}
+			.right .finish-count,.right .tj{text-align:right;padding-right:20px;}
+			.all-study{font-size:12px;}
+			.all-study font{font-size:14px;color:#F76735;padding:0 3px;}
+			.tea-pub{font-size:12px;color:#000000}
+			.tea-pub font{font-size:14px;color:#000000;padding:0 3px;}
+			.fl{float:left;}
+			.fr{float:right;}
+			.detail{height:33%;position: relative;width:90%;}
+    		.detail .tip{position:absolute;width:100%;top:50%;}
+    		.detail .tip .dingwei{position:relative;}
+			.yuan{width:12px;height:12px;position:absolute;top:-6px;background:url(../../../../../image/fun-module/ipad/xybg/yuan.png) center center no-repeat;background-size:auto 100%;}
+			.name_first{position:absolute;right:0;width:50px;height:50px;border-radius:50%;color:#fff;font-size:16px;line-height:50px;text-align:center;margin-top:5px;top:-30px}
+			.xian{width:97%;}
+			.hastop_name{top:-20px}
+			.hastop_yuan{top:3px}
+			.mokuai_list{margin:5% auto;border-radius: 10px;width:80%;}
+			.mokuai_list li{display:inline-block;font-size:14px;width:15%;height:auto;text-align:center;}
+			.mokuai_list .td{border:none;}
+			.con-tit{margin:30px auto;margin-top:40px;margin-bottom:35px;}
+	    	.con-tit div{display:inline-block;float:left;line-height:30px;height:30px;}
+	    	.con-tit div.text{position:relative;color:#fff;padding:0 2px;padding-right:15px;background:#F76735;}
+	    	.con-tit div.text .bg{width:12px;position:absolute;right:-1px;height:100%;background:#fff url(../../../../../image/fun-module/ipad/xybg/title-bg.png) 0 0 no-repeat;background-size:auto 100%;}
+	    	.con-tit div.info{border:1px dashed #F76735;color:#F76735;border-left:none;padding:0 8px;}
+	    	.stu_finish{display:inline-block;width:40%;margin:20px auto;margin-left:50px;}
+	    	.stu_finish div{display:inline-block;border:2px solid #59c4f9;width:30px;}
+	    	.tea_finish{display:inline-block;width:40%;margin:20px auto}
+	    	.tea_finish div{display:inline-block;border:2px solid #f8ac83;width:30px;}
+	    	.class-record-detail{width:100%;margin:0 auto;margin-top:15px;margin-bottom:5px}
+	    	.class-record-detail ul li{position:relative;width:50%;float:left;height:50px;margin-top:20px;}	    	
+	    	.class-record-detail ul li:nth-child(3){width:50%;}
+	    	.class-record-detail ul li:nth-child(5){width:100%;}	    	
+	    	.class-record-detail ul li .tip-icon{position:absolute;left:0;top:7px;width:40px;height:40px;border-radius:50%;}
+	    	.record-detail{padding-left:48px;}
+	    	.record-detail .name{font-size:16px;}
+	    	.record-detail div{font-size:12px; color:#595757;padding-top:5px;}
+	    	.record-detail div font{padding:0 3px;color:#F76735;font-size:14px;}
+	    	.no-data{background:#fff;}
+			.select-type-w{width:100%;text-align:center;margin-bottom:20px;}
+	    	.select-type-w div{display:inline-block;color:#595757;}
+	    	.select-type-w span{display:inline-block;padding:0 15px;text-align:center;line-height:35px;}
+	    	.select-type-w span.active{color:#fff;}
+		    .nav{margin-top:50px;height:20px;text-align:center;margin-bottom:15px;}
+	    	.nav ul{display:inline-block;line-height: 15px;border-radius:100px;overflow:visible;}
+	    	.nav li{position:relative;float:left;display:inline-block;padding:5px 5px;}
+	    	.nav li:last-child{border-right:none;}
+	    	.nav li.active{color:#fff;overflow:visible;}
+	    	.nav .first-li{border-top-left-radius:10px;border-bottom-left-radius:10px}
+	    	.nav .last-li{border-top-right-radius:10px;border-bottom-right-radius:10px}
+	    	.tree-pie-div{position:absolute;bottom:11px;left:-10px;}
+	    	.change-tree-pie-bottom{width:50px;height:25px;border-radius: 0 0 25px 25px;background:#ffffff;border:1px solid #F76735;}
+	    	.change-tree-pie-bottom p{position:relative;top:-5px;text-align:center;font-size:12px;color:#000000}
+	    	.change-tree-pie-top{height:25px;width:50px;border-radius: 25px 25px 0 0;background:#ffffff;border:1px solid #F76735;text-align:center;font-size:12px;}
+	    	.select-tu{background:#F76735;color:#ffffff}
+	    	.select-tu p{color:#ffffff}
+	    	.tj_tu_css{width:100%;height:280px;margin-bottom:20px;}
+	    	.table-body{margin:10px auto;width:90%;margin-bottom:40px;}
+	    	.table-body th, .table-body td{font-size:16px;}
+	    	.table-body td{line-height:30px;}
+	    	.table-body .cz_out {border-left: 120px solid #7e7e7e;}
+			.table-body .cz_b {left: -50px;top: -42px;}
+			.table-body .cz_em {left: -100px;top: -28px;}
+			.finish_percent{font-size:14px}
+			.finish_percent font{font-size:16px;}
+			.bing_tu{height:250px;}
+			.dailyStatisticalEchart{height: 55%;margin:0 5%;margin-bottom:30px}
+			.table-body .cz_out{border-left:120px solid #FEA30E;border-top:40px solid #FFC921;}
+		</style>
+	</head>
+	<body class="common-iphone-xybgstu">
+		<!--学期切换-->
+		<ul class="ul" id="xueqi_div"></ul>
+		<script type="text/html" id="xueqi_script">
+			<%if(xqlist.length == 0){%>
+				<div class="no-data">暂无学业报告</div>
+			<%}else{%>
+				<%for(var i=0;i<xqlist.length;i++){%>
+					<li class="grade" onclick="setTerm(<%=xqlist[i].XQ_ID%>,'<%=xqlist[i].KSRQ%>','<%=xqlist[i].JSRQ%>',<%=i%>);"><%=xqlist[i].XQMC%></li>
+				<%}%>
+			<%}%>
+		</script>
+		<div style="margin-top:10px;">
+			<div class="head">日常学习记录</div>
+			<ul class="center">
+				<li id="j_passive"></li>
+				<li id="j_initiative"></li>
+				<li id="j_tiben"></li>
+			</ul>
+		</div>
+		<!--统计情况-->
+		<div class="right fr">
+			<div class="detail fl">
+				<div class="content">
+					<div class="tip">
+						<div class="dingwei">
+							<div class="yuan hastop_yuan">&nbsp;</div>
+							<hr />
+							<div class="name_first hastop_name">导学</div>
+						</div>
+					</div>
+					<div class="finish-count">&nbsp;</div>
+					<div class="tj">
+						<span class="all-study finish_percent">完成<font id="j_lead_rate"></font>%</span>
+					</div>
+					<div class="xian"></div>
+					<div class="tj">
+						<span class="all-study">累计学习<font id="j_s_lead_num"></font>个/</span>
+						<span class="all-study">教师布置<font id="j_s_p_lead_num"></font>个</span>
+					</div>
+				</div>
+			</div>
+			<div class="detail fl">
+				<div class="content">
+					<div class="tip">
+						<div class="dingwei">
+							<div class="yuan hastop_yuan">&nbsp;</div>
+							<hr />
+							<div class="name_first hastop_name">课件</div>
+						</div>
+					</div>
+					<div class="finish-count">&nbsp;</div>
+					<div class="tj">
+						<span class="all-study finish_percent">完成<font id="j_resource_rate"></font>%</span>
+					</div>
+					<div class="xian"></div>
+					<div class="tj">
+						<span class="all-study">累计学习<font id="j_s_resource_num"></font>个/</span>
+						<span class="all-study">教师布置<font id="j_p_resource_num"></font>个</span>
+					</div>
+				</div>
+			</div>
+			<div class="detail fl">
+				<div class="content">
+					<div class="tip">
+						<div class="dingwei">
+							<div class="yuan hastop_yuan">&nbsp;</div>
+							<hr />
+							<div class="name_first hastop_name">检测</div>
+						</div>
+					</div>
+					<div class="finish-count">&nbsp;</div>
+					<div class="tj">
+						<span class="all-study finish_percent">完成<font id="j_home_work_rate"></font>%</span>
+					</div>
+					<div class="xian"></div>
+					<div class="tj">
+						<span class="all-study">累计学习<font id="j_s_home_work_num"></font>个/</span>
+						<span class="all-study">教师布置<font id="j_s_p_home_work_num"></font>个</span>
+					</div>
+				</div>
+			</div>
+			<div class="detail fl">
+				<div class="content">
+					<div class="tip">
+						<div class="dingwei">
+							<div class="yuan hastop_yuan">&nbsp;</div>
+							<hr />
+							<div class="name_first hastop_name">游戏</div>
+						</div>
+					</div>
+					<div class="finish-count">&nbsp;</div>
+					<div class="tj">
+						<span class="all-study finish_percent">&nbsp;<span>&nbsp;</span></span>
+					</div>
+					<div class="xian"></div>
+					<div class="tj">
+						<span class="all-study">累计参与<font id="j_s_game_num"></font>个/</span>
+						<span class="all-study">班级人均参与<font id="j_game_average"></font>个</span>
+					</div>
+				</div>
+			</div>
+			<div class="detail fl">
+				<div class="content">
+					<div class="tip">
+						<div class="dingwei">
+							<div class="yuan hastop_yuan">&nbsp;</div>
+							<hr />
+							<div class="name_first hastop_name">专题</div>
+						</div>
+					</div>
+					<div class="finish-count">&nbsp;</div>
+					<div class="tj">
+						<span class="all-study finish_percent">&nbsp;<span>&nbsp;</span></span>
+					</div>
+					<div class="xian"></div>
+					<div class="tj">
+						<span class="all-study">累计学习<font id="j_s_topic_num"></font>个/</span>
+						<span class="all-study">班级人均学习<font id="j_topic_average"></font>个</span>
+					</div>
+				</div>
+			</div>
+			<div class="detail fl">
+				<div class="content">
+					<div class="tip">
+						<div class="dingwei">
+							<div class="yuan hastop_yuan">&nbsp;</div>
+							<hr />
+							<div class="name_first hastop_name">题本</div>
+						</div>
+					</div>
+					<div class="finish-count">&nbsp;</div>
+					<div class="tj">
+						<span class="all-study finish_percent">&nbsp;<span>&nbsp;</span></span>
+					</div>
+					<div class="xian"></div>
+					<div class="tj">
+						<span class="all-study">累计错题<font id="j_s_q_error_num"></font>道/</span>
+						<span class="all-study">收藏题<font id="j_s_q_collect_num"></font>道</span>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div style="clear:both"></div>
+		<!--图表-->
+		<div class="nav clearfix">
+			<ul id="j_nav_0">
+				<li id="j_dx" class="active first-li" onclick="showLineChart('dx');">导学</li>
+				<li id="j_kj" onclick="showLineChart('kj');">课件</li>
+				<li id="j_zy" onclick="showLineChart('zy');">检测</li>
+				<li id="j_yx" onclick="showLineChart('yx');">游戏</li>
+				<li id="j_zt" onclick="showLineChart('zt');">专题</li>
+				<li id="j_tb" class="last-li" onclick="showLineChart('tb');">题本</li>
+			</ul>
+		</div>
+		<!--模块切换-->
+		<div class="con-tit clearfix">
+			<div id="j_rctj_title" class="text"></div>
+			<div id="j_rctj_tip" class="info"></div>
+		</div>
+		<!--完成量-->
+		<div class="select-type-w aui-hide" id="selectZyType">
+			<div>
+				<span id="j_zy_1" value="1" class="active" onclick="changeZyNav(1);">完成情况</span>
+           		<span id="j_zy_2" value="2" onclick="changeZyNav(2);">正确率</span>
+			</div>
+        </div>
+        <!--题本-->
+          <div id="dailyStatisticalEchart" class="dailyStatisticalEchart"></div>
+          <div id="tb_body"></div>
+	        <script type="text/html" id="tb_script">
+				<table class="table-body">
+					<tbody>
+						<tr>
+							<th width="70px;" height="40px;">
+								<div class="cz_out">
+									<b class="cz_b">类别</b>
+									<em class="cz_em">月份</em>
+								</div>
+							</th>
+							<th>做错的题</th>
+							<th>收藏的题</th>
+						</tr>
+						<%for(var i=0;i < list.length;i++){%>
+				           <tr>
+					           <td><%=list[i].ym%></td>
+					           <td><%=list[i].q_error_num%></td>
+					           <td><%=list[i].q_collect_num%></td>
+				           </tr>
+				        <%}%>
+					</tbody>
+				</table>
+				</table>
+	        </script>
+		<!--课堂记录-->
+		<div>
+			<div class="head">课堂记录</div>
+			<ul class="center">
+				<li id="j_one"></li>
+				<li id="j_two"></li>
+				<li id="j_three"></li>
+			</ul>
+		</div>
+		<div class="class-record-detail">
+		<ul class="clearfix" style="padding-left:10px;">
+			<li>
+				<div class="tip-icon">&nbsp;</div>
+				<div class="record-detail">
+					<div class="name">举手</div>
+					<div>累计举手<font id="j_handup_num"></font>次</div>
+				</div>
+			</li>
+			<li>
+				<div class="tip-icon">&nbsp;</div>
+				<div class="record-detail">
+					<div class="name">投票</div>
+					<div>累计参与<font id="j_vote_num"></font>次</div>
+				</div>
+			</li>
+			<li>
+				<div class="tip-icon">&nbsp;</div>
+				<div class="record-detail">
+						<div class="name">提问</div>
+						<div>累计被提问<font id="j_asked_num"></font>次</div>
+					</div>
+			</li>
+			<li>
+				<div class="tip-icon">&nbsp;</div>
+				<div class="record-detail">
+					<div class="name">共享屏幕</div>
+					<div>累计共享<font id="j_screenshared_num"></font>次</div>
+				</div>
+			</li>
+			
+			<li>
+				<div class="tip-icon">&nbsp;</div>
+				<div class="record-detail">
+					<div class="name">分享图片</div>
+					<div>累计分享<font id="j_picshared_num"></font>次，收获<font id="j_picthumbup_num"></font>个赞，累计被下载<font id="j_picdownload_num"></font>次</div>
+				</div>
+			</li>
+		</ul>
+	</div>
+	<!--举手等裂列表-->
+	<!--图表-->
+	<div class="nav">
+		<ul id="j_nav_1">
+			<li id="j_handup" class="active first-li" onclick="showClassChart(0,'handup');">举手</td>
+			<li id="j_screenshared" onclick="showClassChart(1,'screenshared');">共享屏幕</td>
+			<li id="j_picshared" onclick="showClassChart(2,'picshared');">分享图片</td>
+			<li id="j_vote" onclick="showClassChart(3,'vote');">投票</td>
+			<li id="j_asked" class="last-li" onclick="showClassChart(4,'asked');">提问</td>
+		</ul>
+	</div>
+	<div class="content">
+		<div class="con-tit clearfix" style="1px solid red">
+			<div id="j_class_title" class="text"></div>
+			<div id="j_class_tip" class="info"></div>
+			<div style="position:relative;">
+				<div class="tree-pie-div">
+					<div id="bing" class="change-tree-pie-top select-tu" style="height:26px;" onclick="hideTu(1);">饼图</div>
+					<div id="shu" class="change-tree-pie-bottom" style="height:26px;" onclick="hideTu(2);"><p id="shu_p">树图</p></div>
+				</div>
+			</div>
+		</div>
+		<div>
+            <div class="tj_tu_css bing_tu" id="classStatisticalPieEchart"></div>
+            <br>
+            <div class="tj_tu_css aui-hide" id="classStatisticalColumnEchart"></div>
+        </div>
+	</div>
+	</body>
+<script type="text/javascript" src="../../../../../script/api.js"></script>
+<script type="text/javascript" src="../../../../../script/base_config.js" ></script>
+<script type="text/javascript" src="../../../../../script/common/common.js" ></script>
+<script type="text/javascript" src="../../../../../script/plug-in/template.js" ></script>
+<script type="text/javascript" src="../../../../../script/plug-in/echo.min.js"></script>
+<script type="text/javascript" src="../../../../../script/plug-in/echarts.min.js"></script>
+<script type="text/javascript">
+	var total_json = {};//全局参数
+	var stuMonthStat;//日常统计图表数据
+	var rctj_data;//日常统计数据
+	var class_data;//班级统计数据
+	var class_stat;//班级统计图表数据
+	var index_now = 0;//当前按钮
+	var value_now = '';//当前按钮的名字
+	var identity_id='';//获取学生身份
+	var student_id='';//学生id
+	var token='';//学生token
+	apiready = function() {
+		commonSetTheme({"level":5,"type":0});
+		showSelfProgress('加载中...');
+		if($api.getStorage('identity')==7){
+			commonGetStudentInfoByParentId($api.getStorage('person_id'), $api.getStorage('identity'), function(flag,data){
+				if(flag){
+					student_id = data.student_id
+					identity_id = data.roles[0].role_id;
+					token = data.stutoken;
+					loadData();	
+				}else{
+					popToast(data);
+				}
+			});
+		}else{
+			student_id = $api.getStorage('person_id');
+			identity_id = $api.getStorage('identity');
+			token = $api.getStorage("token_ypt");
+			loadData();	
+		}
+		
+	};
+	
+	/*
+	 * 功能：隐藏或显示学期切换
+	 * 作者：张自强
+	 * 时间：20171018
+	 */
+	function showOrhideXq(type){
+		if(type){
+			$api.css($api.byId('xueqi_div'),'display:block');
+			$api.byId('xueqi_div').scrollIntoView();
+		}else{
+			$api.css($api.byId('xueqi_div'),'display:none');
+		}
+	}
+	
+	/*
+	*author:zhaoj
+	*function:加载数据
+	*date：20171014
+	*/
+	function loadData(){
+		commonGetListSemester(function(flag,ret){
+			if(flag){
+				if(ret.xqlist.length == 0){
+					$api.css($api.byId('xueqi_div'),'border:none');
+					api.hideProgress();
+				}else{
+					commonAddOnceHtml('xueqi_div','xueqi_script',ret);
+					for(var i = 0; i < ret.xqlist.length; i++){
+						if(ret.xqlist[i].SFDQXQ == 1){
+							setTerm(ret.xqlist[i].XQ_ID,ret.xqlist[i].KSRQ,ret.xqlist[i].JSRQ,i);
+						}
+					}
+				}
+			}else{
+				popToast(ret);
+				api.hideProgress();
+			}
+		});
+	}
+	
+		/*
+		 * 功能：切换学期
+		 * 作者：张自强
+		 * 时间：20171017
+		 */
+		function setTerm(term_id,start_date,end_date,index){
+			var domArray = document.getElementsByClassName('grade');
+			for(var i=0;i<domArray.length;i++){
+				if(i == index){
+					$api.css(domArray[i],'border:1px solid #3498db');
+				}else{
+					$api.css(domArray[i],'border:none');
+				}
+			}		
+			total_json.xq_id = term_id;
+			total_json.start_date=start_date.replaceAll('-',"").substring(0,6);
+			total_json.end_date=end_date.replaceAll('-',"").substring(0,6);
+			get_stat_by_personid_identityid();
+			get_stu_total_stat();//课堂统计记录
+			get_stu_month_stat();//课堂统计图表记录
+		}
+		
+		/*
+		*author:zhaoj
+		*function:获取日常统计图表记录
+		*interface:张海
+		*date：20171016
+		*/
+		function get_stat_list_by_personid_identityid(){
+			api.ajax({
+				url : BASE_URL_ACTION + '/ypt/space/lean_stat/get_stat_list_by_personid_identityid?person_id=' + student_id+ '&start_date=' + total_json.start_date+ '&end_date='+total_json.end_date+'&identity_id='+identity_id+'&random_num=' + creatRandomNum(),
+				method : 'get',
+				timeout : 30,
+				dataType : 'json',
+				headers : {
+		'Cookie' : 'person_id=' + student_id + '; identity_id=' + identity_id + '; token=' + token + ';'
+	}
+			}, function(ret, err) {
+				if (err) {
+					api.hideProgress();
+					popToast('获取日常统计失败，请稍候重试');
+				} else {
+					if(ret.success){
+						stuMonthStat = ret;
+						showLineChart('dx');
+					}else{
+						api.hideProgress();
+						popToast(ret.info);
+					}
+				}
+			});
+		}
+		
+   /*
+	*author:zhaoj
+	*function:显示日常统计图表
+	*date：20171016
+	*/
+	var showLineChart = function (type) {
+			changeActive(0,type);
+			showRctjChartTip(type);//显示提示语
+			if(type !='tb'){
+				commonAddOrRemoveHideCss('tb_body',0);
+				commonAddOrRemoveHideCss('dailyStatisticalEchart',1);
+				//不是题本
+	            var edata = {},
+	                legend = [],
+	                category = [],
+	                series = [];
+	            var my_info ='',class_info = '';
+	            if($api.getStorage("identity") == 6){
+		            switch (type){
+		                case 'dx':
+		                    my_info = "我的完成量";
+		                    class_info = "教师布置量";
+		                    break;
+		                case 'kj':
+		                    my_info = "我的完成量";
+		                    class_info = "教师布置量";
+		                    break;
+		                case 'zt':
+		                    my_info = "我的学习量";
+		                    class_info = "班级人均学习量";
+		                    break;
+		                case 'yx':
+		                    my_info = "我的学习量";
+		                    class_info = "班级人均学习量";
+		                    break;
+		                case 'zy':
+		                    if($api.attr($api.dom($api.byId('selectZyType'), '.active'), 'value')==1){
+		                        my_info = "我的完成量";
+		                        class_info = "教师布置量";
+		                    }else{
+		                        my_info = "我的正确率";
+		                        class_info = "班级平均正确率";
+		                    }
+		                    break;
+		            }
+		        }else if($api.getStorage("identity") == 7){
+		        	switch (type){
+		                case 'dx':
+		                    my_info = "孩子的完成量";
+		                    class_info = "教师布置量";
+		                    break;
+		                case 'kj':
+		                    my_info = "孩子的完成量";
+		                    class_info = "教师布置量";
+		                    break;
+		                case 'zt':
+		                    my_info = "孩子的学习量";
+		                    class_info = "班级人均学习量";
+		                    break;
+		                case 'yx':
+		                    my_info = "孩子的学习量";
+		                    class_info = "班级人均学习量";
+		                    break;
+		                case 'zy':
+		                    if($api.attr($api.dom($api.byId('selectZyType'), '.active'), 'value')==1){
+		                        my_info = "孩子的完成量";
+		                        class_info = "教师布置量";
+		                    }else{
+		                        my_info = "孩子的正确率";
+		                        class_info = "班级平均正确率";
+		                    }
+		                    break;
+		            }
+		        }
+	            var sery1 = {
+	                "name": my_info,
+	                "type": "line",
+	                "value": 0,
+	                "max": 0,
+	                "data": []
+	            },sery2 = {
+	                "name": class_info,
+	                "type": "line",
+	                "value": 0,
+	                "max": 0,
+	                "data": []
+	            };
+	            legend = [my_info,class_info];
+	            for(var i = 0; i < stuMonthStat.list.length;i++){
+	            	var n = stuMonthStat.list[i];
+	            	category.push(n.ym.toString().substr(0,4)+"-"+n.ym.toString().substr(4,2));
+	            	switch (type){
+	                    case 'dx':
+	                        sery1.data.push(n['lead_num']);
+	                        sery2.data.push(n['p_lead_num']);
+	                        break;
+	                    case 'kj':
+	                        sery1.data.push(n['resource_num']);
+	                        sery2.data.push(n['p_resource_num']);
+	                        break;
+	                    case 'zt':
+	                        sery1.data.push(n['topic_num']);
+	                        sery2.data.push(n['topic_average']);
+	                        break;
+	                    case 'yx':
+	                        sery1.data.push(n['game_num']);
+	                        sery2.data.push(n['game_average']);
+	                        break;
+	                    case 'zy':
+	                        if($api.attr($api.dom($api.byId('selectZyType'), '.active'), 'value')==1){
+	                            sery1.data.push(n['home_work_num']);
+	                            sery2.data.push(n['p_home_work_num']);
+	                        }else{
+	                            sery1.data.push(n['right_rate']);
+	                            sery2.data.push(n['class_right_rate']);
+	                        }
+	                        break;
+	                }
+	            }
+	            series.push(sery1);
+	            series.push(sery2);
+	
+	            edata.legend = legend;
+	            edata.category = category;
+	            edata.series = series;
+	            edata.legendXPosition = "right";
+	            edata.orient = "horizontal";
+	            edata.color = ["#5FC5FA","#FAB692"];
+	            edata.subTitle = "单位（个）";
+	            if(type=='zy'&&$api.attr($api.dom($api.byId('selectZyType'), '.active'), 'value')==2){
+	                edata.subTitle = "单位（%）";
+	            }
+	            showChart(edata, "bar", "dailyStatisticalEchart", "left", "10%");
+	        }else{
+	        	//题本
+	        	commonAddOrRemoveHideCss('dailyStatisticalEchart',0);
+	        	commonAddOnceHtml('tb_body','tb_script',stuMonthStat);
+	            commonAddOrRemoveHideCss('tb_body',1);
+	        }
+        };
+	
+		/*
+		 * 功能：切换模块
+		 * 作者：张自强
+		 * 时间：20171017
+		 */
+		function changeMK(e){
+			$api.css(e,'background:#3498db');
+		}
+		
+		/*
+		*author:zhaoj
+		*function:获取日常统计记录
+		*interface:张海
+		*date：20171016
+		*/
+		function get_stat_by_personid_identityid(){
+			api.ajax({
+				url : BASE_URL_ACTION + '/ypt/space/lean_stat/get_stat_by_personid_identityid?person_id=' + student_id+ '&start_date=' + total_json.start_date+ '&end_date='+total_json.end_date+'&identity_id='+identity_id+'&random_num=' + creatRandomNum(),
+				method : 'get',
+				timeout : 30,
+				dataType : 'json',
+				headers : {
+		'Cookie' : 'person_id=' + student_id + '; identity_id=' + identity_id + '; token=' + token + ';'
+	}
+			}, function(ret, err) {
+				if (err) {
+					api.hideProgress();
+					popToast('获取日常统计失败，请稍候重试');
+				} else {
+					if(ret.success){
+						rctj_data = ret;
+						showRctjCenterTip(ret);//日常统计显示中间提示语
+						dealRctjData(ret);//处理日常统计数据
+						api.hideProgress();
+						get_stat_list_by_personid_identityid();
+					}else{
+						api.hideProgress();
+						popToast(ret.info);
+					}
+				}
+			});
+		}
+		
+	   /*
+		*author:zhaoj
+		*function:日常统计显示中间提示语
+		*date：20171016
+		*/
+		function showRctjCenterTip(ret){
+			var passive_rate = (parseInt(ret.s_home_work_num)+parseInt(ret.s_lead_num)+parseInt(ret.s_resource_num))/(parseInt(ret.s_p_home_work_num)+parseInt(ret.s_p_lead_num)+parseInt(ret.p_resource_num));
+	        var initiative_rate = (parseInt(ret.s_topic_num)+parseInt(ret.s_game_num))-(parseInt(ret.topic_average)+parseInt(ret.game_average));
+	        var tiben_rate = parseInt(ret.s_q_error_num);
+	        var passive_tip;
+	        if(passive_rate < 0.8){
+	        	passive_tip = '老师布置的学习任务，没能按时完成，要注意啦！';
+	        }else{
+	        	passive_tip = '老师布置的导学、课件、检测，你都能按时完成！';
+	        }
+	        var initiative_tip;
+	        if(initiative_rate > 0){
+	        	initiative_tip = '你的学习兴趣浓厚，在课余时间能主动学习专题，练习闯关游戏！';
+	        }else{
+	        	initiative_tip = '提高学习兴趣是致胜的关键，可以多参与专题学习，练习闯关游戏！';
+	        }
+	        var tiben_tip;
+	        if(tiben_rate > 0){
+	        	tiben_tip = '记得加强错题巩固训练哦！';
+	        }else{
+	        	tiben_tip = '题本中没有错题，厉害了，我的同学！';
+	        }
+	        $api.text($api.byId('j_passive'), passive_tip);
+	        $api.text($api.byId('j_initiative'), initiative_tip);
+	        $api.text($api.byId('j_tiben'), tiben_tip);
+		}
+		
+	   /*
+		*author:zhaoj
+		*function:处理日常统计数据
+		*date：20171016
+		*/
+		function dealRctjData(ret){
+			//检测
+			 $api.text($api.byId('j_home_work_rate'), round(ret.home_work_rate*100,0));
+			 $api.text($api.byId('j_s_home_work_num'), ret.s_home_work_num);
+			 $api.text($api.byId('j_s_p_home_work_num'), ret.s_p_home_work_num );
+			 //导学
+			 $api.text($api.byId('j_lead_rate'), round(ret.lead_rate*100,0));
+			 $api.text($api.byId('j_s_p_lead_num'), ret.s_p_lead_num);
+			 $api.text($api.byId('j_s_lead_num'), ret.s_lead_num );
+			 //课件
+			 $api.text($api.byId('j_resource_rate'),round(ret.resource_rate*100,0));
+			 $api.text($api.byId('j_s_resource_num'), ret.s_resource_num);
+			 $api.text($api.byId('j_p_resource_num'), ret.p_resource_num );
+			 //题本
+			 $api.text($api.byId('j_s_q_collect_num'), ret.s_q_collect_num);
+			 $api.text($api.byId('j_s_q_error_num'), ret.s_q_error_num);
+			 //专题
+			 $api.text($api.byId('j_topic_average'), ret.topic_average);
+			 $api.text($api.byId('j_s_topic_num'), ret.s_topic_num);
+			 //游戏
+			 $api.text($api.byId('j_game_average'), ret.game_average);
+			 $api.text($api.byId('j_s_game_num'), ret.s_game_num );
+		}
+		/*
+        *author:zhaoj
+        *function:保留小数
+        *date：20171115
+        */
+        function round(number,fractionDigits) {
+            return Math.round(number*Math.pow(10,fractionDigits))/Math.pow(10,fractionDigits)
+        };
+	   /*
+		*author:zhaoj
+		*function:班级统计显示中间提示语
+		*date：20171016
+		*/
+		function showClassTip(ret){
+	        var one_tip;
+	        if(ret.handup_num > 0){
+	        	one_tip = '你在课堂上能够踊跃发言，加油，看好你！';
+	        }else{
+	        	one_tip = '希望你在课堂上能放飞自我，大胆发言！';
+	        }
+	        var two_tip;
+	        if(ret.screenshared_num > 0 && ret.picshared_num > 0){
+	        	two_tip = '分享是最好的学习，为你点赞！';
+	        }else{
+	        	two_tip = '独乐乐不如众乐乐，快来分享你的精彩！';
+	        }
+	        var three_tip;
+	        if(ret.asked_num > 0 && ret.vote_num > 0){
+	        	three_tip = '你在课堂上积极参与提问和投票，加油，看好你！';
+	        }else if(ret.asked_num > 0 && ret.vote_num <= 0){
+	        	three_tip = '你在课堂上积极参与提问，非常棒，老师发起投票也别落下哦~';
+	        }else if(ret.asked_num<=0 && ret.vote_num > 0){
+	        	three_tip = '你在课堂上积极参与投票，非常棒，老师发起提问也要踊跃参加呀~';
+	        }else{
+	        	three_tip= '老师发起的投票和提问，要积极参加，别溜号哦~';
+	        }
+	        $api.text($api.byId('j_one'), one_tip);
+	        $api.text($api.byId('j_two'), two_tip);
+	        $api.text($api.byId('j_three'), three_tip);
+		}
+		
+	   /*
+		*author:zhaoj
+		*function:获取课堂记录数据
+		*interface:张海
+		*date：20171016
+		*/
+        function get_stu_total_stat(){
+        	api.ajax({
+				url : BASE_URL_ACTION + '/space/class_record/get_stu_total_stat?person_id=' +  student_id+ '&start_date=' + total_json.start_date+ '&end_date='+total_json.end_date+'&identity_id='+identity_id+'&random_num=' + creatRandomNum(),
+				method : 'get',
+				timeout : 30,
+				dataType : 'json',
+				headers : {
+		'Cookie' : 'person_id=' + student_id + '; identity_id=' + identity_id + '; token=' + token + ';'
+	}
+			}, function(ret, err) {
+				if (err) {
+					api.hideProgress();
+					popToast('获取课堂统计失败，请稍候重试');
+				} else {
+					if(ret.success){
+						class_data = ret;
+						showClassTip(ret);//日常统计显示中间提示语
+						dealClassData(ret);//处理日常统计数据
+					}else{
+						api.hideProgress();
+						popToast(ret.info);
+					}
+				}
+			});
+        }
+        
+       /*
+		*author:zhaoj
+		*function:处理班级统计数据
+		*date：20171016
+		*/
+		function dealClassData(ret){
+			//举手
+			 $api.text($api.byId('j_handup_num'), ret.handup_num);
+			 //提问
+			 $api.text($api.byId('j_asked_num'), ret.asked_num);
+			 //共享屏幕
+			 $api.text($api.byId('j_screenshared_num'), ret.screenshared_num );
+			 //投票
+			 $api.text($api.byId('j_vote_num'), ret.vote_num);
+			 //举分享图片
+			 $api.text($api.byId('j_picshared_num'), ret.picshared_num);
+			 $api.text($api.byId('j_picthumbup_num'), ret.picthumbup_num);
+			 $api.text($api.byId('j_picdownload_num'), ret.picdownload_num);
+		}
+		
+
+        var showChart = function(data, type,domain,titlePs,boundaryGap) {
+            var myChart = echarts.init(document.getElementById(domain));
+            var option = null;
+            /*定制化标题位置*/
+            if(typeof(titlePs) == "undefined" || titlePs=="" ){
+                data.position="center";
+            }else{
+                data.position=titlePs;
+            }
+            if(data.legendXPosition=="center" && data.orient==undefined){
+                data.orient="horizontal";//水平显示
+            }
+            if(boundaryGap!=undefined && boundaryGap!=null && boundaryGap!= "undefined"){
+                data.boundaryGap = boundaryGap;
+            }else{
+                data.boundaryGap = true;
+            }
+            /*图表类型选择*/
+            if(type == 'pie'){
+                option = setOptionPie(data);
+            }else if(type == 'bar'){
+                option = setOptionBar(data);
+            }
+            myChart.setOption(option);
+            myChart.hideLoading();
+            window.onresize = function () {
+                myChart.resize();
+            };
+        };
+        //封装饼状图参数
+        var setOptionPie = function(data){
+        	
+            var array = new Array();
+            for(var i=0; i<data.series.length; i++){
+                array.push({value:data.series[i].value,name:data.series[i].name});
+            }
+            var option = {
+                title : {
+                    text: data.title || '',
+                    subtext: data.subTitle || '',
+                    x:data.position
+                },
+                tooltip : {
+                    trigger: 'item',
+                    formatter: "{b} : <br/>{c} ({d}%)"
+                },
+                legend: {
+                    orient : data.orient || '',
+                    x : data.legendXPosition?data.legendXPosition:"center",
+                    y : data.legendYPosition?data.legendYPosition:"top",
+                    data:data.legend
+                },
+                toolbox: {
+                    show : false,
+                    feature : {
+                        mark : {show: false},
+                        dataView : {show: false, readOnly: false},
+                        restore : {show: true},
+                        saveAsImage : {show: true}
+                    }
+                },
+                calculable : true,
+                series : [
+                    {
+                        name:data.title,
+                        itemStyle:data.itemStyle,
+                        type:'pie',
+                        radius : '90px',
+                        center: ['50%', '42%'],
+                        data:array
+                    }
+                ],
+                color:data.color
+            };
+            return option;
+        };
+        
+       /*
+		*author:zhaoj
+		*function:显示日常统计图表
+		*date：20171016
+		*/
+		function changeActive(mode_type,type){
+			$api.removeCls($api.dom($api.byId('j_nav_'+mode_type), '.active'),'active');
+			$api.addCls($api.byId('j_'+type),'active');
+			if(mode_type == 0 && type=='zy'){
+				commonAddOrRemoveHideCss('selectZyType',1);
+			}else{
+				commonAddOrRemoveHideCss('selectZyType',0);
+			}
+		}
+		
+	   /*
+		*author:zhaoj
+		*function:显示图表的标题以及提示语
+		*date：20171016
+		*/
+		function showRctjChartTip(type){
+			var title = "";
+			var tip = "";
+			switch (type){
+	            case 'dx':
+	                title = "导学";
+	                if(rctj_data.lead_rate*1<0.8){
+	                	tip = "读书不趁早，后来徒悔懊！";
+	                }else{
+	                	tip = "一勤天下无难事，再接再厉！";
+	                }
+	                break;
+	            case 'kj':
+	                title = "课件";
+	                if(rctj_data.resource_rate*1<0.8){
+	                	tip = "读书不趁早，后来徒悔懊！";
+	                }else{
+	                	tip = "一勤天下无难事，再接再厉！";
+	                }
+	                break;
+	            case 'zt':
+	                 title = "专题";
+	                if(rctj_data.s_topic_num<= 0.8*rctj_data.topic_average){
+	                	tip = "行动是成功的阶梯，加把劲啊！";
+	                }else{
+	                	tip = "真人不露相，看好你哦！";
+	                }
+	                break;
+	            case 'yx':
+	                title = "游戏";
+	                if(rctj_data.s_game_num<= 0.8*rctj_data.game_average){
+	                	tip = "行动是成功的阶梯，加把劲啊！";
+	                }else{
+	                	tip = "真人不露相，看好你哦！";
+	                }
+	                break;
+	            case 'zy':
+	                title = "检测";
+	                if(rctj_data.resource_rate*1<0.8){
+	                	tip = "读书不趁早，后来徒悔懊！";
+	                }else{
+	                	tip = "一勤天下无难事，再接再厉！";
+	                }
+	                break;
+	           case 'tb':
+	                title = "题本";
+	                tip = '天才在于勤奋，知识在于积累！';
+	                break;
+	        }
+	        $api.html($api.byId('j_rctj_title'), title+'统计<div class="bg">&nbsp;</div>');
+	        $api.text($api.byId('j_rctj_tip'), tip);
+		}
+		
+		   /*
+		*author:zhaoj
+		*function:折现图
+		*date：20171016
+		*/
+        var setOptionBar = function(data){
+            var titles = data.title || '';
+            var max = 0;
+             for( var i=0;i<data.series.length;i++){
+                for(var j = 0; j < data.series[i].data.length; j++){
+                    if(data.series[i].data[j]*1 > max*1){
+                        max=data.series[i].data[j];
+                    }
+                }
+            }
+            max = max > 5?max:5;
+            var option = {
+                title : {
+                    text: titles,
+                    subtext: data.subTitle || '',
+                    x:data.position
+                },
+                tooltip : {
+                    trigger: 'axis',
+                    axisPointer : {            // 坐标轴指示器，坐标轴触发有效
+                        type : 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+                    }
+                },
+                toolbox: {
+                    show : false,
+                    orient: 'vertical',
+                    x: 'right',
+                    y: 'center',
+                    feature : {
+                        mark : {show: true},
+                        dataView : {show: false, readOnly: false},
+                        magicType : {show: true, type: ['line', 'bar']},
+                        restore : {show: true},
+                        saveAsImage : {show: true}
+                    }
+                },
+                legend: {
+                    orient : data.orient || '',
+                    x : data.legendXPosition,
+                    data:data.legend
+                },
+                calculable : true,
+                xAxis : [
+                    {
+                        type : 'category',
+                        data :data.category,
+                        boundaryGap:data.boundaryGap,
+                        axisLabel : {
+                            interval:0 ,
+                            rotate: 60
+                        }
+                    }
+                ],
+                grid: {
+                    left: '3%',
+                    right: '4%',
+                    bottom: '11%',
+                    containLabel: true
+                },
+                yAxis : [
+                    {
+                        minInterval: 1,
+                        type : 'value',
+                        min:0,
+                        max:max
+                    }
+                ],
+                color:data.color,
+                series:function(){
+                    var serie=[];
+                    for( var i=0;i<data.series.length;i++){
+                        var item={
+                            name:data.series[i].name,
+                            type:data.series[i].type,
+                            barCategoryGap:data.series[i].barCategoryGap,
+                            itemStyle:data.series[i].itemStyle,
+                            smooth:data.series[i].smooth,
+                            data:data.series[i].data
+                        };
+                        serie.push(item);
+                    }
+                    return serie;
+                }()
+            };
+            return option;
+        };
+        
+		/*
+		*author:zhaoj
+		*function:获取班级统计图表记录
+		*interface:张海
+		*date：20171016
+		*/
+		function get_stu_month_stat(){
+			api.ajax({
+				url : BASE_URL_ACTION + '/space/class_record/get_stu_month_stat?person_id=' +  student_id+ '&start_date=' + total_json.start_date+ '&end_date='+total_json.end_date+'&identity_id='+identity_id+'&random_num=' + creatRandomNum(),
+				method : 'get',
+				timeout : 30,
+				dataType : 'json',
+				headers : {
+		'Cookie' : 'person_id=' + student_id + '; identity_id=' + identity_id + '; token=' + token + ';'
+	}
+			}, function(ret, err) {
+				if (err) {
+					api.hideProgress();
+					popToast('获取班级统计失败，请稍候重试');
+				} else {
+					if(ret.success){
+						class_stat = ret;
+						showClassChart(0,'handup');
+					}else{
+						api.hideProgress();
+						popToast(ret.info);
+					}
+				}
+			});
+		}
+		
+		 /*
+		*author:zhaoj
+		*function:展示班级统计图表记录
+		*date：20171016
+		*/
+        function showClassChart(index,value){
+        	index_now = index;
+        	index_value = value;
+        	changeActive(1,value);
+        	showClassChartTip(value);//显示提示语
+        	showPieChart(index,value);
+			showBarChart(index,value);
+        }
+        
+        	var showPieChart = function (index,value) {
+            var edata = {},
+                legend = [],
+                category = [],
+                series = [];
+            var my_total = 0;class_total=0;
+            for(var i = 0; i < class_stat.list.length;i++){
+             	var n = class_stat.list[i];
+                my_total = my_total+parseInt(n[value+'_num']);
+                class_total = class_total+parseInt(n['c_'+value+'_num']);
+            }
+            var my_info='',class_info='';
+            if($api.getStorage("identity") == 6){
+	            switch (index){
+	                case 0:
+	                    my_info="我的举手次数";
+	                    class_info="其他同学的举手次数";
+	                    break;
+	                case 1:
+	                    my_info="我的共享次数";
+	                    class_info="其他同学的共享次数";
+	                    break;
+	                case 2:
+	                    my_info="我被分享图片数";
+	                    class_info="其他同学被分享图片数";
+	                    break;
+	                case 3:
+	                    my_info="我参与投票次数";
+	                    class_info="其他同学参与投票次数";
+	                    break;
+	                case 4:
+	                    my_info="我参与提问次数";
+	                    class_info="其他同学参与提问次数";
+	                    break;
+	            }
+	         }else if($api.getStorage("identity") == 7){
+	        	 switch (index){
+	                case 0:
+	                    my_info="孩子的举手次数";
+	                    class_info="其他同学的举手次数";
+	                    break;
+	                case 1:
+	                    my_info="孩子的共享次数";
+	                    class_info="其他同学的共享次数";
+	                    break;
+	                case 2:
+	                    my_info="孩子被分享图片数";
+	                    class_info="其他同学被分享图片数";
+	                    break;
+	                case 3:
+	                    my_info="孩子参与投票次数";
+	                    class_info="其他同学参与投票次数";
+	                    break;
+	                case 4:
+	                    my_info="孩子参与提问次数";
+	                    class_info="其他同学参与提问次数";
+	                    break;
+	            }
+	        }
+            legend=[my_info,class_info];
+            series=[{name:my_info,value:my_total},{name:class_info,value:class_total-my_total>0?class_total-my_total:0}];
+            
+            edata.itemStyle = {
+                normal : {
+                    borderColor:'#C57836',
+                    borderWidth:1,
+                    label: {
+                        show: true,
+                        position: 'outer',
+                        formatter:  "{d}%"
+                    },
+                    labelLine: {
+                        show: true,
+                        length: 2,
+                        lineStyle: {
+                            width: 1,
+                            type: 'solid'
+                        }
+                    }
+                }
+            };
+            edata.legend = legend;
+            edata.category = category;
+            edata.series = series;
+            edata.legendXPosition = "center";
+            edata.legendYPosition = "bottom";
+            edata.color = ["#F7B38F","#D9833C"];
+            showChart(edata, "pie", "classStatisticalPieEchart", "left", "10%");
+        };
+        
+       /*
+		*author:zhaoj
+		*function:检测导航切换
+		*date：20171016
+		*/
+		function changeZyNav(type){
+			$api.removeCls($api.dom($api.byId('selectZyType'), '.active'),'active');
+			$api.addCls($api.byId('j_zy_'+type),'active');
+			showLineChart('zy');
+		}
+		
+		/*
+		 * 切换饼状图和树状图
+		 * 作者:张自强
+		 * 时间：20171018
+		 */
+		function hideTu(type){
+			if(type == 1){
+				$api.addCls($api.byId('bing'), 'select-tu');
+				$api.removeCls($api.byId('shu'), 'select-tu');
+				$api.removeCls($api.byId('classStatisticalPieEchart'), 'aui-hide');
+				$api.addCls($api.byId('classStatisticalColumnEchart'), 'aui-hide');
+				showPieChart(index_now,index_value);
+			}else{
+				$api.addCls($api.byId('classStatisticalPieEchart'), 'aui-hide');
+				$api.removeCls($api.byId('classStatisticalColumnEchart'), 'aui-hide');
+				$api.addCls($api.byId('shu'), 'select-tu');
+				$api.removeCls($api.byId('bing'), 'select-tu');
+				showBarChart(index_now,index_value);
+			}	
+		}
+		
+		/*
+		*author:zhaoj
+		*function:显示班级图表的标题以及提示语
+		*date：20171016
+		*/
+		function showClassChartTip(type){
+			var title = "";
+			var tip = "";
+			if(class_stat.list){
+			     class_stat.handup_num = 0;
+			     class_stat.asked_num = 0;
+			     for(var i=0;i<class_stat.list.length;i++){
+                    class_stat.handup_num += class_stat.list[i].handup_num*1;
+                    class_stat.asked_num += class_stat.list[i].asked_num*1;
+                }    
+			}
+			switch (type){
+	            case 'handup':
+	                title = "课堂举手";
+	                if(class_stat.handup_num*1 > 0){
+	                	tip = "知无不言，言无不尽，赞！";
+	                }else{
+	                	tip = "眼要准手要快，别溜号哦";
+	                }
+	                break;
+	            case 'asked':
+	                title = "提问";
+	               if(class_stat.asked_num*1 > 0){
+	                	tip = "知无不言，言无不尽，赞！";
+	                }else{
+	                	tip = "眼要准手要快，别溜号哦！";
+	                }
+	                break;
+	            case 'screenshared':
+	                title = "共享屏幕";
+	                tip = "优秀的东西总能被人发现！";
+	                break;
+	            case 'vote':
+	                title = "参与投票";
+	                tip = "你的一票，至关重要！";
+	                break;
+	            case 'picshared':
+	                 title = "分享图片";
+	                tip = "勇于展示才能不断进步！";
+	                break;
+	        }
+	        $api.html($api.byId('j_class_title'), title+'统计<div class="bg">&nbsp;</div>');
+	        if(type == 'handup'){
+	        	tip += '<span>&nbsp;</span>';   
+	        }
+	        $api.html($api.byId('j_class_tip'), tip);
+		}
+		
+		 var showBarChart = function (index,value) {
+            var my_info ='',class_info = '',pic_three='';
+             if($api.getStorage("identity") == 6){
+	            switch (index){
+	                case 0:
+	                    my_info = "我的举手次数";
+	                    class_info = "班级举手总次数";
+	                    break;
+	                case 1:
+	                    my_info = "我的共享次数";
+	                    class_info = "班级共享总次数";
+	                    break;
+	                case 2:
+	                    my_info = "我被分享的图片数";
+	                    class_info = "被点赞次数";
+	                    pic_three = "被下载次数";
+	                    break;
+	                case 3:
+	                    my_info = "我参与投票次数";
+	                    class_info = "班级参与投票总次数";
+	                    break;
+	                case 4:
+	                    my_info = "我参与提问次数";
+	                    class_info = "班级参与提问总次数";
+	                    break;
+	            }
+	         }else if($api.getStorage("identity") == 7){
+	        	switch (index){
+	                case 0:
+	                    my_info = "孩子的举手次数";
+	                    class_info = "班级举手总次数";
+	                    break;
+	                case 1:
+	                    my_info = "孩子的共享次数";
+	                    class_info = "班级共享总次数";
+	                    break;
+	                case 2:
+	                    my_info = "孩子被分享的图片数";
+	                    class_info = "被点赞次数";
+	                    pic_three = "被下载次数";
+	                    break;
+	                case 3:
+	                    my_info = "孩子参与投票次数";
+	                    class_info = "班级参与投票总次数";
+	                    break;
+	                case 4:
+	                    my_info = "孩子参与提问次数";
+	                    class_info = "班级参与提问总次数";
+	                    break;
+	            }
+	        }
+            var edata = {},
+                legend = [my_info,class_info],
+                category = [],
+                series = [];
+            var sery1 = {
+                "name": my_info,
+                "type": "bar",
+                "value": 0,
+                "max": 0,
+                "data": []
+            },sery2 = {
+                "name": class_info,
+                "type": "bar",
+                "value": 0,
+                "max": 0,
+                "data": []
+            },sery3 = {
+                "name": pic_three,
+                "type": "bar",
+                "value": 0,
+                "max": 0,
+                "data": []
+            };
+            if(index==2){
+                legend.push(pic_three);
+            }
+            for(var i = 0; i < class_stat.list.length;i++){
+            	var n = class_stat.list[i];
+                category.push(n.ym.toString().substr(0,4)+"-"+n.ym.toString().substr(4,2));
+                var itemStyle = {
+                    normal: {
+                        barBorderRadius: 0,           // 柱条边线圆角，单位px，默认为0
+                        barBorderWidth: 1,            // 柱条边线线宽，单位px，默认为1
+                        label: {
+                            show: true,
+                            position: "top"
+                        }
+                    }
+                };
+                if(index!=2){
+                    sery1.data.push(n[value+'_num']);
+                    sery1.itemStyle = itemStyle;
+                    sery2.data.push(n['c_'+value+'_num']);
+                    sery2.itemStyle = itemStyle;
+                }else{
+                    sery1.data.push(n[value+'_num']);
+                    sery1.itemStyle = itemStyle;
+                    sery2.data.push(n['picthumbup_num']);
+                    sery2.itemStyle = itemStyle;
+                    sery3.data.push(n['picdownload_num']);
+                    sery3.itemStyle = itemStyle;
+                }
+
+            }
+            series.push(sery1);
+            series.push(sery2);
+            if(index==2){
+                series.push(sery3);
+            }
+             edata.subTitle = "单位（次）";
+            edata.legend = legend;
+            edata.category = category;
+            edata.series = series;
+            edata.legendXPosition = "right";
+            edata.orient = "horizontal";
+            edata.color = ["#FBD5C2","#f76735","#DBA273"];
+            showChart(edata, "bar", "classStatisticalColumnEchart", "left", "10%");
+        };
+</script>
+</html>

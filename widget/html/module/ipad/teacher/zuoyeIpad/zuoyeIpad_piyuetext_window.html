@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<!-- html5：在创建html时为了防止页面缩放等不兼容效果，要创建个viewport  -->
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<!-- 在IOS设备上，有时会将数字转为手机号，这里也要禁止下 -->
+		<meta name="format-detection" content="telephone=no"/>
+		<title>检测审批详情页面</title>
+		<link rel="stylesheet" type="text/css" href="../../../../../css/aui/aui.css" />
+		<link rel="stylesheet" type="text/css" href="../../../../../css/module/common/list_frame.css" />
+		<link rel="stylesheet" type="text/css" href="../../../../../css/module/common/jyeoo/ques_data.css" />
+		<link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+		<style>
+			.history-date {
+				font-size: 12px;
+			}
+			#message-content {
+				overflow-y: auto;
+				display: none;
+			}
+			.t_display_n {
+				display: none;
+			}
+			.t_display_b {
+				display: block;
+			}   
+			body {
+				margin: 0;
+				background: rgba(0,0,0,0);
+			}
+			.clearfix:after {
+				content: ' ';
+				display: block;
+				clear: both;
+				visibility: hidden;
+				line-height: 0;
+				height: 0;
+			}
+			.title {
+				width: 18%;
+				float: left;
+			}
+			.left-div {
+				width: 32%;
+				float: left;
+				text-align: center;
+				margin-top: 8px;
+			}
+			.count {
+				height: 80px;
+				background: #ffffff;
+				margin-bottom: 3px;
+				border-bottom: 10px solid #EFEFEF;
+				border-top: 1px solid #EFEFEF;
+			}
+			.line_top {
+				border-right: 1px solid #c8c7cc;
+				float: left;
+				width: 1%;
+				height: 35px;
+				margin-top: 12px;
+			}
+			.djbjys {
+				background: #DEDEDE;
+			}
+			.middle-div-piyue {
+				width: 33%;
+				float: left;
+				text-align: center;
+				margin-top: 8px;
+			}
+			.right-div {
+				width: 33%;
+				float: right;
+				text-align: center;
+				margin-top: 8px;
+			}
+			.left-div span, .left-div div, .middle-div-piyue span, .middle-div-piyue div, .right-div span, .right-div div {
+				font-size: 14px;
+				color: #555555;
+			}
+			.left-div font {
+				font-size: 16px;
+				color: #A020F0;
+			}
+			.middle-div-piyue font {
+				font-size: 16px;
+			}
+			.right-div font {
+				font-size: 16px;
+				color: #FF9900;
+			}
+			.aui-icon-unfold:before {
+				content: "\e654";
+			} 
+			.detail{display:inline-block;width:24px;height:100%;background: url(../../../../../image/fun-module/iphone/zuoye/shuoming2.png) center center no-repeat;background-size: 24px 24px;margin-top:7px}
+		</style>
+	</head>
+	<body class="common-iphone-zuoye-tea">
+		<div id="wrap">
+			<header class="aui-bar aui-bar-nav aui-bar-primary" id="aui-header">
+				<div id="cloud" class="topbar activebar">
+					<div id="back" class="back" onclick="back();" tapmode="">
+						<i class="aui-iconfont aui-icon-left"></i>返回
+					</div>
+					<div  class="mTitle" id="mTitle">
+						检测详情
+					</div>
+					<div class="win-menu">
+						<a id='menu' class="detail" onclick="openMenuFrame()"></a>
+					</div>
+				</div>
+			</header>
+			<div id="q_title" style="margin-top:0;">
+                <div class="q_div" id="q_div" style="position:relative">
+                    <div class="count">
+                        <div class = "left-div" tapmode = "djbjys" onclick = "sortMethod(1)">
+                            <font id = "noSubmitId">0</font><span>人</span>
+                            <span>
+                                <i id="yp_up" class="aui-iconfont aui-icon-unfold" style="position:absolute;top:35%;right:71%;"></i>
+                            </span>
+                            <div >
+                                已批阅
+                            </div>
+                            
+                        </div>
+                        <div class = "line_top"></div>
+                        <div class = "middle-div-piyue" tapmode = "djbjys" onclick = "sortMethod(2)">
+                            <font id = "sumOnTimeId">0</font><span>人</span>
+                            <span>
+                                <i id="wp_up" class="aui-iconfont aui-icon-unfold" style="position:absolute;top:35%;right:38%"></i>
+                            </span>
+                            <div >
+                                未批阅
+                            </div>
+                        </div>
+                        <div class = "line_top"></div>
+                        <div class = "right-div" tapmode = "djbjys">
+                            <font id = "sumDelayTimeId">0</font><span>人</span>
+                           <!-- <span>
+                                <i id="wj_up" class="aui-iconfont aui-icon-unfold" style="position:absolute;top:35%;right:4%"></i>
+                            </span>-->
+                            <div>
+                                未提交
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+			<div  class="aui-content aui-content-padded" id="message-content">
+				<p class="aui-text-center history-date"></p>
+			</div>
+		</div>
+	</body>
+	<script type="text/javascript" src="../../../../../script/api.js"></script>
+	<script type="text/javascript" src="../../../../../script/plug-in/base64.js" ></script>
+	<script type="text/javascript" src="../../../../../script/base_config.js" ></script>
+	<script type="text/javascript" src="../../../../../script/plug-in/template.js" ></script>
+	<script type="text/javascript" src="../../../../../script/common/common.js" ></script>
+	<script type="text/javascript">
+		var header_h;//定位header位置，留出上面电池等空隙，苹果需要
+		var back_type = 'index';//返回参数
+		var zy_name;//检测的名称 
+		var win_height;//手机屏幕高度
+		var old_type=1;//记录上次打开页面
+		var BASE_URL_ACTION = '';
+		var is_convert = 2;
+		var piyue_type = 1;//1.未批阅学生第一次批阅，2，重复批阅
+		apiready = function() {commonSetTheme({"level":5,"type":0});
+			BASE_URL_ACTION = $api.getStorage('BASE_URL_ACTION');
+			header_h = api.pageParam.header_h;
+			zy_name=Base64.decode(api.pageParam.zy_name_base64);
+			is_convert = api.pageParam.is_convert;
+			win_height=api.winHeight;
+			resetName(zy_name);
+			//安卓关闭
+			openPiyueTextFrame();
+			commonBackForAndroid();
+			//定位header位置，留出上面电池等空隙，苹果需要
+			commonIosAuiHeader();
+		};
+
+		/*
+		 * 功能：打开题干显示页面
+		 * 作者：张自强
+		 * 时间：20170823
+		 * 
+		 */
+		function openMenuFrame(){
+		    reBackType('menu');
+			var pageParamJson = {
+			     'is_convert' : is_convert,
+			     'header_h' : header_h,
+			     'zy_id' : api.pageParam.zy_id,
+                 'zy_name_base64' : api.pageParam.zy_name_base64,
+                 'head_img':'',
+                 'student_name':'',
+                 'student_id': ''
+			};
+			commonOpenWin('zuoyeIpad_st_window', 'zuoyeIpad_st_window.html', false, false,pageParamJson);
+		}
+		
+		/*
+         * 功能：切换列表
+         * 作者：张自强
+         * 时间：20170831
+         */
+        function sortMethod(type){
+            api.execScript({
+                frameName : 'zuoyeIpad_piyuetext_frame',
+                script: 'sortMethod('+type+');'
+            });
+        }
+		
+		/*
+		 * 功能：重命名标题
+		 * 作者：张自强
+		 * 时间：20170823
+		 */
+		function resetName(name){
+			$api.text($api.byId('mTitle'), name);
+		}
+		
+		/*
+		 * 功能：返回页面
+		 * 作者：张自强
+		 * 时间：20170823
+		 */
+		function back() {
+			switch(back_type) {
+				case 'index':
+					api.closeWin();
+					resetName(zy_name);
+					break;
+				case 'menu':
+                    $api.css($api.byId('menu'),'display:block');
+                    resetName(zy_name);
+					reBackType('index');
+					break;
+				case 'tj':
+					api.execScript({
+	                    frameName : 'zuoyeIpad_piyuetext_frame',
+	                    script: 'changeTjFrame('+false+');'
+                    });
+                    api.execScript({
+	                    frameName : 'zuoyeIpad_piyuetext_frame',
+	                    script: 'openDownIcon(4);'
+                    });
+					api.closeFrame({
+						name : 'zuoyeIpad_tjtjtext_frame'
+					});
+					resetName(zy_name);
+					reBackType('index');
+					break;
+				case 'changeTi':
+					api.closeFrame({
+                    	name :'zuoyeIpad_changeTi_frame'
+                    });
+					$api.css($api.byId('menu'),'display:block');
+					reBackType('index');
+					break;
+				case 'voice' : 
+					commonCloseFrame('common_playaudio_frame');
+					reBackType('index');
+					break;
+				case 'txt' :
+					showMenu();
+					api.execScript({
+					    frameName:'zuoyeIpad_piyue_frame',
+					    script: 'common_openDocument.closeTxt()'
+					});
+					reBackType('index');
+					break;
+				case 'txt_tj' :
+					showMenu();
+					reBackType('index');
+					api.execScript({
+	                    frameName : 'zuoyeIpad_tjtj_frame',
+	                    script: 'back();'
+                    });
+					break;
+				case 'picture':
+				    commonExecScript('zuoyeIpad_piyuetext_window','zuoyeIpad_piyuetext_frame','closeImage();',1);
+				    reBackType('index');
+				    break;
+				
+			}
+		}
+		
+	/*
+     * 功能：打开下角标
+     * 作者：张自强
+     * 时间：20170823
+     */
+    function openDownIcon(type){
+        if(type == 1){
+            $api.removeCls($api.byId('yp_up'), 'aui-icon-unfold');
+            $api.removeCls($api.byId('wp_up'), 'aui-icon-fold');
+            $api.removeCls($api.byId('wj_up'), 'aui-icon-fold');
+            $api.addCls($api.byId('yp_up'), 'aui-icon-fold');
+            $api.addCls($api.byId('wp_up'), 'aui-icon-unfold');
+            $api.addCls($api.byId('wj_up'), 'aui-icon-unfold');
+        }else if(type == 2){
+            $api.removeCls($api.byId('yp_up'), 'aui-icon-fold');
+            $api.removeCls($api.byId('wp_up'), 'aui-icon-unfold');
+            $api.removeCls($api.byId('wj_up'), 'aui-icon-fold');
+            $api.addCls($api.byId('yp_up'), 'aui-icon-unfold');
+            $api.addCls($api.byId('wp_up'), 'aui-icon-fold');
+            $api.addCls($api.byId('wj_up'), 'aui-icon-unfold');
+        }else if(type == 3){
+            $api.removeCls($api.byId('yp_up'), 'aui-icon-fold');
+            $api.removeCls($api.byId('wp_up'), 'aui-icon-fold');
+            $api.removeCls($api.byId('wj_up'), 'aui-icon-unfold');
+            $api.addCls($api.byId('yp_up'), 'aui-icon-unfold');
+            $api.addCls($api.byId('wp_up'), 'aui-icon-unfold');
+            $api.addCls($api.byId('wj_up'), 'aui-icon-fold');
+        }else{
+            $api.removeCls($api.byId('yp_up'), 'aui-icon-fold');
+            $api.removeCls($api.byId('wp_up'), 'aui-icon-fold');
+            $api.removeCls($api.byId('wj_up'), 'aui-icon-fold');
+            $api.addCls($api.byId('yp_up'), 'aui-icon-unfold');
+            $api.addCls($api.byId('wp_up'), 'aui-icon-unfold');
+            $api.addCls($api.byId('wj_up'), 'aui-icon-unfold');
+        }
+    }
+
+
+		/*
+		 * 功能：重置从哪个页面退出
+		 * 作者：张自强
+		 * 时间：20170822
+		 */
+		function reBackType(type) {
+			switch(type) {
+				//如果首页退出
+				case 'index':
+					back_type = 'index';
+					$api.css($api.byId('menu'),'display:block');
+					break;
+				//如果微课内容页面退出
+				case 'menu':
+					back_type = 'menu';
+					$api.css($api.byId('menu'),'display:none');
+					resetName('');
+					break;
+				case 'tj':
+					back_type = 'tj';
+					$api.css($api.byId('menu'),'display:none');
+					break;
+				case 'changeTi':
+					back_type  = 'changeTi';
+					$api.css($api.byId('menu'),'display:none');
+					break;
+				case 'voice' : 
+				   	back_type  = 'voice';
+					break;
+				case 'txt' : 
+					hideMenu();
+				   	back_type  = 'txt';
+					break;
+				case 'txt_tj' : 
+					hideMenu();
+				   	back_type  = 'txt_tj';
+					break;
+				case 'picture':
+				    back_type  = 'picture';
+                    break;
+			}
+		}
+    
+    /*
+     * 功能：显示menu
+     * 作者：张自强
+     * 时间：20170906
+     */
+    function showMenu(){
+    	$api.css($api.byId('menu'),'display:block');
+    }
+    
+    /*
+     * 功能：隐藏menu
+     * 作者：张自强
+     * 时间：20170906
+     */
+    function hideMenu(){
+    	$api.css($api.byId('menu'),'display:none');
+    }
+    
+    /*
+     * 功能：为上方列表赋值
+     * 作者：张自强
+     * 时间：20170831
+     */
+    function addValueList(sum_ypy,sum_wpy,wtj_num){
+        $api.text($api.byId('noSubmitId'),sum_ypy);
+        $api.text($api.byId('sumOnTimeId'),sum_wpy);
+//      $api.text($api.byId('sumDelayTimeId'),wtj_num);
+    }
+    
+    
+    /*
+     * 功能：打开批阅综合检测frame页面
+     * 作者：张自强
+     * 时间：20180605
+     */
+    function openPiyueTextFrame() {
+        var pageParamJson={
+                "header_h" : header_h,
+                "zy_id" : api.pageParam.zy_id,
+                "zy_name" : zy_name
+            };//打开frame页面json数据
+        commonOpenFrame("zuoyeIpad_piyuetext_frame","zuoyeIpad_piyuetext_frame.html",header_h+65,true,false,"#ffffff",pageParamJson);//打开分组管理的frame页面
+    }
+	</script>
+</html>

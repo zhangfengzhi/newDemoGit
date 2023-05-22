@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>title</title>
+    <link rel="stylesheet" type="text/css" href="../../css/aui/aui.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/module/ipad/popup-body.css"/>
+    <link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+    <style>
+    	.popup-body-new	.commont-content{
+    		width: 400px;
+    		height: 550px;
+    		margin-top: -275px;
+    		margin-left: -200px;
+    	}
+    </style>
+</head>
+<body class="popup-body-new common-ipad-quanziIpad-tea">
+		<div class="commont-content">
+			<div class="top fl">
+				<div class="name">用户信息完善</div>
+				<div class="close fr" onclick="back();"></div>
+			</div>
+			<div id="content" class="content">
+			
+			</div>
+		</div>
+	</body>
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript" src="../../script/common/common.js"></script>
+<script type="text/javascript" src="../../script/plug-in/base64.js" ></script>
+<script type="text/javascript">
+	//顶部header高度
+    var header_h;
+    var header;
+    var w_h;
+    apiready = function() {
+    	commonSetTheme({"level":2,"type":0});
+        //定位header位置，留出上面电池等空隙，苹果需要
+        backForAndroid();
+        openBgFrame();
+    };
+    
+    function openBgFrame(){
+    	var url = $api.getStorage('BASE_URL_ACTION') + "/html/base_new/register/improve_password_rrt2.html?email=&tel="+api.pageParam.tel
+    			  +"&par1="+api.pageParam.login_name+"&par2="+api.pageParam.login_pas+"&person_id="+api.pageParam.person_id
+    			  +"&identity_id="+api.pageParam.identity_id+"&width=400"+"&height=495"
+    			  +"&TB_iframe=true&type_num=4";
+		     console.log(url)
+		     var temp = $api.offset($api.byId("content"));
+    	commonOpenFrame('perfectUserInfo_frame',url,30,false,false,"rgba(0,0,0,0)",{header_h: 0,h: 752});
+    }
+    
+    /**
+     * 安卓点击返回的时候
+     * 周枫
+     * 2015.10.14
+     */
+    function backForAndroid() {
+        api.addEventListener({
+            name : "keyback"
+        }, function(ret, err) {
+            back();
+        });
+    }
+    
+	function back(){
+		api.closeFrame({
+	        name: 'perfectUserInfo_frame'
+        });
+		api.closeFrame();
+		$api.setStorage("isShowPerfectUserInfo",0);
+	}
+	
+	function returnLoginPage(login_name,login_pas){
+		api.execScript({
+        	name:"login",
+            script: 'doLoginNew("'+login_name+'","'+login_pas+'")'
+        });
+	}
+</script>
+</html>

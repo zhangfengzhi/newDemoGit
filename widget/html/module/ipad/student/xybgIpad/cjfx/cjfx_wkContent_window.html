@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<!-- html5：在创建html时为了防止页面缩放等不兼容效果，要创建个viewport  -->
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<!-- 在IOS设备上，有时会将数字转为手机号，这里也要禁止下 -->
+		<meta name="format-detection" content="telephone=no"/>
+		<title>学习微课详情页面</title>
+		<link rel="stylesheet" type="text/css" href="../../../../../../css/aui/aui.css" />
+		<link rel="stylesheet" type="text/css" href="../../../../../../css/aui_css_new/aui.css" />
+		<link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+		<style>
+			.tag-title{height:45px; line-height:43px;background:#ffffff ;border-bottom:2px solid #E6E6E6;}
+			.tag-title div{width:33%;text-align:center;color:#62656A;}
+			.tag-title div:last-child{width:34%;text-align:center;color:#62656A;}
+			.fl{float:left;}
+			.fr{float:right;}
+		</style>
+	</head>
+	<body class="common-ipad-cjfx">
+		<div id="wrap">
+			<header class="aui-bar aui-bar-nav aui-bar-primary" id="aui-header">
+				<div id="cloud" class="topbar activebar">
+					<div id="back" class="back" onclick="back();" tapmode="">
+						<i class="aui-iconfont aui-icon-left"></i>返回
+					</div>
+					<div class="mTitle" id="mTitle">
+						视频详情
+					</div>
+					<div class="win-menu">
+					</div>
+				</div>
+			</header>
+			<div  class="aui-content aui-content-padded" id="message-content">
+				<p class="aui-text-center history-date"></p>
+			</div>
+		</div>
+	</body>
+	<script type="text/javascript" src="../../../../../../script/api.js"></script>
+	<script type="text/javascript" src="../../../../../../script/common/common.js"></script>
+	<script type="text/javascript" src="../../../../../../script/module/common/cjfxXs.js"></script>
+	<script type="text/javascript">
+		apiready = function() {
+			commonSetTheme({"level":6,"type":0});
+			var header_h = api.pageParam.header_h;
+			var pageParamJson={"header_h":header_h,'wkid':api.pageParam.wkid,'wk_id_int':api.pageParam.wk_id_int};//打开frame页面所需参数
+			commonOpenFrame('cjfx_wkContent_frame', 'cjfx_wkContent_frame.html',header_h, false, false,"#ffffff",pageParamJson,0);	//打开index页面
+			//reWindowName(api.pageParam.wk_name);
+			commonBackForAndroid();//安卓关闭
+			commonIosAuiHeader();//定位header位置，留出上面电池等空隙，苹果需要
+		};
+		/*
+		*author:zhaoj
+		*function:返回页面
+		*date：20170118
+		*/
+		function back() {
+			api.closeWin();
+		}
+		/**
+		 * 重置window标题
+		 * 周枫
+		 * 2015.12.17
+		 */
+		function reWindowName(win_name) {
+			$api.html($api.byId('mTitle'), win_name);
+		}
+	</script>
+</html>

@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<title>选择月份</title>
+		<link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+		<style>
+			body {
+				padding: 0;
+				margin: 0;
+				width: 100%;
+				height: 100%;
+			}
+			.shadow {
+				position: absolute;
+				left: 0;
+				top: 0;
+				bottom: 0;
+				width: 100%;
+				height: 100%;
+				z-index: 1;
+				background: rgba(0,0,0,0.5);
+			}
+			.title {
+				position: absolute;
+				top: 0;
+				background: #ffffff;
+				width: 100%;
+				height: 50px;
+				line-height: 50px;
+				font-size: 20px;
+				z-index: 9999;
+			}
+			.time-back {
+				width: 100%;
+				background: #fff;
+				height: 137px;
+				position: absolute;
+				z-index: 2;
+				top: 52px;
+			}
+			.btn {
+				position: absolute;
+				border-top: 1px solid #cccccc;
+				height: 50px;
+				background: #ffffff;
+				width: 100%;
+				bottom: 0;
+				z-index: 2;
+			}
+			.submit {
+				width: 100%;
+				text-align: center;
+				line-height: 50px;
+			}
+			.aui-content {
+				height: 240px;
+				position: relative;
+			}
+			.content {
+				position: absolute;
+				top: 50%;
+				width: 80%;
+				left: 10%;
+				margin-top: -120px;
+			}
+		</style>
+	</head>
+	<body class="common-iphone-rizhi">
+		<div id="j_shadow" class="shadow" tapmode onclick="api.closeFrame({name:'rizhi_select_month_frame'});"></div>
+		<div class="content">
+			<div class="aui-content">
+				<div id='title' class="title">
+					&nbsp;&nbsp;选择日期
+				</div>
+				<div id="time_back" class="time-back"></div>
+				<div id="btn" class="btn">
+					<div id="submit" class="submit" tapmode="" onclick="submit()">
+						确定
+					</div>
+				</div>
+			</div>
+		</div>
+	</body>
+	<script type="text/javascript" src="../../../../../script/api.js"></script>
+	<script type="text/javascript" src="../../../../../script/common/common.js"></script>
+	<script type="text/javascript" src="../../../../../script/assembly/log-current-time.js"></script>
+	<script type="text/javascript">
+		var flag = true;
+		var year;
+		var month;
+		var time;
+		var yearInit;
+		var monthInit;
+		var timeArray;
+		//显示时间的数组
+		var yearScope;
+		var nameWin;
+		var nameFrame;
+		var selectFlag = true;
+		apiready = function() {
+			commonSetTheme({"level":5,"type":0});
+			timeArray = [api.pageParam.year, api.pageParam.month];
+			nameWin = api.pageParam.nameWin;
+			nameFrame = api.pageParam.nameFrame;
+			type = api.pageParam.type;
+			getNowTime();
+			yearScope = "1999-" + yearInit;
+			//打开选择时间组件
+			openUICustomPicker();
+		};
+		/*
+		 *author:ws
+		 *function:设置时间
+		 *date：20170222
+		 */
+		function submit() {
+			if (selectFlag) {
+				api.execScript({
+					name : nameWin,
+					script : 'setTimeValue(' + year + ',' + month + ');'
+				});
+				var month_string = month > 9 ? month : '0'+month;
+				$api.setStorage("rizhi_month_time",year+'-'+month_string);
+				api.execScript({
+					name : nameWin,
+					frameName : nameFrame,
+					script : 'getLogData(2,"' + month + '","' + year + '");'
+				});
+				setTimeout(function() {
+					api.closeFrame({
+						name : 'rizhi_select_month_frame'
+					});
+				}, 100);
+			}
+		}
+	</script>
+</html>

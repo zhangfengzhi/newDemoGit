@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <title>检测</title>
+    <link rel="stylesheet" type="text/css" href="../../../../../css/aui/aui.css" />
+    <link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+    <style>
+    	body{margin:0;color:#999999;}
+    	.clearfix:after{content: ' ';display: block;clear: both;visibility: hidden;line-height: 0;height: 0;}
+    	.zuoye-name{line-height:16px;width:100%;}
+    	.title{width:60%;float:left;padding-left:10px;margin:5px 0;}
+    	.plrt15{padding:15px 0 15px 15px;}
+    	.plr15{padding:0 15px;}
+    	.detail-content{line-height:35px;margin:0 13px;word-wrap: break-word;word-break: normal;}
+    	.bb{border-bottom:1px solid #EEF0F2;margin:15px 15px 0px 15px;}
+    	.img{text-align:center;padding:35px 0 20px 0;}
+    	.img div{padding-top:15px;}
+    	.footer-div{
+			position:fixed;
+			height:55px;
+			background:#ffffff;
+			display: block;
+			bottom: 0px;
+			width:100%;
+			box-shadow:3px 0 4px #aaaaaa;
+		}
+		.kb{height:65px;}
+		.class-name i,.time i{color:#FFD34F;}
+		.end-time{border-bottom:1px dashed #cfcfcf;padding-bottom:5px;}
+		.end-time span{color:#FFD34F;}
+		.end-time:last-child{border-bottom:none;}
+		.footer-div{position:fixed;height:55px;background:#F6F6F6;display: block;bottom: 0px;width:100%;border-top:1px solid #E2E2E2;font-size:14px;}
+		.footer-div .wid{width:92%;line-height:36px;text-align:center;color:#ffffff;margin-top:9px;border-radius:2px;margin-left:4%;}
+    	#zy_res {
+			display: -webkit-box;
+			display: -webkit-flex;
+			display: flex;
+		    -webkit-flex-wrap: wrap;
+		    -webkit-align-items: center;
+		    padding: 0 2%;
+		}
+		#zy_res .res-div{
+			width: 100px;
+    		margin: 10px;
+		}
+		#zy_res img{
+			width: 100%
+		}
+		#zy_res .res-title{
+			text-align: center;
+		    text-overflow: ellipsis;
+		    white-space: nowrap;
+		    overflow: hidden;
+		    width: 100%
+		}
+    </style>
+</head>
+<body id="body" class="common-ipad-zuoyeIpad-tea">
+	<div class="zuoye-name plrt15 clearfix">
+		<div class="title">检测名称</div>
+	</div>
+	<div id="j_title" class="detail-content plr15">	
+	</div>
+	<div class="zuoye-name plrt15 clearfix">
+		<div class="title">详细说明</div>
+	</div>
+	<div id="zy_desc" class="detail-content plr15">	
+	</div>
+	<div id="each_look_title" class="zuoye-name plrt15 clearfix" style="display:none">
+		<div class="title">互相查看</div>
+	</div>
+	<div id="each_look" class="detail-content plr15" style="display:none">	
+	</div>
+	<div class="zuoye-name plrt15 clearfix">
+		<div class="title">检测资源</div>
+	</div>
+	<div id="zy_res" class="plr15">	
+	</div>
+	<script type="text/html" id="zy_res_script">
+		<%for (var i = 0; i < list.length; i++){%>
+			<div class="res-div">
+				<img src='<%=list[i].imgUrl%>' onclick="showRes('<%=list[i].param%>')"/>
+				<div class="res-title"><%=list[i].res_title%></div>
+			</div>
+		<%}%>
+	</script>
+	<div id="zy_detail_title" class="zuoye-name plrt15 clearfix" style="display:none">
+		<div class="title">发布详情</div>
+	</div>
+	<div id="zy_detail" class="detail-content plr15" style="display:none">	
+	</div>
+	<script type="text/html" id="zy_detail_script">
+		<% if(list.length == 0){ %>
+			<div>暂无发布详情</div>
+		<% }else{ %>
+			<%for(var i=0; i<list.length; i++) {%>
+				<div class="class-name">
+					<i class="aui-iconfont aui-icon-friends"></i>
+					<%=list[i].publish_object%>
+				</div>
+				<div class="time">
+					<i class="aui-iconfont aui-icon-history"></i>
+					<%=list[i].publish_time%>
+				</div>
+				<div class="end-time">
+					<span>至</span>
+					<%=list[i].end_time%>
+				</div>
+			<%}%>
+		<%}%>
+	</script>
+	<div class="kb">
+		&nbsp;
+	</div>
+	<div class="footer-div">
+		<div class="wid" onclick="openWriteWin(1,1);">查看内容</div>
+	</div>
+</body>
+<script type="text/javascript" src="../../../../../script/api.js"></script>
+<script type="text/javascript" src="../../../../../script/common/common.js" ></script>
+<script type="text/javascript" src="../../../../../script/base_config.js" ></script>
+<script type="text/javascript" src="../../../../../script/plug-in/base64.js" ></script>
+<script type="text/javascript" src="../../../../../script/plug-in/template.js" ></script>
+<script type="text/javascript" src="../../../../../script/common/jszy_jy_common.js" ></script>
+<script type="text/javascript" src="../../../../../script/plug-in/template.js" ></script>
+<script type="text/javascript">
+	var header_h;
+	var BASE_URL_ACTION;
+	var zy_id;//检测id
+	var student_id='';
+	apiready = function(){
+		commonSetTheme({"level":5,"type":0});	
+		header_h = api.pageParam.header_h;
+		zy_id = api.pageParam.zy_id;
+		BASE_URL_ACTION = $api.getStorage('BASE_URL_ACTION');
+		$api.text($api.byId('j_title'),Base64.decode(api.pageParam.zy_name_base64));
+		getZyPublishInfo(function(flag){
+			getZyInfoById();
+		});
+	};
+	/*
+	*author:zhaoj
+	*function:获取发布详情
+	*date：20160523
+	*/
+	function getZyPublishInfo(callback){
+		showSelfProgress('加载中...');
+		api.ajax({
+			url : BASE_URL_ACTION + '/xx/getZyPublishInfo',
+			method : 'post',
+			timeout : 30,
+			dataType : 'json',
+			data : {
+				values : {
+					"random_num" : creatRandomNum(),
+				    "zy_id" : zy_id
+				}
+			},
+			headers : {
+	'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+}
+		}, function(ret, err) {
+			if (err) {
+				api.hideProgress();
+				popToast('获取发布详情失败');
+			} else {
+				if(ret.success){
+					var html_type = template.render('zy_detail_script', ret);
+					document.getElementById('zy_detail').innerHTML = html_type;
+					callback(true);
+				}else{
+					api.hideProgress();
+					popToast('获取发布详情失败');
+				}
+			}
+		});
+	}
+	/*
+	*author:zhaoj
+	*function:获取检测
+	*date：20160921
+	*/
+	function getZyInfoById(){
+		api.ajax({
+			url :BASE_URL_ACTION + '/xx/getZyInfoById',
+			method : 'post',
+			timeout : 30,
+			dataType : 'json',
+			data : {
+				values : {
+					"random_num" : creatRandomNum(),
+					"zy_id" : zy_id,
+					"zy_type" :1,
+					"person_id":$api.getStorage("person_id"),
+					"identity_id":$api.getStorage("identity")
+				}
+			},
+			headers : {
+	'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+}
+		}, function(ret, err) {
+			api.hideProgress();
+			if (err) {
+				$api.text($api.byId('zy_desc'),'老师对检测没有说明');
+			} else {
+				if(ret.success){
+					if(ret.zy_info.zy_desc){
+						$api.html($api.byId('zy_desc'),ret.zy_info.zy_desc);
+					}else{
+						$api.text($api.byId('zy_desc'),'老师对检测没有说明');
+					}
+					if(ret.zy_info.is_public){
+						$api.text($api.byId('each_look'),'是');
+					}else{
+						$api.text($api.byId('each_look'),'否');
+					}
+					if(api.pageParam.isXiafa){
+						$api.css($api.byId('zy_detail_title'),'display:block');
+						$api.css($api.byId('zy_detail'),'display:block');
+					}
+					var tempAry = ret.zy_info.ress;
+        		if (tempAry && tempAry.length > 0){
+        			var resourceAry = [];
+        			for (var i = 0;  i< tempAry.length; i++){
+        				var param = {
+        					thumb_id: tempAry[i].thumb_id,
+        					res_type: tempAry[i].resource_format,
+        					res_path: tempAry[i].file_id,
+        					res_title: tempAry[i].resource_title,
+        					m3u8_status: tempAry[i].m3u8_status,
+        					res_id: tempAry[i].resource_id_int,
+        					
+        				}
+        				resourceAry.push({
+        					imgUrl: $api.getStorage("BASE_URL_ACTION") + "/html/down/Thumbs/" + tempAry[i].thumb_id.substring(0,2)
+        					+"/"+tempAry[i].thumb_id+".thumb",
+        					param: JSON.stringify(param),
+        					res_title: tempAry[i].resource_title,
+        				});
+        			}
+        			
+        			commonAddOnceHtml("zy_res","zy_res_script",{list:resourceAry});
+        		}
+				}else{
+					$api.text($api.byId('zy_desc'),'老师对检测没有说明');
+				}
+			}
+		});
+	}
+    function showRes(param){
+    	api.execScript({
+    		name: api.winName,
+	        script: "showRes('"+param+"');"
+        });
+    }
+</script>
+</html>

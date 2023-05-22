@@ -1,0 +1,272 @@
+.default-testQuestionShow {
+  /*font-size: 12px;*/
+  color: #000000;
+  word-break: break-all;
+}
+.default-testQuestionShow .testQuestionShow-div {
+  display: flex;
+}
+.default-testQuestionShow .testQuestionShow-div .show-content {
+  flex-grow: 2;
+}
+.default-testQuestionShow .textShow-foot-div span {
+  padding-right: 0.5em;
+  margin-right: 0.5em;
+  border-right: 1px solid #d7d7d7;
+}
+.default-testQuestionShow span:nth-last-child(1) {
+  border-right: none;
+}
+.default-testQuestionShow .display-hide {
+  display: none !important;
+}
+.default-testQuestionShow .test-div {
+  width: 100%;
+  display: flex;
+  align-items: flex-start;
+}
+.default-testQuestionShow .test-div .que-title {
+  /*font-size: 1em;*/
+  line-height: 1.2em;
+}
+.default-testQuestionShow .test-div .que-index-div {
+  align-self: stretch;
+  font-weight: bold;
+  flex-shrink: 0;
+}
+.default-testQuestionShow .test-div .content_div {
+  padding-right: 1em;
+  flex-grow: 2;
+}
+.default-testQuestionShow .test-div .content_div .topContent_div {
+  font-weight: bold;
+}
+.default-testQuestionShow .test-div .content_div .title_div {
+  padding-top: 1em;
+}
+.default-testQuestionShow .test-div .content_div .title_div, .default-testQuestionShow .test-div .content_div .answer_div, .default-testQuestionShow .test-div .content_div .analysis_div {
+  overflow: hidden;
+  word-break: break-all;
+  color: #000000;
+}
+.default-testQuestionShow .test-div .content_div .zg-answer {
+  padding: 0 2rem 0.5em 2rem;
+}
+.default-testQuestionShow .test-div .content_div .zg-answer .fj-show-div .fj-div {
+  padding: 0.5em 0;
+  display: block;
+}
+.default-testQuestionShow .test-div .content_div .zg-answer .fj-show-div .fj-div .fj-span {
+  padding: 0.5em;
+  cursor: pointer;
+}
+.default-testQuestionShow .test-div .content_div .zg-answer .fj-show-div .fj-div .fj-span:hover {
+  background-color: #e2e2e2;
+}
+.default-testQuestionShow .test-div .content_div .zg-answer .fj-show-div .fj-div .fj-span .fj-index {
+  color: #f90;
+  margin-right: 1em;
+}
+.default-testQuestionShow .test-div .content_div .zg-answer .fj-show-div .fj-div .fj-span .fj-img {
+  border: 1px solid #CCCCCC;
+}
+.default-testQuestionShow .test-div .content_div .zg-answer .zg-answer-txt {
+  color: #000000;
+}
+.default-testQuestionShow .test-div .content_div .options_div {
+  margin-bottom: 0.5em;
+  color: #000000;
+}
+.default-testQuestionShow .test-div .content_div .option_div {
+  display: flex;
+  align-items: center;
+  margin-top: 1em;
+}
+.default-testQuestionShow .test-div .content_div .option_div .option_num_div_1 {
+  width: 2em;
+  height: 2em;
+  flex-shrink: 0;
+  flex-grow: 0;
+  color: #31A8FA;
+  border: 0.1em solid #31A8FA;
+  border-radius: 1em;
+  padding-top: 0.35em;
+  text-align: center;
+}
+.default-testQuestionShow .test-div .content_div .option_div .option_content_div_1 {
+  width: 100%;
+  padding: 0.5em;
+}
+.default-testQuestionShow .test-div .content_div .option_div .option_content_div_2 {
+  padding-left: 1em;
+}
+.default-testQuestionShow .test-div .content_div .extra-constent {
+  position: relative;
+  margin: 1em 0;
+}
+.default-testQuestionShow .test-div .content_div .extra-constent .checked-div {
+  color: #1ABC9C;
+  padding: 0.5em 0;
+  height: 2em;
+}
+.default-testQuestionShow .test-div .content_div .extra-constent .checked-div .checked-btn {
+  float: left;
+  cursor: pointer;
+}
+.default-testQuestionShow .test-div .qrcode-div {
+  margin: 12px;
+  text-align: center;
+}
+.default-testQuestionShow .test-div .qrcode-div:first-child {
+  width: 10.67rem;
+}
+.default-testQuestionShow .test-div .qrcode-div .qrcode-name {
+  text-align: center;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.default-testQuestionShow .show-analysis-line {
+  border-bottom: 0.08em dashed #AAAAAA;
+  margin-bottom: 1em;
+}
+.default-testQuestionShow .switchBtn-div {
+  width: 4em;
+  padding: 1em;
+  text-align: center;
+}
+.default-testQuestionShow .switchBtn-div .switchBtn {
+  display: none;
+  background-color: #000;
+  border-radius: 1em;
+  padding: 0.5em;
+  position: relative;
+  top: calc(50% - 1em);
+  /*font-size: 1em;*/
+  color: white;
+  cursor: pointer;
+}
+.default-testQuestionShow .switchBtn-div:hover .switchBtn {
+  display: block;
+}
+.default-testQuestionShow .content-part {
+  display: flex;
+  margin: 1em 0;
+}
+.default-testQuestionShow .content-part .conotent-part-title {
+  padding-bottom: 1em;
+}
+.default-testQuestionShow .triangle-div {
+  width: 0;
+  height: 0;
+  border-left: 1em solid #FF9900;
+  border-top: 0.5em solid transparent;
+  border-bottom: 0.5em solid transparent;
+  margin-right: 1em;
+}
+.default-testQuestionShow .switch-btn {
+  color: #31A8FA;
+  cursor: pointer;
+}
+.default-testQuestionShow .pre-btn {
+  float: left;
+}
+.default-testQuestionShow .next-btn {
+  float: right;
+}
+.default-testQuestionShow .switchBtns-div {
+  padding: 0 1em;
+}
+.default-testQuestionShow .analysis_div, .default-testQuestionShow .option_content_div_1, .default-testQuestionShow .title_div, .default-testQuestionShow .option_content_div_2 {
+  pointer-events: none;
+}
+.default-testQuestionShow img {
+  max-width: 100%;
+}
+.default-testQuestionShow .container {
+  display: inline-block;
+  cursor: text;
+  font-family: Symbola, "Times New Roman", serif;
+}
+.default-testQuestionShow .container .non-leaf {
+  display: inline-block;
+}
+.default-testQuestionShow .container .non-leaf:empty {
+  background-color: #ccc;
+}
+.default-testQuestionShow .container .non-leaf:empty:after {
+  visibility: hidden;
+  content: "c";
+}
+.default-testQuestionShow .container .nthroot {
+  margin-right: -0.6em;
+  margin-left: 0.2em;
+  min-width: 0.5em;
+  font-size: 80%;
+  vertical-align: 0.8em;
+}
+.default-testQuestionShow .container .scaled {
+  display: inline-block;
+}
+.default-testQuestionShow .container .scaled .sqrt-prefix {
+  transform: scale(1, 0.9);
+  padding-top: 0;
+  position: relative;
+  top: 0.1em;
+  vertical-align: top;
+  transform-origin: top;
+}
+.default-testQuestionShow .container .scaled .sqrt-stem {
+  border-top: 1px solid;
+  margin-top: 1px;
+  padding-left: 0.15em;
+  padding-right: 0.2em;
+  margin-right: 0.1em;
+}
+.default-testQuestionShow .container .fraction {
+  font-size: 90%;
+  text-align: center;
+  vertical-align: -0.5em;
+  padding: 0 0.2em;
+  display: inline-block;
+}
+.default-testQuestionShow .container .fraction .numerator {
+  display: block;
+  padding: 0 0.1em;
+  margin-bottom: -0.1em;
+}
+.default-testQuestionShow .container .fraction .denominator {
+  display: block;
+  border-top: 1px solid;
+  float: right;
+  width: 100%;
+  padding: 0.1em 0.1em 0 0.1em;
+  margin-right: -0.1em;
+  margin-left: -0.1em;
+}
+.default-testQuestionShow .container:empty:after {
+  visibility: hidden;
+  content: "c";
+}
+.default-testQuestionShow .container * {
+  box-sizing: content-box;
+  font-size: inherit;
+  line-height: inherit;
+  margin: 0;
+  padding: 0;
+  border-color: black;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  user-select: none;
+  white-space: pre-wrap;
+}
+.default-testQuestionShow .container sub, .default-testQuestionShow .container sup {
+  position: relative;
+  font-size: 90%;
+}
+.default-testQuestionShow .container sub {
+  vertical-align: -0.4em;
+}
+.default-testQuestionShow .container sup {
+  vertical-align: 0.5em;
+}

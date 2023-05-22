@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<!-- html5：在创建html时为了防止页面缩放等不兼容效果，要创建个viewport  -->
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<!-- 在IOS设备上，有时会将数字转为手机号，这里也要禁止下 -->
+		<meta name="format-detection" content="telephone=no"/>
+		<title>通知</title>
+		<link rel="stylesheet" type="text/css" href="../../../../../css/aui_css_new/aui.css" />
+		<link rel="stylesheet" type="text/css" href="../../../../../css/aui/aui.css" />
+		<link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+		<style>
+			.history-date {
+				font-size: 12px;
+			}
+			#message-content {
+				overflow-y: auto;
+				display: none;
+			}
+			.win-menu img {
+				width: 20px;
+				height: 20px;
+				margin-top: 13px;
+			}
+			.aui-icon-share{
+				font-size:10px;
+			}
+			.aui-icon-menu{padding-left:15px;}
+			.delete{float:right;background:url(../../image/ipad/delete.png) 1px 3px  no-repeat;background-size:auto 16px;font-size:10px;color:#8f8f94;}
+			.w-dianzan{float:right;background:url(../../image/ipad/praise-comment.png) 2px 3px  no-repeat;background-size:auto 35px;font-size:10px;color:#8f8f94;margin-right:15px;height:20px;}
+			.y-dianzan{float:right;background:url(../../image/ipad/praised-commented.png) 2px 3px  no-repeat;background-size:auto 35px;font-size:10px;color:#8f8f94;margin-right:15px;height:20px;}
+			.pinglun{float:right;background:url(../../image/ipad/praise-comment.png) 0 -16px  no-repeat;background-size:auto 35px;font-size:10px;color:#8f8f94;margin-right:15px;height:20px;}
+			.win-menu img {
+				width: 20px;
+				height: 20px;
+				margin-top: 13px;
+			}
+		</style>
+	</head>
+	<body>
+		<div id="wrap" class="common-iphone-pyp">
+			<header class="aui-bar aui-bar-nav aui-bar-primary" id="aui-header">
+				<div id="cloud" class="topbar activebar">
+					<div id="back" class="back" onclick="back();" tapmode="">
+						<i class="aui-iconfont aui-icon-left"></i>返回
+					</div>
+					<div class="mTitle" id="mTitle">
+						查看
+					</div>
+				</div>
+			</header>
+	</body>
+	<script type="text/javascript" src="../../../../../script/api.js" ></script>
+	<script type="text/javascript" src="../../../../../script/base_config.js" ></script>
+	<script type="text/javascript" src="../../../../../script/plug-in/template.js" ></script>
+	<script type="text/javascript" src="../../../../../script/plug-in/base64.js" ></script>
+	<script type="text/javascript" src="../../../../../script/common/common.js"></script>
+	<script type="text/javascript" src="../../../../../script/assembly/voicePlayer.js" ></script>
+	<script type="text/javascript">
+		var header_h;//顶部高度
+		var back_type = 'index';//重置退出的页面
+		apiready = function() {
+		    commonSetTheme({"level":5,"type":0});
+			header_h = api.pageParam.header_h;
+			commonBackForAndroid();//安卓关闭
+			commonIosAuiHeader();//定位header位置，留出上面电池等空隙，苹果需要
+			var pageParamJson={"header_h":header_h,"id":api.pageParam.id,"name":api.pageParam.name,"avatar_fileid":api.pageParam.avatar_fileid};//打开frame页面所需参数
+			commonOpenFrame('pyp_content_frame', 'pyp_content_frame.html',header_h, true, false,"#ffffff",pageParamJson);	//打开index页面
+		};
+		
+		
+		/*
+		 * 功能：退出
+		 * 作者：张自强
+		 * 时间：20171120
+		 */
+		function back(){
+			switch(back_type){
+				case 'index':
+					commonExecScript('pyp_index_window','pyp_index_frame','initData(1);',1);
+					api.closeWin();
+					break;
+				case 'picture_content':
+					reBackType('index');
+					
+					break;
+			}
+		}
+		
+		/*
+		 * 功能：重置返回页面
+		 * 作者：张自强
+		 * 时间：20171121
+		 */
+		function reBackType(type){
+			back_type = type;
+		}
+	</script>
+</html>

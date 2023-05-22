@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+		<title>主播用户直播window</title>
+		<link rel="stylesheet" type="text/css" href="../../../css/training/jsyx/aui.css" />
+		<style>
+			body {
+			}
+		</style>
+	</head>
+	<body>
+		<div id="wrap">
+			<header class="aui-bar aui-bar-nav aui-bar-primary" id="aui-header">
+				<div id="cloud" class="topbar activebar">
+					<div id="back" class="back" onclick="back();" tapmode="">
+						<i class="aui-iconfont aui-icon-left"></i>返回
+					</div>
+					<div  class="mTitle" id="mTitle"></div>
+					<div class="win-menu">
+						<a id='menu1' class="aui-iconfont aui-icon-menu back"  onclick="openZbMenu();"></a>
+					</div>
+				</div>
+			</header>
+			<div  class="aui-content aui-content-padded" id="message-content">
+				<p class="aui-text-center history-date"></p>
+			</div>
+		</div>
+	</body>
+	<script type="text/javascript" src="../../../script/api.js"></script>
+	<script type="text/javascript" src="../../../script/training/jsyx/zbLive.js" ></script>
+	<script type="text/javascript">
+		//顶部header高度
+		var header_h;
+		var room_id;
+		var anchor_pwd;
+		var assist_pwd;
+		var user_pwd;
+		var room_name;
+		//是否开始直播，1:开始直播，0:关闭直播
+		var is_publish = 0;
+		//打开/关闭麦克风，1:打开，0:关闭
+		var is_mute = 1;
+		//打开/关闭滤镜，1:打开，0:关闭
+		var is_filter = 0;
+		apiready = function() {
+			//定位header位置，留出上面电池等空隙，苹果需要
+			var header = $api.byId('aui-header');
+			$api.fixStatusBar(header);
+			var headerPos = $api.offset(header);
+			header_h = api.pageParam.header_h;
+			room_id = api.pageParam.room_id;
+			anchor_pwd = api.pageParam.anchor_pwd;
+			assist_pwd = api.pageParam.assist_pwd;
+			user_pwd = api.pageParam.user_pwd;
+			room_name = api.pageParam.room_name;
+			h = api.winHeight - header_h;
+			reWindowName(room_name);
+			openAdminFrame();
+			//安卓关闭
+			if (api.systemType == 'android') {
+				backForAndroid();
+			}
+		};
+		function openAdminFrame() {
+			api.openFrame({
+				name : 'zhibo_admin_frame',
+				scrollToTop : true,
+				allowEdit : true,
+				url : 'zhibo_admin_frame.html',
+				reload : true,
+				rect : {
+					x : 0,
+					y : header_h,
+					w : api.winWidth,
+					h : api.winHeight - header_h,
+				},
+				pageParam : {
+					header_h : header_h,
+					room_id : room_id,
+					anchor_pwd : anchor_pwd,
+					assist_pwd : assist_pwd,
+					user_pwd : user_pwd,
+					room_name : room_name
+				},
+				vScrollBarEnabled : true,
+				hScrollBarEnabled : false,
+				//页面是否弹动 为了下拉刷新使用
+				bounces : false
+			});
+		}
+		
+		/**
+		 * 打开直播menu
+		 * 周枫
+		 * 2016.11.03 
+		 */
+		function openZbMenu(){
+			api.actionSheet({
+			    title: '直播操作',
+			    cancelTitle: '关闭',
+			    buttons: ['开始 / 关闭直播', '前置/后置摄像头', '打开/关闭麦克风', '打开/关闭滤镜']
+			}, function(ret, err) {
+			    var index = ret.buttonIndex;
+			    switch(index){
+			    	case 1 : 
+			    		if(is_publish == 1) {
+			    			is_publish = 0;
+			    		} else {
+			    			is_publish = 1;
+			    		}
+			    		api.execScript({
+			    			frameName : 'zhibo_admin_frame',
+	                        script: 'isPublisher('+is_publish+');'
+                        });
+			    	break;
+			    	case 2 : 
+			    		api.execScript({
+			    			frameName : 'zhibo_admin_frame',
+	                        script: 'isCamera();'
+                        });
+			    	break;
+			    	case 3 : 
+			    		if(is_mute == 1) {
+			    			is_mute = 0;
+			    		} else {
+			    			is_mute = 1;
+			    		}
+			    		api.execScript({
+			    			frameName : 'zhibo_admin_frame',
+	                        script: 'isSetMute('+is_mute+');'
+                        });
+			    	break;
+			    	case 4 : 
+			    		if(is_filter == 1) {
+			    			is_filter = 0;
+			    		} else {
+			    			is_filter = 1;
+			    		}
+			    		api.execScript({
+			    			frameName : 'zhibo_admin_frame',
+	                        script: 'isFilter('+is_filter+');'
+                        });
+			    	break;
+			    }
+			});
+		}
+
+		/**
+		 * 安卓点击返回的时候
+		 * 周枫
+		 * 2016.11.02
+		 */
+		function backForAndroid() {
+			api.addEventListener({
+				name : "keyback"
+			}, function(ret, err) {
+				back();
+			});
+		}
+
+		/**
+		 * 返回应用页面
+		 * 周枫
+		 * 2016.11.02
+		 */
+		function back() {
+			api.execScript({
+    			frameName : 'zhibo_admin_frame',
+                script: 'isPublisher('+false+');'
+            });
+			api.closeWin();
+		}
+		
+		/**
+		 * 重置window标题
+		 * 周枫
+		 * 2015.12.17
+		 */
+		function reWindowName(win_name) {
+			$api.html($api.byId('mTitle'), win_name);
+		}
+	</script>
+</html>

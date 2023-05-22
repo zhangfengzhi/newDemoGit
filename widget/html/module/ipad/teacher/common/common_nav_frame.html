@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<!-- html5：在创建html时为了防止页面缩放等不兼容效果，要创建个viewport  -->
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<!-- 在IOS设备上，有时会将数字转为手机号，这里也要禁止下 -->
+		<meta name="format-detection" content="telephone=no"/>
+		<title>公共滑动条页面</title>
+		<link rel="stylesheet" type="text/css" href="../../../css/aui/aui.css" />
+		<style>
+			.content{position:absolute;left:0;}
+			.nav{display:block;}
+			.nav li{display:inline-block;float:left;}
+			.nav li span{display:inline-block;}
+			.plr20{padding:0 20px;}
+		</style>
+	</head>
+	<body>
+		<div id="j_div" class="content aui-clearfix">
+			<ul id="j_nav" class="nav clearfix">
+			</ul>
+			<script type="text/html" id="div_script">
+				<%for(var i=0; i<items.length; i++) {%>
+					<%if(items[i].title !=""){%>
+						<li class="plr20" onclick="selected(this,<%=i%>,'<%=items[i].id%>');"><span><%=items[i].title%></span></li>
+					<%}%>
+				<% } %>
+			</script>
+		</div>
+	</body>
+	<script type="text/javascript" src="../../../script/api.js" ></script>
+	<script type="text/javascript" src="../../../script/plug-in/template.js" ></script>
+	<script type="text/javascript" src="../../../script/common/common.js" ></script>
+	<script type="text/javascript">
+		var params;
+		var flag=true;
+		var left=0;
+		apiready = function() {
+			header_h = api.pageParam.header_h;
+			params = api.pageParam.params;
+			initParams(function(is_true){
+				initData(function(flag){
+					//设置初始化样式
+					initStyle();
+				});
+			})
+		};
+		/*
+		*作者:zhaoj
+		*功能:初始化参数
+		*日期：20161027
+		*/
+		function initParams(callback){
+			if(isEmptyString(params.itemSize)){
+				params.itemSize={"w":''};
+			}
+			if(isEmptyString(params.backFun)){
+				params.backFun='callBackNew';
+			}
+			if(isEmptyString(params.selectedIndex)||params.selectedIndex >= params.items.length){
+				params.selectedIndex=0;
+			}
+			if(isEmptyString(params.font)){
+				params.font={"size":16,"color":"#262626","colorSelected":"#ff0000"};
+			}else{
+				if(isEmptyString(params.font.size)){
+					params.font.size = 16;
+				}
+				if(isEmptyString(params.font.color)){
+					params.font.color = "#262626";
+				}
+				if(isEmptyString(params.font.colorSelected)){
+					params.font.colorSelected = "#ff0000";
+				}
+			}
+			if(isEmptyString(params.bgColor)){
+				params.bgColor = "#ffffff";
+			}
+			if(isEmptyString(params.border)){
+				params.border = "none";
+			}
+			callback(true);
+		}
+		/*
+		*作者:zhaoj
+		*功能:初始化数据
+		*日期：20161024
+		*/
+		function initData(callback){
+			var html_type = template.render('div_script', params);
+			document.getElementById('j_nav').innerHTML = html_type;
+			callback(true);
+		}
+		/*
+		*作者:zhaoj
+		*功能:初始化滑动条样式
+		*日期：20161024
+		*/
+		function initStyle(){
+			//获取选项数组
+			var ul = document.getElementById("j_nav");
+			var liList = ul.getElementsByTagName("li");
+			//宽度为空的相应处理
+			var width=0;
+			if(params.itemSize.w != ''){
+				//宽度不为空的相应处理
+				for(var i = 0; i < liList.length; i++){
+					$api.css(liList[i],'height:'+(params.h-1)+'px;text-align:center;font-size:'+params.font.size+'px;color:'+params.font.color+';');
+					$api.css(liList[i],'line-height:'+(params.h-1)+'px;');
+					$api.css(liList[i],'width:'+params.itemSize.w+'px;');
+					$api.removeCls(liList[i],'plr15');
+					width = width + params.itemSize.w;
+				}
+			}else{
+				for(var i = 0; i < liList.length; i++){
+					$api.css(liList[i],'height:'+(params.h-1)+'px;font-size:'+params.font.size+'px;color:'+params.font.color+';');
+					$api.css(liList[i],'line-height:'+(params.h-1)+'px;');
+					var liWidth=$api.cssVal(liList[i],'width');
+					liWidth = liWidth.substring(0,liWidth.length-2);
+					liWidth = liWidth * 1;
+					width = width + liWidth;
+				}
+			}
+			
+			if(params.w == 'auto'){
+				if(width < api.winWidth){
+					width = api.winWidth;
+				}
+			}
+			width = width+1;
+			$api.css($api.byId('j_nav'),'width:'+width+'px;background:'+params.bgColor+';border-bottom:'+params.border+';');
+			//给默认选中的选项添加样式
+			$api.css(liList[params.selectedIndex],'color:'+params.font.colorSelected+';');
+			var span_dom = $api.dom(liList[params.selectedIndex],'span');
+			$api.css(span_dom,'height:'+(params.h-1)+'px;border-bottom:2px solid '+params.font.colorSelected+';');
+			//回调函数
+			callBackNew(params.items[params.selectedIndex].id,params.selectedIndex);
+		}
+		/*
+		*作者:zhaoj
+		*功能:选择第几个选项
+		*日期：20161024
+		*/
+		function selected(obj,index,id){
+			//获取选项数组
+			var ul = document.getElementById("j_nav");
+			var liList = ul.getElementsByTagName("li");
+			for(var i = 0; i < liList.length; i++){
+				//将所有选项去掉被选择的样式
+				$api.css(liList[i],'color:'+params.font.color+';font-size:'+params.font.size+'px;');
+				var span = $api.dom(liList[i],'span');
+				$api.css(span,'height:'+(params.h-1)+'px;border-bottom:none;');
+			}
+			//将被选择的选项添加选择样式
+			$api.css(obj,'color:'+params.font.colorSelected+';');
+			var span_dom = $api.dom(obj,'span');
+			$api.css(span_dom,'height:'+(params.h-1)+'px;border-bottom:2px solid '+params.font.colorSelected+';');
+			//回调函数
+			callBackNew(id,index);
+		}
+		/*
+		*作者:zhaoj
+		*功能:回调函数
+		*日期：20161027
+		*/
+		function callBackNew(id,index){
+			api.execScript({
+				name : params.winName,
+				frameName : params.frameName,
+				script : params.backFun+'("'+id+'",'+index+');'
+			});
+		}
+	</script>
+</html>

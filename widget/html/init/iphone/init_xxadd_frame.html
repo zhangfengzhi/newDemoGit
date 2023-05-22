@@ -1,0 +1,1231 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<title>添加文章</title>
+		<link rel="stylesheet" type="text/css" href="../../../css/aui/aui.css" />
+		<link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+		<script type="text/javascript" src="../../../script/common/common.js" ></script>
+		<script type="text/javascript" src="../../../script/plug-in/base64.js" ></script>
+		<style>
+			body {
+				background: #F8F7F3;
+				color: #000000;
+			}
+			.bgf {
+				background: #ffffff;
+			}
+			.mb10 {
+				margin-bottom: 10px !important;
+			}
+			.init-iphone-body .content{
+				color:#000;
+			}
+			.common-name .name {
+				width: 85%;
+				display: inline-block;
+				float: left;
+				line-height: 45px;
+				font-size: 16px;
+				white-space: nowrap;
+				overflow: hidden;
+				text-overflow: ellipsis;
+			}
+			.common-name .name font {
+				font-size: 13px;
+				color: #ABABAB;
+			}
+			.plr15 {
+				padding: 0 15px;
+			}
+			.plrtb {
+				padding: 15px;
+			}
+			.add-img {
+				padding: 15px 20px 10px 20px;
+			}
+			.aui-btn-block {
+				padding: 8px 0;
+				margin-bottom: 0;
+			}
+			.manage {
+				display: inline-block;
+				float: right;
+				color: #0062CC;
+				font-size: 14px;
+				line-height: 45px;
+			}
+			.clearfix:after {
+				content: ' ';
+				display: block;
+				clear: both;
+				visibility: hidden;
+				line-height: 0;
+				height: 0;
+			}
+			.sucai {
+				position: relative;
+			}
+			.sucai-name {
+				border-bottom: 2px solid #f6f6f6;
+				line-height: 45px;
+			}
+			.sucai button {
+				width: 48%;
+				float: left;
+			}
+			.shanchu {
+				position: absolute;
+				top: 25px;
+				right: 30px;
+			}
+			.mr4 {
+				margin-right: 4%;
+			}
+			input[type="text"], textarea {
+				margin-bottom: 0 !important;
+				width: 100%;
+				line-height: 20px;
+				padding: 12px 10px 6px 10px;
+				border: 0;
+				border-radius: 0px;
+			}
+			input[type="text"] {
+				padding-left: 0;
+			}
+			.mt5 {
+				margin-top: 5px;
+			}
+			.mt10 {
+				margin-top: 10px;
+			}
+			.shadow {
+				position: absolute;
+				left: 0;
+				top: 0;
+				width: 100%;
+				height: 100%;
+				z-index: -1;
+				background: #000000;
+				opacity: 0;
+			}
+			.question-file {
+				padding: 10px 15px;
+			}
+			.question-file dl {
+				position: relative;
+				width: 18%;
+				display: inline-block;
+				text-align: center;
+				float: left;
+				margin-right: 2.5%;
+			}
+			.question-file dl dd {
+				position: absolute;
+				z-index: 1px;
+				top: -10px;
+				right: -10px;
+				width: 25px;
+				height: 25px;
+				text-align: center;
+				line-height: 30px;
+			}
+			.question-file dl dd img {
+				width: 13px;
+				height: 13px;
+			}
+			.question-file dl.mr0 {
+				margin: 2px 2px;
+			}
+			.question-file dl img {
+				width: 100%;
+			}
+			.question-file dl dt.add-img-btn{
+				border-radius: 8px;
+				border: 2px solid #C4C4C4;
+			}
+			.question-file dl .img {
+				border-radius: 8px;
+				border: 2px solid #C4C4C4;
+			}
+			.question-file dl .img img {
+				border-radius: 6px;
+			}
+			.clearfix:after {
+				content: ' ';
+				display: block;
+				clear: both;
+				visibility: hidden;
+				line-height: 0;
+				height: 0;
+			}
+			.add-img .aui-iconfont{float:none;}
+			i.aui-iconfont{color:#C4C4C4;font-size:23px;font-weight:bolder;}
+			.content {
+				background: #ffffff;
+			}
+			
+			.classify_btn{
+				margin: 10px auto;
+			}
+			.publish-type{
+				margin-left: 10px;
+			}
+			.publish-content{
+				margin-right: 10px;
+				max-width: 50%;
+				/*text-align:right;*/
+				overflow:hidden;
+				text-overflow:ellipsis;
+			}
+			.aui-btn-block{
+				font-size: 16px;
+			}
+		</style>
+	</head>
+	<body id="body" class="init-iphone-body">
+		<div id="shadow" class="shadow"></div>
+		<!--文章名称-->
+		<div class="common-name bgf plr15 clearfix ">
+			<input oninput="commonRemoveExpression(this)" id="article_title" class="name-input" type="text" placeholder="标题，最多支持40字符（必填）" maxlength ='40' />
+		</div>
+		<div id="bxfl_div" class="common-name bgf bb plr15 clearfix ">
+		</div>
+		<div class="content clearfix">
+			<textarea id="article_content" class="wz-textarea bgf" rows="5" onscroll="this.rows++;" placeholder="&thinsp;&thinsp;请输入内容"></textarea>
+			<div id="j_files" class="question-file clearfix">
+				<dl id="j_add_btn" class="mr0" onclick="openAddFilesOpn()">
+					<dt class="add-img-btn">
+						<i class="aui-iconfont aui-icon-camera"></i>
+					</dt>
+					<dd></dd>
+				</dl>
+			</div>
+		</div>
+		<p class="common-content bgf plrtb mb10 mt10">
+			<button class="aui-btn aui-btn-primary aui-btn-block classify_btn" name="btn" onclick="openClassifyFrame(0);">
+				<span class="publish-type aui-pull-left">个人分类</span>
+				<span id="personalClassfiyContent" class="publish-content aui-pull-right"></span>
+			</button>
+			<button class="aui-btn aui-btn-primary aui-btn-block classify_btn" name="btn" onclick="openClassifyFrame(1);">
+				<span class="publish-type aui-pull-left">发布范围</span>
+				<span id="publishRangeContent" class="publish-content aui-pull-right"></span>
+			</button>
+		</p>
+	</body>
+	<script type="text/javascript" src="../../../script/api.js"></script>
+	<script type="text/javascript" src="../../../script/base_config.js" ></script>
+	<script type="text/javascript" src="../../../script/common/common.js" ></script>
+	<script type="text/javascript">
+		var header_h;
+		//机构分类的数组
+		var img_suffix;
+		var is_flag = true;
+		var img_size;
+		//图片的宽高
+		var openImgArray;
+		var obj_scan;
+		var org_name;
+		var	org_id;
+		var	menu_type;
+		var class_id;
+		var grflID = 0;
+		//学校id
+		var org_category_id;
+		//记录打开图片地址的数组
+		var bxflID = 0;
+		var img_index = 0;//图片数组的个数
+		
+		var personalClassfiyContent = $api.byId('personalClassfiyContent');
+		var publishRangeContent = $api.byId('publishRangeContent');
+		apiready = function() {
+		    commonSetTheme({"level":3,"type":0});
+			header_h = api.pageParam.header_h;
+			org_id = api.pageParam.menu_id;
+			menu_type = api.pageParam.menu_type;
+			org_name = api.pageParam.menu_name;
+			obj_scan = api.require('UIAlbumBrowser');
+
+			var addBtnWidth = $api.cssVal($api.byId('j_add_btn'), 'width');
+			$api.css($api.dom($api.byId('j_add_btn'),'dt'), 'height:'+addBtnWidth+';line-height:'+(addBtnWidth.replaceAll('px','')*1-4)+'px;');
+			
+			setPublishRangeContent();
+		};
+		
+		/*
+		 * 获取个人分类
+		 * 张自强
+		 * 20170724
+		 */
+		function getCategoryGr(){
+			api.ajax({
+			url : BASE_URL_ACTION + '/ypt/blog/getCategory?person_id='+$api.getStorage("person_id")+'&identity_id='+$api.getStorage("identity")+'&business_type=1&business_id='+$api.getStorage("person_id")+'&business_iid='+$api.getStorage("identity")+'&level=2&random_num='+creatRandomNum(),
+			method : 'get',
+			dataType : 'json',
+			cache : false,
+			timeout : 30,
+			headers : {
+				'Cookie' : 'person_id='+$api.getStorage("person_id")+';identity_id='+$api.getStorage("identity")+'; token='+$api.getStorage("token_ypt")+';'
+			}
+		}, function(ret, err) {
+			api.hideProgress();
+			if(ret.success) {	
+				grflID = ret.list[0].id;
+			} else {
+				grflID = 0;
+			}
+		});
+		}
+
+		/*
+		 *author:zhaoj
+		 *function:获取分类
+		 *date：20160425
+		 */
+		function getCategory() {
+			var type_url= BASE_URL_ACTION + '/blog/getCategory?business_id=1&business_type=1&level=1&identity_id=' + $api.getStorage('identity') + '&random_num=' + creatRandomNum();
+			api.ajax({
+				url : type_url,
+				method : 'get',
+				dataType : 'json',
+				timeout : 30,
+				headers : {
+					'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+				}
+			}, function(ret, err) {
+				api.hideProgress();
+				if (ret) {
+					if (ret.success == false) {
+						var data ={'list':[]};
+							bxfl(data);
+					} else {
+						bxfl(ret);
+					}
+				} else {
+					bxfl(data);
+				}
+			});
+		}
+		function bxfl(data){
+			var fl_list = data.list;
+			var fl_list_l = getJsonObjLength(fl_list);
+			if (fl_list_l > 0) {
+				if(menu_type == 0 && $api.getStorage('wenzhang_lx_id')*1 != 0){
+					bxflID = fl_list[0].id;
+				}else{
+					bxflID = fl_list[0].id;
+				}
+			} else {
+				popToast('发表失败，请稍候重试');
+			}
+		}
+
+		/*
+		 *author:zhaoj
+		 *function:打开添加附件选项组件框
+		 *date：20160220
+		 */
+		function openAddFilesOpn(mk_type) {
+			api.actionSheet({
+				cancelTitle : '取消',
+				buttons : ['图片', '拍照'],
+				style : {
+					titleFontColor : '#ff0000'
+				}
+			}, function(ret, err) {
+				if (ret) {
+					if (ret.buttonIndex == 1) {
+						//相册
+						//getPicture("album");
+						privilegeManagement('storage-w',album())
+					} else if (ret.buttonIndex == 2) {
+						//拍照
+						privilegeManagement('camera',function(){
+							getPicture("camera")
+						})
+					}
+				} else {
+					//		         alert( JSON.stringify( err ) );
+				}
+			});
+		}
+
+		/*
+		 *author:zhaoj
+		 *function:打开上传图片的
+		 *date：20160317
+		 */
+		function uploadOpt() {
+			api.actionSheet({
+				cancelTitle : '取消',
+				buttons : ['拍照', '相册']
+			}, function(ret, err) {
+				if (ret) {
+					if (ret.buttonIndex == 1) {
+						privilegeManagement('camera',function(){
+							getPicture("camera")
+						})
+					} else if (ret.buttonIndex == 2) {
+						privilegeManagement('storage-w',album())
+					}
+				}
+			});
+		}
+
+		/**
+		 * 获取头像
+		 * 周枫
+		 * 2016.1.16
+		 */
+		function getPicture(sourceType) {
+			isOnLineStatus(function(is_true, line_type) {
+				if (is_true) {
+					if (line_type == 'wifi' || line_type == '4g') {
+						openPicture(sourceType);
+					} else {
+						api.confirm({
+							title : "提示",
+							msg : "您当前正在使用" + line_type + "网络，建议您在wifi网络下使用，是否继续？",
+							buttons : ["继续", "取消"]
+						}, function(ret, err) {
+							var sourceType;
+							if (1 == ret.buttonIndex) {
+								openPicture(sourceType);
+							} else {
+								return;
+							}
+						});
+					}
+				} else {
+					api.toast({
+						msg : '请连接网络后使用当前功能~'
+					});
+				}
+			});
+		}
+
+		/**
+		 * 选取图片
+		 * 周枫
+		 * 2016.1.16
+		 */
+		function openPicture(sourceType) {
+			isOnLineStatus(function(is_true, line_type) {
+				var q = 50;
+				if (line_type == 'wifi') {
+					q = 80;
+				}
+				//获取一张图片
+				api.getPicture({
+					sourceType : sourceType,
+					encodingType : 'png',
+					mediaValue : 'pic',
+					//返回数据类型，指定返回图片地址或图片经过base64编码后的字符串
+					//base64:指定返回数据为base64编码后内容,url:指定返回数据为选取的图片地址
+					destinationType : 'url',
+					//是否可以选择图片后进行编辑，支持iOS及部分安卓手机
+					allowEdit : false,
+					//图片质量，只针对jpg格式图片（0-100整数）,默认值：50
+					quality : q,
+					//		targetWidth : 100,
+					//		targetHeight : 1280,
+					saveToPhotoAlbum : true
+				}, function(ret, err) {
+					if (ret) {
+						/*
+						* data:"",                //图片路径
+						base64Data:"",          //base64数据，destinationType为base64时返回
+						*/
+						//alert(JSON.stringify(ret));
+						var img_url = ret.data;
+						if (img_url != "") {
+							setTimeout(function() {
+								//上传图片
+								uploadFiles(img_url, function(is_true, a_file_id, a_ext) {
+									if (is_true) {
+										api.hideProgress();
+										//									var file_id= a_file_id;
+										//									var ext = a_ext;
+										//									uploadImg(file_id,ext);
+										var file_id = a_file_id;
+										var ext = a_ext;
+										getImgSize();
+										img_suffix = commonReturnPhotoCutSize(0);
+										if (BASE_APP_TYPE == 1) {
+											var img_url = BASE_IMAGE_PRE+"down/Material/" + file_id.substring(0, 2) + "/" + file_id + '.' + ext + commonReturnPhotoCutSize(0);
+										} else {
+											var img_url = BASE_URL_ACTION + "/html/thumb/Material/" + file_id.substring(0, 2) + "/" + file_id + '.' + ext + commonReturnPhotoCutSize(0);
+											;
+										}
+										if (getfilesNum() == 4) {
+											addFiles(img_url, 'mr0');
+										}else if(getfilesNum() == 8){
+											$api.css($api.byId('j_add_btn'), 'display:none');
+											addFiles(img_url, 'mr0');
+										}else{
+											addFiles(img_url, '');
+										}				
+									} else {
+									    api.hideProgress();
+										popToast(a_file_id);
+									}
+								});
+							}, 1000);
+						}
+					}
+				});
+			});
+		}
+
+		/*
+		 *author:zhaoj
+		 *function:图片格式
+		 *date：20160222
+		 */
+		function getImgSize() {
+			img_size = (api.winWidth - 30) * 0.18;
+			img_size = Math.floor(img_size);
+			var img_format = '@' + img_size + 'w_' + img_size + 'h_100Q_1x.';
+			return img_format;
+		}
+
+		/*
+		 *author:zhaoj
+		 *function:根据模块获取子文件的个数
+		 *date：20160224
+		 */
+		function getfilesNum() {
+			var dlArray = $api.domAll($api.byId('j_files'), '.j_file');
+			return dlArray.length;
+		}
+
+		/*
+		 *author:zhaoj
+		 *function:给模块添加文件
+		 *date：20160224
+		 */
+		function addFiles(img_url, css) {
+			var dl_height = $api.cssVal($api.byId('j_add_btn'), 'height')
+			dl_height = dl_height.substring(0,dl_height.length-2)+'px';
+			var dl_html = '<dl class="j_file' + ' ' + css + '" style="height:' + dl_height + ';margin:2px 2px">' + '<dt class="img" style="width:' + img_size + 'px;height:' + img_size + 'px;" onclick="openImage(this.parentNode,this.parentNode.parentNode)">' + '<img class="j_img" src=' + img_url + ' width="' + (img_size - 1) + '" height="' + (img_size - 4) + '" />' + '</dt>' + '<dd onclick="deleteFile(event,this.parentNode)"><img src="../../../image/fun-module/common/shanchu.png" /></dd>' + '</dl>';
+			$api.before($api.byId('j_add_btn'), dl_html);
+		}
+
+		/*
+		 *author:zhaoj
+		 *function:删除当前文件
+		 *date：20160225
+		 */
+		function deleteFile(e, parent) {
+			parent.parentNode.removeChild(parent);
+			var dlArray = $api.domAll($api.byId('j_files'), '.j_file');
+			var length = getfilesNum() - 1;
+			if (length == 7) {
+				$api.removeCls(dlArray[length], 'mr0');
+				$api.css($api.byId('j_add_btn'), 'display:inline-block');
+			}
+			e.stopPropagation();
+		}
+
+		/*
+		 *author:zhaoj
+		 *function:打开图片
+		 *date：20160225
+		 */
+		function openImage(parent, grandpa) {
+			var index;
+			if (parent) {
+				index = 0;
+				while ( parent = parent.previousSibling) {
+					if (parent.nodeType == 1)
+						index++;
+				}
+			}
+			var openImgArray = [];
+			var dlArray = $api.domAll($api.byId('j_files'), '.j_file');
+			for (var i = 0; i < dlArray.length; i++) {
+				openImgArray.push($api.attr($api.dom(dlArray[i], '.j_img'), 'src'));
+			}
+			openPictureShowWin(openImgArray,index);
+		}
+
+		/*
+		 *author:zhaoj
+		 *function:选择图片
+		 *date：20160225
+		 */
+		function album() {
+			var dlArray = $api.domAll($api.byId('j_files'), '.j_file');
+			var num = 9 - dlArray.length;
+			obj_scan.open({
+				//返回的资源种类,image（图片）,video（视频）,all（图片和视频）
+                type : 'image',
+                //（可选项）图片显示的列数，须大于1
+                max : num,
+                styles : {
+                    bg : '#fff',
+                    mark : {
+                        icon : '',
+                        position : 'bottom_right',
+                        size : 20
+                    },
+                    nav : {
+                        bg : '#eee',
+                        stateColor : '#000',
+                        stateSize : 18,
+                        cancleBg : 'rgba(0,0,0,0)',
+                        cancelColor : '#000',
+                        cancelSize : 18,
+                        finishBg : 'rgba(0,0,0,0)',
+                        finishColor : api.systemType == "android"?'#000':'#fff',
+                        finishSize : 18,
+                        unFinishColor: 'rgba(0,0,0,0)',
+                        titleColor: '#000',
+                    },
+                    bottomTabBar: {
+                        previewTitleColor: "#fff",
+
+                    }
+				},
+				rotation : true,
+ 				showPreview : false,
+				showBrowser : true
+			}, function(ret) {
+				if (ret) {
+					if (getJsonObjLength(ret.list) != 0) {
+						//递归上传图片
+						dgUploadFiles(0, ret.list, function(is_true) {
+							if (is_true) {
+								api.hideProgress();
+							} else {
+								popToast("服务器繁忙，请稍候再试");
+							}
+						});
+					}
+				}
+			});
+		}
+
+		/**
+		 * 递归上传图片
+		 * 周枫
+		 * 2016.3.28
+		 */
+		function dgUploadFiles(p_c, pic_list, callback) {
+			var pic_l = getJsonObjLength(pic_list);
+			if (p_c < pic_l) {
+				var pic_url_old = pic_list[p_c].path;
+				if (api.systemType == 'ios') {
+					//将相册图片地址转换为可以直接使用的本地路径地址
+					obj_scan.transPath({
+						path : pic_url_old
+					}, function(ret) {
+						var pic_url_new = ret.path;
+						uploadFiles(pic_url_new, function(is_true, a_file_id, a_ext) {
+							if (is_true) {
+								var file_id = a_file_id;
+								var ext = a_ext;
+								getImgSize();
+								img_suffix = commonReturnPhotoCutSize(0);
+								if (BASE_APP_TYPE == 1) {
+									var img_url = BASE_IMAGE_PRE+"down/Material/" + file_id.substring(0, 2) + "/" + file_id + '.' + ext + commonReturnPhotoCutSize(0);
+								} else {
+									var img_url = BASE_URL_ACTION + "/html/thumb/Material/" + file_id.substring(0, 2) + "/" + file_id + '.' + ext + commonReturnPhotoCutSize(0);	
+								}
+								
+								if (getfilesNum() == 4) {
+									addFiles(img_url, 'mr0');
+								}else if(getfilesNum() == 8){
+									$api.css($api.byId('j_add_btn'), 'display:none');
+									addFiles(img_url, 'mr0');
+								}else{
+									addFiles(img_url, '');
+								}
+								p_c++;
+								return dgUploadFiles(p_c, pic_list, callback);
+							} else {
+								return dgUploadFiles(p_c, pic_list, callback);
+							}
+						});
+					});
+				} else {
+					uploadFiles(pic_url_old, function(is_true, a_file_id, a_ext) {
+						if (is_true) {
+							var file_id = a_file_id;
+							var ext = a_ext;
+							getImgSize();
+							img_suffix = commonReturnPhotoCutSize(0);
+							if (BASE_APP_TYPE == 1) {
+								var img_url = BASE_IMAGE_PRE+"down/Material/" + file_id.substring(0, 2) + "/" + file_id + '.' + ext + commonReturnPhotoCutSize(0);
+							} else {
+								var img_url = BASE_URL_ACTION + "/html/thumb/Material/" + file_id.substring(0, 2) + "/" + file_id + '.' + ext + commonReturnPhotoCutSize(0);
+							}
+							if (getfilesNum() == 4) {
+								addFiles(img_url, 'mr0');
+							}else if(getfilesNum() == 8){
+								$api.css($api.byId('j_add_btn'), 'display:none');
+								addFiles(img_url, 'mr0');
+							}else{
+								addFiles(img_url, '');
+							}
+							p_c++;
+							return dgUploadFiles(p_c, pic_list, callback);
+						} else {
+							return dgUploadFiles(p_c, pic_list, callback);
+						}
+					});
+				}
+			} else {
+				callback(true);
+			}
+		}
+
+		/**
+		 * 上传文件
+		 * 周枫
+		 * 2015.11.25
+		 */
+		function uploadFiles(file_path, callback) {
+			api.showProgress({
+				title : '上传中...',
+				text : '请稍候...',
+				modal : true
+			});
+			//扩展名
+			var ldot = file_path.lastIndexOf(".");
+			var ext = file_path.substring(ldot + 1);
+			//			var ext = file_path.substring(ldot + 1).substring(0,3);
+			if (ext != "jpg" && ext != "png" && ext != "JPG" && ext != "PNG") {
+				api.hideProgress();
+				popToast("文件格式只支持png和jpg");
+				return;
+			}
+			if (BASE_APP_TYPE == 1) {
+				var v_guid = newGuid();
+				//图片上传服务器时路径
+				var _key = url_path_suffix + v_guid.substring(0, 2) + "/" + v_guid + "." + ext;
+				notice_img_path = _key;
+				api.ajax({
+					url : BASE_URL_ACTION + '/res/uploadFileToAliyun',
+					method : 'post',
+					timeout : 30,
+					dataType : 'json',
+					returnAll : false,
+					data : {
+						values : {
+							key : _key
+						},
+						files : {
+							file : file_path
+						}
+					}
+				}, function(ret, err) {
+					//					api.hideProgress();
+					if (err) {
+						callback(false, '', '');
+					} else {
+						if (ret.success) {
+							callback(true, v_guid, ext);
+						} else {
+							callback(false, '', '');
+						}
+					}
+				});
+			} else {
+				//局版
+				var v_guid = newGuid();
+				var extension = ext;
+				//图片上传服务器时路径
+				var _key = url_path_suffix + v_guid.substring(0, 2) + "/" + v_guid + "." + ext;
+				notice_img_path = _key;
+				api.ajax({
+					url : BASE_URL_ACTION + '/res/newUpload/',
+					method : 'post',
+					timeout : 30,
+					dataType : 'json',
+					returnAll : false,
+					data : {
+						values : {
+							key : _key
+						},
+						files : {
+							file : file_path
+						}
+					}
+				}, function(ret, err) {
+					//					api.hideProgress();
+					if (err) {
+						callback(false, '', '');
+					} else {
+						if (ret.success) {
+							callback(true, v_guid, extension);
+						} else {
+							callback(false, '', '');
+						}
+					}
+				});
+			}
+		}
+		 //判断是否有敏感字符
+        function cheackTextAntispamScan(param){
+            var text = param;
+    		text = $api.trimAll(text);
+    		
+			textAntispamScan(text,function(flag){
+				if(flag){	//如果不存在敏感词
+					if (contentAry && contentAry.length > 0) {
+                            param = this.contentAry[0];
+                            this.contentAry.splice(0,1);
+
+                            cheackTextAntispamScan(param);
+                     }else {
+                           releaseArticleValue();
+                     }
+				}else {
+					api.hideProgress();
+				}
+			});
+        }
+        //分析作品内容的字符
+        function analysisConten(str){
+            var ary = [];
+            var count = Math.ceil(str.length/4000);
+            if (str.length <= 4000) {
+                ary.push(str);
+            }else {
+                for (var i = 0;i < count;i++) {
+                    var newStr = str.substr(i*4000,4000);
+                    ary.push(newStr);
+                }
+            }
+            return ary;
+        }
+		/*
+         *author:zhaoj
+         *function:获取文章的值
+         *date：20160426
+         */
+        function getArticleValue() {
+            showSelfProgress('发表中...');
+            //文章标题
+            var article_title = $api.val($api.byId('article_title'));
+            //文章文字内容
+            var article_content = $api.val($api.byId('article_content'));
+            
+            //图片缩略图
+            var thumb_id;
+            //图片缩略图数组
+            var thumb_ids = new Array();
+            
+            //文章加上图片和文字的整体内容
+            var content = article_content.replace(/\n/g, '_@').replace(/\r/g, '_#').replace(/_#_@/g, '<br/>').replace(/_@/g, '<br/>').replace(/\s/g, '&nbsp;');
+            //验证文章标题
+            var article_title_vad = $api.trimAll(article_title);
+            if (article_title_vad.length == 0) {
+                popAlert("标题请输入1-40个字符！");
+                api.hideProgress();
+                return;
+            }
+            
+            contentAry = analysisConten(article_title+article_content);
+            var param = contentAry[0];
+            contentAry.splice(0,1);
+            cheackTextAntispamScan(param);
+        }
+        function releaseArticleValue(){
+        	//文章标题
+            var article_title = $api.val($api.byId('article_title'));
+            //文章文字内容
+            var article_content = $api.val($api.byId('article_content'));
+            
+            //图片缩略图
+            var thumb_id;
+            //图片缩略图数组
+            var thumb_ids = new Array();
+            
+            //文章加上图片和文字的整体内容
+            var content = article_content.replace(/\n/g, '_@').replace(/\r/g, '_#').replace(/_#_@/g, '<br/>').replace(/_@/g, '<br/>').replace(/\s/g, '&nbsp;');
+            //验证文章标题
+            var article_title_vad = $api.trimAll(article_title);
+        	//验证是否有附件
+            var dlArray = $api.domAll($api.byId('j_files'), '.j_file');
+            
+            if (dlArray.length != 0) {
+                if (BASE_APP_TYPE == 2) {
+                    for (var i = 0; i < dlArray.length; i++) {
+                        if (i == 0) {
+                            thumb_id = $api.attr($api.dom(dlArray[i], '.j_img'), 'src');
+                            var startIndex = thumb_id.indexOf('/dsideal_yy/');
+                            thumb_id = thumb_id.substring(startIndex,thumb_id.length);
+                            thumb_id = thumb_id.replaceAll(img_suffix, '');
+                        }
+                        var img_url = $api.attr($api.dom(dlArray[i], '.j_img'), 'src');
+                        checkImg(dlArray.length,img_url,function(wid,imgUrl,flag,allFlag){
+                              if(flag){
+                                if(wid >= 800){
+                                    wid = 800;
+                                }
+                                imgUrl = imgUrl.substring(startIndex,imgUrl.length);
+                                imgUrl = imgUrl.replaceAll(img_suffix, '');
+                                thumb_ids.push(imgUrl);
+                                var img_html = '<img src="' + imgUrl + '" alt="" style="width:'+wid+'px"/>'
+                                content = content + img_html;
+                                if(allFlag){
+                                    img_index = 0;
+                                    dealArticleValue(thumb_ids,content,dlArray,thumb_id);
+                                }
+                              }
+                        });
+                    }
+                } else {
+                    for (var i = 0; i < dlArray.length; i++) {
+                        if (i == 0) {
+                            thumb_id = $api.attr($api.dom(dlArray[i], '.j_img'), 'src');
+                            thumb_id = thumb_id.replaceAll(img_suffix, '');
+                        }
+                        var img_url = $api.attr($api.dom(dlArray[i], '.j_img'), 'src');
+                        checkImg(dlArray.length,img_url,function(wid,imgUrl,flag,allFlag){
+                              if(flag){
+                                if(wid >= 800){
+                                    wid = 800;
+                                }
+                                imgUrl = imgUrl.replaceAll(img_suffix, '');
+                                var img_html = '<img src="' + imgUrl + '" alt="" style="width:'+wid+'px"/>'
+                                thumb_ids.push(imgUrl);
+                                content = content + img_html;
+                                if(allFlag){
+                                    img_index = 0;
+                                    dealArticleValue(thumb_ids,content,dlArray,thumb_id);
+                                }
+                              }
+                        });
+                    }
+                }
+            }else{
+                 dealArticleValue(thumb_ids,content,[],thumb_id);
+            }
+        }
+        /*
+         * 功能：拼接文章数据
+         * 作者：张自强
+         * 时间：20180202
+         */
+        function dealArticleValue(thumb_ids,content,dlArray,thumb_id){
+            //文章标题
+            var article_title = $api.val($api.byId('article_title'));
+            //文章文字内容
+            var article_content = $api.val($api.byId('article_content'));
+            //个人id
+            var person_category_id;
+            //班级id
+            var b_category_id;
+//          person_category_id = grflID;
+			person_category_id = $api.getStorage('personalClassifyId');
+            //班级id
+            org_category_id = bxflID;
+            //简介
+            var overview;
+            if (article_content.length > 100) {
+                overview = article_content.substring(0, 100);
+            } else {
+                overview = article_content;
+            }
+            content = commonTransferBrStr(content);
+            //验证文章内容
+            var article_content_vad = $api.trimAll(article_content);
+            if (article_content_vad.length == 0 && dlArray.length == 0) {
+                api.hideProgress();
+                popAlert("请填写内容！");
+                return;
+            }
+            var value ={}; 
+//          if(menu_type == 0 || menu_type == 1 || menu_type == 104){
+//              value={"person_id":$api.getStorage("person_id"),"person_name":$api.getStorage('person_name'),"identity_id" : $api.getStorage("identity"),"business_type" : 1,"title" : article_title,"city_id" : $api.getStorage('city_id'),"district_id" : $api.getStorage('district_id'),"province_id" : $api.getStorage('province_id'),"school_id" : $api.getStorage('school_id'),"person_category_id" : person_category_id,"org_category_id" : org_category_id,"id" : "","content" : content,"overview" : overview,"thumb_id" : thumb_id,"thumb_ids" : JSON.stringify(thumb_ids)};
+//          }else{
+//              value={"person_id":$api.getStorage("person_id"),"person_name":$api.getStorage('person_name'),"identity_id" : $api.getStorage("identity"),"business_type" : 3,"title" : article_title,"city_id" : $api.getStorage('city_id'),"district_id" : $api.getStorage('district_id'),"province_id" : $api.getStorage('province_id'),"school_id" : $api.getStorage('school_id'),"person_category_id" : person_category_id,"b_category_id" : b_category_id,"org_category_id" : org_category_id,"id" : "","content" : content,"overview" : overview,"thumb_id" : thumb_id,"thumb_ids" : JSON.stringify(thumb_ids),"business_id":org_id,"business_iid":105};
+//          }
+
+			value = {
+				"person_category_id" : person_category_id,
+				"overview" : "ds"+Base64.encode(overview),
+				"title" : article_title,
+				"thumb_id" : thumb_id,
+				"thumb_ids" : JSON.stringify(thumb_ids),
+				"content" : "ds"+Base64.encode(content),
+				"person_id" : $api.getStorage("person_id"),
+				"person_name" : $api.getStorage('person_name'),
+				"identity_id" : $api.getStorage("identity"),
+				"org_category_id" : org_category_id,
+				"province_id" : $api.getStorage('province_id'),
+				"city_id" : $api.getStorage('city_id'),
+				"district_id" : $api.getStorage('district_id'),
+				"school_id" : $api.getStorage('school_id'),
+				"business_type" : 1,
+			};
+			saveArticle(JSON.stringify(value));
+		}
+		/*
+		 *author:zhaoj
+		 *function:保存文章
+		 *date：20160415
+		 */
+		function saveArticle(value){
+			var dataValue = JSON.parse(value);
+			var typeUrl = BASE_URL_ACTION + '/ypt/blog/saveArticle';
+			commonShowProgress('发表中...',true);
+//			var data = {
+//				"org_list":[{"org_id":$api.getStorage('school_id'),"org_type":104,"category_id":org_category_id}],
+//				"class_list":[],
+//				"group_list":[]
+//		 	};
+			api.ajax({
+				url : typeUrl,
+				method : 'post',
+				dataType : 'json',
+				cache : false,
+				returnAll : false,
+				timeout : 30,
+				data : {
+					values : dataValue
+				},
+				headers : {
+					'Cookie' : 'person_id=' + $api.getStorage("person_id") + ';identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+				}
+			}, function(ret, err) {
+				if (err) {
+					api.hideProgress();
+					popToast('当前网络繁忙，请稍候再试');
+				} else {
+					if (ret.success) {
+						var expand_id = ret.expand_id;
+						var strContent = $api.getStorage("person_name") + '发表了圈子' + dataValue.title + '。';
+						var options = {
+							business_type:107,
+				            relatived_id:ret.id,
+				            r_person_id:'',
+				            r_identity_id:'',
+				            operation_content:strContent,
+				            e_relatived_id:expand_id
+						};
+						creditWriteToQueue(options);
+						var art_id = ret.id;
+						var str = "加载中...";
+						 api.ajax({
+	                         url:BASE_URL_ACTION + '/ypt/blog_expand/release_article',
+							 method :　'post',
+							 dataType : 'json',
+							 cache : false,
+							 timeout : 30,
+							 data : {
+							 	values:{
+								 	article_id : art_id,
+								 	random_num : creatRandomNum(),
+								 	data :JSON.stringify($api.getStorage('areaRange'))
+								}
+							 	
+							},
+							headers : {
+					'Cookie' : 'person_id=' + $api.getStorage("person_id") + ';identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+							}
+                         },function(ret,err){
+                         	if(err){
+                         		popToast('发表失败，请稍候再试');
+                         	}else{
+                     		     if(ret.success){
+                     		     var areaRange = $api.getStorage('areaRange');
+		                     		for(var i=0;i < areaRange.class_list.length;i++){
+		                                var options = {
+		                                    business_type:131,
+		                                    relatived_id:art_id,
+		                                    r_person_id:areaRange.class_list[i].org_id,
+		                                    r_identity_id:105,
+		                                    operation_content:strContent,
+		                                    e_relatived_id:expand_id
+		                                };
+		                                creditWriteToQueue(options);
+		                            }
+	                                for(var i=0;i < areaRange.group_list.length;i++){
+	                                    var options = {
+	                                        business_type:151,
+	                                        relatived_id:art_id,
+	                                        r_person_id:areaRange.group_list[i].org_id,
+	                                        r_identity_id:106,
+	                                        operation_content:strContent,
+	                                        e_relatived_id:expand_id
+	                                    };
+	                                    creditWriteToQueue(options);
+		                            }
+		                     		setTimeout(function() {
+		                     			if ($api.getStorage('idy_type') == 'work'){
+		                     				commonExecScript('quanzi_index_window','quanzi_index_frame','initData(1);',1);  
+		                     			}else{
+		                     				commonExecScript('root','center_index','initData(1);',1);  
+		                     			}
+									}, 2800);                
+									setTimeout(function() {  
+										commonExecScript('init_add_window','','back();',0); 
+									}, 3000);							         
+	                     		}else{
+	                     			popToast('发表失败，请稍候再试');
+	                     		}
+                         	}
+    						
+                         });
+					} else {
+						api.hideProgress();
+						popToast('当前网络繁忙，请稍候再试');
+					}
+				}
+			});
+		}
+
+		/*
+		 *author:zhaoj
+		 *function:添加点击事件
+		 *date：20160316
+		 */
+		function addClickedEvent(div_name, method_name) {
+			var name = document.getElementById(div_name);
+			name.addEventListener("click", method_name);
+		}
+
+		/*
+		 *author:zhaoj
+		 *function:删除点击事件
+		 *date：20160317
+		 */
+		function removeClickedEvent(div_name, method_name) {
+			var name = document.getElementById(div_name);
+			name.removeEventListener("click", method_name);
+		}
+
+		/*
+		 *author:zhaoj
+		 *function:弹出Alert提示框
+		 *date：20160314
+		 */
+		function popAlert(message) {
+			api.alert({
+				msg : message
+			}, function(ret, err) {
+			});
+		}
+
+		/*
+		 *author:zhaoj
+		 *function:弹出Toast提示框
+		 *date：20160314
+		 */
+		function popToast(message) {
+			api.toast({
+				msg : message,
+				location : 'middle'
+			});
+		}
+		function extend(destination, source) { 
+		    for (var property in source) 
+			destination[property] = source[property]; 
+		    return destination; 
+		} 
+				/*
+		 *author:zhaoj
+		 *function:打开本校分类window
+		 *date：20160425
+		 */
+		function openbxflWindow(){
+			var bxflID = this.getAttribute("bxflID");
+			var org_id = $api.getStorage('school_id');
+			var org_name = '学校分类';
+			openflWindow(bxflID,104,$api.getStorage('school_id'),$api.getStorage('school_name'),'bxfl_div');
+		}
+		
+			/*
+		 *author:zhaoj
+		 *function:打开学校分类window
+		 *date：20160317
+		 */
+		function openflWindow(flID,org_type,org_id,org_name,div_id){
+			api.openWin({
+				name : 'init_fl_window',
+				url : 'init_fl_window.html',
+				pageParam : {
+					header_h : header_h,
+					flID : flID,
+					org_id : org_id,
+					org_type : org_type,
+					org_name : org_name,
+					div_id : div_id
+				},
+				bounces : false,
+				opaque : false,
+				showProgress : false,
+				vScrollBarEnabled : false,
+				hScrollBarEnabled : false,
+				slidBackEnabled : false,
+				delay : 0,
+				animation : {
+					type : "reveal", //动画类型（详见动画类型常量）
+					subType : "from_right", //动画子类型（详见动画子类型常量）
+					duration : 300
+				},
+			});
+		}
+		
+		/*
+		 * 打开发布范围界面
+		 * 王俭
+		 * 2018.5.2 
+		 */
+		function openClassifyFrame(type){
+			var data = JSON.parse(JSON.stringify(api.pageParam));
+			data['frameType'] = type;
+			commonOpenWin('publisRange_window','init_publishRange_window.html',false,false,data);
+//			getArticleValue();
+		}
+		
+		
+		/*
+         * 功能：判断图片大小
+         * 作者：张自强
+         * 时间：20180202
+         */
+        function checkImg(len,img_url,callback){
+            var img  = new Image();
+            var wid = 0;
+            var flag = false;//是否已经加载完所有图片
+            img.src = img_url.substring(0,img_url.indexOf(img_suffix));
+            // 如果图片被缓存，则直接返回缓存数据
+            if(img.complete){
+                img_index++;
+                if(img_index == len){
+                    flag = true;
+                }
+                wid = img.naturalWidth;
+                callback(wid,img_url,true,flag);
+            }else{
+                    // 完全加载完毕的事件
+                img.onload = function(){
+                    img_index++;
+                    if(img_index == len){
+                        flag = true;
+                    }
+                    wid = img.naturalWidth;
+                    callback(wid,img_url,true,flag);
+                }
+            }
+        }
+        
+        /**
+         * 显示发布范围内容  personalClassfiyContent publishRangeContent
+         */
+        function setPublishRangeContent(){
+        	$api.text(personalClassfiyContent, $api.getStorage('personalClassifyContent'));
+        	var _text = $api.getStorage('publishRangeContent');
+        	if (_text == "" || _text == " "){
+        		_text = "仅自己可见";
+        	}
+        	$api.text(publishRangeContent, _text);
+        }
+	</script>
+</html>

@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+		<title>title</title>
+		<link rel="stylesheet" type="text/css" href="../../css/aui/aui.css" />
+		<link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+		<style>
+			html, body {
+				background-color: rgba(0,0,0,0.3);
+			}
+			body {
+				padding: 0;
+				margin: 0;
+			}
+			.main {
+				position: absolute;
+				left: 50%;
+				top: 15%;
+				z-index: 2;
+				width: 86%;
+				height: 380px;
+				margin-left: -43%;
+				/*margin-top: -117px;*/
+				box-shadow: 0 2px 5px 3px #666666;
+				background: #ffffff;
+			}
+			.title {
+				height: 55px;
+				line-height: 55px;
+				padding-left: 4%;
+				font-weight: bold;
+				font-size: 20px;
+			}
+			.button {
+				/*height: 334px;*/
+				margin-top: 160px;
+				border-top: 1px solid #e6e6e6;
+			}
+			.smt-btn, .cnl-btn {
+				float: left;
+				width: 50%;
+				height: 47px;
+				border: 0;
+				background: #ffffff;
+			}
+			.smt-btn {
+				border-right: 1px solid #e6e6e6 !important;
+			}
+			.bdr-rdu {
+				border-radius: 2px;
+			}
+			.bdr-rdu-top {
+				border-radius: 2px 2px 0 0;
+			}
+			.bdr-rdu-bottom {
+				border-radius: 0 0 2px 2px;
+			}
+			.bdr-rdu-bottom-left {
+				border-radius: 0 0 0 2px;
+			}
+			.bdr-rdu-bottom-right {
+				border-radius: 0 0 2px 0;
+			}
+			.btn-click {
+				background: #50b350;
+			}
+			.group-name {
+				float: left;
+				width: 30%;
+				min-width: 80px;
+				padding-left: 5%;
+				padding-top: 10px;
+			}
+			.input-div {
+				display: inline-block;
+				position: relative;
+				float: right;
+				width: 90%;
+				margin-right: 5%;
+				padding-top: 12px;
+			}
+			.input-div input {
+				margin-right: 5%;
+				width: 100%;
+				line-height: 16px;
+				padding: 9px 5px;
+				border: 1px solid #555555;
+				border-radius: 3px;
+			}
+			.tip {
+				position: absolute;
+				right: 0;
+				bottom: -12px;
+				height: 20px;
+				line-height: 20px;
+				color: #ff0000;
+				font-size: 12px;
+			}
+			input[type="text"], textarea {
+				margin-bottom: 0;
+			}
+			.head-icon {
+				margin-left: 10px;
+				margin-top: 2px;
+				height: 30px;
+				width: 30px;
+				border-radius: 10px 10px 10px 10px;
+				vertical-align: middle;
+			}
+			.textarea-style {
+				overflow: scroll;
+				overflow-y: visible;
+				height: 100px;
+				border-style: solid;
+				border-color: #555555;
+			}
+		</style>
+	</head>
+	<body class="tongxunlu-common">
+		<div id="j_shadow" class="shadow"></div>
+		<div class="main bdr-rdu" >
+			<div id="title" class="title bdr-rdu-top"></div>
+			<div style = "margin-top:5px;">
+				<div class="group-name" >
+					群组头像
+				</div>
+				<div onclick="getPictureHeader()">
+					<img id = "user" class = "head-icon" data-echo="" onerror="this.src='../../image/tongxunlu/defaultgroup.png'" src="../../image/tongxunlu/defaultgroup.png" alt="缩略图">
+				</div>
+			</div>
+			<div class="clearfix" >
+				<div class="group-name">
+					群组名称
+				</div>
+				<div class="input-div " >
+					<input id="fl_val" type="text" oninput='showTip(this.value.length,1,this);' placeholder="群组名称，最多支持10字符" maxlength="10" />
+				</div>
+			</div>
+			<div>
+				<div class="group-name" >
+					群组描述
+				</div>
+				<div class="input-div" >
+					<textarea id = "des_content" class = "textarea-style" onpropertychange="this.style.posHeight = this.scrollHeight" oninput='showTip(this.value.length,2,this);' maxlength="300" placeholder="请输入群组描述，最多输入300字" ></textarea>
+				</div>
+			</div>
+			<div class="button bdr-rdu-bottom" >
+				<button class="smt-btn bdr-rdu-bottom-left" tapmode="btn-click" onclick="commonCloseFrame('txl_addgroup_frame');">
+					取消
+				</button>
+				<button class="cnl-btn bdr-rdu-bottom-right" tapmode="btn-click" onclick="saveGroupName()">
+					确定
+				</button>
+			</div>
+		</div>
+	</body>
+	<script type="text/javascript" src="../../script/api.js"></script>
+	<script type="text/javascript" src="../../script/common/common.js" ></script>
+	<script type="text/javascript" src="../../script/base_config.js" ></script>
+	<script type="text/javascript" src="../../script/plug-in/base64.js" ></script>
+	<script type="text/javascript" src="../../script/assembly/UIAlbumBrowser.js"></script>
+	<script type="text/javascript" src="../../script/assembly/getPicture.js"></script>
+	<script type="text/javascript">
+		//1创建群组2修改群组
+		var type;
+		var BASE_URL_ACTION;
+		//头像路径
+		var avater_url;
+		apiready = function() {
+			commonSetTheme({"level":2,"type":0});
+			BASE_URL_ACTION = $api.getStorage('BASE_URL_ACTION');
+			avater_url = "Li4vLi4vLi4vaW1hZ2VzL2hlYWRfaWNvbi9ncm91cC9kZWZhdWx0LnBuZw==";
+			type = api.pageParam.type;
+			if (type == 1) {
+				$api.html($api.byId('title'), "创建群组");
+			} else if (type == 2) {
+				$api.html($api.byId('title'), "修改群组");
+				$api.val($api.byId('fl_val'), api.pageParam.group_name);
+				$api.val($api.byId('des_content'), api.pageParam.group_desc);			
+				var picture_url = api.pageParam.picture_url;
+				var arrUrl = picture_url.split(".");
+				setUserPhoto(avater_url,arrUrl[0],arrUrl[1]);	
+				avater_url = Base64.encode(picture_url);	
+			}
+		};
+		/*
+		 *author:ws
+		 *function:添加或修改分组
+		 *date：20170113
+		 */
+		function saveGroupName() {
+			if (type == 1) {
+				var group_name = $api.trimAll($api.val($api.byId('fl_val')));
+				var content = $api.trim($api.val($api.byId('des_content')));
+				if (group_name.length == 0) {
+					popAlert('群组名称不能为空！');
+					return;
+				}
+				saveGroup(group_name, content);
+			} else if (type == 2) {
+				var id = api.pageParam.groupId;
+				var group_name = $api.trimAll($api.val($api.byId('fl_val')));
+				var content = $api.trim($api.val($api.byId('des_content')));
+				updateGroup(id, group_name, content);
+			}
+		}
+
+		/*
+		 *author:ws
+		 *function:修改群组
+		 *date：20170114
+		 */
+		function updateGroup(id, group_name, content) {
+			showSelfProgress('修改中...');
+			api.ajax({
+				url : BASE_URL_ACTION + '/ypt/group/updateGroup',
+				method : 'post',
+				dataType : 'json',
+				timeou:30,
+				data : {
+					values : {
+						"random_num" : creatRandomNum(),
+						"avater_url" : Base64.decode(avater_url),
+						"group_desc" : content,
+						"group_name" : group_name,
+						"id" : id
+					}
+				},
+				headers : {
+					'Cookie' : 'person_id=' + $api.getStorage("person_id") + ';identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+				}
+			}, function(ret, err) {
+				if (ret.success) {
+					setTimeout(function() {
+						api.execScript({
+							name : 'root',
+							frameName : 'txl_index',
+							script : 'loadData();'
+						});
+						api.closeWin({
+							name : 'hh_chat_window'
+						});
+					}, 600);
+					setTimeout(function() {
+					    api.hideProgress();
+						api.closeWin({
+							name : 'hh_group_window'
+						});
+						api.closeFrame({});
+					}, 1200);
+				}
+			});
+		}
+
+		/*
+		 *author:ws
+		 *function:添加分组
+		 *date：20170113
+		 */
+		function saveGroup(group_name, content) {
+			showSelfProgress('添加中...');
+			api.ajax({
+				url : BASE_URL_ACTION + '/ypt/group/saveGroup',
+				method : 'post',
+				dataType : 'json',
+				timeout:30,
+				data : {
+					values : {
+						"random_num" : creatRandomNum(),
+						"avater_url" : avater_url,
+						"group_desc" : content,
+						"group_name" : group_name,
+						"group_type" : 2,
+						"parent_id" : -1,
+						"parent_type" : -1,
+						"plat_id" : 0,
+						"plat_type" : 1, //1云平台
+						"use_range" : 3,
+					}
+				},
+				headers : {
+					'Cookie' : 'person_id=' + $api.getStorage("person_id") + ';identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+				}
+			}, function(ret, err) {
+				if (ret.success) {
+					setTimeout(function() {
+						api.execScript({
+							name : 'root',
+							frameName : 'txl_index',
+							script : 'loadData();'
+						});
+					}, 800);
+					setTimeout(function() {
+						api.hideProgress();
+						api.closeFrame({
+						});
+					}, 1200);
+				}
+			});
+		}
+
+		/*
+		 *author:ws
+		 *function:分组名称、分组描述最多字数
+		 *date：20170112
+		 */
+		function showTip(length, flag,self) {
+			if (flag == 1) {
+				var count = 10 - length;
+				if (count == 0) {
+//					popBottomToast('最多支持输入10个字符');
+				}
+			} else if (flag == 2) {
+				var count = 300 - length;
+				if (count == 0) {
+//					popBottomToast('最多支持输入300个字符');
+				}
+			}
+			commonRemoveExpression(self);
+		}
+
+		/**
+		 * 获取头像
+		 * 周枫
+		 * 2016.1.16
+		 */
+		function getPictureHeader() {
+			isOnLineStatus(function(is_true, line_type) {
+				if (is_true) {
+					if (line_type == 'wifi' || line_type == '4g') {
+						api.confirm({
+							title : "提示",
+							msg : "您需要如何选择自己的头像？",
+							buttons : ["现在照", "相册选", "取消"]
+						}, function(ret, err) {
+							//定义图片来源类型
+							var sourceType;
+							if (1 == ret.buttonIndex) {/* 打开相机*/
+								//拍照
+								openPicture();
+							} else if (2 == ret.buttonIndex) {
+								//相册
+								album();
+							} else {
+								return;
+							}
+						});
+					} else {
+						api.confirm({
+							title : "提示",
+							msg : "您当前正在使用" + line_type + "网络，建议您在wifi网络下使用，是否继续？",
+							buttons : ["继续", "取消"]
+						}, function(ret, err) {
+							var sourceType;
+							if (1 == ret.buttonIndex) {
+								api.confirm({
+									title : "提示",
+									msg : "您需要如何选择自己的头像？",
+									buttons : ["现在照", "相册选", "取消"]
+								}, function(ret, err) {
+									//定义图片来源类型
+									var sourceType;
+									if (1 == ret.buttonIndex) {/* 打开相机*/
+										//拍照
+										openPicture();
+									} else if (2 == ret.buttonIndex) {
+										//相册
+										album();
+									} else {
+										return;
+									}
+								});
+							} else {
+								return;
+							}
+						});
+					}
+				} else {
+					api.toast({
+						msg : '请连接网络后使用当前功能~'
+					});
+				}
+			});
+		}
+		/*
+	    *author:zhaoj
+	    *function:打开拍照
+	    *date：20170914
+	    */
+	    function openPicture(){
+	    	getPicture.open({"type":1},function(data){
+	    		openImageClipFrame(data[0].path);
+	    	});
+	    }
+		/*
+		 *author:zhaoj
+		 *function:选择图片
+		 *date：20160225
+		 */
+		function album() {
+			UIAlbumBrowser.open(1,function(data){
+				if(api.systemType == "ios"){
+					 UIAlbumBrowser.transPath(data[0].path,function(pic_url_new){
+				         openImageClipFrame(pic_url_new);
+				     });
+				}else{
+				     openImageClipFrame(data[0].path);
+				}
+			});
+		}
+		/*
+	    *author:zhaoj
+	    *function:打开才将
+	    *date：20171020
+	    */
+	    function openImageClipFrame(img_url){
+	    	var param = {"img_url":img_url,"frameName":api.frameName,"winName":api.winName,"backFun":"getClipImageUrl","type":1};
+	    	commonOpenImageClipFrame(param);
+	    }
+	    /*
+	    *author:zhaoj
+	    *function:获取裁剪后的图片路径
+	    *date：20171020
+	    */
+	    function getClipImageUrl(img_url){
+	    	//递归上传图片
+		    commonUiUploadFiles({"data":[{"path":img_url,"thumbPath":img_url}],"is_trans":0}, function(ret_data) {
+		    	commonCloseImageClipFrame();
+		    	for(var i = 0; i < ret_data.length; i++){
+	        		var json_data = JSON.parse(ret_data[i]);
+	        		var file_id = json_data.file_id;
+					var ext = json_data.ext;
+			    	avater_url = Base64.encode(file_id + "." + ext);
+					setUserPhoto(avater_url, file_id, ext);
+				}
+		    });
+	    }
+		/*
+		 *author:ws
+		 *function:保存头像
+		 *date：20170114
+		 */
+		function saveMyselfAvatarUrlInfo(file_id, ext) {
+			avater_url = Base64.encode(file_id + "." + ext);
+			setUserPhoto(avater_url, file_id, ext);
+		}
+
+		/*
+		 *author:ws
+		 *function:保存头像
+		 *date：20170114
+		 */
+		function setUserPhoto(avater_url, file_id, ext) {
+			var user = document.getElementById("user");
+			if ($api.getStorage('BASE_APP_TYPE') == 1) {
+				a_avatar_url = BASE_IMAGE_PRE+"down/Material/" + file_id.substring(0, 2) + "/" + file_id + '.' + ext + commonReturnPhotoCutSize(1,96,96,ext,0);
+			} else {
+				a_avatar_url = BASE_URL_ACTION + "/html/thumb/Material/" + file_id.substring(0, 2) + "/" + file_id + '.' + ext + commonReturnPhotoCutSize(1,96,96,ext,0);
+			}
+			user.src = a_avatar_url;
+		}
+	</script>
+</html>

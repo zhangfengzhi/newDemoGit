@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>学生列表</title>
+    <link rel="stylesheet" type="text/css" href="../../../../../css/aui_css_new/aui.css" />
+    <link rel="stylesheet" type="text/css" href="../../../../../css/module/common/jszy_new_common.css" />
+    <link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+</head>
+<body class="common-ipad-kejianIpad common-ipad-kejianIpad-jczy">
+	<!--班级学生-->
+	<ul id="class_body" class="class-student display-n clearfix"></ul>
+	<script type="text/html" id="class_script">
+		<%if(list.length == 0){%>
+			<div class="no-data">暂无学生</div>
+		<%}else{%>
+			<%if(child_length>0){%>
+				<li>
+					<span class="all-select">全选</span>
+					<input oninput="commonRemoveExpression(this)" id="j_all" class="aui-pull-right aui-checkbox aui-checkbox-success" type="checkbox" onclick="selectAll(this)" />
+				</li>
+			<%}%>
+			<%for(var i = 0; i < list.length; i++){%>
+				<%if(list[i].student_list.length>0){%>
+					<li>
+						<div <%if(child_length==0){%>class="no-bdr-top"<%}%>><%=list[i].group_name%></div>
+						<ul class="child-student">
+							<%for(var j = 0; j < list[i].student_list.length; j++){%>
+								<li><%=list[i].student_list[j].student_name%>
+								<%if(child_length > 0){%>
+									<%if(list[i].is_group){%>
+										<input oninput="commonRemoveExpression(this)" name="class_input_name" class="aui-pull-right aui-checkbox aui-checkbox-success" type="checkbox" onclick="selectPerson(this,<%=list[i].student_list[j].bureau_id%>,<%=list[i].student_list[j].student_id%>,6,<%=list[i].is_group%>,<%=list[i].student_list[j].id%>,<%=list[i].group_id%>)" />
+									<%}else{%>
+										<input oninput="commonRemoveExpression(this)" name="class_input_name" class="aui-pull-right aui-checkbox aui-checkbox-success" type="checkbox" onclick="selectPerson(this,<%=list[i].student_list[j].bureau_id%>,<%=list[i].student_list[j].student_id%>,6,<%=list[i].is_group%>,'','')" />
+									<%}%>
+								<%}%>
+								</li>
+							<%}%>
+						</ul>
+					</li>
+				<%}%>
+			<%}%>
+		<%}%>
+	</script>
+	<!--//班级学生-->
+	<!--分组学生-->
+	<ul id="group_body" class="group-student display-n clearfix"></ul>
+	<script type="text/html" id="group_script">
+		<%if(table_List.length == 1){%>
+			<div class="no-data">暂无学生</div>
+		<%}else{%>
+			<li onclick="selectAll(this)">
+				全选
+				<input oninput="commonRemoveExpression(this)" id="j_all" class="aui-pull-right aui-checkbox aui-checkbox-success" type="checkbox" onclick="selectAll(this)" />
+			</li>
+			<%for(var i = 0; i < table_List.length; i++){%>
+				<%if(table_List[i].identity_id == 6){%>
+					<li>
+						<%=table_List[i].PERSON_NAME%>
+						<input oninput="commonRemoveExpression(this)" name="group_input_name" class="aui-pull-right aui-checkbox aui-checkbox-success" type="checkbox" onclick="selectPerson(this,<%=table_List[i].bureau_id%>,<%=table_List[i].PERSON_ID%>,6,1,<%=table_List[i].id%>,'')" />
+					</li>
+				<%}%>
+			<%}%>
+		<%}%>
+	</script>
+	<!--//分组学生-->
+	<div id="j_footer" class="footer-div display-n">
+		<div id="j_left" class="wid50 left display-n" onclick="setGroup();">设置分组</div>
+	 	<div id="j_right" class="wid50 right display-n" onclick="detelePersonGroupTip();">从分组中移除</div>
+		<div id="j_wid" class="wid display-n" onclick="setGroup();">设置分组</div>
+		<div id="j_remove" class="wid display-n" onclick="detelePersonGroupTip();">从分组中移除</div>
+	</div>
+</body>
+<script type="text/javascript" src="../../../../../script/api.js"></script>
+<script type="text/javascript" src="../../../../../script/plug-in/template.js" ></script>
+<script type="text/javascript" src="../../../../../script/plug-in/base64.js" ></script>
+<script type="text/javascript" src="../../../../../script/base_config.js" ></script>
+<script type="text/javascript" src="../../../../../script/common/common.js" ></script>
+<script type="text/javascript" src="../../../../../script/module/common/kejianJs.js" ></script>
+<script type="text/javascript">
+	var BASE_URL_ACTION;
+	var type;//1班级，0分组
+	var child_length;//学生分组数
+	var select_person_array = new Array();//选择学生
+	var stu_json;//学生数据
+	var stu_num=0;//学生数
+	apiready = function(){
+		commonSetTheme({"level":5,"type":0});
+		type = api.pageParam.type;
+		child_length = api.pageParam.child_length;
+		BASE_URL_ACTION = $api.getStorage('BASE_URL_ACTION');
+		showSelfProgress('加载中...');
+		initData();
+	};
+	/*
+	*author:zhaoj
+	*function:初始化数据
+	*date：20161206
+	*/
+	function initData(){
+		select_person_array=[];
+		judgeFooterBtn(0);
+		if(type){
+			//获取班级学生数据
+			getStudentByTeaClassId(function(flag,ret){
+				api.hideProgress();
+				if(flag){
+					stu_num = ret.table_List.length;
+					stu_json = ret;
+					var data={"list":[{
+						"group_name":"未分组",
+						"group_id":"",
+						"is_group":0,
+						"student_list":[],
+					}]};
+					for(var i =0; i < ret.table_List.length; i++){
+						if(ret.table_List[i].ID){
+							var count =0;
+							for(var j = 0; j < data.list.length; j++){
+								if(data.list[j].group_id == ret.table_List[i].ID){
+									count++;
+								}
+							}
+							if(!count){
+								var oparam = new Object();
+								oparam.group_name = ret.table_List[i].GROUP_NAME;
+								oparam.group_id = ret.table_List[i].ID;
+								oparam.is_group = 1;
+								oparam.student_list = [];
+								data.list.push(oparam);
+							}
+						}
+					}
+					//对分组进行排序
+					data.list = bubbleSort(data.list);
+					for(var i =0; i < ret.table_List.length; i++){
+						for(var j = 0; j < data.list.length; j++){
+							if(data.list[j].group_id*1 == ret.table_List[i].ID*1){
+								var oparam = new Object();
+								oparam.student_name = ret.table_List[i].STUDENT_NAME;
+								oparam.student_id = ret.table_List[i].STUDENT_ID;
+								oparam.bureau_id = ret.table_List[i].BUREAU_ID;
+								if(ret.table_List[i].GM_ID){
+									oparam.id = ret.table_List[i].GM_ID;
+								}else{
+									oparam.id = "";
+								}
+								data.list[j].student_list.push(oparam);
+							}
+						}
+					}
+					data.child_length = child_length;
+					commonAddOnceHtml('class_body','class_script',data);
+					$api.removeCls($api.byId('class_body'), 'display-n');
+				}else{
+					popToast(ret);
+				}
+			});
+		}else{
+			//获取群组学生数据
+			getMemberByparams(function(flag,ret){
+				api.hideProgress();
+				if(flag){
+					ret.child_length = child_length;
+					stu_json = ret;
+					for(var i = 0; i < stu_json.table_List.length; i++){
+						if(stu_json.table_List[i].identity_id == 6){
+							stu_num++;
+						}
+					}
+					commonAddOnceHtml('group_body','group_script',ret);
+					$api.removeCls($api.byId('group_body'), 'display-n');
+				}else{
+					popToast(ret);
+				}
+			});
+		}
+	}
+	/*
+	*author:zhaoj
+	*function:对分组进行排序
+	*date：20161210
+	*/
+	function bubbleSort(arr){
+		var arr_length = arr.length;
+		var i;
+		var temporary;
+		while(arr_length > 0){
+			for(var i = 0; i <arr_length-1; i++){	
+				if(arr[i].group_id > arr[i+1].group_id){
+					temporary = arr[i+1];
+					arr[i+1] = arr[i];
+					arr[i] = temporary;
+				}
+			}
+			arr_length--;
+		}
+		return arr;
+	}
+	/*
+	*author:zhaoj
+	*function:设置分组
+	*date：20161205
+	*/
+	function setGroup(){
+		//设置返回参数
+		api.execScript({
+			name : 'kejianIpad_stu_list_group_window',
+			script : 'reBackType("group");'
+		});
+		var header_h = api.pageParam.header_h;//顶部高度
+		var pageParamJson = {"header_h":header_h,"id":api.pageParam.id,"type":type,"select_person_array":JSON.stringify(select_person_array)};//打开frame页面json数据
+		//进入分组页面
+		commonOpenFrame("kejianIpad_select_group_frame","kejianIpad_select_group_frame.html",header_h,false,false,"#ffffff",pageParamJson);
+	}
+	/*
+	*author:zhaoj
+	*function:选择学生
+	*date：20161206
+	*/
+	function selectPerson(self,bureau_id,student_id,identity_id,is_group,id,group_id){
+		if(self.checked){
+			//添加选择
+			var oparam = new Object();
+			oparam.bureau_id = bureau_id;
+			oparam.student_id = student_id;
+			oparam.identity_id = identity_id;
+			oparam.group_id = group_id;
+			if(is_group){
+				oparam.id = id;
+			}else{
+				oparam.id = "";
+			}
+			select_person_array.push(oparam);
+			judgeFooterBtn(is_group);
+		}else{
+			//去掉选择
+			for(var i = 0; i < select_person_array.length; i++){
+				if(select_person_array[i].student_id == student_id){
+					select_person_array.splice(i,1);
+				}
+			}
+			if(select_person_array.length == 0){
+				var liArray;
+				//获取所有的li节点
+				if(type){
+					liArray = document.getElementsByName("class_input_name");
+				}else{
+					liArray = document.getElementsByName("group_input_name");;
+				}
+				for(var i = 0; i < liArray.length; i++){
+					liArray[i].checked=false;
+				}
+			}
+			//取消选择一个人时，这时只剩下一个选择的人，如果剩下的人已在分组里，显示移除分组，如果没在，显示设置分组按钮
+			if(select_person_array.length==1 && !select_person_array[0].id){
+				judgeFooterBtn(0);
+			}else if(select_person_array.length==1 && select_person_array[0].id){
+				judgeFooterBtn(1);
+			}else{
+				judgeFooterBtn(is_group);
+			}
+		}
+		var chk = document.getElementById('j_all');
+		if(stu_num == select_person_array.length){
+			chk.checked = true;
+		}else{
+			chk.checked = false;
+		}
+	}
+	/*
+	*author:zhaoj
+	*function:判断下方按钮显示
+	*date：20161206
+	*/
+	function judgeFooterBtn(is_group){
+		if(type){
+			//班级
+			if(child_length == 1 && is_group && select_person_array.length == 1){
+				showFooterBtn(3);//只有一个分组，并且这一个人现在已经在分组下，显示一个移除按钮
+			}else if(child_length == 1 && select_person_array.length > 1){
+				//只有一个分组，并且选择超过一个人
+				var count = 0;//判断已选择的人有几个在分组下
+				for(var i = 0; i < select_person_array.length; i++){
+					if(select_person_array[i].id){
+						count++;
+					}
+				}
+				if(count == select_person_array.length){
+					showFooterBtn(3);//都在分组中，显示移除按钮
+				}else if(count < select_person_array.length && count > 0){
+					showFooterBtn(1);//有的人在分组中，有的人没在分组中，显示两个按钮
+				}else{
+					showFooterBtn(2);//选择的人，都没有在分组中，显示设置分组按钮
+				}
+			}else if(child_length > 1 && is_group && select_person_array.length == 1){
+				showFooterBtn(1);//分组超过两个，选择的一个人是在分组下的
+			}else if(child_length > 1 && select_person_array.length == 1){
+				showFooterBtn(2);//分组超过两个，选择的一个人是没在分组下的
+			}else if(child_length > 1 && select_person_array.length > 1){
+				//只有一个分组，并且选择超过一个人
+				var count = 0;//判断已选择的人有几个在分组下
+				for(var i = 0; i < select_person_array.length; i++){
+					if(select_person_array[i].id){
+						count++;
+					}
+				}
+				if(count ==0){
+					showFooterBtn(2);//选择的人，都没有在分组中，显示设置分组按钮
+				}else{
+					showFooterBtn(1);//有的人在分组中，有的人没在分组中或者都在分组中，显示两个按钮
+				}
+			}else if(child_length >= 1 && !is_group && select_person_array.length >= 1){
+				//分组至少有一个，选择的人至少也有一个，但没有在分组中，显示设置分组按钮
+				showFooterBtn(2);//显示设置分组按钮
+			}else{
+				showFooterBtn(0);
+			}
+		}else{
+			//群组
+			if(child_length > 1 && is_group && select_person_array.length == 1){
+				showFooterBtn(1);//分组超过一个，一个选择人在分组的情况下，//显示两个按钮
+			}else if(child_length == 1 && select_person_array.length>=1){
+				showFooterBtn(3);//分组只有一个，选择一个人的情况下，显示移除按钮
+			}else if(child_length > 1 && select_person_array.length>1){
+				showFooterBtn(1);//分组有两个，选择超过两个人的情况下，显示两个按钮
+			}else{
+				showFooterBtn(0);
+			}
+		}
+	}
+	/*
+	*author:zhaoj
+	*function:根据参数显示相应按钮
+	*date：20161208
+	*/
+	function showFooterBtn(show_type){
+		if(show_type == 0){
+			$api.addCls($api.byId('j_footer'), 'display-n');//不显示任何按钮
+			//不显示按钮时，要把内容设置padding为0
+			if(type){
+				$api.css($api.byId('class_body'),'padding-bottom:0;');
+			}else{
+				$api.css($api.byId('group_body'),'padding-bottom:0;');
+			}
+		}else{
+			$api.addCls($api.byId('j_left'), 'display-n');
+			$api.addCls($api.byId('j_right'), 'display-n');
+			$api.addCls($api.byId('j_remove'), 'display-n');
+			$api.addCls($api.byId('j_wid'), 'display-n');
+			if(show_type == 1){
+				//显示两个按钮
+				$api.removeCls($api.byId('j_left'), 'display-n');
+				$api.removeCls($api.byId('j_right'), 'display-n');
+			}else if(show_type == 2){
+				//显示设置按钮
+				$api.removeCls($api.byId('j_wid'), 'display-n');
+			}else if(show_type == 3){
+				//显示移除按钮
+				$api.removeCls($api.byId('j_remove'), 'display-n');
+			}
+			$api.removeCls($api.byId('j_footer'), 'display-n');
+			//显示按钮时，要把内容下方添加padding，把内容全部显示出来
+			if(type){
+				$api.css($api.byId('class_body'),'padding-bottom:55px;');
+			}else{
+				$api.css($api.byId('group_body'),'padding-bottom:55px;');
+			}
+		}
+	}
+	/*
+	*author:zhaoj
+	*function:全选
+	*date：20161207
+	*/
+	function selectAll(self){
+		var liArray;
+		//获取所有的li节点
+		if(type){
+			liArray = document.getElementsByName("class_input_name");
+		}else{
+			liArray = document.getElementsByName("group_input_name");;
+		}
+		var chk = document.getElementById('j_all');
+		if(chk.checked){
+			//添加所有li节点的active
+			for(var i = 0; i < liArray.length; i++){
+				liArray[i].checked=true;
+			}
+			//全选点击选中
+			if(type){
+				//班级
+				for(var i = 0; i < stu_json.table_List.length; i++){
+					var oparam = new Object();
+					oparam.bureau_id = stu_json.table_List[i].BUREAU_ID;
+					oparam.student_id = stu_json.table_List[i].STUDENT_ID;
+					oparam.group_id = stu_json.table_List[i].ID;
+					oparam.identity_id = 6;
+					if(stu_json.table_List[i].GM_ID){
+						oparam.id = stu_json.table_List[i].GM_ID;
+					}else{
+						oparam.id = "";
+					}
+					select_person_array.push(oparam);
+				}
+			}else{
+				//群组
+				for(var i = 0; i < stu_json.table_List.length; i++){
+					if(stu_json.table_List[i].identity_id == 6){
+						var oparam = new Object();
+						oparam.bureau_id = stu_json.table_List[i].bureau_id;
+						oparam.student_id = stu_json.table_List[i].PERSON_ID;
+						oparam.identity_id = stu_json.table_List[i].identity_id;
+						if(stu_json.table_List[i].id){
+							oparam.id = stu_json.table_List[i].id;
+						}else{
+							oparam.id = "";
+						}
+						select_person_array.push(oparam);
+					}
+				}
+			}
+		}else{
+			//去除所有li节点的active
+			for(var i = 0; i < liArray.length; i++){
+				liArray[i].checked=false;
+			}
+			select_person_array=[];
+		}
+		//判断下方按钮是否显示
+		if(select_person_array.length == 1 && select_person_array[0].id){
+			judgeFooterBtn(1);
+		}else{
+			judgeFooterBtn(0);
+		}
+	}
+	/*
+	*author:zhaoj
+	*function:点击“从分组中移出”按钮进行提示
+	*date：20161210
+	*/
+	function detelePersonGroupTip(){
+		if(select_person_array.length > 0){
+			var msg = '确定将学生从分组中移除吗？';
+			popTwoBtnConfirm('提示',msg,'deletePersonGroup();');
+		}else{
+			popToast('您还没有选择学生');
+		}
+	}
+	/*
+	*author:zhaoj
+	*function:开始移除学生
+	*date：20161207
+	*/
+	function deletePersonGroup(){
+		showSelfProgress('移除中...');
+		quitGroup(0,function(flag){
+			if(flag){
+				api.hideProgress();
+				popToast('移除成功');
+				initData();
+			}
+		});
+	}
+	/*
+	*author:zhaoj
+	*function:从组内删除
+	*date：20161207
+	*/
+	function quitGroup(index,callback){
+		if(index < select_person_array.length){
+			if(select_person_array[index].id){
+				var group_id;
+				if(type){
+					group_id = select_person_array[index].group_id;
+				}else{
+					group_id = api.pageParam.id;
+				}
+				api.ajax({
+					url : BASE_URL_ACTION + '/ypt/group/quitGroup',
+					method : 'post',
+					timeout : 30,
+					dataType : 'json',
+					cache : false,
+					data : {
+						values : {
+							"random_num" : creatRandomNum(),
+							"memberId" : select_person_array[index].id,
+							"memberType" : 2,
+							"groupId":group_id
+						}
+					},
+					headers : {
+			'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+			}
+				}, function(ret, err) {
+					if (err) {
+						api.hideProgress();
+						popToast('移除失败');
+					} else {
+						if(ret){
+							index++;
+							return quitGroup(index,callback);
+						}else{
+							api.hideProgress();
+							popToast('移除失败');
+						}
+					}
+				});
+			}else{
+				index++;
+				return quitGroup(index,callback);
+			}
+		}else{
+			callback(true);
+		}
+	}
+</script>
+</html>

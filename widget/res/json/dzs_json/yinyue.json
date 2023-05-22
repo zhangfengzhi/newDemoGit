@@ -1,0 +1,145 @@
+var yinyue = {
+	"list": [{
+		"dzs_id": "AD50B945-5E39-421F-ABE0-863DD5A5EDB9",
+		"dzs_ext": "dsek",
+		"img_url": "AD253172-BBB6-41E6-A7A1-3F2E88FF9557",
+		"img_ext": "png",
+		"dzs_name": "童年"
+	},
+	{
+		"dzs_id": "ADC7DEB2-0972-4E36-9466-578A414FAE0A",
+		"dzs_ext": "dsek",
+		"img_url": "AD7058F9-9ED3-4CEF-9B83-864977B6FA07",
+		"img_ext": "png",
+		"dzs_name": "草原"
+	},
+	{
+		"dzs_id": "AD252CCD-B36E-4B0A-9328-9DD9C351AC53",
+		"dzs_ext": "dsek",
+		"img_url": "AD0484B1-0E76-4894-81E3-058747F5677C",
+		"img_ext": "png",
+		"dzs_name": "好伙伴"
+	},
+	{
+		"dzs_id": "ADCA80EC-25CB-47F2-B6C9-1B9855F642A7",
+		"dzs_ext": "dsek",
+		"img_url": "ADFFE90C-772F-4838-B969-AB9A3053F3CC",
+		"img_ext": "png",
+		"dzs_name": "放牧"
+	},
+	{
+		"dzs_id": "AD70B0CF-6393-45E0-B650-9FFD7FEBEE54",
+		"dzs_ext": "dsek",
+		"img_url": "ADE6B07C-6404-46FF-BBE0-2344FE860288",
+		"img_ext": "png",
+		"dzs_name": "妈妈的歌"
+	},
+	{
+		"dzs_id": "ADB5594E-3CC1-4B53-B7A9-5B82A63C6CBA",
+		"dzs_ext": "dsek",
+		"img_url": "AD8047C7-C4AC-4C69-8064-ADE7EC5CA99A",
+		"img_ext": "png",
+		"dzs_name": "四季的歌"
+	},
+	{
+		"dzs_id": "AD7D01D9-22EF-49B6-86EA-3C64BE5BF12D",
+		"dzs_ext": "dsek",
+		"img_url": "AD3E5F5A-9351-4258-888E-B8B1C884CCD7",
+		"img_ext": "png",
+		"dzs_name": "钟声"
+	},
+	{
+		"dzs_id": "AD41359B-64E4-477B-846C-434D1B096ED0",
+		"dzs_ext": "dsek",
+		"img_url": "ADAD194A-5893-42FB-9747-629B050F70BB",
+		"img_ext": "png",
+		"dzs_name": "丰收歌舞"
+	},
+	{
+		"dzs_id": "AD3D5D62-3D25-474E-B394-14342DEB070C",
+		"dzs_ext": "dsek",
+		"img_url": "ADB15175-D58D-4294-BFA6-4350F342AF8B",
+		"img_ext": "png",
+		"dzs_name": "游戏宫"
+	},
+	{
+		"dzs_id": "AD5FB6EA-1EB2-4361-8808-B6AF7B47B767",
+		"dzs_ext": "dsek",
+		"img_url": "ADDA808E-B424-4E4D-B392-C87F83632801",
+		"img_ext": "png",
+		"dzs_name": "欢乐谷"
+	},
+	{
+		"dzs_id": "AD991169-6599-411A-9ECA-A9D7A5FAD3D1",
+		"dzs_ext": "dsek",
+		"img_url": "AD64C6C8-4737-4FF6-AC33-9DE4BBFF8919",
+		"img_ext": "png",
+		"dzs_name": "爱祖国"
+	},
+	{
+		"dzs_id": "AD6FCC0B-6FF1-461E-BE75-B04C51DE4B16",
+		"dzs_ext": "dsek",
+		"img_url": "AD0CF886-E48F-46B1-8B0C-447073AD413D",
+		"img_ext": "png",
+		"dzs_name": "美妙童音"
+	},
+	{
+		"dzs_id": "AD1A2A61-C643-48A6-B5FD-3B6160E80975",
+		"dzs_ext": "dsek",
+		"img_url": "ADC47C6F-BEB8-4346-B79B-748E59981FC9",
+		"img_ext": "png",
+		"dzs_name": "我们的朋友"
+	},
+	{
+		"dzs_id": "AD6F1937-064B-40B4-8409-ACCF95881D4B",
+		"dzs_ext": "dsek",
+		"img_url": "ADC6DA28-CF79-4E5F-8251-E81F7C4C5C7A",
+		"img_ext": "png",
+		"dzs_name": "春天的歌"
+	},
+	{
+		"dzs_id": "ADAA7E7F-6403-43F5-9FB4-0102E1683D72",
+		"dzs_ext": "dsek",
+		"img_url": "AD542C4A-F511-45A5-9EA6-2FFD13FEA737",
+		"img_ext": "png",
+		"dzs_name": "音乐会"
+	},
+	{
+		"dzs_id": "ADDA2C81-22AF-4199-947B-CBBBBFD4FD72",
+		"dzs_ext": "dsek",
+		"img_url": "AD085D2B-ED28-4C06-BB52-4287D011F765",
+		"img_ext": "png",
+		"dzs_name": "牧童之歌"
+	},
+	{
+		"dzs_id": "AD32E472-629A-4CC0-ADA3-3D4A9FCF1416",
+		"dzs_ext": "dsek",
+		"img_url": "ADBD24D9-AA4D-466D-9BEE-11EC89291FA5",
+		"img_ext": "png",
+		"dzs_name": "老师您好"
+	},
+	{
+		"dzs_id": "AD36D88F-FD33-4627-8443-5DF6782B03BC",
+		"dzs_ext": "dsek",
+		"img_url": "ADCA3498-1836-4CE1-81CB-1EE8FD5946A2",
+		"img_ext": "png",
+		"dzs_name": "家乡赞歌"
+	},
+	{
+		"dzs_id": "ADE5ECF9-BFFF-4BB5-80B1-02D47D712064",
+		"dzs_ext": "dsek",
+		"img_url": "AD7B14CD-36DB-442A-9790-72D377DF4749",
+		"img_ext": "png",
+		"dzs_name": "游戏宫"
+	},
+	{
+		"dzs_id": "ADB66A1A-A409-405E-B978-10DF6A2C4B0A",
+		"dzs_ext": "dsek",
+		"img_url": "AD06947A-D36E-45AA-A9FF-0D729E50630A",
+		"img_ext": "png",
+		"dzs_name": "欢乐谷"
+	}]
+}
+
+
+

@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <title>检测</title>
+    <link rel="stylesheet" type="text/css" href="../../../../../css/aui/aui.css" />
+    <link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+    <style>
+    	body{padding-top:25px;}
+    	.title{margin:0 15px;padding-left:7px;line-height:16px;}
+    	.content{line-height:33px;color:#333;padding:15px 0px 15px 10px;margin:0 15px;}
+    	.content .left{float:left;line-height:35px;}
+    	.content .left font{color:#ff0000;}
+    	.content .right{float:right;line-height:35px;}
+    	.content .object-right ul{padding-bottom:10px;}
+    	.content .object-right ul li{float:left;border:1px solid #888;color:#888;text-align:center !important;padding: 0 5px;line-height: 23px;margin:5px 0 0 5px;font-size:14px;}
+    	.content .object-right .role li,.content .object-right .group li{padding:0 10px;}
+    	.content .object-right ul li.active{color:#ffffff;}
+    	.pb30{padding-bottom:30px;}
+    	.break{word-wrap: break-word;word-break: normal;}
+    	.footer-div{
+			position:fixed;
+			height:55px;
+			background:#ffffff;
+			display: block;
+			bottom: 0px;
+			width:100%;
+		}
+		.kb{height:65px;}
+		.footer-div{position:fixed;height:55px;background:#F6F6F6;display: block;bottom: 0px;width:100%;border-top:1px solid #E2E2E2;font-size:14px;}
+		.footer-div .wid{width:92%;line-height:36px;text-align:center;color:#ffffff;margin-top:9px;border-radius:2px;margin-left:4%;}
+    </style>
+</head>
+<body class="common-ipad-dcwjIpad-teas">
+	<div class="title">
+		问卷名称
+	</div>
+	<div id="j_name" class="content break pb30">
+	</div>
+	<div class="title ">
+		问卷描述
+	</div>
+	<div id="j_describe" class="content break">
+	</div>
+	<!--发布设置-->
+	<div id="j_set_title" class="title" style="display:none;">
+		发布设置
+	</div>
+	<div id="j_set_content" class="content break clearfix" style="display:none;">
+		<div class="clearfix"><span class="left">匿名答题<font>(不显示答题人姓名)</font></span><span id="j_anonymous" class="right"></span></div>
+		<div class="clearfix"><span class="left">答题人答完问卷可查看结果</span><span id="j_query_res" class="right"></span></div>
+		<div class="clearfix"><span class="left">数据收集结束份数</span><span id="j_end_num" class="right"></span></div>
+		<div class="clearfix"><span class="left">数据收集结束日期</span><span id="j_end_time" class="right"></span></div>
+	</div>
+	<!--//发布设置-->
+	<!--发布对象-->
+	<div id="j_object_title" class="title" style="display:none;">
+		发布对象
+	</div>
+	<div id="j_object_content" class="content break clearfix" style="display:none;">
+		<div id="j_class_display" style="display:none;">
+			<div class="object-left">选择的班级</div>
+			<div class="object-right">
+				<ul id="j_class"></ul>
+			</div>
+		</div>
+		<div id="j_role_display" style="display:none;">
+			<div class="object-left">选择角色</div>
+			<div class="object-right">
+				<ul id="j_role" class="role">
+				</ul>
+			</div>
+		</div>
+		<div id="j_group_display" style="display:none;">
+			<div class="object-left">选择的群组</div>
+			<div class="object-right">
+				<ul id="j_group" class="group">
+					<li class="active">教师</li>
+					<li class="active">学生</li>
+					<li>家长</li>
+				</ul>
+			</div>
+		</div>
+	</div>
+	<!--//发布对象-->
+	<div class="kb">
+		&nbsp;
+	</div>
+	<div class="footer-div">
+		<div id="j_start" class="wid" style="display:none;" onclick="clickFooterBtn(1);">开始</div>
+		<div id="j_ckdt" class="wid" style="display:none;" onclick="clickFooterBtn(2);">查看</div>
+		<div id="j_cknr" class="wid" style="display:none;" onclick="clickFooterBtn(3);">查看内容</div>
+	</div>
+</body>
+<script type="text/javascript" src="../../../../../script/api.js"></script>
+<script type="text/javascript" src="../../../../../script/base_config.js" ></script>
+<script type="text/javascript" src="../../../../../script/plug-in/base64.js" ></script>
+<script type="text/javascript" src="../../../../../script/common/common.js" ></script>
+<script type="text/javascript" src="../../../../../script/common/ipad/dcwjIpad_common.js"></script>
+<script type="text/javascript">
+	var header_h;
+	var BASE_URL_ACTION;
+	var id;//调查问卷id
+	var type;//0，打卡答题页面；1打开只查看试题页面；2查看答题情况页面
+	apiready = function(){	
+		commonSetTheme({"level":5,"type":0});
+		header_h = api.pageParam.header_h;
+		id = api.pageParam.id;
+		BASE_URL_ACTION = $api.getStorage('BASE_URL_ACTION');
+		showSelfProgress('加载中...');
+		type = api.pageParam.type;
+		getSurveyById(id,function(flag,ret){
+			api.hideProgress();
+			if(flag){
+				$api.html($api.byId('j_name'), ret.title);
+				if(ret.explain.length > 0){
+					$api.html($api.byId('j_describe'), ret.explain);
+				}else{
+					$api.html($api.byId('j_describe'),'<div class="no-data">暂无问卷描述</div>');
+				}
+				setPublicInfo(ret);
+			}else{
+				popToast('获取问卷详情信息失败，请稍候再试！');
+			}
+		});
+		BASE_URL_ACTION = $api.getStorage('BASE_URL_ACTION');
+		if(type == 0){
+			$api.css($api.byId('j_start'),'display:block;');
+		}else if(type == 1){
+			$api.css($api.byId('j_cknr'),'display:block;');
+		}else{
+			$api.css($api.byId('j_ckdt'),'display:block;');
+		}
+	};
+	/*
+	*作者:zhaoj
+	*功能:点击下方按钮
+	*日期：20161031
+	*/
+	function clickFooterBtn(type){
+		var pageParamJson={"header_h":header_h,"id":id,"sort":0,"name_base64":api.pageParam.name_base64};
+		if(type == 1){
+			checkPermission(id,function(flag,ret){
+				if(flag){
+					if(ret.success){
+						//答调查问卷
+						pageParamJson.type = 0;
+						commonOpenWin('dcwjIpad_answer_window', 'dcwjIpad_answer_window.html', true, true, pageParamJson);
+					}else{
+						popCheckTip(ret.info);
+					}
+				}else{
+					popCheckTip("");
+				}
+			})
+		}else if(type == 2){
+			pageParamJson.answer_id = api.pageParam.answer_id;
+			pageParamJson.type = 0;
+			commonOpenWin('dcwjIpad_preview_window', 'dcwjIpad_preview_window.html', false, false, pageParamJson);
+		}else{
+			commonOpenWin('dcwjIpad_preview_window', 'dcwjIpad_preview_window.html', false, false, pageParamJson);
+		}
+		
+	}
+	
+</script>
+</html>

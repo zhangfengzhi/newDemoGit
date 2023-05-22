@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>整体统计</title>
+    <link rel="stylesheet" type="text/css" href="../../../../../css/aui/aui.css"/>
+    <link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+    <style>
+    	body{background:#f6f6f6;color:#7e7e7e;}
+    	.content{background:#ffffff;padding:0 15px 12px 15px;}
+    	.title-part{text-align:center;position:relative;padding-top:12px;}
+    	.title-part span{display:inline-block;}
+    	.title-part .name{position:relative;font-size:16px;color:#333333;z-index: 2;background:#ffffff;padding:0 10px;}
+    	.mt15{padding-top:15px;}
+    	.mt25{margin-top:15px;}
+    	.mt10{margin-top:10px;}
+    	.st-total font{font-size:18px;padding:0 5px;}
+    	.st-num{width:100%;}
+    	.st-num li{list-style:none;float:left;width:25%;padding-top:13px;text-align:center;}
+    	.st-num li span{display:inline-block;width:40px;height:40px;border-radius:20px;text-align:center;line-height:40px;}
+    	.class div{width:100%;float:left;}
+    	.class font{padding:0 5px;float: right;}
+    	.class .rate{color:#ff0000;font-size:18px;}
+    	.class-name{margin-bottom:8px;margin-left:15px;padding-left:5px;line-height:14px;}
+    	.kb{height:0;}
+    	hr{height:1px;background:#e1e1e1;position:absolute;width:100%;top:21px;}
+    	.detail-content{border:1px solid #e1e1e1;border-radius:5px;margin-top: 12px;padding: 0 13px 13px;}
+    </style>
+</head>
+<body class="common-ipad-zuoyeIpad-tea">
+	<!--试题相关-->
+	<div id="div_body">
+	</div>
+	<script type="text/html" id="div_script">
+		<div class="content clearfix">
+			<div class="title-part">
+				<span class="name">
+					试题相关
+				</span>
+				<hr />
+			</div>
+			<div class="detail-content clearfix">
+				<div class="st-total mt15">
+					本次检测共<font><%=ti_count%></font>题
+				</div>
+				<%if(kg_que_count>0){%>
+					<div class="kg-st mt15">
+						<div class="st-name">客观题共<%=kg_que_count%>题</div>
+						<ul class="st-num clearfix">
+							<%for(var i = 0 ;i < kg_que_list.length; i++){%>
+								<li onclick="showQueDetail('<%=kg_que_list[i].question_id_char%>',<%=kg_que_list[i].sort%>,'<%=kg_que_list[i].qt_name%>',<%=kg_que_list[i].qt_type%>,0,'','','','','','','',<%=kg_que_list[i].que_source%>,'<%=kg_que_list[i].jy_subject_en_name%>',<%=kg_que_list[i].qt_id%>)">
+									<span><%=kg_que_list[i].sort%></span>
+								</li>
+							<%}%>
+						</ul>
+					</div>
+				<%}%>
+				<%if(zg_que_count>0){%>
+					<div class="kg-st mt15">
+						<div class="st-name">主观题共<%=zg_que_count%>题</div>
+						<ul class="st-num clearfix">
+							<%for(var i = 0; i < zg_que_list.length; i++){%>
+								<li onclick="showQueDetail('<%=zg_que_list[i].question_id_char%>',<%=zg_que_list[i].sort%>,'<%=zg_que_list[i].qt_name%>',<%=zg_que_list[i].qt_type%>,0,'','','','','','','',<%=zg_que_list[i].que_source%>,'<%=zg_que_list[i].jy_subject_en_name%>',<%=zg_que_list[i].qt_id%>,<%=zg_que_list[i].qt_id%>)">
+									<span><%=zg_que_list[i].sort%></span>
+								</li>
+							<%}%>
+						</ul>
+					</div>
+				<%}%>
+				<%if(knowledges.length>0){%>
+					<div class="kg-st mt15">
+						<div class="st-name">包含知识点：
+							<%for(var i = 0; i < knowledges.length; i++){%>
+								<%if(i == 0){%>
+									<%=knowledges[i].structure_name%>
+								<%}else{%>
+									，<%=knowledges[i].structure_name%>
+								<%}%>
+							<%}%>
+						</div>
+					</div>
+				<%}else{%>
+					<div class="kg-st mt15">
+						<div class="st-name">包含知识点：没有相关的知识点信息 </div>
+					</div>
+				<%}%>
+			</div>
+		</div>
+		<!--整体报告-->
+		<div class="content mt10 clearfix" onclick="openZtPersonListFrame(<%=zt_tj.zy_id%>,<%=zt_tj.obj_type%>,<%=zt_tj.obj_id%>,<%=zt_tj.pub_count%>,<%=zt_tj.sub_count%>,<%=zt_tj.no_sub_count%>);">
+			<div class="title-part">
+				<span class="name">
+					整体报告
+				</span>
+				<hr />
+			</div>
+			<div class="detail-content clearfix">
+				<div class="class mt15 clearfix">
+					<div>应交人数<font><%=zt_tj.pub_count%></font> </div>
+				</div>
+				<div class="class mt15 clearfix">
+					<div>已交人数<font><%=zt_tj.sub_count%></font></div>
+				</div>
+				<div class="class mt15 clearfix">
+					<div>未交人数<font><%=zt_tj.no_sub_count%></font></div>
+				</div>
+				<div class="class mt15 clearfix">
+					<%if(zt_tj.ti_rights=='--'){%>
+						<div>班级正确率<font class="rate"><%=zt_tj.ti_rights%></font></div>
+					<%}else{%>
+						<div>班级正确率<font class="rate"><%=zt_tj.ti_rights%>%</font></div>
+					<%}%>
+				</div>
+			</div>
+		</div>
+		<!--班级报告-->
+		<%for(var i = 0; i < list.length; i++){%>
+			<div class="class-name mt10"><%=list[i].class_name%></div>
+			<%for(var j = 0; j < list[i].class_infor.length; j++){%>
+				<div class="content <%if(j!=0){%>mt10<%}%> clearfix" onclick="openZtPersonListFrame(<%=list[i].class_infor[j].zy_id%>,<%=list[i].class_infor[j].obj_type%>,<%=list[i].class_infor[j].obj_id%>,<%=list[i].class_infor[j].pub_count%>,<%=list[i].class_infor[j].sub_count%>,<%=list[i].class_infor[j].no_sub_count%>);">
+					<div class="title-part">
+						<span class="name">
+							<%=list[i].class_infor[j].group_name%>报告
+						</span>
+						<hr />
+					</div>
+					<div class="detail-content clearfix">
+						<div class="class mt15 clearfix">
+							<div>应交人数<font><%=list[i].class_infor[j].pub_count%></font> </div>
+						</div>
+						<div class="class mt15 clearfix">
+							<div>已交人数<font><%=list[i].class_infor[j].sub_count%></font></div>
+						</div>
+						<div class="class mt15 clearfix">
+							<div>未交人数<font><%=list[i].class_infor[j].no_sub_count%></font></div>
+						</div>
+						<div class="class mt15 clearfix">
+							<%if(list[i].class_infor[j].ti_rights=='--'){%>
+								<div>班级正确率<font class="rate"><%=list[i].class_infor[j].ti_rights%></font></div>
+							<%}else{%>
+								<div>班级正确率<font class="rate"><%=list[i].class_infor[j].ti_rights%>%</font></div>
+							<%}%>
+						</div>
+					</div>
+				</div>
+			<%}%>
+		<%}%>
+		<!--<div class="kb">&nbsp;</div>-->
+	</script>
+</body>
+<script type="text/javascript" src="../../../../../script/api.js"></script>
+<script type="text/javascript" src="../../../../../script/base_config.js" ></script>
+<script type="text/javascript" src="../../../../../script/plug-in/template.js" ></script>
+<script type="text/javascript" src="../../../../../script/common/common.js" ></script>
+<script type="text/javascript" src="../../../../../script/common/jszy_jy_common.js" ></script>
+<script type="text/javascript">
+	var header_h;//定位header位置，留出上面电池等空隙，苹果需要
+	var zy_id;//检测id
+	var BASE_URL_ACTION;
+	apiready = function(){
+		commonSetTheme({"level":5,"type":0});
+		header_h = api.pageParam.header_h;
+		BASE_URL_ACTION = $api.getStorage('BASE_URL_ACTION');
+		zy_id = api.pageParam.zy_id;
+		getZyTotalTj();
+	};
+	/*
+	*作者:zhaoj
+	*功能:根据检测id获取检测整体的统计信息
+	*日期：20160913
+	*/
+	function getZyTotalTj(){
+		showSelfProgress('加载中...');
+		api.ajax({
+			url : BASE_URL_ACTION + '/xx/getZyTotalTj?zy_id='+zy_id+'&is_all=1&random='+creatRandomNum(),
+			method : 'get',
+			timeout : 30,
+			dataType : 'json',
+			cache : false,
+		}, function(ret, err) {
+			api.hideProgress();
+			if (err) {
+				popToast('获取统计信息失败');
+			} else {
+				if(ret){
+					var data={"kg_que_list":ret.kg_que_list,"zg_que_list":ret.zg_que_list,"zg_que_count":ret.zg_que_count,"kg_que_count":ret.kg_que_count,"ti_count":ret.ti_count,"knowledges":ret.knowledges,zt_tj:ret.pub_list[0],list:[]};
+					for(var i = 1; i < ret.pub_list.length; i++){
+						var first = ret.pub_list[i].class_name.indexOf('(');
+						var class_name = ret.pub_list[i].class_name.substring(0,first);
+						var count=0;
+						for(var j = 0 ; j < data.list.length; j++){
+							if(data.list[j].class_name == class_name){
+								count++;
+							}
+						}
+						if(count == 0){
+							var oparam = new Object();
+							oparam.class_name = class_name;
+							oparam.class_infor = [];
+							data.list.push(oparam);
+						}
+					}
+					for(var i = 1; i < ret.pub_list.length; i++){
+						var first = ret.pub_list[i].class_name.indexOf('(');
+						var last = ret.pub_list[i].class_name.lastIndexOf(')');
+						var class_name = ret.pub_list[i].class_name.substring(0,first);
+						var group_name = ret.pub_list[i].class_name.substring(first+1,last);
+						for(var j = 0 ; j < data.list.length; j++){
+							if(data.list[j].class_name == class_name){
+								var oparam = new Object();
+								oparam.group_name = group_name;
+								oparam.score_rights = ret.pub_list[i].score_rights;
+								oparam.zy_publish_time = ret.pub_list[i].zy_publish_time;
+								oparam.que_source = ret.pub_list[i].que_source;
+								oparam.jy_subject_en_name = ret.pub_list[i].jy_subject_en_name;
+								oparam.zy_id = ret.pub_list[i].zy_id;
+								oparam.pub_count = ret.pub_list[i].pub_count;
+								oparam.zy_cutoff_time = ret.pub_list[i].zy_cutoff_time;
+								oparam.no_sub_count = ret.pub_list[i].no_sub_count;
+								oparam.sub_count= ret.pub_list[i].sub_count;
+								oparam.obj_id= ret.pub_list[i].obj_id;
+								oparam.class_name= ret.pub_list[i].class_name;
+								oparam.obj_type= ret.pub_list[i].obj_type;
+								oparam.ti_rights= ret.pub_list[i].ti_rights;
+								data.list[j].class_infor.push(oparam);
+							}
+						}
+						
+					}
+					var html_type = template.render('div_script', data);
+					document.getElementById('div_body').innerHTML = html_type;
+				}else{
+					popToast('获取统计信息失败');
+				}
+			}
+		});
+	}
+	
+</script>
+</html>

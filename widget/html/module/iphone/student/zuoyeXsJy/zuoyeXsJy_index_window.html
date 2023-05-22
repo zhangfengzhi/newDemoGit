@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<!-- html5：在创建html时为了防止页面缩放等不兼容效果，要创建个viewport  -->
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<!-- 在IOS设备上，有时会将数字转为手机号，这里也要禁止下 -->
+		<meta name="format-detection" content="telephone=no"/>
+		<title>学生检测</title>
+		<link rel="stylesheet" type="text/css" href="../../../../../css/aui/aui.css" />
+		<link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+		<style>
+			.history-date {
+				font-size: 12px;
+			}
+			#message-content {
+				overflow-y: auto;
+				display: none;
+			}
+			.win-menu{font-size:15px;line-height:48px;height:100%;}
+			.menu{display:inline-block;width:24px;height:100%;background: url(../../../../../image/fun-module/iphone/page_menu_icon.png) center center no-repeat;background-size: 24px 24px;}
+			.ellipsis{white-space: nowrap;overflow: hidden;text-overflow: ellipsis;}
+			.t_display_n {
+				display: none;
+			}
+			.t_display_b {
+				display: block;
+			}
+			.nav{background:#ffffff;color:#63666B;margin-top:50px;}
+	   		.nav div{
+	   			display:inline-block;
+	   			height:55px;
+	   			line-height:55px;
+	   			border-top:1px solid #EEF0F2;
+	   			border-bottom:2px solid #EEF0F2;
+	   			width:25%;
+	   			text-align:center;
+	   			float:left;
+	   		}
+		</style>
+	</head>
+	<body class="common-iphone-zuoyeXsJy">
+	
+		<div id="wrap">
+			<header class="aui-bar aui-bar-nav aui-bar-primary" id="aui-header">
+				<div id="cloud" class="topbar activebar">
+					<div id="back" class="back" onclick="back();" tapmode="">
+						<i class="aui-iconfont aui-icon-left"></i>返回
+					</div>
+					<div  class="mTitle" id="mTitle">
+						检测
+					</div>
+					<div class="win-menu">
+						<a id='menu' class="aui-iconfont aui-icon-menu back" tapmode="tap-active" onclick="openMenu();"></a>
+					</div>
+				</div>
+				<div id="shuoming_show" style="color:#f00;background:#F6F6F6;width:100%;height:50px;text-align:center;padding:3px 0;display:none;">
+                                注：家长账号仅能查看检测，提交检测需要登录学生账号！
+                    </div>
+			</header>
+    			
+			<div  class="aui-content aui-content-padded" id="message-content">
+				<p class="aui-text-center history-date"></p>
+			</div>
+		</div>
+	</body>
+	<script type="text/javascript" src="../../../../../script/api.js"></script>
+	<script type="text/javascript" src="../../../../../script/base_config.js" ></script>
+	<script type="text/javascript" src="../../../../../script/common/common.js"></script>
+	<script type="text/javascript" src="../../../../../script/assembly/tongjiData.js"></script>
+	<script type="text/javascript">
+		var header_h;//定位header位置，留出上面电池等空隙，苹果需要
+		var BASE_URL_ACTION;
+		var BASE_APP_TYPE;
+		var dic_status;  //检测的状态，0代表全部，1代表未提交。。。
+		apiready = function() {
+		    commonSetTheme({"level":5,"type":0});
+			header_h = api.pageParam.header_h;
+			BASE_URL_ACTION = $api.getStorage('BASE_URL_ACTION');
+			BASE_APP_TYPE = $api.getStorage('BASE_APP_TYPE');
+			if($api.getStorage('identity')==7){
+                $api.css($api.byId("shuoming_show"),"display:block;")
+                header_h=header_h+50;
+            }
+            var pageParamJson = {
+                'header_h' : header_h
+            }
+            
+			commonOpenFrame('zuoyeXsJy_index_frame', 'zuoyeXsJy_index_frame.html', header_h+45, true, true, '#fff', pageParamJson);
+			//安卓关闭
+			commonBackForAndroid();
+			//定位header位置，留出上面电池等空隙，苹果需要
+			commonIosAuiHeader();
+			commonOpenTjData($api.getStorage("identity")+'_'+api.winName);//记录统计
+			changeZyStatu(0);
+		};
+
+		
+		/*
+		*author:zhaoj
+		*function:打开下拉菜单
+		*date：20160328
+		*/
+		function openMenu(){
+		  commonExecScript('zuoyeXsJy_index_window','zuoyeXsJy_index_frame','openMenu('+dic_status+');',1);
+		}
+		/*
+		*author:zhaoj
+		*function:返回页面
+		*date：20160307
+		*/
+		function back() {
+			commonCloseTjData($api.getStorage("identity")+'_'+api.winName);//记录统计
+			api.closeWin();
+		}
+		
+		/*
+		*author:zfz
+		*function:获取检测下拉菜单的选中状态
+		*date：20160307
+		*/
+		function changeZyStatu(statu){
+			dic_status = statu;
+		}
+	</script>
+</html>

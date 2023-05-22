@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<!-- html5：在创建html时为了防止页面缩放等不兼容效果，要创建个viewport  -->
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<!-- 在IOS设备上，有时会将数字转为手机号，这里也要禁止下 -->
+		<meta name="format-detection" content="telephone=no"/>
+		<title>会话列表</title>
+		<link rel="stylesheet" type="text/css" href="../../css/aui/aui.css" />
+		<link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+		<style>
+		.history-date {
+			font-size: 12px;
+		}
+		#message-content {
+			overflow-y: auto;
+		}
+		#wrap {
+			height: 100%;
+			display: -webkit-box;
+			display: -webkit-flex;
+			display: flex;
+			-webkit-box-orient: vertical;
+			-webkit-flex-flow: column;
+			flex-flow: column;
+		}
+		.topbar {
+			height: 45px;
+			/*border-bottom: 1px solid #DDDFE3;*/
+			line-height: 45px;
+			text-align: center;
+			display: none;
+			color: #ffffff;
+			font-size: 18px;
+		}
+		.activebar {
+			display: block;
+		}
+	</style>
+	</head>
+	<body class="tongxunlu-common">
+		<div id="wrap">
+			<header class="aui-bar aui-bar-nav aui-bar-primary" id="aui-header">
+				<div id="cloud" class="topbar activebar">
+					<div id="back" class="back" onclick="back()" tapmode="">
+						<i class="aui-iconfont aui-icon-left"></i>
+					</div>
+					<div class="mTitle" id="mTitle"></div>
+				</div>
+			</header>
+			<div class="aui-content aui-content-padded" id="message-content">
+				<p class="aui-text-center history-date"></p>
+			</div>
+		</div>
+	<script type="text/javascript" src="../../script/api.js"></script>
+	<script type="text/javascript" src="../../script/base_config.js"></script>
+	<script type="text/javascript" src="../../script/tongxunlu/txl_content_window.js"></script>
+	</body>
+	
+</html>

@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<!-- html5：在创建html时为了防止页面缩放等不兼容效果，要创建个viewport  -->
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<!-- 在IOS设备上，有时会将数字转为手机号，这里也要禁止下 -->
+		<meta name="format-detection" content="telephone=no"/>
+		<title>考勤统计</title>
+		<link rel="stylesheet" type="text/css" href="../../../../../css/aui/aui.css" />
+		<link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+		<style>
+			.history-date {
+				font-size: 12px;
+			}
+			#message-content {
+				overflow-y: auto;
+				display: none;
+			}
+			
+			
+			.t_display_n {
+				display: none;
+			}
+			.t_display_b {
+				display: block;
+			}
+		</style>
+	</head>
+	<body class="common-ipad-kaoqinIpad-tea">
+		<div id="wrap">
+			<header class="aui-bar aui-bar-nav aui-bar-primary" id="aui-header">
+				<div id="cloud" class="topbar activebar">
+					<div id="back" class="back" onclick="back();" tapmode="">
+						<i class="aui-iconfont aui-icon-left"></i>返回
+					</div>
+					<div  class="mTitle" id="mTitle">
+						
+					</div>
+					<div class="win-menu">
+					</div>
+				</div>
+				<div class="tag-title">
+				</div>
+			</header>
+			<div  class="aui-content aui-content-padded" id="message-content">
+				<p class="aui-text-center history-date"></p>
+			</div>
+		</div>
+	</body>
+	<script type="text/javascript" src="../../../../../script/api.js"></script>
+	<script type="text/javascript" src="../../../../../script/common/common.js"></script>
+	<script type="text/javascript">
+		//顶部header高度
+		var header_h;
+		var back_type = 'index';
+		apiready = function() {
+			commonSetTheme({"level":5,"type":0});
+			//定位header位置，留出上面电池等空隙，苹果需要
+			var header = $api.byId('aui-header');
+			header_h = api.pageParam.header_h;
+			//区分是请假还是公出
+			diffrentType();
+			//打开我的考勤详情页面
+			openMyKqxqFrame();
+			$api.fixStatusBar(header);
+			commonBackForAndroid();//安卓关闭
+		};
+		/*
+		*author:zhaoj
+		*function:打开我的考勤详情页面
+		*date：20160620
+		*/
+		function openMyKqxqFrame(){
+			var pageParamJson = {
+					header_h : header_h,
+					type : api.pageParam.type,
+					leave_id : api.pageParam.leave_id,
+					status_id: api.pageParam.status_id
+				}
+			commonOpenFrame('kaoqinIpad_myKqxq_frame','kaoqinIpad_myKqxq_frame.html', header_h, false, true, '#ffffff', pageParamJson);
+		}
+		/*
+		*author:zhaoj
+		*function:根据type判断是请假还是公出
+		*date：20160620
+		*/
+		function diffrentType(){
+			if(api.pageParam.type){
+				$api.text($api.byId('mTitle'), '公出详情');
+			}else{
+				$api.text($api.byId('mTitle'), '请假详情');
+			}
+		}
+		/*
+		*author:zhaoj
+		*function:返回页面
+		*date：20160307
+		*/
+		function back() {
+			switch(back_type) {
+				case 'index':
+					api.closeWin();
+					break;
+				case 'open_picture':
+				  	reBackType('mybc');
+					break;
+				case 'mybc':
+					commonCloseFrame('kaoqinIpad_mybc_frame');
+					reBackType('index');
+					break;
+			}
+		}
+		/**
+		 * 重置从哪个页面退出
+		 * 周枫
+		 * 2015.12.17
+		 */
+		function reBackType(type) {
+			switch(type) {
+				//如果列表页面退出
+				case 'index':
+					back_type = 'index';
+					break;
+				//如果添加页面退出
+				case 'picture':
+					back_type = 'picture';
+					break;
+				//如果打开图片退出
+				case 'open_picture':
+					back_type = 'open_picture';
+					break;
+				case 'mybc':
+					back_type = 'mybc';
+					break;
+			}
+		}
+
+		
+	</script>
+</html>

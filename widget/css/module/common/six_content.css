@@ -1,0 +1,11 @@
+.h1 {
+	height: 1px;
+	background: #f0f0f0;
+}
+.title {font-size: 20px;padding: 5px 15px 15px 15px;line-height: 30px;color: #484848;word-break: break-all;word-wrap:break-word;}
+.create-time{display:inline-block;float:right;color: #C7C7C7;font-size: 12px;}
+.aui-img-body{display:inline-block;max-width:50%;color: #C7C7C7;font-size: 12px;}
+.ellipsis {white-space: nowrap;overflow: hidden;text-overflow: ellipsis;}
+.content {color: #3A3A3A;padding: 10px 15px;word-break: break-all;word-wrap:break-word;font-size:16px;}
+.content table,.content p,.content div{max-width:100% !important;word-break: break-all;word-wrap:break-word;height:auto !important;color: #3A3A3A;font-size:16px;}
+.ima_notice{padding: 12px 0;}

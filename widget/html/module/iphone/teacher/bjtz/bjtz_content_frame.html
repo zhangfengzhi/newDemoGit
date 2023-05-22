@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<!-- html5：在创建html时为了防止页面缩放等不兼容效果，要创建个viewport  -->
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<!-- 在IOS设备上，有时会将数字转为手机号，这里也要禁止下 -->
+		<meta name="format-detection" content="telephone=no"/>
+		<title>新闻资讯数据页面</title>
+		<link rel="stylesheet" type="text/css" href="../../../../../css/aui/aui.css" />
+		<link id="j_theme_base" rel="stylesheet" type="text/css" href="" /><style>
+			.h1 {
+				height: 1px;
+				background: #f0f0f0;
+			}
+			.title {
+				font-size: 20px;
+				padding: 5px 15px 15px 15px;
+				line-height: 30px;
+				color: #484848;
+				word-break: break-all;
+				word-wrap: break-word;
+			}
+			.create-time {
+				display: inline-block;
+				float: right;
+				color: #C7C7C7;
+				font-size: 12px;
+			}
+			.aui-img-body {
+				display: inline-block;
+				max-width: 50%;
+				color: #C7C7C7;
+				font-size: 12px;
+			}
+			.ellipsis {
+				white-space: nowrap;
+				overflow: hidden;
+				text-overflow: ellipsis;
+			}
+			.content {
+				color: #3A3A3A;
+				padding: 10px 15px;
+				word-break: break-all;
+				word-wrap: break-word;
+				font-size: 16px;
+			}
+			.content table, .content p, .content div {
+				max-width: 100% !important;
+				word-break: break-all;
+				word-wrap: break-word;
+				height: auto !important;
+				color: #3A3A3A;
+				font-size: 16px;
+			}
+			.ima_notice {
+				padding: 12px 0;
+			}
+			.shadow {position: absolute;left: 0;top: 0;width: 100%;height: 100%;z-index: -1;background: #000000;opacity: 0;}
+			.quanzi-title{font-size: 20px;padding: 5px 15px 15px 15px;color: #484848;word-break: break-all;word-wrap:break-word;
+			}
+			.content {color: #3A3A3A;padding: 10px 15px;word-break: break-all;}
+			.content table,.content p,.content div{max-width:100% !important;word-break: break-all;word-wrap:break-word;height:auto !important;}
+			.delete{float:right;background:url(../../../../../image/fun-module/common/delete.png) 2px 6px  no-repeat;background-size:auto 16px;font-size:10px;color:#8f8f94;}
+			.preview {padding: 0 0 10px 18px;color: #C7C7C7;font-size: 12px;}
+			.preview .person-name {max-width: 30%;float: left;}
+			.preview .pre-num {max-width: 30%;float: left;margin-right:5px;}
+			.preview .red{color:#FA4848;}
+			.preview .yellow{color:#F1C40F;}
+			.preview .blue{color:#004dff;}
+			.preview .time{float:right;max-width:35%;}
+		</style>
+	</head>
+	<body>
+		<div class="aui-content">
+			<div id="j_content" class="clearfix" >
+		        <div class="quanzi-title">
+		     	   <span id="notice_title_div" style="line-height: 46px;">1215454</span>
+		     	   <div id="delete-quanzi" class="delete" onclick="popTwoBtnConfirm('提示','确定删除该通知？','deleteArticle()')";></br><span>删除</span></div>		    	  			</div>
+	     	 <div id="notice_sec_title" class="preview clearfix">
+	                <span id="person-name" class="person-name" style="float: left;">zhaojing</span>
+	                <p class='aui-ellipsis-1' id="create-time" style="float:right;">2018-02-02 18:23:41</p>
+	            </div>		        
+			</div>
+			<div id="notice_con_div" class="content"></div>
+			<div id="notice_title_div" class="title"></div>
+			<!--<div class="aui-user-view-cell aui-img header-quanzi">			
+    
+		    </div>-->
+		</div>
+	</body>
+	<script type="text/javascript" src="../../../../../script/api.js" ></script>
+	<script type="text/javascript" src="../../../../../script/base_config.js" ></script>
+	<script type="text/javascript" src="../../../../../script/plug-in/template.js" ></script>
+	<script type="text/javascript" src="../../../../../script/base_config.js" ></script>
+	<script type="text/javascript" src="../../../../../script/plug-in/base64.js" ></script>
+	<script type="text/javascript" src="../../../../../script/common/common.js"></script>
+	<script type="text/javascript" src="../../../../../script/assembly/photoBrowser.js"></script>
+	<script type="text/javascript">
+		var notice_id;
+		apiready = function() {commonSetTheme({"level":5,"type":0});
+			notice_id = api.pageParam.notice_id;
+			if(api.pageParam.person_id != $api.getStorage('person_id')){
+				$api.css($api.byId('delete-quanzi'),'display:none');
+				
+			}else{
+				$api.css($api.byId('delete-quanzi'),'display:inline-block');
+			}
+			loadNoticeContentData(notice_id);
+		};
+		/**
+		 * 加载新闻资讯内容
+		 * 周枫
+		 * 2015.11.24
+		 */
+		function loadNoticeContentData(notice_id) {
+			commonShowProgress('加载中...',false);
+			api.ajax({
+				url : BASE_URL_ACTION + '/notice/getNoticeById?notice_id=' + notice_id,
+				method : 'get',
+				dataType : 'json',
+				timeout : 30,
+				cache : false
+			}, function(ret, err) {
+				api.hideProgress();
+				if (ret.success) {				
+					var notice_con = ret.notice.content;
+					var notice_str1 = '';
+					var notice_str2 = '';
+					var notice_str11 = '';
+					var onerror_html = "this.src='../../../../../image/common/tpsx.png'";
+					if (BASE_APP_TYPE == 1) {
+						notice_str1 = 'src=\"down\/Material\/';
+						notice_str2 = 'src=\"' + url_path_down + 'down\/Material\/';
+						//解决云版图片不缩放问题
+						notice_str5 = '<img';
+						//http://image.edusoa.com/down/Material/29/29E5F8B5-B0E2-C263-6F88-1401AFA7B515.png@35w_35h_100Q_1x.png
+						notice_str6 = '<img class="ima_notice" onerror='+onerror_html+' onclick="openImg(this);"';
+					} else {
+						notice_str1 = 'src=\"/dsideal_yy/';
+						notice_str2 = 'class="ima_notice"  onerror='+onerror_html+' onclick="openImg(this);" src=\"' + BASE_URL_ACTION + '\/';
+						notice_str6 = '<img src=';
+						notice_str7 = '<img class="ima_notice" src=';
+					}
+					var notice_str3 = '<p>';
+					var notice_str4 = '<p style="font-size: 16px; color: #000000;">'
+					if (BASE_APP_TYPE == 1) {
+						notice_con = notice_con.replaceAll(notice_str1, notice_str2);
+						notice_con = notice_con.replaceAll(notice_str5, notice_str6);
+					} else {
+						notice_con = notice_con.replaceAll(notice_str1, notice_str2);
+					}
+					var notice_title = ret.notice.title;
+					var notice_person_name = ret.notice.person_name;			
+					var notice_create_time = ret.notice.create_time;
+					var notice_sec_title = '<span class="aui-img-body ellipsis">' + notice_person_name + '</span><span class="create-time">' + notice_create_time + '</span>';
+					notice_con = transferBrStr(notice_con);
+					$api.html($api.byId('notice_title_div'), notice_title);
+					$api.html($api.byId('notice_con_div'), notice_con);
+					$api.html($api.byId('person-name'), notice_person_name);
+					$api.html($api.byId('create-time'), notice_create_time);
+				} else {
+					popToast('对不起，获取新闻资讯内容信息失败');
+				}
+			});
+		}
+
+		//替换所有的回车换行
+		function transferBrStr(content) {
+			var string = content;
+			try {
+				string = string.replace(/\r\n/g, "<br />")
+				string = string.replace(/\n/g, "<br />");
+			} catch(e) {
+				popAlert(e.message);
+			}
+			return string;
+		}
+		
+	   /*
+	 	*author:zhaoj
+	 	*function:打开图片
+	 	*date：20170915
+	 	*/
+	    function openImg(self){
+			//获取图片路径
+			var index = 0;
+			var openImgArray = [];
+			var imgArray = $api.domAll($api.byId('notice_con_div'), '.ima_notice');
+			for (var i = 0; i < imgArray.length; i++) {
+				openImgArray.push($api.attr(imgArray[i], 'src'));
+				if($api.attr(imgArray[i], 'src') == $api.attr(self, 'src')){
+					index =i;
+				}
+			}
+			//打开图片
+			photoBrowser.open(openImgArray, index);
+	    }
+	  
+	/*
+	 * 功能：删除通知
+	 * 作者：张自强
+	 * 时间：20171010
+	 */
+	function deleteArticle(){
+		showSelfProgress('删除中...');
+		api.ajax({
+			url : BASE_URL_ACTION + '/ypt/notice/deleteNoticeByIds?notice_ids='+api.pageParam.notice_id+'&random_num=' + creatRandomNum(),
+			method : 'get',
+			dataType : 'json',
+			timeout : 30,
+			cache : false,
+			headers : {
+				'Cookie' : 'person_id='+$api.getStorage("person_id")+';identity_id='+$api.getStorage("identity")+'; token='+$api.getStorage("token_ypt")+';'
+			}
+		}, function(ret, err) {
+			if(err){
+				api.hideProgress();
+	            popToast('删除失败');
+			} else {
+				if(ret.success) {
+					setTimeout(function(){
+						commonExecScript('bjtz_index_window','bjtz_index_frame','initData(1);',1);
+                    },2500);
+                    setTimeout(function(){
+	                    api.hideProgress();
+	                    commonExecScript('bjtz_content_window','','back();',0);
+	                    
+                    },3000);
+				} else {
+					api.hideProgress();
+					popToast('删除失败');
+				}
+			}
+		});
+	}
+	</script>
+</html>

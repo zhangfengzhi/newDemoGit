@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<!-- html5：在创建html时为了防止页面缩放等不兼容效果，要创建个viewport  -->
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<!-- 在IOS设备上，有时会将数字转为手机号，这里也要禁止下 -->
+		<meta name="format-detection" content="telephone=no"/>
+		<title>调查问卷页面</title>
+		<link rel="stylesheet" type="text/css" href="../../../../../css/aui/aui.css" />
+		<link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+		<style>
+		.time-axis{padding: 1px 38px 0 38px;}	
+    	.time-axis-body{padding:0 6px 0 6px; background: none;}
+    	.time-axis-zy{width:50%;float:left;height:150px;margin-top:20px;}
+    	.time-axis-zy:nth-child(odd){padding-right:22px;}
+    	.time-axis-zy:nth-child(even){padding-left:22px;}
+    	.time-axis-zy .zy-content{position:relative;border:1px solid #e0e0e0;height:100%;}
+    	.time-axis-zy .zy-content .left{position:absolute;left:2px;bottom:0;height:100%;background:url(../../../../../image/fun-module/ipad/dcwj/dcwn-list.png) center 22px no-repeat;background-size:65% auto;}
+    	.time-axis-zy .zy-content .left .pub-time{margin-top:112px;font-size:16px;color:#777;width:130px;}
+    	.time-axis-zy .zy-content .right{position:relative;height:100%;margin:0 20px 0 140px;padding:20px 0;}
+    	.time-axis-zy .zy-content .right .zy-name{padding-bottom:15px;border-bottom:1px dashed #e0e0e0;}
+    	.time-axis-zy .zy-content .right .zy-name span{display:inline-block;max-width:90%;}
+    	.time-axis-zy .zy-content .right .time{position:relative;color:#777;font-size:16px;}
+    	
+    	.time-axis-zy .zy-content .right .time .jxz{background:url(../../../../../image/fun-module/ipad/zuoye/jxz.png) center left no-repeat;}
+    	.time-axis-zy .zy-content .right .time .jxz{height:50px;line-height:50px;padding-left:30px;background-size:26px auto;}
+    	.time-axis-zy .zy-content .right .time .zzl{position:absolute;right:20px;top:14px;color:#FE6562 !important;}
+    	.time-axis-zy .zy-content .right .time .zzl font{color:#FE6562 !important;}
+    	.st-count{padding:19px 110px 0 30px;}
+    	.st-count.icon-jxz{background:url(../../../../../image/fun-module/ipad/zuoye/ti-count.png) 0 16px no-repeat;}
+    	.st-count.icon-jxz font{padding:0 5px;}
+    	.st-count.icon-stop{background:url(../../../../../image/fun-module/ipad/zuoye/ti-count-stop.png) 0 16px no-repeat;}
+    	.st-count.icon-jxz,.st-count.icon-stop{background-size:26px auto;}
+    	.time-axis-zy .zy-content .right .tip{width:10px;height:10px;background:#f00;border-radius:50%; position: relative;top:-6px;display:inline-block;}
+    	.jg-tip{display:inline-block;padding:1px 7px;border-radius:13px;background:#79aca2;color:#ffffff;font-size:12px;float:left;margin-right:7px;}
+    	.zy-tip{position:absolute;right:-20px;top:0;width:55px;height:55px;}
+    	.sjz{background:url(../../../../../image/fun-module/ipad/dcwj/dcwj.png) 0 0 no-repeat;background-size:55px 275px;}
+		.yjs{background:url(../../../../../image/fun-module/ipad/dcwj/dcwj.png) 0 -55px no-repeat;background-size:55px 275px;}
+		.wfb{background:url(../../../../../image/fun-module/ipad/dcwj/dcwj.png) 0 -110px no-repeat;background-size:55px 275px;}
+		.wzd{background:url(../../../../../image/fun-module/ipad/dcwj/dcwj.png) 0 -165px no-repeat;background-size:55px 275px;}
+		.yzd{background:url(../../../../../image/fun-module/ipad/dcwj/dcwj.png) 0 -220px no-repeat;background-size:55px 275px;}
+		.result_btn{position:absolute;right:1px;bottom:14px;}
+    	.result_btn span{display:inline-block;padding:5px 12px;font-size:16px;border-radius:20px;color:#ffffff;}  	
+		</style>
+	</head>
+<body class="axis-body common-ipad-dcwjIpad-tea">
+	<div class="msg-top"></div>
+	<div id="msg_top_all" style="height:0px; overflow:hidden"></div>
+	<div class="time-axis">
+		<div id="j_create" class="time-axis-body clearfix"></div>
+		<script type="text/html" id="create_script">
+			<%if(list.length == 0){%>
+				<div class="no-data">暂无问卷</div>
+			<%}else{%>
+				<div class="hr">&nbsp;</div>
+				<div class="time-axis-month dsf clearfix aui-hide">
+					<div class="month-name">
+						<div class="month"><div class="triangle-left"></div></div>
+					</div>
+				</div>
+				<%for(var i = 0; i < list.length; i++){%>
+					<%if(list[i].status==0){%>
+						<div class="time-axis-zy clearfix"  onclick="openDetailWindow(1,'',<%=list[i].id%>,'<%=list[i].name_base64%>');">
+							<div class="zy-content">
+								<div class="left">
+									<div class="tip"></div>
+									<div class="pub-time"></div>
+								</div>
+								<div class="right">
+									<div class="zy-name ellipsis">
+										<%if(list[i].source == 1){%>
+											<span class="jg-tip">机构</span>
+										<%}%>
+										<%=list[i].title%>
+									</div>
+									<div class="time">
+										<div class="st-count icon-jxz">
+											数据收集<font><%=list[i].answer_num%></font>份
+										</div>
+										<div class="jxz"><%=list[i].release_time%></div>
+									</div>
+									<div class="zy-tip wfb"></div>
+								</div>
+							</div>
+						</div>
+					<%}else{%>
+						<div class="time-axis-zy clearfix"  onclick="haveOptNew(0,'',<%=list[i].id%>,'<%=list[i].name_base64%>');">
+							<div class="zy-content">
+								<div class="left">
+									<div class="tip"></div>
+									<div class="pub-time"></div>
+								</div>
+								<div class="right">
+									<div class="zy-name ellipsis">
+										<%if(list[i].source == 1){%>
+											<span class="jg-tip">机构</span>
+										<%}%>
+										<%=list[i].title%>
+									</div>
+									<div class="time">
+										<div class="st-count icon-jxz">
+											数据收集<font><%=list[i].answer_num%></font>份
+										</div>
+										<div class="jxz"><%=list[i].release_time%></div>
+										<div class="result_btn" onclick="haveResult(0,<%=list[i].id%>,'<%=list[i].name_base64%>',event)"><span>查看结果</span></div>
+									</div>
+									<div class="zy-tip <%if(list[i].status==1){%>sjz<%}else{%>yjs<%}%>"></div>
+								</div>
+							</div>
+						</div>
+					<%}%>
+				<%}%>
+			<%}%>
+		</script>
+		
+		<div id="j_invitation" class="time-axis-body clearfix" style="display: none"></div>
+		<script type="text/html" id="invitation_script">
+			<%if(list.length == 0){%>
+				<div class="no-data">暂无问卷</div>
+			<%}else{%>
+				<div class="hr">&nbsp;</div>
+				<div class="time-axis-month dsf clearfix aui-hide">
+					<div class="month-name">
+						<div class="month"><div class="triangle-left"></div></div>
+					</div>
+				</div>
+				<%for(var i = 0; i < list.length; i++){%>
+					<%if(list[i].is_answer==0){%>
+						<div class="time-axis-zy clearfix"  onclick="openDetailWindow(0,'',<%=list[i].id%>,'<%=list[i].name_base64%>');">
+							<div class="zy-content">
+								<div class="left">
+									<div class="tip"></div>
+									<div class="pub-time"></div>
+								</div>
+								<div class="right">
+									<div class="zy-name ellipsis">
+										<%=list[i].title%>
+									</div>
+									<div class="time">
+										<div class="st-count icon-jxz">
+											数据收集<font><%=list[i].answer_num%></font>份
+										</div>
+										<div class="jxz"><%=list[i].release_time%></div>
+										<div class="zzl">
+											<font>
+												<span class="status status<%=list[i].status%>">
+													<%=list[i].status_name%>
+												</span>
+											</font>
+										</div>
+									</div>
+									<div class="zy-tip wzd"></div>
+								</div>
+							</div>
+						</div>
+					<%}else{%>
+						<div class="time-axis-zy clearfix" <%if(list[i].is_query_res){%>onclick="haveOptNew(1,<%=list[i].s_u_id%>,<%=list[i].id%>,'<%=list[i].name_base64%>')"<%}else{%>onclick="haveOptNew(2,<%=list[i].s_u_id%>,<%=list[i].id%>,'<%=list[i].name_base64%>')"<%}%>>
+							<div class="zy-content">
+								<div class="left">
+									<div class="tip"></div>
+									<div class="pub-time"></div>
+								</div>
+								<div class="right">
+									<div class="zy-name ellipsis"><%=list[i].title%></div>
+									<div class="time">
+										<div class="st-count icon-jxz">
+											数据收集<font><%=list[i].answer_num%></font>份
+										</div>
+										<div class="jxz"><%=list[i].release_time%></div>
+										<div class="zzl"
+											<font>
+												<span class="status status<%=list[i].status%>">
+													<%=list[i].status_name%>
+												</span>
+											</font>
+										</div>
+										<%if(list[i].is_query_res){%>
+											<div class="result_btn" onclick="haveResult(1,<%=list[i].id%>,'<%=list[i].name_base64%>',event)">
+												<span>查看结果</span>
+											</div>
+										<%}%>
+										
+									</div>
+									<div class="zy-tip yzd"></div>
+								</div>
+							</div>
+						</div>
+					<%}%>
+				<%}%>
+			<%}%>
+		</script>
+		</div>
+	</body>
+	<script type="text/javascript" src="../../../../../script/api.js" ></script>
+	<script type="text/javascript" src="../../../../../script/base_config.js" ></script>
+	<script type="text/javascript" src="../../../../../script/plug-in/base64.js" ></script>
+	<script type="text/javascript" src="../../../../../script/plug-in/template.js" ></script>
+	<script type="text/javascript" src="../../../../../script/common/common.js" ></script>
+	<script type="text/javascript" src="../../../../../script/common/ipad/dcwjIpad_common.js" ></script>
+	<script type="text/javascript">
+		var header_h;//定义头高度
+		var totalPages = 0;// 定义一个变量存储第一次加载返回来的总页数
+		var keyword = '';//菜单关键字
+		var currentPage;//当前页面为第一页
+		var totalPages;//数据的总页数
+		var BASE_URL_ACTION;
+		var m_type = 1;//1代表我创建的，2代表邀请我的
+		var status;//分类id
+		apiready = function() {
+			commonSetTheme({"level":5,"type":0});
+			header_h = api.pageParam.header_h;
+			BASE_URL_ACTION = $api.getStorage('BASE_URL_ACTION');
+			currentPage = 1;
+			showSelfProgress('加载中...');
+			openMyNavigationBar(1);
+			//加载上拉加载数据方法
+			scrollBottomReload();
+			//下拉刷新
+			refreshDataInfo();
+		};
+		/*
+		*作者:zhaoj
+		*功能:滑动条点击回调函数
+		*日期：20160929
+		*/
+		function callBackNew(id, index) {
+			currentPage = 1;
+			status = id;
+			if(m_type == 1){ 
+				$api.css($api.byId('j_invitation'),'display:none;');
+				$api.css($api.byId('j_create'),'display:block;');
+			}else{
+				$api.css($api.byId('j_create'),'display:none;');
+				$api.css($api.byId('j_invitation'),'display:block;');
+			}
+			initData(currentPage);
+		}
+		/*
+		*作者:zhaoj
+		*功能:获取列表数据
+		*日期：20161008
+		*/
+		function initData(current_page){
+			currentPage = current_page;
+			if(m_type == 1){
+				getSurveyList(current_page,function(flag,ret){
+					api.hideProgress();
+					if(flag){
+						totalPages = ret.total_page;
+						for(var i = 0; i < ret.list.length; i++){
+							ret.list[i].name_base64 = Base64.encode(ret.list[i].title);
+						}
+						addTemplateHtml('j_create', 'create_script', ret)
+					}else{
+						popToast('获取问卷信息失败，请稍候再试！');
+					}
+				});
+			}else{
+				getPermission(current_page,function(flag,ret){
+					api.hideProgress();
+					if(flag){
+						totalPages = ret.total_page;
+						for(var i = 0; i < ret.list.length; i++){
+							ret.list[i].name_base64 = Base64.encode(ret.list[i].title);
+							if(ret.list[i].status == 0){
+								ret.list[i].status_name = '未发布';
+							}else if(ret.list[i].status == 1){
+								ret.list[i].status_name = '收集中';
+							}else{
+								ret.list[i].status_name = '已结束';
+							}
+						}
+						addTemplateHtml('j_invitation', 'invitation_script', ret)
+					}else{
+						popToast('获取问卷信息失败，请稍候再试！');
+					}
+				})
+			}
+		}
+		/*
+		*作者:zhaoj
+		*功能:打开详情页面
+		*日期：20161103
+		*/
+		function openDetailWindow(type,answer_id,id,name_base64){
+			commonOpenWin('dcwjIpad_detail_window', 'dcwjIpad_detail_window.html', false, false, {'header_h':header_h,'id':id,'type':type,'name_base64':name_base64,'answer_id':answer_id})
+		}
+		
+		/**
+		 *function:查看问卷
+		 * author：zfz
+		 * data：20171018
+		 */
+		function haveOptNew(type,answer_id,id,name_base64){
+			if(type==0){
+				commonOpenWin("dcwjIpad_detail_window", "dcwjIpad_detail_window.html", false, false, {"header_h":header_h,"id":id,"type":1,"name_base64":name_base64})
+			}else if(type == 1){
+				commonOpenWin("dcwjIpad_detail_window", "dcwjIpad_detail_window.html", false, false, {"header_h":header_h,"id":id,"answer_id":answer_id,"type":2,"name_base64":name_base64})
+			}else{
+			commonOpenWin("dcwjIpad_detail_window", "dcwjIpad_detail_window.html", false, false, {"header_h":header_h,"id":id,"answer_id":answer_id,"type":2,"name_base64":name_base64})
+			}
+		}
+		
+		/**
+		 *function:查看结果 
+		 * author：zfz
+		 * data：20171018
+		 */
+		function haveResult(type,id,name_base64,event){
+			if(type==0){
+				viewStatistics(1,id,name_base64);
+			}else if(type == 1){
+				viewStatistics(0,id,name_base64);
+			}else{
+				popAlert("此次调查问卷的统计信息保密，不支持查看！");
+			}
+			event.stopPropagation();
+		}
+	</script>
+</html>

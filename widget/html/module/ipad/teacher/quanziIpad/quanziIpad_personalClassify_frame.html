@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<title>学校圈子</title>
+		<link rel="stylesheet" type="text/css" href="../../../../../css/aui/aui.css" />
+		<link rel="stylesheet" type="text/css" href="../../../../../css/module/ipad/popup-body.css"/>
+		<link rel="stylesheet" type="text/css" href="../../../../../css/module/iphone/init-screen.css" />
+		<link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+		<style>
+			.popup-body-new{
+				background: rgba(0,0,0,0);
+			}
+			.popup-body-new	.commont-content{padding:52px 0 50px 0;height: 420px;}
+	    	.content-name{height:60px;}
+	    	.popup-body-new .commont-content .position{font-size:16px;padding:20px 0 0 30px;}
+	    	.back-div{font-size: 20px;bottom: auto}
+			.aui-iconfont{font-size: 20px}
+			.publishBtn{
+				position: absolute;
+				right: 10px;
+				top: 0;
+				width: 50px;
+				height: 100%;
+				font-size: 20px;
+			}
+			.range-div{
+				display: inline-block;
+				width: 30%;
+				height: 30px;
+				line-height: 30px;
+				font-size: 20px;
+				/*border: 2px solid #999999;*/
+				overflow: hidden;
+				text-overflow: ellipsis;
+				background: #31A8FA;
+			}
+			#personal_div{
+	    		margin-top: 25px;
+	    		overflow: auto;
+	    	}
+	    	.content_div{
+	    		width: 85%;
+	    		border: 1px solid #CCCCCC;
+	    		position: relative;
+	    		margin: 10px auto;
+	    		padding: 10px;
+				background-color: #ffffff;
+				display: -webkit-box;
+				display: -webkit-flex;
+				display: flex;
+				-webkit-flex-wrap: nowrap;
+				flex-wrap: nowrap;
+				-webkit-align-items: center ;
+				align-items: center ;
+				-webkit-justify-content: space-between ;
+				justify-content: space-between;
+	    	}
+	    	.aui-radio{
+	    		margin-left: 5px;
+	    		pointer-events: none;
+	    		-webkit-box-flex: 1;
+	    		box-flex: 1;
+	    		-webkit-flex-shrink: 0 ;
+	    		flex-shrink:0;
+	    	}
+	    	.content_div span{
+	    		-webkit-box-flex: 1;
+	    		box-flex: 1;
+	    	}
+		</style>
+	</head>
+	<body class="popup-body-new common-ipad-quanziIpad-tea">
+		<div class="commont-content">
+			<div class="top fl">
+				<div id="back" class="back back-div" onclick="closeFrame();" tapmode="">
+					<i class="aui-iconfont aui-icon-left"></i>返回
+				</div>
+				<div class="name">个人分类</div>
+				<div class="publishBtn" onclick="saveData();">确定</div>
+			</div>
+			<div id="personal_div" class="content">
+				<script id="personal_script" type="text/html">
+					<%for (var i = 0; i < list.length; i++){%>
+						<div class="content_div" onclick="onClickDiv(<%=i%>)">
+							<span><%=list[i].name%></span>
+							<input class="aui-radio" name="personal_classify" type="radio" onchange="selectChange(<%=i%>)"> 
+						</div>
+					<%}%>
+				</script>
+			</div>
+		</div>
+		
+		<div id="bxfl_div" class="common-name bgf bb plr15 clearfix ">
+		</div>
+		
+		
+	</body>
+	<script type="text/javascript" src="../../../../../script/api.js"></script>
+	<script type="text/javascript" src="../../../../../script/base_config.js" ></script>
+	<script type="text/javascript" src="../../../../../script/common/common.js" ></script>
+	<script type="text/javascript" src="../../../../../script/plug-in/template.js" ></script>
+	<script type="text/javascript">
+		var radioList;
+		var dataList;
+		var selectIndex = 0;
+		apiready = function() {
+			dataList = $api.getStorage('allClassifyData').personalList;
+			commonAddOnceHtml('personal_div',"personal_script",dataList);
+			radioList = $api.domAll($api.byId('personal_div'), 'input');
+			for (var i = 0; i < dataList.list.length; i++){
+				if (dataList.list[i].id == $api.getStorage('personalClassifyId')){
+					radioList[i].checked = true;
+					selectIndex = i;
+					break;
+				}
+			}
+		};
+		
+		
+		function onClickDiv(index){
+			selectChange(index);
+			for (var i = 0; i < radioList.length; i++){
+				if (i == index){
+					radioList[i].checked = true;
+				}
+				else{
+					radioList[i].checked = false;
+				}
+			}
+		}
+		
+		function selectChange(index){
+			selectIndex = index;
+		}
+		
+	    function saveData(){
+	    	$api.setStorage('personalClassifyContent',dataList.list[selectIndex].name);
+	    	$api.setStorage('personalClassifyId',dataList.list[selectIndex].id);
+	    	commonExecScript("quanziIpad_index_window","quanziIpad_xxadd_frame","setPublishRangeContent()",1);
+	    	closeFrame();
+	    }
+		/**
+		 * 关闭界面
+		 * 王俭
+		 * 2018.5.5 
+		 */
+		function closeFrame(){
+			commonExecScript('quanziIpad_index_window','','back();',0);
+		}
+	</script>
+</html>

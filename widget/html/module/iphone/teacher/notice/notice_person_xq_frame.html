@@ -1,0 +1,207 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<title>选择接收人</title>
+		<link rel="stylesheet" type="text/css" href="../../../../../css/aui/aui.css" />
+		<link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+	</head>
+	<style>
+		.no-data{text-align:center;color:#666666;padding-top:15px;}
+		.manage {display: inline-block;float: right;color:#efefef !important;font-size: 14px;line-height: 45px;padding-left:3px;}
+        .manage a{margin-right:-5px;}
+        .plrtb {padding: 15px;}
+        .plr15 {padding: 0 15px;}
+        .plt15 {padding-bottom:15px}
+        .orgzn-org .name,.group-ul .name,.person-ul .name{width:70%;float:left;height:45px;line-height: 45px;font-size: 16px;color:#141414;background:#fff;padding-left:10px;}
+        .orgzn-org .name font ,.group-ul .name font,.person-ul .name font{font-size: 13px;color: #ABABAB;}
+        .orgzn-org li,.group-ul li,.person-ul li{height:51px;line-height:51px;border-bottom:1px solid #efefef;padding-top:5px;padding-bottom:5px;}
+        .select-input-div{float:left;height:45px;padding-top:10px;padding-right:10px;}
+        .orgzn-title-div{background:#efefef}
+        .first-word{
+            float:left;
+            width:40px;
+            height:40px;
+            border-radius:40px;
+            background:#34a8f6;
+            color:#fff;
+            line-height:40px;
+            text-align:center;
+            font-size:18px;
+        }
+        .person-ul .first-word{
+            background:#1bbc9b;
+        }
+        .now-orgzn{color:#34a8f6}
+        .now-orgzn span{color:#000}
+        .check-role{
+            width:20px;
+            height:20px;
+            border-radius:20px;
+            border:1px solid #3d3c3c;
+            text-align: center;
+            padding-top:5px;
+            padding-left:5px;
+        }
+        .checked div{
+            width:8px;
+            height:8px;
+            border-radius:8px;
+            background:#3d3c3c
+        }
+        .type-div{background:#efefef;padding:15px;}
+	</style>
+	<body class="common-iphone-notice">
+		<div id="j_shadow" class="shadow" tapmode></div>
+		<div class="orgzn-body">
+		  <div class="orgzn-title-div plrtb">
+		      <div class="now-orgzn plt15" id="owner_orgzn">
+              </div>
+              <div>组织架构</div>
+		  </div>
+		  <!-- 组织 -->
+		  <ul class="orgzn-org" id="orgzn_ul">
+		  </ul>
+		  <script type="text/html" id="orgzn_script">
+		      <%for(var i=0; i<list.length; i++) {%>
+		          <li class="plr15" onclick="changeSelectType(<%=list[i].type%>);">
+                      <div class="select-input-div">
+                          <!--<input class="aui-pull-left aui-checkbox" type="checkbox" onclick="selectOrgn(this);"/>-->
+                          <div class="check-role" onclick="selectOrgn(this,even);">
+                               <div></div>
+                          </div>
+                      </div>
+                      <div class="first-word"><%=list[i].name.substring(0,1)%></div>
+                      <div class="aui-iconfont name"><%=list[i].name%></div> 
+                      <div class="manage">
+                        <a class="aui-iconfont aui-icon-right"></a>
+                      </div>
+                  </li>
+		      <%}%>
+		  </script>
+          </div>
+		</div>
+		<script type="text/javascript" src="../../../../../script/api.js" ></script>
+		<script type="text/javascript" src="../../../../../script/base_config.js" ></script>
+		<script type="text/javascript" src="../../../../../script/plug-in/template.js" ></script>
+		<script type="text/javascript" src="../../../../../script/common/common.js" ></script>
+	</body>
+	<script type="text/javascript">
+		var totalData;//处理之后的整体数据
+		var personArray=[];
+		var currentPage = 1;//第几页
+        var totalPage = 1;//总页数
+        var org_now_type = 0;
+        var org_now_id = 0;
+		apiready = function() {
+			commonSetTheme({"level":5,"type":0});
+			$api.html($api.byId('owner_orgzn'), api.pageParam.now_orgzn_str);
+			getNowOrgznList(api.pageParam.orgType,api.pageParam.orgId);
+		}
+		
+		/*
+		 * 功能；获取当前教育局下组织列表
+		 * 作者：张自强
+		 * 时间：20180718
+		 */
+		function getNowOrgznList(orgType,orgId){
+		      org_now_type = orgType;
+		      org_now_id = orgId;
+              showSelfProgress('加载中...');
+              api.ajax({
+                url:BASE_URL_ACTION+'/admin/new_base/getEduSchTeachAidByOrgId?org_id='+orgId+'&page_number='+currentPage+'&page_size=10',
+                method : 'get',
+                dataType : 'json',
+                timeout: 30,
+                headers : {
+            'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';' 
+                }
+            },function(ret,err){
+                var render_final_html = [{'name':'本机构内部科室','type':0}];
+                if(err){
+                    popToast('获取机构列表失败');
+                }else{
+                    if(ret.success){
+                        var rett = ret;
+                        if(rett.org_list_edu && rett.org_list_edu.length != 0){                       
+                            var param  = new Object();
+                            param.name = '下属教育局';
+                            param.type = 1;
+                            render_final_html.push(param);
+                        }
+                        if(rett.org_list_teach && rett.org_list_teach.length != 0){
+                            var param  = new Object();
+                            param.name = '教辅单位';
+                            param.type = 7;
+                            render_final_html.push(param);
+                        }
+                        if(rett.org_list_sch && rett.org_list_sch.length != 0){
+                            var param  = new Object();
+                            param.name = '学校';
+                            param.type = 2;
+                            render_final_html.push(param);
+                        }
+                    }else{
+                        popToast('获取机构列表失败');
+                    }
+                }
+                commonAddOnceHtml('orgzn_ul','orgzn_script',{'list':render_final_html});
+                api.hideProgress();
+            });
+              
+      }
+		
+		/*
+		 * 功能：选择将要查看的机构类型
+		 * 作者：张自强
+		 * 时间：20180718
+		 */
+		function changeSelectType(type){
+		   commonExecScript(api.winName,'notice_person_frame','showDataFromType('+type+','+org_now_id+','+org_now_type+');',1);
+		   setTimeout(function(){
+		      commonExecScript(api.winName,'','back();',0);
+		   },1000);
+		}
+		
+    	/*
+    	 * 功能：选中组织
+    	 * 作者：张自强
+    	 * 时间：20180717
+    	 */
+        function selectOrgn(self,e){
+            if($api.hasCls(self,'checked')){
+                $api.removeCls(self,'checked');
+            }else{
+                $api.addCls(self,'checked');
+            }
+            e.stopPropagation();
+        }
+        
+        /*
+         * 功能：选中群组
+         * 作者：张自强
+         * 时间：20180717
+         */
+        function selectGroup(self){
+            if($api.hasCls(self,'checked')){
+                $api.removeCls(self,'checked')
+            }else{
+                $api.addCls(self,'checked')
+            }
+        }
+        
+        /*
+         * 功能：选中人员
+         * 作者：张自强
+         * 时间：20180717
+         */
+        function selectPersonYuan(self){
+            if($api.hasCls(self,'checked')){
+                $api.removeCls(self,'checked')
+            }else{
+                $api.addCls(self,'checked')
+            }
+        }
+	</script>
+</html>

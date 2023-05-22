@@ -1,0 +1,801 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>主题活动</title>
+    <link rel="stylesheet" type="text/css" href="../../../../../css/aui/aui.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../../../css/module/ipad/left-right-layout.css"/>
+    <link id="j_theme_base" rel="stylesheet" type="text/css" href="" /><style>
+    	.boutique{display: inline-block;background:url(../../../../../image/fun-module/ipad/zthd/boutique.png) center 4px no-repeat;background-size:auto 40px;color: #fff;padding: 0 8px;font-size: 14px;height:51px;width:30px;}
+.set-boutique,.cancel-boutique{color: #fff;background: #ED1C24;text-align: center; font-size: 12px;padding:8px 10px;line-height:15px; margin-top: 4px;border-radius:50%;width:45px;height:45px;}
+		.cancel-boutique{background:#e0e0e0;color:#595757;}
+    	.t35{top:35px !important;}
+    	.right-layout-body .praise-comment-content .comment-infor ul li .comment-opt .reply{background:url(../../../../../image/fun-module/ipad/zthd/comment-bg.png) right center no-repeat;background-size:20px auto;}
+        .right-layout-body .praise-comment-content .comment-infor ul li .comment-opt .delete{background:url(../../../../../image/fun-module/ipad/zthd/delete.png) right center no-repeat;background-size:14px auto;}
+        .ima_notice{padding:5px 0 !important;margin-bottom:0 !important;}
+        .edit div{background:url(../../../../../image/fun-module/ipad/zthd/edit.png) center center no-repeat;}
+    </style>
+</head>
+<body id="j_body" class="right-layout-body common-ipad-zthdIpadstu">
+<!--	<div class="triangle-left">&nbsp;</div>-->
+	<div class="top">
+		<div class="name">详情</div>
+		<div class="close" onclick="closeFrame();">关闭</div>
+	</div>
+	<div class="person-info">
+		<img id="j_header_img" class="header-img" onerror="this.src='../../../../../image/common/header.png'" src="" />
+		<div id="j_person_name" class="person-name ellipsis">
+		</div>
+		<div id="j_time" class="time"></div>
+		<div class="top-opt t35">
+			<div id="j_boutique" class="boutique aui-hide fr">&nbsp;</div>
+			<div id="j_set_boutique" class="set-boutique aui-hide fr" onclick="set_works_boutique();">设置精品</div>
+			<div id="j_cancel_boutique" class="cancel-boutique aui-hide fr" onclick="cancel_works_boutique();">取消精品</div>
+			<div id="j_delete" class="delete aui-hide fr" onclick="clickDeleteBtn();">
+				<div>&nbsp;</div>
+				删除
+			</div>
+			<div id="j_edit" class="edit fr" onclick="openEditZuoPinFrame();">
+				<div>&nbsp;</div>
+				编辑
+			</div>
+			<div id="j_praise" class="praise fr" onclick="addPraiseInfo(this);">
+				<div>&nbsp;</div>
+				点赞
+			</div>
+			<div class="comment fr" onclick='openCommentFrame(0,0,0);'>
+				<div>&nbsp;</div>
+				评论
+			</div>
+		</div>
+	</div>
+</body>
+<script type="text/javascript" src="../../../../../script/api.js"></script>
+<script type="text/javascript" src="../../../../../script/base_config.js" ></script>
+<script type="text/javascript" src="../../../../../script/plug-in/template.js" ></script>
+<script type="text/javascript" src="../../../../../script/common/common.js"></script>
+<script type="text/javascript" src="../../../../../script/plug-in/base64.js" ></script>
+<script type="text/javascript" src="../../../../../script/assembly/UIAlbumBrowser.js"></script>
+<script type="text/javascript" src="../../../../../script/assembly/getPicture.js"></script>
+<script type="text/javascript" src="../../../../../script/assembly/photoBrowser.js"></script>
+<script type="text/javascript" src="../../../../../script/assembly/openResource.js" ></script>
+<script type="text/javascript">
+	var oparam_data;//从list页面传递过来的参数
+	var oparam_base64;//从list页面传递过来的参数
+	var currentPage = 1;//当前分页数
+	var totalPages = 0;//总页数
+	var works_person_id;//发表作品的人的id
+	var netAudio;//播放录音对象
+	var imageArray=[];//图片路径
+	var header_h;
+	var contentData;//存储作品数据
+	var is_dianzanComplete = true;//赞或取消点赞过程是否完成
+	apiready = function(){
+		commonSetTheme({"level":5,"type":0});
+	    header_h = api.pageParam.header_h;
+		netAudio = api.require('netAudio');
+		oparam_data = JSON.parse(Base64.decode(api.pageParam.oparam));
+		oparam_base64 = JSON.parse(Base64.decode(api.pageParam.oparam_base64));
+		isExistsPraise(1);
+//		commonScrollBottomReload();
+	};
+	/*
+	*author:zhaoj
+	*function:关闭页面
+	*date：20170912
+	*/
+	function closeFrame(){
+		commonExecScript(api.winName,'','back();',0);
+	}
+	/*
+	*author:zhaoj
+	*function:打开评论页面
+	*param:type=0:代表作品增加评论，type=1：代表作品回复评论
+	*date：20171019
+	*/
+	function openCommentFrame(id, parent_id, type){
+		commonExecScript(api.winName,'','openCommentFrame('+oparam_data.works_id+','+parent_id+','+type+');',0);
+	}
+	/*
+    *author:zhaoj
+    *function:通通过作品id获取作品详细信息
+    *interface:张海
+    *date：20171025
+    */
+	function get_works_by_id(isRefresh){
+		api.ajax({
+			url : BASE_URL_ACTION + '/ypt/space/topic/get_works_by_id??random_num='+creatRandomNum()+'&works_id='+oparam_data.works_id+'&identity_id='+$api.getStorage("identity")+'&person_id='+$api.getStorage("person_id"),
+			method : 'get',
+			timeout : 0,
+			dataType : 'json',
+			headers : {
+	'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+	}
+			}, function(ret, err) {
+				if(err){
+					popToast('获取作品信息失败，请稍候重试');
+				}else{
+					if(ret.success){
+						contentData = JSON.parse(JSON.stringify(ret));
+					   setIndexFrameYulanNum();
+						ret.content = commonTransferBrStr(ret.content);
+						
+						if (ret.is_boutique == 1 || $api.getStorage("person_id") * 1 !=  ((ret.person_id) * 1) || $api.getStorage('zthd_time_text') != '火热进行'){
+							$api.css($api.byId('j_edit'),'display:none');
+						}else{
+							$api.css($api.byId('j_edit'),'display:block');
+						}
+						
+						if ($api.getStorage("person_id") * 1 !=  ((ret.person_id) * 1) || $api.getStorage('zthd_time_text') != '火热进行'){
+							is_showEdit = false;
+						}
+						
+						works_person_id = ret.person_id;
+						//如果是同一个人，可以删除该圈子
+						if(works_person_id == $api.getStorage("person_id")|| oparam_base64.person_id == $api.getStorage("person_id")){
+							commonAddOrRemoveHideCss('j_delete',1);
+						}
+						//代表当前人是主题活动的发布人
+						if(oparam_base64.person_id == $api.getStorage("person_id")){
+							if(ret.is_boutique){
+								//是精品，取消精品按钮显示
+								commonAddOrRemoveHideCss('j_cancel_boutique',1);
+								commonAddOrRemoveHideCss('j_set_boutique',0);
+							}else{
+								//不是精品，设置精品按钮显示
+								commonAddOrRemoveHideCss('j_set_boutique',1);
+								commonAddOrRemoveHideCss('j_cancel_boutique',0);
+							}
+						}else{
+							ret.is_boutique ? commonAddOrRemoveHideCss('j_boutique',1):commonAddOrRemoveHideCss('j_boutique',0);
+						}
+						//当前人名
+						$api.text($api.byId('j_person_name'), ret.person_name);
+						//头像
+						$api.attr($api.byId('j_header_img'),'src',oparam_data.avatar_fileid);
+						//时间
+						$api.text($api.byId('j_time'), ret.create_time.substring(0,16));
+						
+						if (isRefresh){
+							commonExecScript(api.winName, 'zthdIpad_works_detailContent_frame', 'setData('+ JSON.stringify(ret) +');', 1);
+						}else{
+							openContentFrame(ret);
+						}
+					}else{
+						popToast('获取作品信息失败，请稍候重试');
+					}
+				}
+			api.hideProgress();
+		});
+	}
+	 /*
+    *author:zhaoj
+    *function:打开附件
+    *date：20171023
+    */
+    function openAttachment(resource_id_int,resource_format,self,e){
+        var param_json = {"is_show_tip":1,"resource_id_int":resource_id_int};
+        commonGetResInfo(param_json,function(flag,ret){
+            api.hideProgress();
+            if(flag){
+                if(resource_format != "mp3"){
+                    //不是音频的播放方式
+                    var oparam ={"res_type":ret.resource_format, "res_path":ret.file_id, "res_title":ret.resource_title,"m3u8_status":ret.m3u8_status,"winName":api.winName,"setBackFun":'reBackType("voice");',"backFun":'back();',"res_id":'open_picture',"pic_back":'picture_works_detail'};
+                     common_openResource.open_new(JSON.stringify(oparam));
+                }else{
+                    //音频的播放方式
+                    var res_url='';
+                    if (BASE_APP_TYPE == 1) {
+                        res_url = BASE_IMAGE_PRE+"down/Material/" + ret.file_id.substring(0, 2) + "/" + ret.file_id+'.'+ret.resource_format;        
+                    } else {
+                        res_url = BASE_URL_ACTION + "/html/thumb/Material/" + ret.file_id.substring(0, 2) + "/" + ret.file_id+'.'+ret.resource_format;
+                    }
+                    if($api.hasCls(self, 'is_play')){
+                        //停止播放
+                        $api.removeCls(self, 'is_play');
+                        var img_dom = $api.dom(self, 'img');
+                        $api.attr(img_dom, 'src','../../../../../image/fun-module/ipad/zthd/voice-bg.png');
+                        stopVoice(self);
+                    }else{
+                        //正在播放
+                        $api.addCls(self, 'is_play');
+                        openAudio(res_url,self);
+                    }
+                }
+            }else{
+                popToast('打开失败，请稍候重试');
+            }
+        });
+        e.stopPropagation();
+    }
+    /*
+    *author:zhaoj
+    *function:预览上传的图片、视频以及音频
+    *date：20171020
+    */
+    function displayResource(url,self){
+        var res_url='';
+        if (BASE_APP_TYPE == 1) {
+            res_url = BASE_IMAGE_PRE+"down/Material/" + url.substring(0, 2) + "/" + url;        
+        } else {
+            res_url = BASE_URL_ACTION + "/html/thumb/Material/" + url.substring(0, 2) + "/" + url;
+        }
+        //图片
+        //打开图片
+        openPictureShowWin([res_url],0)
+    }
+     /*
+    *author:zhaoj
+    *function:播放音频
+    *date：20171024
+    */
+    function openAudio(voice_url,self){
+    	commonShowProgress('加载中...',false);
+    	netAudio.play({
+		    path: voice_url
+		},function( ret, err ){    
+		    if( ret ){
+		    	if(ret.current == 0){
+		    		api.hideProgress();
+		    		$api.attr(self, 'src','../../../../../image/fun-module/ipad/zthd/voice-bg.gif');
+		    	}
+		    	if(ret.complete==true){
+					popToast('播放完毕');
+					$api.removeCls(self, 'is_play');
+					$api.attr(self, 'src','../../../../../image/fun-module/ipad/zthd/voice-bg.png');		
+		    	}
+		    }else{
+		    	api.hideProgress();
+		    	popToast('加载失败');
+		    }
+		});
+    }
+    /*
+	*author:zhaoj
+	*function:停止录音
+	*date：20171024
+	*/
+	function stopVoice(self){
+		netAudio.stop();
+	}
+	/*
+    *author:zhaoj
+    *function:获取缩率图路径
+    *date：20171023
+    */
+	function gertImageUrl(file_id,ext,type){
+		var img_url='';//图片路径
+		if(ext == 'png' || ext == 'PNG'|| ext == 'jpg'|| ext == 'JPG'|| ext == 'gif'|| ext == 'GIF'|| ext == 'bmp'|| ext == 'BMP'){
+			image_hz = type?commonReturnPhotoCutSize(0):'';
+			if (BASE_APP_TYPE == 1) {
+				img_url = BASE_IMAGE_PRE+"down/Material/" + file_id.substring(0, 2) + "/" + file_id+'.'+ext+ image_hz;		
+			} else {
+				img_url = BASE_URL_ACTION + "/html/thumb/Material/" + file_id.substring(0, 2) + "/" + file_id+'.'+ext+image_hz;
+			}
+		}else if(ext == 'mp3'||ext == 'wav'){
+			img_url = '../../../../../image/fun-module/ipad/zthd/voice-bg.png';
+		}else if(commonContainsArray(support_extension,ext)){
+			img_url = '../../../../../image/fun-module/ipad/zthd/vedio-bg.png';
+		}else if(ext == 'doc'||ext == 'docx'){
+		  img_url = '../../../../../image/fun-module/ipad/zthd/doc.png';
+		}else if(ext == 'xls'||ext == 'xlsx'){
+		  img_url = '../../../../../image/fun-module/ipad/zthd/xls.png';
+		}else if(ext == 'txt'){
+		  img_url = '../../../../../image/fun-module/ipad/zthd/txt.png';
+		}else if(ext == 'ppt' || ext == 'pptx'){
+          img_url = '../../../../../image/fun-module/ipad/zthd/ppt.png';
+        }
+		return img_url;
+	}
+	function refreshContent(){
+		currentPage = 1;
+//		getCommentInfo();
+		isExistsPraise(1);
+	}
+	/*
+	*author:zhaoj
+	*function:初始化列表数据
+	*date：20170913
+	*/
+	function initData(current_page){
+		currentPage = current_page;
+		getCommentInfo();
+	}
+	/*
+	 *author:zhaoj
+	 *function:获取评论信息
+	 *interface:张海
+	 *date：20171025
+	 */
+	function getCommentInfo() {
+		api.ajax({
+			url : BASE_URL_ACTION + '/bbs/topic/view?pageNumber=' + currentPage + '&pageSize=' + BASE_PAGE_SIZE + '&sort=1&type_id=' + "space_topic_works_" + oparam_data.works_id + '&message_type=2&random_num=' + creatRandomNum(),
+			method : 'get',
+			dataType : 'json',
+			timeout : 30,
+			cache : false,
+			headers : {
+				'Cookie' : 'person_id=' + $api.getStorage("person_id") + ';identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+			}
+		}, function(ret, err) {
+			api.hideProgress();
+			if(err){
+				popToast('获取评论信息失败，请稍候重试');
+			}else{
+				if (ret.success) {
+					totalPages = ret.totalPage;
+					var list = ret.reply_list;
+					//对数据进行处理
+					for (var i = 0; i < list.length; i++) {
+						//评论时间显示的处理
+						list[i]["time"] = list[i].create_time.substring(0, 16);
+						list[i]["content"] = commonTransferBrStr(list[i]["content"]);
+						//是否是回复
+						if (list[i].parent_person_id * 1) {
+							list[i]["has_reply"] = 1
+						} else {
+							list[i]["has_reply"] = 0;
+						}
+						//是自己发表的评论,活动发起人以及作品上传人，可以删除评论，
+						if ( $api.getStorage("person_id") * 1 == list[i].person_id * 1 || works_person_id == $api.getStorage("person_id") * 1||oparam_base64.person_id* 1  ==$api.getStorage("person_id") * 1 ) {
+							list[i]["show_delete"] = 1;
+						} else {
+							list[i]["show_delete"] = 0;
+						}
+						//获取头像
+						if(BASE_APP_TYPE == 1){
+							list[i].icon_url = BASE_IMAGE_PRE + url_path_suffix + list[i].icon_url.substring(0, 2) + "/" +list[i].icon_url + commonReturnPhotoCutSize(0);
+						}else{
+							list[i].icon_url = BASE_URL_ACTION + BASE_IMAGE_BEGIN + list[i].icon_url.substring(0, 2) + "/" + list[i].icon_url + commonReturnPhotoCutSize(0);
+						}
+					}
+					commonAddManyHtml('comment_body', 'comment_script', ret);
+				} else {
+					popToast('获取评论信息失败，请稍候重试');
+				}
+			}
+		});
+	}
+	/*
+	 *author:zhaoj
+	 *function:点赞接口
+	 *interface:张海
+	 *date：20171025
+	 */
+	function addPraiseInfo(self){
+		if (!is_dianzanComplete){
+			return;
+		}
+		is_dianzanComplete = false;
+		if($api.hasCls(self, 'praised')){
+			cancelPraise();//取消点赞
+		}else{
+			api.ajax({
+				url : BASE_URL_ACTION + '/ypt/space/topic/praise_works',
+				method : 'post',
+				timeout : 0,
+				dataType : 'json',
+				data : {
+					values : {
+						random_num : creatRandomNum(),
+						works_id : oparam_data.works_id,
+						identity_id	 : $api.getStorage("identity"),
+						person_id :$api.getStorage("person_id")
+					}
+				},
+				headers : {
+		'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+	}
+			}, function(ret, err) {
+				if (err) {
+					popToast('点赞失败');
+				} else {
+					if(ret.success){
+						popToast('点赞成功');
+						oparam_data.praise++;
+						$api.addCls($api.byId('j_praise'), 'praised');
+						$api.html($api.byId('j_praise'), '<div>&nbsp;</div>已赞');
+						setIndexFramePraiseNum();
+					}else{
+						popToast('点赞失败');
+					}
+				}
+				is_dianzanComplete = true;
+			});
+		}
+	}
+	/*
+	*author:zhaoj
+	*function:取消点赞
+	*interface:张海
+	*date：20171025
+	*/
+	function cancelPraise(){
+		api.ajax({
+			url : BASE_URL_ACTION + '/ypt/space/topic/cancel_praise_works',
+			method : 'post',
+			timeout : 30,
+			dataType : 'json',
+			data : {
+				values : {
+					random_num : creatRandomNum(),
+					works_id : oparam_data.works_id,
+					identity_id	 : $api.getStorage("identity"),
+					person_id :$api.getStorage("person_id")
+				}
+			},
+			headers : {
+	'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+}
+		}, function(ret, err) {
+			if (err) {
+				popToast('取消失败');
+			} else {
+				if(ret.success){
+					popToast('取消点赞');
+					oparam_data.praise--;
+					$api.removeCls($api.byId('j_praise'), 'praised');
+					$api.html($api.byId('j_praise'), '<div>&nbsp;</div>点赞');
+					setIndexFramePraiseNum();
+				}else{
+					popToast('取消失败');
+				}
+			}
+			is_dianzanComplete = true;
+		});
+	}
+	/*
+	 *author:zhaoj
+	 *function:删除留言
+	 *interface:张海
+	 *date：20171025
+	 */
+	function messageBoard_deletePost(topic_id, postid) {
+		showSelfProgress('删除中...');
+		api.ajax({
+			url : BASE_URL_ACTION + '/ypt/bbs/post/delete',
+			method : 'get',
+			dataType : 'json',
+			timeout : 30,
+			cache : false,
+			data : {
+				values : {
+					"random_num" : creatRandomNum(),
+					"topic_id" : topic_id,
+					"post_id" : postid
+				}
+			},
+			headers : {
+				'Cookie' : 'person_id=' + $api.getStorage("person_id") + ';identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+			}
+		}, function(ret, err) {
+			if (err) {
+				api.hideProgress();
+				popToast("删除评论失败");
+			}else{
+				if (ret.success) {
+					setTimeout(function() {
+						popToast("删除成功");
+						setIndexFrameCommentNum(0);
+					}, 2000);
+					subCommentNum();
+				} else {
+					api.hideProgress();
+					popToast("删除评论失败，" + ret.info);
+				}
+			}
+		});
+	}
+	/*
+	 *author:zhaoj
+	 *function:删除留言数
+	 *interface:张海
+	 *date：20171025
+	 */
+	function subCommentNum() {
+		api.ajax({
+			url : BASE_URL_ACTION + '/ypt/space/topic/sub_comment_num',
+			method : 'post',
+			dataType : 'json',
+			timeout : 30,
+			cache : false,
+			data : {
+				values : {
+					"random_num" : creatRandomNum(),
+					"works_id" : oparam_data.works_id
+				}
+			},
+			headers : {
+				'Cookie' : 'person_id=' + $api.getStorage("person_id") + ';identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+			}
+		}, function(ret, err) {
+		});
+	}
+	/*
+	*author:zhaoj
+	*function:设置列表数据点赞数量显示
+	*date：20170914
+	*/
+	function setIndexFramePraiseNum(){
+//		isExistsPraise(0);
+//		getPraiseinfoList();
+//		commonExecScript(api.winName,'zthdIpad_works_detailContent_frame','initData(1);',1);
+		commonExecScript(api.winName,'zthdIpad_works_detailContent_frame','getPraiseinfoList();',1);
+		if(oparam_data.type){
+			commonExecScript(api.winName,'zthdIpad_my_works_frame','setIndexFramePraiseOrCommentNum(0,'+oparam_data.praise+','+oparam_data.works_id+');',1);
+		}else{
+			commonExecScript(api.winName,'zthdIpad_activity_works_frame','setIndexFramePraiseOrCommentNum(0,'+oparam_data.praise+','+oparam_data.works_id+');',1);
+		}
+	}
+	/*
+	*author:zhaoj
+	*function:获取点赞数据
+	*interface:张海
+	*date：20171025
+	*/
+	function getPraiseinfoList(){
+		api.ajax({
+			url : BASE_URL_ACTION + '/space/praise/get_praiseinfo_list?random_num='+creatRandomNum()+'&business_type=6&business_id='+oparam_data.works_id+'&page_num=1&page_size=9999',
+			method : 'get',
+			timeout : 30,
+			dataType : 'json',
+			headers : {
+	'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+}
+		}, function(ret, err) {
+			if (err) {
+				api.hideProgress();
+				popToast('获取点赞信息失败，请稍候重试');
+			} else {
+				if(ret.success){
+					var person_name="";
+					if(ret.praise_list.length > 0){
+						$api.addCls($api.byId('j_praise_no_data'), 'aui-hide');
+						person_name = "";
+						for(var i = 0; i < ret.praise_list.length; i++){
+							if(i == 0){
+								person_name += ret.praise_list[i].person_name;
+							}else{
+								person_name += '，'+ret.praise_list[i].person_name;
+							}
+						}
+						$api.html($api.byId('j_praise_person'), person_name);
+						$api.removeCls($api.byId('j_praise_person'), 'aui-hide');
+					}else{
+						$api.html($api.byId('j_praise_person'), "");
+						$api.addCls($api.byId('j_praise_person'), 'aui-hide');
+						$api.removeCls($api.byId('j_praise_no_data'), 'aui-hide');
+					}
+					initData(currentPage);//获取评论的数据
+				}else{	
+					api.hideProgress();
+					popToast('获取点赞信息失败，请稍候重试');
+				}
+			}
+		});
+	}
+	/*
+	*author:zhaoj
+	*function:设置列表评论数量显示
+	*date：20170914
+	*/
+	function setIndexFrameCommentNum(type){
+		initData(1);
+		if(type){
+			oparam_data.comment++;
+		}else{
+			oparam_data.comment--;
+		}
+		
+		commonExecScript(api.winName,'zthdIpad_works_detailContent_frame','initData(1);',1);
+		if(oparam_data.type){
+			commonExecScript(api.winName,'zthdIpad_my_works_frame','setIndexFramePraiseOrCommentNum(1,'+oparam_data.comment+','+oparam_data.works_id+');',1);
+		}else{
+			commonExecScript(api.winName,'zthdIpad_activity_works_frame','setIndexFramePraiseOrCommentNum(1,'+oparam_data.comment+','+oparam_data.works_id+');',1);
+		}
+	}
+	/*
+    *author:zhaoj
+    *function:设置列表预览数量显示
+    *date：20170914
+    */
+    function setIndexFrameYulanNum(){
+        oparam_data.yulan++;
+        if(oparam_data.type){
+            commonExecScript(api.winName,'zthdIpad_my_works_frame','setIndexFramePraiseOrCommentNum(3,'+oparam_data.yulan+','+oparam_data.works_id+');',1);
+        }else{
+            commonExecScript(api.winName,'zthdIpad_activity_works_frame','setIndexFramePraiseOrCommentNum(3,'+oparam_data.yulan+','+oparam_data.works_id+');',1);
+        }
+    }
+	/*
+	 *author:zhaoj
+	 *function:验证本人是否已经点赞
+	 *date：20170914
+	 */
+	function isExistsPraise(type,isRefresh) {
+		api.ajax({
+			url : BASE_URL_ACTION + '/ypt/space/praise/isexists_praise?random_num='+creatRandomNum()+'&business_type=6&business_id='+oparam_data.works_id+'&person_id='+$api.getStorage("person_id")+'&identity_id='+$api.getStorage("identity"),
+			method : 'get',
+			timeout : 30,
+			dataType : 'json',
+			headers : {
+	'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+}
+		}, function(ret, err) {
+			if (err) {
+			} else {
+				if(ret.success){
+					if(ret.is_exists_praise){
+						$api.addCls($api.byId('j_praise'), 'praised');
+						$api.html($api.byId('j_praise'), '<div>&nbsp;</div>已赞');
+					}else{
+						$api.removeCls($api.byId('j_praise'), 'praised');
+						$api.html($api.byId('j_praise'), '<div>&nbsp;</div>点赞');
+					}
+				}else{
+				}
+			}
+			if(type){
+				get_works_by_id(isRefresh);
+			}
+		});
+	}
+	/*
+	 *author:zhaoj
+	 *function:设置作品为精品
+	 *interface:张海
+	 *date：20171025
+	 */
+	function set_works_boutique(){
+		api.ajax({
+			url : BASE_URL_ACTION + '/ypt/space/topic/set_works_boutique',
+			method : 'post',
+			timeout : 30,
+			dataType : 'json',
+			data : {
+				values : {
+					random_num : creatRandomNum(),
+					works_id : oparam_data.works_id,
+				}
+			},
+			headers : {
+	'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+}
+		}, function(ret, err) {
+			if (err) {
+				popToast('设置精品失败，请稍候重试');
+			} else {
+				if(ret.success){
+					popToast('设置精品成功');
+					commonAddOrRemoveHideCss('j_set_boutique',0);
+					commonAddOrRemoveHideCss('j_cancel_boutique',1);
+					setBoutiqueTip(1);
+				}else{	
+					popToast('设置精品失败，请稍候重试');
+				}
+			}
+		});
+	}
+	/*
+	 *author:zhaoj
+	 *function:取消精品
+	 *interface:张海
+	 *date：20171025
+	 */
+	function cancel_works_boutique(){
+		api.ajax({
+			url : BASE_URL_ACTION + '/ypt/space/topic/cancel_works_boutique',
+			method : 'post',
+			timeout : 30,
+			dataType : 'json',
+			data : {
+				values : {
+					random_num : creatRandomNum(),
+					works_id : oparam_data.works_id,
+				}
+			},
+			headers : {
+	'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+}
+		}, function(ret, err) {
+			if (err) {
+				popToast('取消精品失败，请稍候重试');
+			} else {
+				if(ret.success){
+					popToast('取消精品成功');
+					commonAddOrRemoveHideCss('j_cancel_boutique',0);
+					commonAddOrRemoveHideCss('j_set_boutique',1);
+					setBoutiqueTip(0);
+				}else{	
+					popToast('取消精品失败，请稍候重试');
+				}
+			}
+		});
+	}
+	/*
+	*author:zhaoj
+	*function:设置精品提示显示
+	*date：20170914
+	*/
+	function setBoutiqueTip(type){
+		if(oparam_data.type){
+			commonExecScript(api.winName,'zthdIpad_my_works_frame','initData(1);',1);
+		}else{
+			commonExecScript(api.winName,'zthdIpad_activity_works_frame','initData(1);',1);
+		}
+	}
+	/*
+	 *author:zhaoj
+	 *function:通过作品id删除作品
+	 *interface:张海
+	 *date：20171025
+	 */
+	function delete_works_by_id(){
+		showSelfProgress('删除中...');
+		api.ajax({
+			url : BASE_URL_ACTION + '/ypt/space/topic/delete_works_by_id',
+			method : 'post',
+			timeout : 30,
+			dataType : 'json',
+			data : {
+				values : {
+					random_num : creatRandomNum(),
+					works_id : oparam_data.works_id,
+				}
+			},
+			headers : {
+	'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+}
+		}, function(ret, err) {
+			api.hideProgress();
+			if (err) {
+				popToast('删除失败，请稍候重试');
+			} else {
+				if(ret.success){
+					popToast('删除成功');
+					commonExecScript('quanziIpad_index_window','quanziIpad_index_frame','setIndexFramePraiseOrCommentNum(2,0,'+oparam_data.works_id+');',1);
+					if(oparam_data.type){
+						commonExecScript(api.winName,'zthdIpad_my_works_frame','setIndexFramePraiseOrCommentNum(2,0,'+oparam_data.works_id+');',1);
+					}else{
+						commonExecScript(api.winName,'zthdIpad_activity_works_frame','setIndexFramePraiseOrCommentNum(2,0,'+oparam_data.works_id+');',1);
+					}
+					setTimeout(function() {
+						closeFrame();
+					}, 100);
+				}else{	
+					popToast('删除失败，请稍候重试');
+				}
+			}
+		});
+	}
+	
+	/**
+	 * 点击编辑按钮 
+	 */
+	function openEditZuoPinFrame(){
+		commonExecScript(api.winName,'','reBackType("editZuoPin")',0);
+		var pageParamJson={"header_h":api.pageParam.header_h,"id":api.pageParam.id,'data':contentData};//打开frame页面所需参数
+		commonOpenFrame('zthdIpad_editZuoPin_frame', 'zthdIpad_editZuoPin_frame.html',api.pageParam.header_h, false, false,"rgba(0,0,0,0)",pageParamJson);	
+	}
+	
+	/**
+	 * 打开作品内容界面
+	 * 王俭
+	 * 2018.5.30 
+	 */
+	function openContentFrame(data){
+		commonCloseFrame('zthdIpad_works_detailContent_frame');
+		var pageParamJson={"header_h":api.pageParam.header_h,'x':api.pageParam.x,'y':api.pageParam.y,"id":api.pageParam.id,'data':data,'oparam_data':oparam_data,'oparam_base64':oparam_base64};//打开frame页面所需参数
+		commonOpenFrame('zthdIpad_works_detailContent_frame', '../../common/zthdIpad/zthdIpad_works_detailContent_frame.html',api.pageParam.header_h + 140, true, false,"#ffffff",pageParamJson);	
+	}
+	
+	/**
+	 * 点击删除按钮 
+	 */
+	function clickDeleteBtn(){
+		popTwoBtnConfirm('提示','确定删除"'+contentData.name+'"作品吗？','delete_works_by_id()')
+	}
+</script>
+</html>

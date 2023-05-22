@@ -1,0 +1,758 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<!-- html5：在创建html时为了防止页面缩放等不兼容效果，要创建个viewport  -->
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<!-- 在IOS设备上，有时会将数字转为手机号，这里也要禁止下 -->
+		<meta name="format-detection" content="telephone=no"/>
+		<title>圈子</title>
+		<link rel="stylesheet" type="text/css" href="../../../../../css/aui/aui.css" />
+		<link rel="stylesheet" type="text/css" href="../../../../../css/module/ipad/left-right-layout.css"/>
+		<link rel="stylesheet" type="text/css" href="../../../../../css/module/iphone/init-screen.css" />
+		<link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+		<style>
+			.back-none{
+				display: none;
+			}
+			.back_left{
+				position:absolute;margin-left:10px;
+			}
+			#wrap{
+				height: auto;
+			}
+			.tag-item{
+				height: auto !important;
+				padding: 20px 0px !important;
+			}
+			.checkbox-div{
+				width: 80%;
+				margin: 5px auto;
+				color: #FFFFFF;
+			}
+			.icon{
+				border-radius: 0px !important;
+				width: 100px  !important;
+				height: 50px  !important;
+			}
+			.myself-icon{
+				width: 100px;
+				height: 76px;
+				margin: 0 auto;
+			}
+			.jigou-icon{
+				width: 100px;
+				height: 73px;
+				margin: 0 auto;
+			}
+			.school-icon{
+				width: 100px;
+				height: 73px;
+				margin: 0 auto;
+			}
+			.class-icon{
+				width: 100px;
+				height: 74px;
+				margin: 0 auto;
+			}
+			.group-icon{
+				width: 100px;
+				height: 61px;
+				margin: 0 auto;
+			}
+		</style>
+	</head>
+	<body id="j_body" class="left-layout-body common-ipad-quanziIpad-tea">
+		<div id="wrap">
+			<header class="aui-bar aui-bar-nav aui-bar-primary" id="aui-header">
+			     <div id="cloud" class="topbar activebar">
+    				<div class="aui-title" id="header-title"></div>
+    				
+    				<div id="back" class="back" onclick="back();" tapmode="">
+    							<i class="aui-iconfont aui-icon-left"></i>返回
+    				</div>
+    				<!--<a id='menu_a' class="aui-iconfont aui-icon-menu aui-pull-right back aui-hidden" tapmode="tap-active" onclick="openMenu();"></a>-->
+    				<a id='add_a' class="aui-pull-right aui-iconfont aui-icon-add back aui-hidden" tapmode="tap-active" onclick="clickAddQuanzi()"></a>
+    				<a class="aui-btn aui-btn-primary aui-pull-right aui-hidden" tapmode id="zhanwei_a"> <span></span> </a>
+    			</div>
+			</header>
+		</div>
+		<!--左侧导航-->
+		<div id="j_left_tag" class="left-tag">
+			<div id="j_myself" class="tag-item" onclick="selectChange(0);">
+				<div class="icon myself-icon"></div>
+				<div class="name">我</div>
+			</div>
+			
+			<div id="j_province" class="tag-item aui-hide" onclick="selectChange(1);">
+				<div class="icon jigou-icon"></div>
+				<div id="province-name" class="name">省</div>
+			</div>
+			
+			<div id="j_city" class="tag-item aui-hide" onclick="selectChange(2);">
+				<div class="icon jigou-icon"></div>
+				<div id="city-name" class="name">市</div>
+			</div>
+			
+			<div id="j_district" class="tag-item aui-hide" onclick="selectChange(3);">
+				<div class="icon jigou-icon"></div>
+				<div id="district-name" class="name">区</div>
+			</div>
+			
+			<div id="j_school" class="tag-item" onclick="selectChange(4);">
+				<div class="icon school-icon"></div>
+				<div class="name">我的学校</div>
+			</div>
+			
+			<div id="j_class" class="tag-item" onclick="selectChange(5);">
+				<div class="icon class-icon"></div>
+				<div class="name">我的班级</div>
+			</div>
+			
+			<div id="j_group" class="tag-item aui-hide" onclick="selectChange(6);">
+				<div class="icon group-icon"></div>
+				<div class="name">我的群组</div>
+			</div>
+		</div>
+		<!--//左侧导航-->
+		<div id="j-right" class="win-right quanzi-right fr"></div>
+	</body>
+	<script type="text/javascript" src="../../../../../script/api.js"></script>
+	<script type="text/javascript" src="../../../../../script/base_config.js"></script>
+	<script type="text/javascript" src="../../../../../script/common/common.js"></script>
+	<script type="text/javascript" src="../../../../../script/plug-in/base64.js" ></script>
+	<script type="text/javascript" src="../../../../../script/assembly/tongjiData.js"></script>
+	<script type="text/javascript" src="../../../../../script/assembly/voicePlayer.js" ></script>
+	<script type="text/javascript" src="../../../../../script/init/common/quanzi/init_getClassify.js"></script>
+	<script type="text/javascript" src="../../../../../script/common/init_common.js"></script>
+	<script type="text/javascript" src="../../../../../script/plug-in/template.js" ></script>
+	<script type="text/javascript">
+		var voice_type = 2;//朗读页面显示隐藏判断参数，2是打开，1是隐藏
+		var voice_content;//朗读内容
+		var header_h;
+		//定时器全局变量
+		var BASE_URL_ACTION;
+		var BASE_SERVER_IP;
+		//从哪个页面退出
+		var back_name = '';
+		//是否开启滑动条
+		var Navigation_isOpen = false;
+		var jz_onclick_menu = 0;
+		var org_id = 0;
+		var org_name = "";
+		var is_change = false;
+		var class_list = [];//班级列表
+		
+		var currentPage = 1;//当前分页数
+		var classAry;//班级选择框数组
+		var groupAry;//班级选择框数组
+		apiready = function() {
+			commonSetTheme({"level":5,"type":0});
+			api.parseTapmode();
+			commonIosAuiHeader();//定位header位置，留出上面电池等空隙，苹果需要
+			commonBackForAndroid();//安卓关闭
+			//初始化按钮
+			back_name = 'index';
+			zhanWeiIsShow(true);
+			qzmenuIsShow(true);
+			backIsShow(true);
+			$api.css($api.byId('j_left_tag'),'top:'+api.pageParam.header_h+'px;max-height:'+(api.winHeight*1-api.pageParam.header_h*1)+'px;height:'+(api.winHeight*1-api.pageParam.header_h*1)+'px;');//设置左侧导航的样式
+			//初始化高度
+			var header = $api.byId('aui-header');
+			$api.fixStatusBar(header);
+			var headerPos = $api.offset(header);
+			header_h = headerPos.h;
+			BASE_URL_ACTION = $api.getStorage('BASE_URL_ACTION');
+			BASE_SERVER_IP = $api.getStorage('BASE_SERVER_IP');
+			
+//			commonJudgeRoles(function (type){
+//				var org_level = type;
+				var org_level = $api.getStorage('org_level');
+				if ($api.getStorage('identity') == '5'){
+					if (org_level <= 101){
+		    			$api.text($api.byId('province-name'), $api.getStorage('province_name'));
+		    			$api.removeCls($api.byId('j_province'), "aui-hide");
+					}
+					if (org_level <= 102){
+						$api.text($api.byId('city-name'), $api.getStorage('city_name'));
+						$api.removeCls($api.byId('j_city'), "aui-hide");
+					}
+					if (org_level <= 103){
+						$api.text($api.byId('district-name'), $api.getStorage('district_name'));
+						$api.removeCls($api.byId('j_district'), "aui-hide");
+					}
+					selectChange(3);
+				}else if ($api.getStorage('identity') == '6'){
+					selectChange(5,true);
+					$api.css($api.byId('j_city'), 'display: none');
+				}
+				get_group_bypersonid();
+//			});
+			
+		}
+		
+		
+		/*
+		 * 显示添加圈子
+		 * 张自强
+		 * 20170714
+		 */
+		function qzaddIsShow(is_show) {
+			if (is_show) {
+				$api.removeCls($api.byId('add_a'), 'aui-hidden');
+			} else {
+				$api.addCls($api.byId('add_a'), 'aui-hidden');
+			}
+		}
+		
+		/*
+		 * 显示切换圈子
+		 * 张自强
+		 * 20170714
+		 */
+		function qzmenuIsShow(is_show) {
+			if (is_show) {
+				$api.removeCls($api.byId('menu_a'), 'aui-hidden');
+			} else {
+				$api.addCls($api.byId('menu_a'), 'aui-hidden');
+			}
+		}
+		
+		/*
+		 * 显示添加圈子
+		 * 张自强
+		 * 20170714
+		 */
+		function backIsShow(is_show){
+			if (is_show) {
+				$api.removeCls($api.byId('back'), 'back-none');
+			} else {
+				$api.addCls($api.byId('back'), 'back-none');
+			}
+		}
+		
+		function yyConfigIsShow(dom_id,is_show){
+			if (is_show) {
+				$api.removeCls($api.byId(dom_id), 'aui-hidden');
+			} else {
+				$api.addCls($api.byId(dom_id), 'aui-hidden');
+			}
+			
+		}
+
+		/**
+		 * 是否显示占位符
+		 * 周枫
+		 * 2016.11.17
+		 */
+		function zhanWeiIsShow(is_show) {
+			if (is_show) {
+				$api.removeCls($api.byId('zhanwei_a'), 'aui-hidden');
+			} else {
+				$api.addCls($api.byId('zhanwei_a'), 'aui-hidden');
+			}
+		}
+
+		/**
+		 * 改变标题title
+		 * 周枫
+		 * 2016.12.02
+		 */
+		function reWriteTitle(title_name) {
+			if (title_name == '圈子') {
+				if(Navigation_isOpen){
+						title_name = org_name;
+				}else{
+					title_name = $api.getStorage('bureau_name');
+					if ( typeof (title_name) == 'undefined' || title_name == '') {
+						title_name = '圈子';
+					}
+				}
+			}
+			$api.text($api.byId('header-title'), title_name);
+		}
+
+		
+		
+		/*
+		 * 打开添加圈子页面
+		 * 张自强
+		 * 20170714
+		 */
+		function openAddQuanziWindow(){
+//			if($api.getStorage('identity') == 5 && !Navigation_isOpen){
+				//reWriteTitle('发表学校圈');
+				backIsShow(true);
+				qzaddIsShow(true);
+				qzmenuIsShow(false);
+				back_name = 'add';
+				
+				api.execScript({
+		            name : 'quanziIpad_index_window',
+		            frameName : 'quanziIpad_index_frame',
+		            script: 'openAddFrame();'
+	            });
+//			}else{
+//				//reWriteTitle('发表班级圈');
+//				backIsShow(true);
+//				qzaddIsShow(true);
+//				qzmenuIsShow(false);
+//				back_name = 'add';
+//				
+//				api.execScript({
+//		            name : 'quanziIpad_index_window',
+//		            frameName : 'quanziIpad_index_frame',
+//		            script: 'openAddFrame();'
+//	            });
+//			}
+		}
+		
+		/*
+		 * 设置返回页面
+		 * 张自强
+		 * 20170722
+		 */
+		function reBackType(name){
+			back_name = name;
+		}
+		
+		/*
+		 * 返回功能
+		 * 张自强
+		 * 20170714
+		 */
+		function back(){
+			backIsShow(true);
+			qzmenuIsShow(true);
+			if(back_name == 'index'){
+				api.closeWin();
+			}else if(back_name == 'add'){
+				qzaddIsShow(true);
+				qzmenuIsShow(true);
+				commonCloseFrame('quanziIpad_add_frame'); 
+				reBackType('index');
+			}else if(back_name == 'xq'){
+				api.closeWin({
+					name : 'quanziIpad_content_window'
+                });
+                reBackType('index');
+			}else if(back_name == 'fb'){   //评论
+				qzaddIsShow(true);
+                commonCloseFrame('quanziIpad_comment_frame')
+                reBackType('content');
+			}else if(back_name == 'xxadd'){   //学校添加圈子
+				qzaddIsShow(true);
+				qzmenuIsShow(true);
+				commonCloseFrame('quanziIpad_xxadd_frame');
+				reBackType('index');
+			}else if(back_name == 'menu'){
+				commonCloseFrame('quanziIpad_menu_frame');
+				reBackType('index');
+			}else if(back_name == 'bj'){
+				if($api.getStorage('identity') == 5){
+					qzaddIsShow(true);
+				}else{
+					if($api.getStorage('class_id') == org_id){
+						qzaddIsShow(true);
+					}else if($api.getStorage('class_id') != org_id && org_id != $api.getStorage('bureau_id') && org_id !=0 ){
+						qzaddIsShow(false);
+					}else if(org_id == 0){
+						qzaddIsShow(false);
+					}else{
+						qzaddIsShow(false);
+					}
+				}
+				
+				commonCloseFrame('quanziIpad_change_frame');
+				reBackType('index');
+			}else if(back_name == 'picture_index'){//列表页图片查看返回
+				
+				reBackType('index');
+			}else if(back_name == 'picture'){//详情页附件图片查看返回
+				
+				reBackType('content');
+			}else if(back_name == 'picture_sel'){
+				commonExecScript('quanziIpad_index_window','quanziIpad_add_frame','closePicture();',1);
+			  	reBackType('add');
+			}else if(back_name == 'picture_sel_xx'){
+				commonExecScript('quanziIpad_index_window','quanziIpad_xxadd_frame','closePicture();',1);
+			  	reBackType('xxadd');
+			}else if(back_name == 'content'){
+				voice_type = 2;
+				commonExecScript('quanziIpad_index_window','quanziIpad_index_frame','isShowBoxShow(0);',1);//隐藏虚线
+				commonCloseFrame('quanziIpad_contentHeader_frame');
+				commonCloseFrame('quanziIpad_content_frame');
+				reBackType('index');
+			}else if (back_name == 'common_voiceplay'){
+				commonCloseFrame('common_voiceplay_frame');
+				reBackType('content');
+			}else if(back_name == 'open_picture'){
+				backIsShow(false);
+			  	
+			  	reBackType('add');
+			}else if(back_name == 'xxopen_picture'){
+				backIsShow(false);
+			  	
+			  	reBackType('xxadd');
+			}else if(back_name == 'picture_detail'){
+			  	
+				reBackType('content');
+			}else if (back_name == 'personalInfo'){
+				commonExecScript('quanziIpad_index_window','quanziIpad_index_frame','isShowBoxShow(0);',1);//隐藏虚线
+				commonCloseFrame('hh_personinfo_frame');
+				commonCloseFrame('personalInfo_frame');
+				reBackType('index');
+			}else if (back_name == 'personalClassify'){
+				commonCloseFrame('personalClassify_frame');
+				reBackType('xxadd');
+			}else if (back_name == 'publishRange'){
+				commonCloseFrame('publishRange_frame');
+				reBackType('xxadd');
+			}else if (back_name == 'menu_frame'){
+				commonCloseFrame('content_menu_frame');
+				reBackType('content');
+			}else if(back_name == 'voice_c'){
+				commonCloseFrame('common_playaudio_frame');
+				reBackType('content');
+			}else{
+				if($api.getStorage('identity') == 6 && org_id == $api.getStorage('class_id')){
+					qzaddIsShow(true);
+				}
+				if($api.getStorage('identity') == 5){
+					qzaddIsShow(true);
+				}
+				commonCloseFrame('quanziIpad_change_frame');
+				reBackType('index');
+			}
+			
+		}
+		
+		/*
+		 * 打开圈子切换页面
+		 * 张自强
+		 * 20170717
+		 */
+		function openMenu(){
+			reBackType("menu");
+			api.openFrame({
+	            name: 'quanziIpad_menu_frame',
+	            url: 'quanziIpad_menu_frame.html',
+	            bounces: false,
+	            rect: {
+	                x: 0,
+	                y: 0,
+	                w: 'auto',
+	                h: 'auto'
+	            },
+	            bgColor : 'rgba(0,0,0,0)',
+	            pageParam : {
+					header_h : header_h,
+					'org_id' : org_id,
+					'from_name' : 'quanziIpad_index_window'
+				},
+	            reload: true
+	        });  
+			
+		}
+		
+		
+		/*
+		 * 修改是否打开滑动条的参数
+		 * 张自强
+		 * 20170722
+		 */
+		function changeNavigationBar(num){
+			if(num == 105){
+				if($api.getStorage('identity') == 6 && org_id != $api.getStorage('class_id')){
+					qzaddIsShow(false);
+				}else if($api.getStorage('identity') == 6 && org_id == $api.getStorage('class_id')){
+					qzaddIsShow(true);
+				}
+				
+				if($api.getStorage('identity') == 5){
+					qzaddIsShow(true);
+				}
+				Navigation_isOpen = true;
+			}else{
+				Navigation_isOpen = false;
+			}
+		}
+		
+		
+		/*
+		 * 修改标题名
+		 * 张自强
+		 * 20170724
+		 */
+		function changeClass(id,name){
+			is_change = true;
+			org_id = id;
+			org_name = name;
+		}
+		
+		
+		/*
+		 * 打开校园选项
+		 * 张自强
+		 * 20170605
+		 */
+		function getXY(){
+			commonExecScript('quanziIpad_index_window','quanziIpad_index_frame','isShowBoxShow(0);',1);//隐藏虚线
+			commonCloseFrame('hh_personinfo_frame');
+			commonCloseFrame('personalInfo_frame');
+			commonCloseFrame('quanziIpad_contentHeader_frame');
+            commonCloseFrame('quanziIpad_content_frame');
+			var org_id = $api.getStorage('bureau_id');
+			var org_name = $api.getStorage('school_name');
+			api.execScript({
+				name : 'quanziIpad_index_window',
+	            script: 'reWriteTitle("'+org_name+'");'
+            });
+            api.execScript({
+	        	name : 'quanziIpad_index_window',
+	            frameName:'quanziIpad_index_frame',
+	            script: 'change_type('+104+','+org_id+',"'+org_name+'");'
+          	});
+           $api.setStorage('quanzi_first_change_id'+ $api.getStorage('person_id'),org_id);
+		   $api.setStorage('quanzi_first_change_name'+ $api.getStorage('person_id'),org_name);
+		   $api.setStorage('quanzi_first_change_type'+ $api.getStorage('person_id'),104);
+//		   api.execScript({
+//	           name : 'quanziIpad_index_window',
+//	           script: 'back();'
+//         });
+		}
+		
+		
+		
+		/*
+		*author:zhaoj
+		*function:打开详情页面
+		*date：20170911
+		*/
+		function openDetailFrame(oparam){
+			reBackType('content');
+			var header_h = api.pageParam.header_h;//顶部高度
+			if(api.winWidth <= 1024){
+				var frame_w = Math.floor(api.winWidth*0.42);
+				var frame_x = Math.floor(api.winWidth*0.58);
+			}else{
+				var frame_w = Math.floor(api.winWidth*0.4);
+				var frame_x = Math.floor(api.winWidth*0.6);
+			}
+			pageParamJson={"header_h":header_h,'x':frame_x,'w':frame_w,"oparam":oparam};//打开frame页面json数据
+			//打开frame页面
+			commonOpenFrame("quanziIpad_contentHeader_frame","quanziIpad_contentHeader_frame.html",header_h,false,false,"rgba(0,0,0,0)",pageParamJson);
+			commonExecScript('quanziIpad_index_window','quanziIpad_index_frame','isShowBoxShow(1);',1);//显示虚线
+		}
+		
+		/*
+		*author:zhaoj
+		*function:打开评论页面
+		*date：20170912
+		*/
+		function openCommentFrame(d,pid,person_id,identity_id,person_name,wz_id,expand_id){
+			reBackType('fb');
+			var header_h = api.pageParam.header_h;//顶部高度
+			pageParamJson={"header_h":header_h,"d":d,"pid":pid,"person_id":person_id,"identity_id":identity_id,"person_name":person_name,"wz_id":wz_id,"expand_id":expand_id};//打开frame页面json数据
+			//打开frame页面
+			
+			commonOpenFrame("quanziIpad_comment_frame","quanziIpad_comment_frame.html",0,false,false,"rgba(0,0,0,0)",pageParamJson);
+		}
+		/*
+		 * author:zfz
+		 * function:班级列表去重
+		 * data:20171014
+		 */
+		function unique(list){
+			 var res = [list[0]];
+			 for(var i = 1; i < list.length; i++){
+			  var repeat = false;
+			  for(var j = 0; j < res.length; j++){
+			   if(list[i].CLASS_ID == res[j].CLASS_ID){
+			    repeat = true;
+			    break;
+			   }
+			  }
+			  if(!repeat){
+			   res.push(list[i]);
+			  }
+			 }
+			 return res;
+			}
+		/*
+		 * 功能：选中班级
+		 * 作者:zfz
+		 * 时间：20171012
+		 */
+		function getBJ(org_id){
+			commonCloseFrame('quanziIpad_contentHeader_frame');
+		    commonCloseFrame('quanziIpad_content_frame');
+			for(var i=0;i<class_list.length;i++){
+				if(org_id == class_list[i].id){
+					showSelfProgress('加载中...');
+					var org_name = class_list[i].name;
+					var type = 105;
+		            reWriteTitle(org_name)
+					api.execScript({
+			        	name : 'quanziIpad_index_window',
+			            frameName:'quanziIpad_index_frame',
+			            script: 'change_type('+type+','+org_id+',"'+org_name+'");'
+			        });
+					api.hideProgress();
+					$api.setStorage('quanzi_first_change_id'+ $api.getStorage('person_id'),org_id);
+					$api.setStorage('quanzi_first_change_name'+ $api.getStorage('person_id'),org_name);
+					$api.setStorage('quanzi_first_change_type'+ $api.getStorage('person_id'),type); 		
+				}
+			}
+		}
+		
+		/**
+		 * 获取个人信息
+		 * 王俭
+		 * 2018.4.24 
+		 */
+		function getPersonData(name,targetName,avatar_fileid,person_id,identity_id){
+			if (targetName){
+				openPersonInfo(name,targetName,avatar_fileid,person_id,identity_id);
+			}else{
+				commonGetPInfoByPId(person_id,identity_id,function (bol,data){
+					if (bol){
+						if (data.success){
+							openPersonInfo(name,data.table_List.login_name,avatar_fileid,person_id,identity_id);
+						}
+						else{
+							popToast('获取人员信息失败，请重试');
+						}
+					}else{
+						popToast('获取人员信息失败，请重试');
+					}
+				});
+			
+			}
+		}
+		
+		/**
+		 * 打开个人信息界面
+		 * 王俭
+		 * 2018.4.24
+		 */
+		function openPersonInfo(name,targetName,avatar_fileid,person_id,identity_id){
+			var targetId = commonOldParamToNewParam(targetName);
+			reBackType('personalInfo');
+			var header_h = api.pageParam.header_h;//顶部高度
+			if(api.winWidth <= 1024){
+				var frame_w = Math.floor(api.winWidth*0.42);
+				var frame_x = Math.floor(api.winWidth*0.58);
+			}else{
+				var frame_w = Math.floor(api.winWidth*0.4);
+				var frame_x = Math.floor(api.winWidth*0.6);
+			}
+			pageParamJson={
+				"header_h":header_h,
+				'x':frame_x,
+				'w':frame_w,
+				'targetId' : targetId,
+				'old_msg_id' : -1,
+				'conver_type' : 'PRIVATE',
+				'person_name' : name,
+				'h_from' : 'center_index',
+				'avatar_url' : avatar_fileid,
+				'person_id':person_id,
+				'identity_id':identity_id};//打开frame页面json数据
+			//打开frame页面
+			commonOpenFrame("personalInfo_frame","quanziIpad_personalInfo_frame.html",header_h,false,false,"rgba(0,0,0,0)",pageParamJson);
+			commonExecScript('quanziIpad_index_window','quanziIpad_index_frame','isShowBoxShow(1);',1);//显示虚线
+		}
+		
+		/**
+		 *获取班级
+		 * 王俭
+		 * 2018.4.20
+		 * [{"class_name":"初中一班","class_id":862}] 
+		 */
+		function getClass(){
+			loadClassListData(function(is_true, class_list_arr){
+					if(is_true) {
+						var ret = {'list':class_list_arr};
+						classList = class_list_arr;
+						commonAddManyHtml('class-div','class-script',ret);
+						classAry = document.getElementsByName('classCheckbox');
+					} else {
+						popToast('获取班级信息失败，请稍候重试');
+					}
+				});
+		}
+		
+		/**
+	 *获取群组
+	 * 王俭
+	 * 2018.4.20
+	 * {"list":[{"group_id":900000020,"category_s":[[{"id":2686,"org_person_id":900000020,"business_iid":106,"level":1,"person_name":null,"article_num":0,"sequence":1,"identity_id":106,"name":"默认分类","business_id":900000020,"is_del":0,"business_type":2}]],"group_name":"123"}]}
+	 */
+
+	function get_group_bypersonid(){
+    	api.ajax({
+	    	url : BASE_URL_ACTION+'/blog_expand/get_group_bypersonid?random_num='+creatRandomNum()+'&person_id='+$api.getStorage("person_id")+'&identity_id='+$api.getStorage("identity"),
+			method : 'get',
+			timeout : 30,
+			dataType : 'json',
+			headers : {
+				'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+			}
+        },function(ret,err){
+        	if(err){
+        		popToast('获取群组信息失败，请稍候重试');
+        	}else{
+        		if (ret.list && ret.list.length > 0){
+        			$api.removeCls($api.byId('j_group'), 'aui-hide');
+        		}
+			}
+        });
+    }
+    
+    function selectChange(type,isInit){
+    	var items = document.getElementsByClassName('tag-item');
+    	
+    	for (var i = 0; i < items.length; i++){
+    		if (i == type){
+    			$api.css(items[i],'background-color:#003476');
+    		}else{
+    			$api.css(items[i],'background-color:#004EA2');
+    		}
+    	}
+    	    	
+    	commonExecScript('quanziIpad_index_window','quanziIpad_index_frame','isShowBoxShow(0);',1);//隐藏虚线
+		commonCloseFrame('hh_personinfo_frame');
+		commonCloseFrame('personalInfo_frame');
+		commonCloseFrame('quanziIpad_contentHeader_frame');
+        commonCloseFrame('quanziIpad_content_frame');
+        commonCloseFrame('quanziIpad_indexScreen_frame');
+        commonCloseFrame('quanziIpad_index_frame');
+        if(api.winWidth <= 1024){
+			var frame_w = Math.floor(api.winWidth*0.58);
+			$api.css($api.dom('.win-right'),'width:42%');
+		}else{
+			var frame_w = Math.floor(api.winWidth*0.6);
+			$api.css($api.dom('.win-right'),'width:40%');
+		}
+		
+		var frame_x = 0;
+		if(frame_w <= 614){
+			frame_w=frame_w-150;
+			frame_x = 150;
+		}else{
+			frame_w=frame_w-180;
+			frame_x = 180;
+		}
+		var pageParamJson = {
+			'type' : type,
+			'header_h' : header_h,
+			'w':frame_w,
+			"x":frame_x,
+			'isInit':isInit,
+		};
+		commonOpenFrame('quanziIpad_indexScreen_frame','quanziIpad_indexScreen_frame.html', header_h, false, false, '#ffffff', pageParamJson);
+    }
+    
+	</script>
+</html>

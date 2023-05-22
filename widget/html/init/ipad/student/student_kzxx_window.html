@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<!-- html5：在创建html时为了防止页面缩放等不兼容效果，要创建个viewport  -->
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<!-- 在IOS设备上，有时会将数字转为手机号，这里也要禁止下 -->
+		<meta name="format-detection" content="telephone=no"/>
+		<title>慧学习-拓展学习</title>
+		 <link rel="stylesheet" type="text/css" href="../../../../css/aui/aui.css"/>
+	    <link rel="stylesheet" type="text/css" href="../../../../css/module/ipad/init_student.css" />
+		<link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+		<link id="j_mode" rel="stylesheet" type="text/css" href="" />
+		<style>
+			.cshym-content{height:97%;}
+			.cshym-content li:nth-child(4n+1){margin-left:10.8%;}
+			.hxx-content li{margin-right:9%;}
+			.hxx-content li:nth-child(4n){width:13%;margin-left:0;}
+		</style>
+	</head>
+	<body id="j_body">
+		<ul id="j_tzxx" class="cshym-content hxx-content">
+			<li onclick='openModule({"win_url":"yunkeIpad_index_window","type":"6","code":"yunke"});'>
+				<div class="j_img zoomImage bg-img msyk ">
+					<div class="mode-name">名师云课</div>
+				</div>
+			</li>
+			<li onclick='openModule({"win_url":"gameIpad_index_window","type":"5","code":"hxx_tzxx_yx"});'>
+				<div class="j_img zoomImage bg-img qzyx">
+					<div class="mode-name">启智游戏</div>
+				</div>
+			</li>
+			<li onclick='openModule({"win_url":"zhuantiIpad_index_window","type":"5","code":"hxx_tzxx_zt"});'>
+				<div class="j_img zoomImage bg-img ztxx">
+					<div class="mode-name">专题学习</div>
+				</div>
+			</li>
+<!--			<li onclick='openModule({"win_url":"dzsIpad_index_window","type":"5","code":"hxx_tzxx_dzs"});'>
+				<div class="j_img zoomImage bg-img dzs">
+					<div class="mode-name">电子书</div>
+				</div>
+			</li>-->
+		</ul>
+	</body>
+	<script type="text/javascript" src="../../../../script/api.js"></script>
+	<script type="text/javascript" src="../../../../script/base_config.js"></script>
+	<script type="text/javascript" src="../../../../script/common/common.js"></script>
+	<script type="text/javascript" src="../../../../script/init/init_config.js"></script>
+	<script type="text/javascript" src="../../../../script/assembly/executeApp.js" ></script>
+	<script type="text/javascript">
+		var header_h;
+		apiready = function() {
+			commonSetTheme({"level":4,"type":4});
+			header_h = api.pageParam.header_h;
+			setMarginTop();
+		}
+		/*
+        *author:zhaoj
+        *function:设置高度
+        *date：20170814
+        */
+       	function setMarginTop(){
+       		$api.removeCls($api.byId('j_body'), 'aui-hide');
+       		var div_array = $api.domAll($api.byId('j_tzxx'), '.j_img');
+       		var height_h = $api.cssVal(div_array[0],'width');
+       		height_h = height_h.substring(0,height_h.length-2);
+       		height_h = Math.floor(height_h*1/2)+20;
+       		for(var i = 0; i < div_array.length; i++){
+       			$api.css(div_array[i],'margin-top:-'+height_h+'px;');
+       		}
+       	}
+	</script>
+</html>

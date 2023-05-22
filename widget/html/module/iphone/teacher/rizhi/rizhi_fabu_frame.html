@@ -1,0 +1,736 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+		<title>发布日志页面</title>
+		<link rel="stylesheet" type="text/css" href="../../../../../css/aui/aui.css"/>
+		<link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+		<style>
+			.time-content-fabu {
+				height: 50px;
+				line-height: 40px;
+				padding: 5px 30px 0 15px;
+				color: #141414;
+				background: #ffffff;
+				font-size: 17px;
+			}
+			.time-content-fabu div {
+				display: inline-block;
+				float: right;
+				color: #666666;
+			}
+			.work-box {
+				height: auto;
+				border-bottom: 1px solid #EDEDED;
+				background: #ffffff;
+			}
+			.work-box span {
+				font-size: 15px;
+				color: #141414;
+				float: left;
+				width: 23%;
+				background: #ffffff;
+				display: inline-block;
+				line-height: 43px;
+				padding: 0 0 0 15px;
+			}
+			.remark-box {
+				height: auto;
+				padding: 5px 0px 0 0px;
+				background: #ffffff;
+				border-top: 4px solid #EDEDED;
+				padding-bottom: 50px;
+			}
+			.textarea-style {
+				float: left;
+				width: 74%;
+				margin-bottom: 0px;
+				border-style: solid;
+				border-color: #ffffff;
+				color: #666666;
+				font-size: 13px;
+				overflow-y: visible;
+				padding: 10px 10px 5px 0;
+			}
+			.remark-textarea-style {
+				margin-bottom: 0px;
+				border-style: solid;
+				border-color: #ffffff;
+				color: #666666;
+				overflow-y: visible;
+			}
+			.question-file {
+				padding: 0 15px;
+			}
+			.question-file dl {
+				position: relative;
+				width: 18%;
+				display: inline-block;
+				text-align: center;
+				float: left;
+				margin-right: 2%;
+				margin-bottom: 5px;
+			}
+			.question-file dl dd {
+				position: absolute;
+				z-index: 1px;
+				top: -10px;
+				right: -10px;
+				width: 25px;
+				height: 25px;
+				text-align: center;
+				line-height: 30px;
+			}
+			.question-file dl dd img {
+				width: 13px;
+				height: 13px;
+			}
+			.question-file dl.mr0 {
+				margin-right: 0;
+			}
+			.question-file dl img {
+				width: 100%;
+			}
+			.question-file dl dt.add-img-btn {
+				border-radius: 8px;
+				border: 2px solid #C4C4C4;
+			}
+			.question-file dl .img {
+				border-radius: 8px;
+				border: 2px solid #C4C4C4;
+			}
+			.question-file dl .img img {
+				border-radius: 6px;
+			}
+			.bgf {
+				background: #ffffff;
+			}
+			.plrtb {
+				padding: 15px;
+			}
+			.mb10 {
+				margin-bottom: 10px !important;
+			}
+			.mt10 {
+				margin-top: 10px;
+			}
+			.shangchuan-img {
+				line-height: 53px;
+			}
+			#foot_div {
+				display: block;
+				bottom: 0px;
+				width: 100%;
+				min-width: 200px;
+				line-height: 30px;
+				text-align: right;
+				color: #fff;
+				background: #ffffff;
+				padding: 10px 10px;
+				border-top: 1px solid #EDEDED;
+				position: fixed;
+			}
+			.flex-con {
+				-webkit-box-flex: 1;
+				-webkit-flex: 1;
+				flex: 1;
+			}
+			.line-div {
+				border-top: 10px solid #EDEDED;
+			}
+			i.aui-iconfont{
+				color: #C4C4C4;
+				font-size: 23px;
+				font-weight: bolder;
+			}
+		</style>
+	</head>
+	<body class="common-iphone-rizhi">
+		<div id="wrap">
+			<div class = "aui-content flex-con">
+				<!--<form class="aui-input-group" style="height: 100%;">-->
+				<div class="time-content-fabu">
+					日志日期 <div id="select_time"></div>
+				</div>
+				<div class = "line-div"></div>
+				<div class = "work-box clearfix">
+					<span >进行中</span>
+					<textarea id = "going_content" class = "textarea-style" maxlength ='1000' rows="3" oninput='showTip(this.value.length,this);' onpropertychange="this.style.posHeight = this.scrollHeight" placeholder="最多支持1000个字符"></textarea>
+				</div>
+				<div class = "work-box clearfix" >
+					<span >已完成</span>
+					<textarea id = "complete_content" class = "textarea-style" maxlength ='1000' rows="3" oninput='showTip(this.value.length,this);' onpropertychange="this.style.posHeight = this.scrollHeight" placeholder="最多支持1000个字符"></textarea>
+				</div>
+				<div class = "work-box clearfix">
+					<span >已推迟</span>
+					<textarea id = "delay_content" class = "textarea-style" maxlength ='1000' rows="3"oninput='showTip(this.value.length,this);'  onpropertychange="this.style.posHeight = this.scrollHeight" placeholder="最多支持1000个字符"></textarea>
+				</div>
+				<div class = "work-box clearfix">
+					<span >已滞后</span>
+					<textarea id = "lag_content" class = "textarea-style" maxlength ='1000' rows="3" oninput='showTip(this.value.length,this);' onpropertychange="this.style.posHeight = this.scrollHeight" placeholder="最多支持1000个字符"></textarea>
+				</div>
+				<div class = "remark-box">
+					<textarea id="remark_content" class="remark-textarea-style wz-textarea bgf" maxlength ='1000' rows="2" onpropertychange="this.style.posHeight = this.scrollHeight" placeholder="备注" oninput='showTip(this.value.length,this);'></textarea>
+					<div id="j_files" class="question-file clearfix shangchuan-img">
+						<dl id="j_add_btn" class="mr0" onclick="openAddFilesOpn()">
+							<dt class="add-img-btn">
+								<i class="aui-iconfont aui-icon-camera"></i>
+							</dt>
+							<dd></dd>
+						</dl>
+					</div>
+				</div>
+				<!--</form>-->
+			</div>
+			<div id="foot_div">
+				<button class="aui-btn aui-btn-success" onclick="clearLog();">
+					清空
+				</button>
+				&nbsp;&nbsp;
+				<button class="aui-btn aui-btn-info" onclick="sureSumbitLog();">
+					确定
+				</button>
+			</div>
+		</div>
+	</body>
+	<script type="text/javascript" src="../../../../../script/api.js"></script>
+	<script type="text/javascript" src="../../../../../script/assembly/log-current-time.js"></script>
+	<script type="text/javascript" src="../../../../../script/common/wenzhang_common.js" ></script>
+	<script type="text/javascript" src="../../../../../script/assembly/UIAlbumBrowser.js"></script>
+	<script type="text/javascript" src="../../../../../script/assembly/getPicture.js"></script>
+	<script type="text/javascript" src="../../../../../script/base_config.js" ></script>
+	<script type="text/javascript" src="../../../../../script/common/common.js"></script>
+	<script type="text/javascript" src="../../../../../script/plug-in/base64.js" ></script>
+	<script type="text/javascript">
+		//顶部高度
+		var header_h;
+		//手机相册组件
+		var obj_scan;
+		var img_size;
+		//机构分类的数组
+		var img_suffix;
+		var logTpye;
+		var jxzData;
+		var tcData;
+		var zhData;
+		var bzData;
+		var wcData;
+		var tpljData;
+		apiready = function() {
+			commonSetTheme({"level":5,"type":0});
+			header_h = api.pageParam.header_h;
+			logTpye = api.pageParam.logTpye;
+			if (logTpye == 2) {
+				jxzData = api.pageParam.jxzData;
+				tcData = api.pageParam.tcData;
+				zhData = api.pageParam.zhData;
+				bzData = api.pageParam.bzData;
+				wcData = api.pageParam.wcData;
+				tpljData = api.pageParam.tpljData;
+				setLogData(api.pageParam.jxzData, api.pageParam.tcData, api.pageParam.zhData, api.pageParam.bzData, api.pageParam.wcData, api.pageParam.tpljData, api.pageParam.shijianData);
+			} else if (logTpye == 1) {
+				var time = document.getElementById('select_time');
+				$api.text(time, api.pageParam.shijianData);
+			}
+			obj_scan = api.require('UIAlbumBrowser');
+			var addBtnWidth = $api.cssVal($api.byId('j_add_btn'), 'width');
+			$api.css($api.dom($api.byId('j_add_btn'),'dt'), 'height:'+addBtnWidth+';line-height:'+(addBtnWidth.replaceAll('px','')*1-4)+'px;');
+		};
+		/*
+		 *author:ws
+		 *function:编辑时页面设置值
+		 *date：20170313
+		 */
+		function setLogData(jxzData, tcData, zhData, bzData, wcData, tpljData, shijianData) {
+			var time = document.getElementById('select_time');
+			$api.text(time, Base64.decode($api.trimAll(api.pageParam.shijianData)));
+			var img_url = Base64.decode($api.trimAll(tpljData));
+			if (isEmptyString(img_url)) {
+			} else {
+				var imgArr = img_url.split(",");
+				for (var i = 0; i < imgArr.length; i++) {
+					var img_url = imgArr[i];
+					getImgSize();
+					if (getfilesNum() == 8) {
+						$api.css($api.byId('j_add_btn'), 'display:none');
+						addFiles(img_url, 'mr0');
+					} else {
+						addFiles(img_url, '');
+					}
+				}
+			}
+			//进行中
+			if (isEmptyString(jxzData)) {
+			} else {
+				$api.val($api.byId('going_content'), Base64.decode(jxzData));
+			}
+			//推迟
+			if (isEmptyString(tcData)) {
+			} else {
+				$api.val($api.byId('delay_content'), Base64.decode(tcData));
+			}
+			//滞后
+			if (isEmptyString(zhData)) {
+			} else {
+				$api.val($api.byId('lag_content'), Base64.decode(zhData));
+			}
+			//备注
+			if (isEmptyString(bzData)) {
+			} else {
+				$api.val($api.byId('remark_content'), Base64.decode(bzData));
+			}
+			//完成
+			if (isEmptyString(wcData)) {
+			} else {
+				$api.val($api.byId('complete_content'), Base64.decode(wcData));
+			}
+		}
+
+		/*
+		 *author:ws
+		 *function:window页面返回时检测是否有内容
+		 *date：20170301
+		 */
+		function checkContentNull(logTpye) {
+			//logTpye1发布日志2编辑日志
+			var flag;
+			if (logTpye == 2) {
+				var index1 = $api.trimAll($api.val($api.byId('going_content'))) == $api.trimAll(Base64.decode(jxzData));
+				var index2 = $api.trimAll($api.val($api.byId('complete_content'))) == $api.trimAll(Base64.decode(wcData));
+				var index3 = $api.trimAll($api.val($api.byId('delay_content'))) == $api.trimAll(Base64.decode(tcData));
+				var index4 = $api.trimAll($api.val($api.byId('lag_content'))) == $api.trimAll(Base64.decode(zhData));
+				var index5 = $api.trimAll($api.val($api.byId('remark_content'))) == $api.trimAll(Base64.decode(bzData));
+				var index6;
+				dealPicture(function(thumb_ids, content) {
+					index6 = thumb_ids == Base64.decode(tpljData);
+				});
+				//页面内容是否有所改变1有2无
+				if (!index1 || !index2 || !index3 || !index4 || !index5 || !index6) {
+					flag = 1;
+				} else {
+					flag = 2;
+				}
+			} else if (logTpye == 1) {
+				var going_content = $api.trimAll($api.val($api.byId('going_content')));
+				var complete_content = $api.trimAll($api.val($api.byId('complete_content')));
+				var delay_content = $api.trimAll($api.val($api.byId('delay_content')));
+				var lag_content = $api.trimAll($api.val($api.byId('lag_content')));
+				var remark_content = $api.trimAll($api.val($api.byId('remark_content')));
+				var flag;
+				//1发布页面有内容 2发布页面无内容
+				if (!isEmptyString(going_content) || !isEmptyString(complete_content) || !isEmptyString(delay_content) || !isEmptyString(lag_content) || !isEmptyString(remark_content)) {
+					flag = 1;
+				} else {
+					flag = 2;
+				}
+			}
+			commonExecScript('rizhi_editor_window','','checkNull(' + flag + ');',0);
+		}
+
+		function dealPicture(callback) {
+			//图片地址
+			var thumb_ids = new Array();
+			//图片缩略图
+			var thumb_id;
+			//所有图片
+			var content = "";
+			//验证是否有图片
+			var dlArray = $api.domAll($api.byId('j_files'), '.j_file');
+			if (dlArray.length != 0) {
+				if (BASE_APP_TYPE == 2) {
+					for (var i = 0; i < dlArray.length; i++) {
+						if (i == 0) {
+							thumb_id = $api.attr($api.dom(dlArray[i], '.j_img'), 'src');
+							var startIndex = thumb_id.indexOf('/dsideal_yy/');
+							thumb_id = thumb_id.substring(startIndex, thumb_id.length);
+							thumb_id = thumb_id.replaceAll(img_suffix, '');
+						}
+						var img_url = $api.attr($api.dom(dlArray[i], '.j_img'), 'src');
+						img_url = img_url.replaceAll(img_suffix, '');
+						thumb_ids.push(img_url);
+						var img_html = '<img src="../../../../../image/common/tpsx.png"  alt=""   data-echo="' + img_url + '"  onClick = "openImage(this,' + i + ')"></img>'
+						content = content + img_html;
+					}
+				} else {
+					for (var i = 0; i < dlArray.length; i++) {
+						if (i == 0) {
+							thumb_id = $api.attr($api.dom(dlArray[i], '.j_img'), 'src');
+							thumb_id = thumb_id.replaceAll(img_suffix, '');
+						}
+						var img_url = $api.attr($api.dom(dlArray[i], '.j_img'), 'src');
+						img_url = img_url.replaceAll(img_suffix, '');
+						var img_html = '<img src="../../../../../image/common/tpsx.png"  alt=""   data-echo="' + img_url + '"  onClick = "openImage(this,' + i + ')"></img>'
+						thumb_ids.push(img_url);
+						content = content + img_html;
+					}
+				}
+			}
+			callback(thumb_ids, content);
+		}
+
+		/*
+		 *author:ws
+		 *function:确定日志提交
+		 *date：20170301
+		 */
+		function sureSumbitLog() {
+			//日报日期
+			var LogDate = $api.text($api.byId('select_time'));
+			var logMonth = parseInt(LogDate.substring(5, 7));
+			//今天的时间
+			var submitDate = getSubmitTime();
+			var going_content = $api.val($api.byId('going_content'));
+			var complete_content = $api.val($api.byId('complete_content'));
+			var delay_content = $api.val($api.byId('delay_content'));
+			var lag_content = $api.val($api.byId('lag_content'));
+			if (isEmptyString(going_content) && isEmptyString(complete_content) && isEmptyString(delay_content) && isEmptyString(lag_content)) {
+				popBottomToast("请输入日志内容");
+				return;
+			}
+			commonShowProgress('发表中...',true);
+			var remark_content = $api.val($api.byId('remark_content'));
+			//图片地址
+			var thumb_ids = new Array();
+			//图片缩略图
+			var thumb_id;
+			//所有图片
+			var content = "";
+			//验证是否有图片
+			var dlArray = $api.domAll($api.byId('j_files'), '.j_file');
+			if (dlArray.length != 0) {
+				if (BASE_APP_TYPE == 2) {
+					for (var i = 0; i < dlArray.length; i++) {
+						if (i == 0) {
+							thumb_id = $api.attr($api.dom(dlArray[i], '.j_img'), 'src');
+							var startIndex = thumb_id.indexOf('/dsideal_yy/');
+							thumb_id = thumb_id.substring(startIndex, thumb_id.length);
+							thumb_id = thumb_id.replaceAll(img_suffix, '');
+						}
+						var img_url = $api.attr($api.dom(dlArray[i], '.j_img'), 'src');
+						img_url = img_url.replaceAll(img_suffix, '');
+						thumb_ids.push(img_url);
+						var img_html = '<img src="../../../../../image/common/tpsx.png"  alt=""   data-echo="' + img_url + '"  onClick = "openImage(this,' + i + ')"></img>'
+						content = content + img_html;
+					}
+				} else {
+					for (var i = 0; i < dlArray.length; i++) {
+						if (i == 0) {
+							thumb_id = $api.attr($api.dom(dlArray[i], '.j_img'), 'src');
+							thumb_id = thumb_id.replaceAll(img_suffix, '');
+						}
+						var img_url = $api.attr($api.dom(dlArray[i], '.j_img'), 'src');
+						img_url = img_url.replaceAll(img_suffix, '');
+						var img_html = '<img src="../../../../../image/common/tpsx.png"  alt=""   data-echo="' + img_url + '"  onClick = "openImage(this,' + i + ')"></img>'
+						thumb_ids.push(img_url);
+						content = content + img_html;
+					}
+				}
+			}
+			if (LogDate == submitDate.substring(0, 10)) {
+				submit_log = 1;
+			} else {
+				submit_log = 2;
+			}
+			//1.人员personid 2.going_content进行中日志内容   3.complete_content已完成日志内容   4.delay_content推迟日志内容    5.lag_content滞后日志内容   6.remark_content备注  7.thumb_ids图片路径 8.log_type日志类型（1日报2周报3月报） 9.是否按时提交 （、1按时提交、2延迟提交）   10.LogDate日志日期   11.submitDate提交日期
+			var value = {};
+			value = {
+				"person_id" : $api.getStorage("person_id"),
+				"going_content" : going_content,
+				"complete_content" : complete_content,
+				"delay_content" : delay_content,
+				"lag_content" : lag_content,
+				"remark_content" : remark_content,
+				"thumb_ids" : thumb_ids.join(","),
+				"type_log" : 1,
+				"submit_log" : submit_log,
+				"LogDate" : LogDate,
+				"submitDate" : submitDate,
+				"logMonth" : logMonth,
+				"identity_id" : $api.getStorage("identity"),
+				"content" : content
+			}
+			//调保存接口
+			saveLogContent(JSON.stringify(value), LogDate);
+		}
+
+		/*
+		 *author:ws
+		 *function:清空日志内容
+		 *date：20170314
+		 */
+		function clearLog() {
+			$api.val($api.byId('going_content'), "");
+			//推迟
+			$api.val($api.byId('delay_content'), "");
+			//滞后
+			$api.val($api.byId('lag_content'), "");
+			//备注
+			$api.val($api.byId('remark_content'), "");
+			//完成
+			$api.val($api.byId('complete_content'), "");
+			var btn_html = '<dl id="j_add_btn" class="mr0" onclick="openAddFilesOpn()"><dt class="add-img-btn"><i class="aui-iconfont aui-icon-camera"></i></dt><dd></dd></dl>';
+			$api.html($api.byId('j_files'), btn_html);
+		}
+
+		/*
+		 *author:ws
+		 *function:保存接口
+		 *date：20170301
+		 */
+		function saveLogContent(value, LogDate) {
+			//			api.showProgress({
+			//				title : '发表中...',
+			//				text : '请稍候...',
+			//				modal : true
+			//			});
+			var url_path;
+			if (logTpye == 1) {//1发布日志2编辑修改日志
+				url_path = BASE_URL_ACTION + '/dsjxt/rizhi/saveLogContent';
+			} else if (logTpye == 2) {
+				url_path = BASE_URL_ACTION + '/dsjxt/rizhi/updateLog';
+			}
+			api.ajax({
+				url : url_path,
+				method : 'post',
+				dataType : 'json',
+				timeout : 30,
+				cache : false,
+				returnAll : false,
+				data : {
+					values : JSON.parse(value)
+				}
+			}, function(ret, err) {
+				if (ret) {
+					api.hideProgress();
+					if (ret.success) {
+						//操作成功
+						popBottomToast("操作成功");
+						setTimeout(function() {
+							api.closeWin({
+								name : 'rizhi_editor_window'
+							});
+						}, 500);
+						commonExecScript('rizhi_index_window','rizhi_content_frame', 'checkDataNullLog(1,"' + LogDate + '");',1);
+					} else {
+						popBottomToast("操作失败");
+					}
+				} else {
+					api.hideProgress();
+					popBottomToast("操作失败");
+				}
+			});
+		}
+
+		/*
+		 *author:ws
+		 *function:获得今天的时间
+		 *date：20161224
+		 */
+		function getSubmitTime() {
+			var myDate = new Date();
+			//获取完整的年份(4位,1970-????)
+			var nYear = myDate.getFullYear();
+			//获取当前月份(0-11,0代表1月)
+			var nMonth = myDate.getMonth() + 1;
+			var Month = nMonth < 10 ? '0' + nMonth : nMonth;
+			//获取当前日(1-31)
+			var nDate = myDate.getDate();
+			//获取当前小时数(0-23)
+			var nHour = myDate.getHours();
+			//获取当前分钟数(0-59)
+			var nMinute = myDate.getMinutes();
+			var ndate = nDate < 10 ? '0' + nDate : nDate;
+			var hour = nHour < 10 ? '0' + nHour : nHour;
+			var minute = nMinute < 10 ? '0' + nMinute : nMinute;
+			appointDate = nYear + '-' + Month + '-' + ndate + ' ' + hour + '-' + minute;
+			var submitTime = appointDate.substring(0, 4) + '-' + appointDate.substring(5, 7) + '-' + appointDate.substring(8, 10) + ' ' + appointDate.substring(11, 13) + ':' + appointDate.substring(14, 16);
+			return submitTime;
+		}
+
+		/*
+		 *author:ws
+		 *function:打开添加附件选项组件框
+		 *date：20170222
+		 */
+		function openAddFilesOpn() {
+			api.actionSheet({
+				cancelTitle : '取消',
+				buttons : ['图片', '拍照'],
+				style : {
+					titleFontColor : '#ff0000'
+				}
+			}, function(ret, err) {
+				if (ret) {
+					if (ret.buttonIndex == 1) {
+						//相册
+						album();
+					} else if (ret.buttonIndex == 2) {
+						//拍照
+						openPicture();
+					}
+				} else {
+					popBottomToast('网络繁忙，请稍候重试');
+				}
+			});
+		}
+		/*
+		 *author:zhaoj
+		 *function:选择图片
+		 *date：20160225
+		 */
+		function album() {
+			var dlArray = $api.domAll($api.byId('j_files'), '.j_file');
+			var num = 5 - dlArray.length;
+			if(num != 0){
+				UIAlbumBrowser.open(num,function(data){
+					//递归上传图片
+		            commonUiUploadFiles({"data":data,"is_trans":1}, function(ret_data) {
+		            	for(var i = 0; i < ret_data.length; i++){
+		            		var json_data = JSON.parse(ret_data[i]);
+		            		var file_id = json_data.file_id;
+							var ext = json_data.ext;
+							getImgSize();
+							img_suffix = commonReturnPhotoCutSize(0);
+							if (BASE_APP_TYPE == 1) {
+								var img_url = BASE_IMAGE_PRE+"down/Material/" + file_id.substring(0, 2) + "/" + file_id + '.' + ext + commonReturnPhotoCutSize(0);
+							} else {
+								var img_url = BASE_URL_ACTION + "/html/thumb/Material/" + file_id.substring(0, 2) + "/" + file_id + '.' + ext + commonReturnPhotoCutSize(0);
+								
+							}
+							if (getfilesNum() == 4) {
+								$api.css($api.byId('j_add_btn'), 'display:none');
+								addFiles(img_url, 'mr0');
+							} else {
+								addFiles(img_url, '');
+							}
+		            	}
+		            });
+				});
+			}else{
+				popToast('最多上传5张图片');
+			}
+		}
+		/*
+	    *author:zhaoj
+	    *function:打开拍照
+	    *date：20170914
+	    */
+	    function openPicture(){
+	    	getPicture.open({"type":1},function(data){
+	    		//递归上传图片
+	            commonUiUploadFiles({"data":data,"is_trans":0}, function(ret_data) {
+	            	for(var i = 0; i < ret_data.length; i++){
+	            		var json_data = JSON.parse(ret_data[i]);
+	            		var file_id = json_data.file_id;
+						var ext = json_data.ext;
+						getImgSize();
+						img_suffix = commonReturnPhotoCutSize(0);
+						if (BASE_APP_TYPE == 1) {
+							var img_url = BASE_IMAGE_PRE+"down/Material/" + file_id.substring(0, 2) + "/" + file_id + '.' + ext + commonReturnPhotoCutSize(0);
+						} else {
+							var img_url = BASE_URL_ACTION + "/html/thumb/Material/" + file_id.substring(0, 2) + "/" + file_id + '.' + ext + commonReturnPhotoCutSize(0);
+							
+						}
+						if (getfilesNum() == 4) {
+							$api.css($api.byId('j_add_btn'), 'display:none');
+							addFiles(img_url, 'mr0');
+						} else {
+							addFiles(img_url, '');
+						}
+	            	}
+	            });
+	    	});
+	    }
+		/*
+		 *author:zhaoj
+		 *function:根据模块获取子文件的个数
+		 *date：20160224
+		 */
+		function getfilesNum() {
+			var dlArray = $api.domAll($api.byId('j_files'), '.j_file');
+			return dlArray.length;
+		}
+
+		/*
+		 *author:zhaoj
+		 *function:给模块添加文件
+		 *date：20160224
+		 */
+		function addFiles(img_url, css) {
+			var dl_height = $api.cssVal($api.byId('j_add_btn'), 'height')
+			var dl_html = '<dl class="j_file' + ' ' + css + '" style="height:' + 'auto' + 'px;">' + '<dt class="img" style="width:' + img_size + 'px;height:' + img_size + 'px;" onclick="openImage(this.parentNode,this.parentNode.parentNode)">' + '<img class="j_img" src=' + img_url + ' width="' + (img_size - 1) + '" height="' + (img_size - 4) + '" />' + '</dt>' + '<dd onclick="deleteFile(event,this.parentNode)"><img src="../../../../../image/fun-module/common/shanchu.png" /></dd>' + '</dl>';
+			$api.before($api.byId('j_add_btn'), dl_html);
+		}
+
+		/*
+		 *author:zhaoj
+		 *function:图片格式
+		 *date：20160222
+		 */
+		function getImgSize() {
+			img_size = (api.winWidth - 30) * 0.18;
+			img_size = Math.floor(img_size);
+			var img_format = '@' + img_size + 'w_' + img_size + 'h_100Q_1x.';
+			return img_format;
+		}
+
+		/*
+		 *author:zhaoj
+		 *function:删除当前文件
+		 *date：20160225
+		 */
+		function deleteFile(e, parent) {
+			parent.parentNode.removeChild(parent);
+			var dlArray = $api.domAll($api.byId('j_files'), '.j_file');
+			var length = getfilesNum() - 1;
+			if (length <= 4) {
+				$api.removeCls(dlArray[length], 'mr0');
+				$api.css($api.byId('j_add_btn'), 'display:inline-block');
+			}
+			e.stopPropagation();
+		}
+		/*
+		 *author:zhaoj
+		 *function:打开图片
+		 *date：20160225
+		 */
+		function openImage(parent, grandpa) {
+			var index;
+			if (parent) {
+				index = 0;
+				while ( parent = parent.previousSibling) {
+					if (parent.nodeType == 1)
+						index++;
+				}
+			}
+			var openImgArray = [];
+			var dlArray = $api.domAll($api.byId('j_files'), '.j_file');
+			for (var i = 0; i < dlArray.length; i++) {
+				openImgArray.push($api.attr($api.dom(dlArray[i], '.j_img'), 'src'));
+			}
+			var imageBrowser = api.require('imageBrowser');
+			imageBrowser.openImages({
+				imageUrls : openImgArray,
+				//是否以九宫格方式显示图片
+				showList : false,
+				//showList : true,
+				activeIndex : index
+			});
+		}
+
+		/*
+		 *author:ws
+		 *function:不能输入时提示信息
+		 *date：20160318
+		 */
+		function showTip(length,self) {
+			var count = 1000 - length;
+			if (count <= 0) {
+				popBottomToast("最多输入1000字符");
+			}
+			commonRemoveExpression(self);
+		}
+	</script>
+</html>

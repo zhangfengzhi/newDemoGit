@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+		<title>实训管理学生出勤详情frame</title>
+		<link rel="stylesheet" type="text/css" href="../../../../../css/aui/aui.css" />
+		<link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+		<style>
+			.aui-list-view:before {
+				height: 0;
+			}
+			/*.aui-list-view:after{height:0;}*/
+			.aui-list-view-cell:last-child:after {
+				height: 1px;
+			}
+			.aui-list-view::after {
+				height: 0;
+			}
+			.img-style {
+				vertical-align: middle;
+				margin-right: 10px;
+				width: 16;
+				height: 16;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="aui-content"></div>
+		<ul id="dm_body" class="aui-list-view"></ul>
+		<script id="dm_script" type="text/html" >
+			<% if(list.length == 0){ %>
+			<div class="no-data"><span>暂时没有相关的出勤信息</span></div>
+			<% }else{ %>
+			<%for(var i = 0; i < list.length;i++){%>
+			<li class="aui-list-view-cell" >
+			<%if(list[i].type_id==1 ){%>
+			<a ><img class="img-style" src="../../../../../image/dm_late.png" /><%=list[i].type_name%>:<%=list[i].create_time%><span  class="aui-badge aui-badge-warning"  onclick="sureDelete(<%=list[i].id%>)">删除</span></a>
+			<%}else{%>
+			<a ><img class="img-style" src="../../../../../image/dm_absent.png" /><%=list[i].type_name%>:<%=list[i].create_time%><span class="aui-badge aui-badge-warning" onclick="sureDelete(<%=list[i].id%>)">删除</span></a>
+			<%}%>
+			</li>
+			<%}%>
+			<%}%>
+		</script>
+	</body>
+	<script type="text/javascript" src="../../../../../script/api.js"></script>
+	<script type="text/javascript" src="../../../../../script/plug-in/template.js" ></script>
+	<script type="text/javascript" src="../../../../../script/common/common.js"></script>
+	<script type="text/javascript">
+		var practice_id;//任务id
+		var student_id;//学生id
+		apiready = function() {
+		    commonSetTheme({"level":5,"type":0});
+			BASE_URL_ACTION = $api.getStorage('BASE_URL_ACTION');
+			practice_id = api.pageParam.practice_id;
+			student_id = api.pageParam.student_id;
+			//加载数据
+			attendanceData();
+		};
+		
+		/*
+		 *author:ws
+		 *function:加载数据
+		 *date：20161130
+		 */
+		function attendanceData() {
+			showSelfProgress('加载中...');
+			api.ajax({
+				url : BASE_URL_ACTION + '/roll_call/rollCall_GetListByStudentIdd',
+				method : 'post',
+				dataType : 'json',
+				timeout : 30,
+				data : {
+					values : {
+						"task_id" : practice_id, //任务ID
+						"student_id" : student_id	//学生ID
+					}
+				}
+			}, function(ret, err) {
+				api.hideProgress();
+				if (ret.success) {
+					commonAddOnceHtml('dm_body', 'dm_script', ret);
+				}
+			});
+		}
+
+		/*
+		 *author:ws
+		 *function:删除出勤详细信息（缺席、迟到）
+		 *date：20161130
+		 */
+		function sureDelete(id) {
+			api.ajax({
+				url : BASE_URL_ACTION + '/roll_call/rollCall_Del',
+				method : 'post',
+				dataType : 'json',
+				timeout : 30,
+				data : {
+					values : {
+						"id" : id //任务ID
+					}
+				}
+			}, function(ret, err) {
+				if (ret.success) {
+					api.toast({
+						msg : '删除成功'
+					});
+					//刷新数据
+					attendanceData();
+				}
+			});
+		}
+	</script>
+</html>

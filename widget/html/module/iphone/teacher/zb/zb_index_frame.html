@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<title>title</title>
+		<link rel="stylesheet" type="text/css" href="../../../../../css/aui/aui.css" />
+		<link id="j_mode" rel="stylesheet" type="text/css" href="" />
+		<style type="text/css">
+			body {
+				background: #f7f9f8;
+			}
+			/*重新定义*/
+			.aui-list-view {
+				border: 1px solid #eeeeee;
+				border-radius: 3px;
+			}
+			.aui-list-view:after {
+				height: 0;
+			}
+			.aui-list-view:before {
+				height: 0;
+			}
+			.aui-grid-sixteen li .aui-iconfont {
+				background: #ff9900;
+				color: #ffffff;
+				width: 38px;
+				height: 38px;
+				line-height: 38px;
+				border-radius: 50%;
+				font-size: 20px;
+			}
+			/*自定义*/
+			.image img {
+				width: 100%
+			}
+			p {
+				font-size: 12px;
+				margin-bottom: 5px;
+			}
+			.content {
+				font-size: 12px;
+			}
+			.presshover {
+				background-color: #FAFAFA;
+			}
+			.v-align-span {
+				vertical-align: middle;
+				display: inline-block;
+				height: 100%;
+				width: 0px;
+			}
+			.v-align-div {
+				vertical-align: middle;
+				display: inline-block;
+			}
+			.aui-col-img {
+				height: 32px;
+				width: 32px;
+			}
+		</style>
+	</head>
+	<body>
+		<div id="player" style="width:100%;height:450px;">
+            <script type="text/javascript" charset="utf-8" src="http://yuntv.letv.com/player/live/blive.js"></script>
+        </div>
+		<script type="text/javascript" src="../../../../../script/api.js"></script>
+		<script type="text/javascript" src="../../../../../script/base_config.js"></script>
+		<script type="text/javascript" src="../../../../../script/plug-in/template.js" ></script>
+		<script type="text/javascript" src="../../../../../script/common/common.js"></script>
+	</body>
+	<script type="text/javascript">
+		var bg_token;
+		var header_h;
+		var win_name;
+		apiready = function() {
+		    commonSetTheme({"level":5,"type":0});
+		    commonSetScreen(2);
+		    var player = new CloudLivePlayer();
+            player.init({activityId:"A20180319000005m"});
+			setTimeout(function() {
+				header_h = api.pageParam.header_h;
+				var h = api.pageParam.h;
+				bg_token = api.pageParam.bg_token;
+				$api.css($api.dom('.aui-grid-nine'), 'height:' + h + 'px;');
+			}, 300);
+		};
+	</script>
+</html>

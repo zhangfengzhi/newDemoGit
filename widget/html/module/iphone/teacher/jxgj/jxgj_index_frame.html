@@ -1,0 +1,732 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<!-- html5：在创建html时为了防止页面缩放等不兼容效果，要创建个viewport  -->
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<!-- 在IOS设备上，有时会将数字转为手机号，这里也要禁止下 -->
+		<meta name="format-detection" content="telephone=no"/>
+		<title>教学轨迹</title>
+		<link rel="stylesheet" type="text/css" href="../../../../../css/aui/aui.css" />
+		<link id="j_theme_base" rel="stylesheet" type="text/css" href="" /><style>
+			body{background:#ffffff;}
+			.ul{width:100%;padding:10px 0;padding-left:2%;border-bottom:2px solid #efeff4}
+			.ul .grade{color:#3498db;font-size:14px;text-align:center;padding:10px 2px;border-radius: 10px;width:48%;display:inline-block;}
+	    	.right{width:100%;margin-bottom:20px}
+	    	.right .detail{margin-left:15px;margin-bottom:15px;}
+	    	.right .yuan{right:0 !important;}
+			.right .name_first{left:0;}
+			.right hr{margin-right:10px;}
+			.right .finish-count,.right .tj{text-align:right;padding-right:20px;}
+			.all-study{font-size:12px;}
+			.all-study font{font-size:14px;color:#F76735;padding:0 3px;}
+			.fl{float:left;}
+			.fr{float:right;}
+			.detail{height:33%;position: relative;width:90%;}
+    		.detail .tip{position:absolute;width:100%;top:50%;}
+    		.detail .tip .dingwei{position:relative;}
+			.yuan{width:12px;height:12px;position:absolute;top:-6px;background:url(../../../../../image/fun-module/ipad/jxbg/yuan.png) center center no-repeat;background-size:auto 100%;}
+			.name_first{position:absolute;right:0;width:50px;height:50px;border-radius:50%;color:#fff;font-size:16px;line-height:50px;text-align:center;margin-top:5px;top:-30px}
+			.xian{width:97%;}
+			.hastop_name{top:-20px}
+			.hastop_yuan{top:3px}
+			.finish_percent{font-size:14px}
+			.finish_percent font{font-size:16px;}
+	    	.class-record-detail{width:100%;margin:0 auto;margin-top:15px;margin-bottom:15px;}
+	    	.class-record-detail ul li{position:relative;width:50%;float:left;height:50px;margin-top:15px;}
+	    	.class-record-detail ul li .tip-icon{position:absolute;left:0;top:6px;width:40px;height:40px;border-radius:50%;}
+	    	.record-detail{padding-left:48px;}
+	    	.record-detail .name{font-size:16px;}
+	    	.record-detail div{font-size:12px; color:#595757;padding-top:5px;}
+	    	.record-detail div font{padding:0 3px;color:#F76735;font-size:14px;}
+	    	.no-data{background:#fff;}
+	    	.class-record-detail ul li:nth-child(5){width:100%;}
+		    .nav{margin-top:20px;height:20px;text-align:center;}
+	    	.nav ul{display:inline-block;line-height: 15px;border-radius:7px;overflow:visible;}
+	    	.nav li{position:relative;float:left;display:inline-block;padding:5px 5px;}
+	    	.nav li:last-child{border-right:none;}
+	    	.nav li.active{color:#fff;overflow:visible;}
+	    	.nav li .first-li{border-top-left-radius:5px;border-bottom-left-radius:5px}
+	    	.nav li .last-li{border-top-right-radius:5px;border-bottom-right-radius:5px}
+	    	.tree-pie-div{position:absolute;bottom:15px;left:-10px;}
+	    	.change-tree-pie-bottom{height:25px;width:50px;border-radius: 0 0 25px 25px;background:#ffffff;border:1px solid #F76735;text-align:center;font-size:12px;}
+	    	.change-tree-pie-top{height:25px;width:50px;border-radius: 25px 25px 0 0;background:#ffffff;border:1px solid #F76735;text-align:center;font-size:12px;}
+	    	.select-tu{background:#F76735;}
+	    	.tj_tu_css{width:100%;height:300px;margin-bottom:100px;}
+			.title{height:50px;}
+	    	.title div{display:inline-block;height:38px;line-height:38px;}
+	    	.title .name{position:relative;color:#fff;padding:0 25px;font-size:18px;}
+	    	.title .sanjiao{position:absolute;right:0;bottom:-6px;width:6px;height:6px;background:url(../../../../../image/fun-module/ipad/jxbg/sanjiao.png) 0 0 no-repeat;background-size:100% auto;}
+	    	.title .class-num{position:relative;border:1px dashed #2283C7;border-left:none;padding:0 30px 0 45px;margin-top:6px;}
+	    	.title .class-num .bg{display:inline-block;height:38px;width:35px;position:absolute;top:-1px;left:-1px;background:url(../../../../../image/fun-module/ipad/jxbg/title-bg.png) 0 0 no-repeat;background-size:auto 100%;}
+	    	.bkjl{margin-top:20px}
+	    	.bkjl .content{position:relative;width:100%;}
+	    	.bkjl .content ul{position:relative;width:90%;height:220px;background:url(../../../../../image/fun-module/ipad/jxbg/bkjl-bg.png) center 0 no-repeat;background-size:85% auto;margin:0 auto;margin-top:40px;overflow:visible;}
+	    	.bkjl .content ul li{position:absolute;display:inline-block;height:70px;overflow:visible;}
+	    	.bkjl .content ul li .mode-name{width:45px;height:45px;text-align:center;line-height:45px;border-radius:50%;color:#fff;font-size:14px;}
+	    	.bkjl .content ul li:nth-child(1){left:15px;width:10%;top: 120px;}
+	    	.bkjl .content ul li:nth-child(1) .mode-name{background:#EF758A;float:right;}
+	    	.bkjl .content ul li:nth-child(2){width:10%;left:52px;top: 20px;}
+	    	.bkjl .content ul li:nth-child(2) .mode-name{background:#61CBF3;float:right;}
+	    	.bkjl .content ul li:nth-child(3){width:100%;right:0;top: -20px;height:140px;}
+	    	.bkjl .content ul li:nth-child(3) .mode-name{background:#A5C94B;margin:0 auto;}
+	    	.bkjl .content ul li:nth-child(4){width:10%;right:52px;top: 20px;}
+	    	.bkjl .content ul li:nth-child(4) .mode-name{background:#C08DC5;float:left;}
+	    	.bkjl .content ul li:nth-child(5){right:15px;width:10%;top: 120px;}
+	    	.bkjl .content ul li:nth-child(5) .mode-name{background:#E7AE00;float:left;}
+	    	.bkjl .chart{position:absolute;left:7%;top:-20px;bottom:20px;width:310px;height:310px;border-radius:50%;}
+	    	.all-study font{color:#F76735;font-size:14px}
+	    	.tubiao{width:100%;height:350px;margin-top:30px;}
+	    	.jiaocai-sucai{width:45%;}
+	    	.jiaocai{float:left}
+	    	.sucai{float:right;right:5px;}
+	    	.jiaocai-sucai .xian{width:94%}
+		</style>
+	</head>
+	<body class="common-iphone-jxbg-tea">
+		<!--学期切换-->
+		<ul class="ul" id="xueqi_div" style="display:none"></ul>
+		<script type="text/html" id="xueqi_script">
+			<%if(xqlist.length == 0){%>
+				<div class="no-data">暂无学业报告</div>
+			<%}else{%>
+				<%for(var i=0;i<xqlist.length;i++){%>
+					<li class="grade" onclick="setTerm(<%=xqlist[i].XQ_ID%>,'<%=xqlist[i].KSRQ%>','<%=xqlist[i].JSRQ%>',<%=i%>);"><%=xqlist[i].XQMC%></li>
+				<%}%>
+			<%}%>
+		</script>
+		<!--备课记录-->
+		<div class="bkjl">
+			<div class="title">
+				<div class="name fl">
+					备课记录
+					<div class="sanjiao">&nbsp;</div>
+				</div>
+				<div class="class-num fl">
+					<span class="bg">&nbsp;</span>
+					共计<font id="j_c_package_num"></font>备课资源
+				</div>
+			</div>
+			<div class="content">
+				<ul>
+					<li>
+						<div class="mode-name">教案</div>
+					</li>
+					<li>
+						<div class="mode-name">课件</div>
+						
+					</li>
+					<li>
+						<div class="mode-name">导学</div>
+					</li>
+					<li>
+						<div class="mode-name">检测</div>
+					</li>
+					<li>
+						<div class="mode-name">素材</div>
+					</li>
+				</ul>
+				<div id="dailyRecordEchart" class="chart"></div>
+			</div>
+		</div>
+		
+		<!--统计情况-->
+		<div class="right fr">
+			<div class="detail fl">
+				<div class="content">
+					<div class="tip">
+						<div class="dingwei">
+							<div class="yuan hastop_yuan">&nbsp;</div>
+							<hr />
+							<div class="name_first hastop_name">导学</div>
+						</div>
+					</div>
+					<div class="finish-count">&nbsp;</div>
+					<div class="tj">
+						<span class="all-study finish_percent">学生平均完成率<font id="j_lead_rate"></font>%</span>
+					</div>
+					<div class="xian"></div>
+					<div class="tj">
+						<span class="all-study">累计创建<font id="j_lead_num"></font>个,</span>
+						<span class="all-study">发布<font id="j_p_lead_num"></font>次</span>
+					</div>
+				</div>
+			</div>
+			<div class="detail fl">
+				<div class="content">
+					<div class="tip">
+						<div class="dingwei">
+							<div class="yuan hastop_yuan">&nbsp;</div>
+							<hr />
+							<div class="name_first hastop_name">课件</div>
+						</div>
+					</div>
+					<div class="finish-count">&nbsp;</div>
+					<div class="tj">
+						<span class="all-study finish_percent">学生平均完成率<font id="j_c_rate"></font>%</span>
+					</div>
+					<div class="xian"></div>
+					<div class="tj">
+						<span class="all-study">累计创建<font id="j_courseware_num"></font>个,</span>
+						<span class="all-study">发布<font id="j_p_courseware_num"></font>次</span>
+					</div>
+				</div>
+			</div>
+			<div class="detail fl">
+				<div class="content">
+					<div class="tip">
+						<div class="dingwei">
+							<div class="yuan hastop_yuan">&nbsp;</div>
+							<hr />
+							<div class="name_first hastop_name">检测</div>
+						</div>
+					</div>
+					<div class="finish-count">&nbsp;</div>
+					<div class="tj">
+						<span class="all-study finish_percent">学生平均完成率<font id="j_zy_rate"></font>%</span>
+					</div>
+					<div class="xian"></div>
+					<div class="tj">
+						<span class="all-study">累计创建<font id="j_home_work_num"></font>个,</span>
+						<span class="all-study">发布<font id="j_p_home_work_num"></font>次</span>
+					</div>
+				</div>
+			</div>
+			<div class="detail fl jiaocai-sucai jiaocai">
+				<div class="content">
+					<div class="tip">
+						<div class="dingwei">
+							<div class="yuan hastop_yuan">&nbsp;</div>
+							<hr />
+							<div class="name_first hastop_name">教案</div>
+						</div>
+					</div>
+					<div class="finish-count">&nbsp;</div>
+					<div class="tj">
+						<span class="all-study finish_percent">&nbsp;<span>&nbsp;</span></span>
+					</div>
+					<div class="xian"></div>
+					<div class="tj">
+						<span class="all-study">累计创建<font id="j_tea_plan_num"></font>个</span>
+					</div>
+				</div>
+			</div>
+			<div class="detail fl jiaocai-sucai sucai">
+				<div class="content">
+					<div class="tip">
+						<div class="dingwei">
+							<div class="yuan hastop_yuan">&nbsp;</div>
+							<hr />
+							<div class="name_first hastop_name">素材</div>
+						</div>
+					</div>
+					<div class="finish-count">&nbsp;</div>
+					<div class="tj">
+						<span class="all-study finish_percent">&nbsp;<span>&nbsp;</span></span>
+					</div>
+					<div class="xian"></div>
+					<div class="tj">
+						<span class="all-study">累计创建<font id="j_material_num"></font>个</span>
+					</div>
+				</div>
+			</div>
+		</div>
+			
+		<div class="title" style="padding-top:15px;margin-top:20px;">
+			<div class="name fl">
+				课堂记录
+				<div class="sanjiao">&nbsp;</div>
+			</div>
+			<div class="class-num fl">
+				<span class="bg">&nbsp;</span>
+				共计使用<font id="j_total_num"></font>课堂互动
+			</div>
+		</div>
+		<div class="tubiao fr" id="classRecordEchart"></div>
+		<div class="class-record-detail">
+		<ul class="clearfix" style="padding-left:10px;">
+			<li>
+				<div class="tip-icon">&nbsp;</div>
+				<div class="record-detail">
+					<div class="name">举手</div>
+					<div>累计使用了<font id="j_handup_num"></font>次</div>
+				</div>
+			</li>
+			<li>
+				<div class="tip-icon">&nbsp;</div>
+				<div class="record-detail">
+					<div class="name">投票</div>
+					<div>累计使用了<font id="j_vote_num"></font>次</div>
+				</div>
+			</li>
+			<li>
+				<div class="tip-icon">&nbsp;</div>
+				<div class="record-detail">
+						<div class="name">提问</div>
+						<div>累计使用<font id="j_asked_num"></font>次</div>
+					</div>
+			</li>
+			<li>
+				<div class="tip-icon">&nbsp;</div>
+				<div class="record-detail">
+					<div class="name">共享屏幕</div>
+					<div>累计使用了<font id="j_screenshared_num"></font>次</div>
+				</div>
+			</li>
+			
+			<li>
+				<div class="tip-icon">&nbsp;</div>
+				<div class="record-detail">
+					<div class="name">分享图片</div>
+					<div>累计使用了<font id="j_picshared_num"></font>次</div>
+				</div>
+			</li>
+		</ul>
+	</div>
+	</body>
+<script type="text/javascript" src="../../../../../script/api.js"></script>
+<script type="text/javascript" src="../../../../../script/base_config.js" ></script>
+<script type="text/javascript" src="../../../../../script/common/common.js" ></script>
+<script type="text/javascript" src="../../../../../script/plug-in/template.js" ></script>
+<script type="text/javascript" src="../../../../../script/plug-in/echo.min.js"></script>
+<script type="text/javascript" src="../../../../../script/plug-in/echarts.min.js"></script>
+<script type="text/javascript">
+	var total_json = {};//全局参数
+	apiready = function(){
+		commonSetTheme({"level":5,"type":0});
+		$api.css($api.byId('xueqi_div'),'display:none');
+		loadData();
+	};
+	
+	/*
+	 * 功能：隐藏或显示学期切换
+	 * 作者：张自强
+	 * 时间：20171018
+	 */
+	function showOrhideXq(type){
+		if(type){
+			$api.css($api.byId('xueqi_div'),'display:block');
+			$api.byId('xueqi_div').scrollIntoView();
+		}else{
+			$api.css($api.byId('xueqi_div'),'display:none');
+		}
+	}
+
+	/*
+	 * 功能：加载数据
+	 * 作者：张自强
+	 * 时间：20171018
+	 */
+	function loadData(){
+		showSelfProgress("加载中...");
+		commonGetListSemester(function(flag,ret){
+			if(flag){
+				if(ret.xqlist.length == 0){
+					$api.css($api.byId('xueqi_div'),'border:none');
+				}else{
+					commonAddOnceHtml('xueqi_div','xueqi_script',ret);
+					for(var i = 0; i < ret.xqlist.length; i++){
+						if(ret.xqlist[i].SFDQXQ == 1){
+							setTerm(ret.xqlist[i].XQ_ID,ret.xqlist[i].KSRQ,ret.xqlist[i].JSRQ,i);
+						}
+					}
+				}
+			}else{
+				popToast(ret);
+			}
+			api.hideProgress();
+		});
+	}
+	
+	/*
+	*author:zhaoj
+	*function:切换学期
+	*date：20171014
+	*/
+	function setTerm(term_id,start_date,end_date,index){
+		var domArray = document.getElementsByClassName('grade');
+			for(var i=0;i<domArray.length;i++){
+				if(i == index){
+					$api.css(domArray[i],'border:1px solid #3498db');
+				}else{
+					$api.css(domArray[i],'border:none');
+				}
+			}		
+		total_json.xq_id = term_id;
+		total_json.start_date=start_date.replaceAll('-',"").substring(0,6);
+		total_json.end_date=end_date.replaceAll('-',"").substring(0,6);
+		get_tea_stat_by_personid();
+		get_tea_stat();
+	}
+	/*
+	*author:zhaoj
+	*function:获取备课记录
+	*interface:张海
+	*date：20171017
+	*/
+	function get_tea_stat_by_personid(){
+		api.ajax({
+			url : BASE_URL_ACTION + '/ypt/space/lean_stat/get_tea_stat_by_personid?person_id=' +  $api.getStorage("person_id")+ '&start_date=' + total_json.start_date+ '&end_date='+total_json.end_date+'&identity_id='+$api.getStorage("identity")+'&random_num=' + creatRandomNum(),
+			method : 'get',
+			timeout : 30,
+			dataType : 'json',
+			headers : {
+	'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+}
+		}, function(ret, err) {
+			api.hideProgress();
+			if (err) {
+				popToast('获取备课记录失败，请稍候重试');
+			} else {
+				if(ret.success){
+					dealBkjlData(ret);
+					showDailyRecordEchart(ret);
+				}else{
+					popToast(ret.info);
+				}
+			}
+		});
+	}
+	/*
+	*author:zhaoj
+	*function:获取课堂记录
+	*interface:张海
+	*date：20171017
+	*/
+	function get_tea_stat(){
+		api.ajax({
+			url : BASE_URL_ACTION + '/space/class_record/get_tea_stat?person_id=' +  $api.getStorage("person_id")+ '&start_date=' + total_json.start_date+ '&end_date='+total_json.end_date+'&identity_id='+$api.getStorage("identity")+'&random_num=' + creatRandomNum(),
+			method : 'get',
+			timeout : 30,
+			dataType : 'json',
+			headers : {
+	'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+}
+		}, function(ret, err) {
+			api.hideProgress();
+			if (err) {
+				popToast('获取课堂记录失败，请稍候重试');
+			} else {
+				if(ret.success){
+					dealktjlData(ret);
+					showClassRecordEchart(ret);
+				}else{
+					popToast(ret.info);
+				}
+			}
+		});
+	}
+	/*
+	*author:zhaoj
+	*function:处理备课记录数据
+	*date：20171017
+	*/
+	function dealktjlData(ret){
+		 $api.text($api.byId('j_vote_num'), ret.vote_num);
+		 $api.text($api.byId('j_asked_num'), ret.asked_num);
+		 $api.text($api.byId('j_screenshared_num'), ret.screenshared_num );
+		 $api.text($api.byId('j_handup_num'), ret.handup_num);
+		 $api.text($api.byId('j_picshared_num'), ret.picshared_num );
+		 ret.total_num = parseInt(ret.handup_num)+parseInt(ret.screenshared_num)+parseInt(ret.picshared_num)+parseInt(ret.vote_num)+parseInt(ret.asked_num);
+		  $api.text($api.byId('j_total_num'), ret.total_num+'次' );
+	}
+	/*
+	*author:zhaoj
+	*function:处理课堂记录数据
+	*date：20171017
+	*/
+	function dealBkjlData(ret){
+		 $api.text($api.byId('j_material_num'), ret.material_num);
+		 $api.text($api.byId('j_p_courseware_num'), ret.p_courseware_num);
+		 
+		 $api.text($api.byId('j_c_rate'), round(ret.c_rate*100,0));
+		 $api.text($api.byId('j_p_home_work_num'), ret.p_home_work_num);
+		 $api.text($api.byId('j_tea_plan_num'), ret.tea_plan_num );
+		 
+		 $api.text($api.byId('j_home_work_num'), ret.home_work_num);
+		 $api.text($api.byId('j_lead_num'), ret.lead_num);
+		 $api.text($api.byId('j_courseware_num'), ret.courseware_num );
+		 
+		  $api.text($api.byId('j_zy_rate'), round(ret.zy_rate*100,0));
+		 $api.text($api.byId('j_p_lead_num'), ret.p_lead_num);
+		 $api.text($api.byId('j_lead_rate'), round(ret.lead_rate*100,0));
+		  $api.text($api.byId('j_c_package_num'),ret.lead_num+ret.courseware_num+ret.home_work_num+ret.tea_plan_num+ret.material_num+'个' );
+	}
+	/*
+    *author:zhaoj
+    *function:保留小数
+    *date：20171115
+    */
+	function round(number,fractionDigits) {
+        return Math.round(number*Math.pow(10,fractionDigits))/Math.pow(10,fractionDigits)
+    };
+	/*
+	*author:zhaoj
+	*function:处理备课记录饼状图图表数据
+	*date：20171017
+	*/
+	 var showDailyRecordEchart = function (data) {
+            var edata = {},
+                legend = [],
+                category = [],
+                series = [];
+            if(data.material_num*1 ==0 &&
+                data.home_work_num*1 == 0&&data.lead_num*1 == 0&&data.courseware_num*1==0&&data.tea_plan_num*1==0 ){
+                    series=[{name:"素材",value:data.material_num},{name:"检测",value:data.home_work_num},
+                {name:"导学",value:data.lead_num},{name:"课件",value:data.courseware_num},
+                {name:"教案",value:data.tea_plan_num}];
+                }else{
+                	if(data.courseware_num*1 > 0){
+                        series.push({name:"课件",value:data.courseware_num});
+                    }
+                    if(data.lead_num*1 > 0){
+                        series.push({name:"导学",value:data.lead_num});
+                    }
+                    if(data.home_work_num*1 > 0){
+                        series.push({name:"检测",value:data.home_work_num});
+                    }
+                    if(data.material_num*1 > 0){
+                        series.push({name:"素材",value:data.material_num});
+                    }
+                    if(data.tea_plan_num*1 > 0){
+                        series.push({name:"教案",value:data.tea_plan_num});
+                    }
+                }
+            edata.itemStyle = {
+                normal : {
+                    borderWidth:1,
+                    label: {
+                        show: true,
+                        position: 'inner',
+                        formatter:  "{d}%"
+                    },
+                    labelLine: {
+                        show: true,
+                        length: 5,
+                        lineStyle: {
+                            width: 1,
+                            type: 'solid'
+                        }
+                    }
+                }
+            };
+            edata.legend = legend;
+            edata.category = category;
+            edata.series = series;
+            edata.legendXPosition = "center";
+            edata.legendYPosition = "bottom";
+            edata.color = ["#61CBF3","#A5C94B","#C08DC5","#E7AE00","#EF758A"];
+            showChart(edata, "pie", "dailyRecordEchart", "center", "10%");
+        };
+        /*
+		*author:zhaoj
+		*function:处理课堂记录饼状图图表数据
+		*date：20171017
+		*/
+        var showClassRecordEchart = function (data) {
+            var edata = {},
+                legend = [],
+                category = ['共享屏幕','提问','分享图片','投票','举手'],
+                series = [];
+            var sery1 = {
+                "name": '课堂互动分布统计',
+                "type": "bar",
+                "value": 0,
+                "max": 0,
+                "data": [data.screenshared_num,data.asked_num,data.picshared_num,data.vote_num,data.handup_num]
+            };
+            sery1.itemStyle = {
+                normal: {
+                    color: function(params) {
+                        var colorList = ["#F4BB8E","#90C8D9","#AF9EC2","#BED297","#548AD0"];
+                        return colorList[params.dataIndex]
+                    },
+                    barBorderRadius: 0,           // 柱条边线圆角，单位px，默认为0
+                    barBorderWidth: 1,            // 柱条边线线宽，单位px，默认为1
+                    label: {
+                        show: true,
+                        position: "top"
+                    }
+                }
+            };
+            series.push(sery1);
+            edata.legend = legend;
+            edata.category = category;
+            edata.series = series;
+            edata.legendXPosition = "right";
+            edata.title = "课堂互动分布统计";
+            edata.subTitle = "单位（次）";
+            edata.orient = "horizontal";
+            showChart(edata, "bar", "classRecordEchart", "left", "10%");
+        };
+        /*
+		*author:zhaoj
+		*function:展示图表
+		*date：20171017
+		*/
+        var showChart = function(data, type,domain,titlePs,boundaryGap) {
+            var myChart = echarts.init(document.getElementById(domain));
+            var option = null;
+            /*定制化标题位置*/
+            if(typeof(titlePs) == "undefined" || titlePs=="" ){
+                data.position="center";
+            }else{
+                data.position=titlePs;
+            }
+            if(data.legendXPosition=="center" && data.orient==undefined){
+                data.orient="horizontal";//水平显示
+            }
+            if(boundaryGap!=undefined && boundaryGap!=null && boundaryGap!= "undefined"){
+                data.boundaryGap = boundaryGap;
+            }else{
+                data.boundaryGap = true;
+            }
+            /*图表类型选择*/
+            if(type == 'pie'){
+                option = setOptionPie(data);
+            }else if(type == 'bar'){
+                option = setOptionBar(data);
+            }
+            myChart.setOption(option);
+            myChart.hideLoading();
+            window.onresize = function () {
+                myChart.resize();
+            };
+        };
+        //封装饼状图参数
+        var setOptionPie = function(data){
+            var array = new Array();
+            for(var i=0; i<data.series.length; i++){
+                array.push({value:data.series[i].value,name:data.series[i].name});
+            }
+            var option = {
+                title : {
+                    text: data.title || '',
+                    subtext: data.subTitle || '',
+                    x:data.position
+                },
+                tooltip : {
+                    trigger: 'item',
+                    formatter: "{b} : {c} ({d}%)"
+                },
+                legend: {
+                    orient : data.orient || '',
+                    x : data.legendXPosition?data.legendXPosition:"center",
+                    y : data.legendYPosition?data.legendYPosition:"top",
+                    data:data.legend
+                },
+                toolbox: {
+                    show : false,
+                    feature : {
+                        mark : {show: false},
+                        dataView : {show: false, readOnly: false},
+                        restore : {show: true},
+                        saveAsImage : {show: true}
+                    }
+                },
+                calculable : true,
+                series : [
+                    {
+                        name:data.title,
+                        itemStyle:data.itemStyle,
+                        type:'pie',
+                        radius : '50%',
+                        center: ['50%', '50%'],
+                        data:array
+                    }
+                ],
+                color:data.color
+            };
+            return option;
+        };
+        var setOptionBar = function(data){
+            var max = 0;
+             for( var i=0;i<data.series.length;i++){
+                for(var j = 0; j < data.series[i].data.length; j++){
+                    if(data.series[i].data[j]*1 > max*1){
+                        max=data.series[i].data[j];
+                    }
+                }
+            }
+            max = max > 5?max:5;
+            var titles = data.title || '';
+            var option = {
+                title : {
+                    text: titles,
+                    subtext: data.subTitle || '',
+                    x:data.position
+                },
+                tooltip : {
+                    trigger: 'axis',
+                    axisPointer : {            // 坐标轴指示器，坐标轴触发有效
+                        type : 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+                    }
+                },
+                toolbox: {
+                    show : false,
+                    orient: 'vertical',
+                    x: 'right',
+                    y: 'center',
+                    feature : {
+                        mark : {show: true},
+                        dataView : {show: false, readOnly: false},
+                        magicType : {show: true, type: ['line', 'bar']},
+                        restore : {show: true},
+                        saveAsImage : {show: true}
+                    }
+                },
+                legend: {
+                    orient : data.orient || '',
+                    x : data.legendXPosition,
+                    data:data.legend
+                },
+                calculable : true,
+                xAxis : [
+                    {
+                        type : 'category',
+                        data :data.category,
+                        boundaryGap:data.boundaryGap,
+                        axisLabel : {
+                            interval:0 ,
+                            rotate: 60
+                        }
+                    }
+                ],
+                grid: {
+                    left: '3%',
+                    right: '4%',
+                    bottom: '10%',
+                    containLabel: true
+                },
+                yAxis : [
+                    {
+                        minInterval: 1,
+                        type : 'value',
+                        min:0,
+                        max:max
+                    }
+                ],
+                series:function(){
+                    var serie=[];
+                    for( var i=0;i<data.series.length;i++){
+                        var item={
+                            name:data.series[i].name,
+                            type:data.series[i].type,
+                            barCategoryGap:data.series[i].barCategoryGap,
+                            itemStyle:data.series[i].itemStyle,
+                            smooth:data.series[i].smooth,
+                            data:data.series[i].data
+                        };
+                        serie.push(item);
+                    }
+
+                    return serie;
+                }()
+            };
+            if(data.color){
+                option.color = data.color;
+            }
+            return option;
+        };
+</script>
+</html>

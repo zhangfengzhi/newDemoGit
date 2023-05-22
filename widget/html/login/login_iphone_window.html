@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<!-- html5：在创建html时为了防止页面缩放等不兼容效果，要创建个viewport  -->
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<!-- 在IOS设备上，有时会将数字转为手机号，这里也要禁止下 -->
+		<meta name="format-detection" content="telephone=no"/>
+		<title>手机登录</title>
+		<link rel="stylesheet" type="text/css" href="../../css/aui/aui.css" />
+		<style>
+			body {
+				background: url(../../image/login/iphone/phone_bg.png);
+				background-size:100% 100%;
+				text-align:center;
+				padding-top:30%;
+			}
+			.logo_background{
+				height:150px;
+				width:auto;
+			}
+			.logo_background_div{
+				margin:0 auto;
+			}
+			.login-name,.password-div{
+				position:relative;
+				width:85%;
+				height:45px;
+				margin:0 auto;
+				padding-left:45px;
+				margin-bottom:20px;
+				border-radius: 30px;
+			}
+			.login-name{
+				margin-top:10px;
+			}
+			.login-btn{
+				margin:0 auto;
+				margin-top:8%;
+				width:44%;
+				height:40px;
+				font-size: 18px;
+				border: 1px solid #ffffff;
+				background-color:#ffffff;
+				color:#7E7C7D;
+				border-radius: 25px;
+			}
+			.login_bg{
+				background:url(../../image/login/iphone/login_person.png) center 0 no-repeat;
+			}
+			.password_bg{
+				background:url(../../image/login/iphone/login_person.png) center -27px no-repeat;
+			}
+			.login_bg,.password_bg{
+				position:absolute;
+				left:8px;
+				top:10px;
+				width:42px;
+				height:23px;
+				border-right:1px solid #ffffff;
+				background-size:22px auto;
+			}
+			.login-name .login_name_input,.password-div .login_pas_input{
+				width:100%;
+				height:45px;
+				border:none;
+				font-size:20px;
+				font-weight:101;
+				color:#ffffff;
+				background:rgba(0,0,0,0);
+				border-radius: 30px;
+				z-index:999;
+			}
+			.bg{
+				width:100%;
+				height:100%;
+				border-radius: 30px;
+				position:absolute;
+				left:0;
+				background:rgba(0,0,0,0.5);
+				z-index:-1;
+			}
+			input:-ms-input-placeholder{
+			    color: #e0e0e0;
+			    font-size:16px;
+			    line-height:24px;
+			    font-weight:100;
+			}
+			
+			input::-webkit-input-placeholder{
+			    color: #e0e0e0;
+			    font-size:16px;
+			    line-height:24px;
+			    font-weight:100;
+			}
+		</style>
+	</head>
+	<body>
+	   <div id="login_div" style="display: none;">
+    	   <div class="logo_background_div">
+                <img src="../../image/login/iphone/phone-logo.png" class="logo_background">
+            </div>
+            <div id="login_div" style="padding:11% 20px">
+                <div class="aui-content">
+                    <div class="login-content">
+                        <form>
+                            <div class="login-name">
+                                <div class="bg"></div>
+                                <div class="login_bg">&nbsp;</div>
+                                <input oninput="commonRemoveExpression(this)" id="login_name_input" class="login_name_input" autocapitalize="off" type="url"  value="" placeholder="请输入用户名" />
+                            </div>
+                            <div class="password-div">
+                                <div class="bg"></div>
+                                <div class="password_bg">&nbsp;</div>
+                                <input oninput="commonRemoveExpression(this)" id="login_pas_input" class="login_pas_input" type="password"  value="" placeholder="请输入密码"/>
+                            </div>
+                            <div class="">
+                                <input oninput="commonRemoveExpression(this)" id="login" tapmode type="button" onclick="return doLogin();" value="登录" class="aui-btn login-btn"/>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+	   </div>
+		
+	</body>
+	<script type="text/javascript" src="../../script/api.js"></script>
+	<script type="text/javascript" src="../../script/base_config.js"></script>
+	<script type="text/javascript" src="../../script/common/common.js"></script>
+	<script type="text/javascript" src="../../script/huihua/sqlite_db.js"></script>
+	<script type="text/javascript" src="../../script/huihua/hh_db.js"></script>
+	<script type="text/javascript" src="../../script/init/init_config.js"></script>
+	<script type="text/javascript" src="../../script/login/login.js"></script>
+	<script type="text/javascript" src="../../script/plug-in/webjs/js-base64.js"></script>
+	<script type="text/javascript" src="../../script/plug-in/webjs/jsencrypt.min.js"></script>
+	<script type="text/javascript">
+		var mkeyTime;//用来判断退出时间
+		var getOpenIdInterval;//定时器
+        var timeCloseed = false;//定时器是否关闭
+		apiready = function() {
+			//安卓关闭
+			if (api.systemType == 'android') {
+				closeAppForAndroid('login');
+			}
+			overallPrivilegeManagement()
+			//键盘登录监控
+			$api.css(document.getElementsByTagName('body')[0],'background-size: 100% '+ api.winHeight + 'px');
+			setStorageToApp('edusoa', function(is_ok){
+			    getGolbalValueByKeys("common.sso,common.sso.third.login",function(flag,ret){
+                console.log(JSON.stringify(ret))
+                    if(flag){
+                         if(ret["common.sso.third.login"] == "1" && ret["common.sso"] == "1"){
+                             // 对接第三方页面
+                             $api.css($api.byId("login_div"),"display:none");
+                             openLogin();
+                         }else{
+                             $api.css($api.byId("login_div"),"display:block");
+                             keyGo();
+                         }
+                    }
+                })
+			})
+			
+		};
+		
+		/* 功能：打开登录页
+         * 作者：张自强
+         * 时间；20181220
+         */
+        function thirdPartyFun(callback){
+        var loginType = "android";
+        if (api.uiMode == "pad"){
+            loginType = "iPad";
+        }else{
+            loginType = "android";
+        }
+        api.ajax({
+           url:BASE_URL_ACTION+'/dsTyrzLogin/appLogin?random_num='+creatRandomNum()+'&loginType='+loginType,
+           method:'get',
+           dataType:'json',
+           timeout:30,
+       },function(ret,err){
+            if(err){
+                callback('');
+            }else{
+                if(ret.success){
+                    callback(ret);
+                }else{
+                    callback('');
+                }
+            }
+       });
+        }
+        
+        /* 功能：打开登录页
+         * 作者：张自强
+         * 时间；20181220
+         */
+        function openLogin(){
+          thirdPartyFun(function(ret){
+              var param = {};
+              var frame_url = ret.loginUrl;
+              commonOpenFrame('login_frame', frame_url, 0, true, true, '#fff', param);
+              var getOpenIdStr = "api.execScript({winName :\"root\",script:\"getOpenId('\"+window.location+\"'\"+\",\"+\"'\"+window.location+\"');\"});\n";
+              getOpenIdInterval = setInterval(function(){
+                api.execScript({
+                    winName : api.winName,
+                    frameName : 'login_frame',
+                    script: getOpenIdStr
+                });
+              },1000);
+          });
+        }
+        function setTimeCloseed(){
+            timeCloseed = false;
+        }
+        
+        
+        /*
+         * 功能：获取第三方返回值
+         * 作者：张自强
+         * 时间：20181220
+         */
+        function callBackPersonId(person_id){
+          var login_name = person_id + "_" + $api.getStorage('BASE_SERVER_NAME');
+          commonShowProgress('登录中...',true);
+          commonCloseFrame('login_frame');
+          getToken(login_name, 'DsideaL4r5t6y7u8i9o');
+        }
+        
+        function getOpenId(dom){
+            thirdPartyFun(function(ret){
+                if(dom.indexOf(ret.listenUrl) != -1){
+                    var openIdArray = dom.replace(ret.listenUrl+"?","").split("&");
+                    var login_name_input=openIdArray[1].replace("username=","");
+                    var login_name = login_name_input + "_" + $api.getStorage('BASE_SERVER_NAME');
+                    timeCloseed = true;
+                    clearInterval(getOpenIdInterval);
+                    commonShowProgress('登录中...',true);
+                    commonCloseFrame('login_frame');
+                    getToken(login_name, 'DsideaL4r5t6y7u8i9o');
+                }
+                if(timeCloseed){
+                    clearInterval(getOpenIdInterval);
+                }
+            })
+            
+        }
+	</script>
+</html>

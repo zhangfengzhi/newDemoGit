@@ -1,0 +1,61 @@
+var shuxue = {
+	"list": [{
+		"dzs_id": "ADD95F3B-4A2F-4ACE-A868-719D39809FF8",
+		"dzs_ext": "dsek",
+		"img_url": "AD8B0C2A-2059-417E-9ED3-19B8727C8B35",
+		"img_ext": "png",
+		"dzs_name": "位置与方向"
+	},
+	{
+		"dzs_id": "AD5F394F-BD4B-401F-BB0B-316204DD6189",
+		"dzs_ext": "dsek",
+		"img_url": "AD381CC7-4996-4C2C-BA46-46491628E2F9",
+		"img_ext": "png",
+		"dzs_name": "除数是一位数的除法"
+	},
+	{
+		"dzs_id": "AD3D674E-CFC7-4360-A130-D43EA156D5CD",
+		"dzs_ext": "dsek",
+		"img_url": "AD4BB135-1C42-49B7-8421-9B5C79AC9258",
+		"img_ext": "png",
+		"dzs_name": "复式统计表"
+	},
+	{
+		"dzs_id": "ADDA43A6-1F74-4E1A-882B-2070867CF9E2",
+		"dzs_ext": "dsek",
+		"img_url": "AD3F1C9D-17BB-401F-8A86-7C889F35FDBA",
+		"img_ext": "png",
+		"dzs_name": "两位数乘两位数"
+	},
+	{
+		"dzs_id": "ADB6FDAD-9232-40F4-A702-7AFE3A7C8BAE",
+		"dzs_ext": "dsek",
+		"img_url": "AD8D7A9F-7A82-4D88-8E57-C3BDE3037F11",
+		"img_ext": "png",
+		"dzs_name": "面积"
+	},
+	{
+		"dzs_id": "ADDC443B-A66A-49B7-AC34-3F079D25FC28",
+		"dzs_ext": "dsek",
+		"img_url": "AD932B34-EE86-44AD-B9B1-C13DDEDA8187",
+		"img_ext": "png",
+		"dzs_name": "年月日"
+	},
+	{
+		"dzs_id": "AD3057E7-9FCC-4A4B-B308-ADA74D3163B0",
+		"dzs_ext": "dsek",
+		"img_url": "AD572B7B-0D54-499D-B61C-D991A3D768B4",
+		"img_ext": "png",
+		"dzs_name": "小数的初步认识"
+	},
+	{
+		"dzs_id": "ADA21739-F5DF-4841-A6B4-22D90662EDCF",
+		"dzs_ext": "dsek",
+		"img_url": "AD68FA3E-1FA8-40E2-AA57-11C268546C44",
+		"img_ext": "png",
+		"dzs_name": "数学广角-搭配"
+	}
+	]	
+}
+
+

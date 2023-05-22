@@ -1,0 +1,136 @@
+ body {
+    background: #ffffff;
+}
+.slider img {
+    width: 100%;
+    height: 120px;
+    display: inherit;
+}
+.relative {
+    position: relative;
+}
+.tip-image{
+	position: absolute;
+    display: inline-block;
+    right: -3px;
+    top: -3px;
+    width: 30px;
+    height: 30px;
+    text-align: center;
+    line-height: 18px;
+    color: #ffffff;
+    font-size: 10px;
+    z-index:999;
+}
+.aui-grid{
+	border-top:1px solid #e1e1e1;
+	border-bottom:1px solid #e1e1e1;
+}
+.aui-grid:last-child{
+	border-bottom:none;
+}
+.aui-grid li {
+    padding:13px 0 20px 0;
+    width:33%;
+    border-right:1px solid #e1e1e1;
+    border-bottom:1px solid #e1e1e1;
+    float:left;
+}
+.aui-grid li:nth-child(3n){
+	width:34%;
+	border-right:none;
+}
+.aui-grid li div{
+	padding-top:0px;
+}
+.content {
+    font-size: 14px;
+    color: #666;
+}
+.aui-content-padded {
+    margin: 0;
+    padding: 0px 0 10px 0;
+}
+.move {
+    position: absolute;
+    top: 0;
+    right: 0;
+}
+.title{
+	width:100%;
+	text-align:left;
+	color:#444;
+	font-size:16px;
+}
+.aui-content {
+	margin-top : -5%;
+	margin-bottom:0;
+}
+.aui-grid li:after,.aui-grid:after{
+	border:none;
+}
+.aui-grid li p{
+	margin-bottom:3px;
+	color:#535353;
+	font-size:14px;
+}
+.count {
+	position: absolute;
+	display: inline-block;
+	left: 6px;
+	top: 6px;
+	width: 18px;
+	height: 18px;
+	border-radius: 15px;
+	background: #ff0000;
+	text-align: center;
+	line-height: 18px;
+	color: #ffffff;
+	font-size: 10px;
+}
+.tip{
+	height:30px;
+	color:#5C8FBB;
+	font-size:14px;
+	font-weight:50;
+	line-height:20px;
+	margin-top:10%;
+	margin-bottom:8%;
+	text-align:center;
+}
+.display-none{
+	display:none;
+}
+.tip hr,.title_line{
+	width:88%;
+	margin: 0 auto;
+	height: 1px;
+	border-top:1px solid #C5CFE1;
+}
+.tip p{
+	width:22%;
+	background:#ffffff;
+	position:relative;
+	margin:0 auto;
+	top:-12px;
+	color:#5C8FBB;
+	font-size:14px;
+}
+.title_out_div{
+	padding-top:15px;
+	background:#F0EFF5 !important;
+	height:45px;
+}
+.first-line{
+	width:auto;
+	height: auto;
+}
+.first-line-li{
+	width:auto;
+	height:60px;
+}
+.first-line-li-name{
+	width:70px;
+	color:#666;
+	text-align: center;
+}

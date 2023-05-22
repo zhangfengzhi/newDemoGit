@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<!-- html5：在创建html时为了防止页面缩放等不兼容效果，要创建个viewport  -->
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<!-- 在IOS设备上，有时会将数字转为手机号，这里也要禁止下 -->
+		<meta name="format-detection" content="telephone=no"/>
+		<title>通知</title>
+		<link rel="stylesheet" type="text/css" href="../../../css/aui_css_new/aui.css" />
+		<link rel="stylesheet" type="text/css" href="../../../css/aui/aui.css" />
+		<link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+		<style>
+			.history-date {
+				font-size: 12px;
+			}
+			#message-content {
+				overflow-y: auto;
+				display: none;
+			}
+			.win-menu img {
+				width: 20px;
+				height: 20px;
+				margin-top: 13px;
+			}
+			.aui-icon-share{
+				font-size:10px;
+			}
+			.aui-icon-menu{padding-left:15px;}
+			.delete{float:right;background:url(../../../image/fun-module/common/delete.png) 1px 3px  no-repeat;background-size:auto 16px;font-size:10px;color:#8f8f94;}
+			.w-dianzan{float:right;background:url(../../../image/fun-module/common/praise-comment.png) 2px 3px  no-repeat;background-size:auto 35px;font-size:10px;color:#8f8f94;margin-right:15px;height:20px;}
+			.y-dianzan{float:right;background:url(../../../image/fun-module/common/praised-commented.png) 2px 3px  no-repeat;background-size:auto 35px;font-size:10px;color:#8f8f94;margin-right:15px;height:20px;}
+			.pinglun{float:right;background:url(../../../image/fun-module/common/praise-comment.png) 0 -16px  no-repeat;background-size:auto 35px;font-size:10px;color:#8f8f94;margin-right:15px;height:20px;}
+			.win-menu img {
+				width: 20px;
+				height: 20px;
+				margin-top: 13px;
+			}
+		</style>
+	</head>
+	<body class="init-iphone-body">
+		<div id="wrap">
+			<header class="aui-bar aui-bar-nav aui-bar-primary" id="aui-header">
+				<div id="cloud" class="topbar activebar">
+					<div id="back" class="back" onclick="back(true);" tapmode="">
+						<i class="aui-iconfont aui-icon-left"></i>返回
+					</div>
+					<div class="aui-title" id="mTitle">
+						详情
+					</div>
+					<!--<a id='j_quanzi_menu' class="aui-iconfont aui-icon-menu aui-pull-right back" onclick="openQuanziContentMenu();"></a>-->
+				</div>
+			</header>
+			<div  class="aui-content aui-content-padded" id="message-content">
+				<p class="aui-text-center history-date"></p>
+			</div>
+				<div class="aui-user-view-cell aui-img header-quanzi">			
+					<!--<div id="delete-quanzi" class="delete aui-hide" onclick="popTwoBtnConfirm('提示','确定删除该圈子？','deleteArticle()')";></br><span>删除<span></div>-->
+					<div id="delete-quanzi" class="delete aui-hide" onclick="popTwoBtnConfirm('提示','确定删除该圈子？','deleteArticle()');"></br>删除</div>			
+					<div id="dianzan" class="w-dianzan" onclick="addPraiseInfo();"></br>点赞</div>
+					<div class="pinglun" onclick="openCommentWindow();"></br>评论</div>			
+		            <img id="touxiang" class="aui-img-object aui-pull-left" style="border-radius:8px"  onerror="this.src='../../../image/common/header.png'" src=''>
+		            <div class="aui-img-body" style="margin-top:5px">
+		                <span id="person-name" class="person-name"></span>
+		                <p class='aui-ellipsis-1'><em id="create-time"></em></p>
+		            </div>
+		        </div>
+		</div>
+	</body>
+	<script type="text/javascript" src="../../../script/api.js" ></script>
+	<script type="text/javascript" src="../../../script/base_config.js" ></script>
+	<script type="text/javascript" src="../../../script/plug-in/template.js" ></script>
+	<script type="text/javascript" src="../../../script/plug-in/base64.js" ></script>
+	<script type="text/javascript" src="../../../script/common/common.js"></script>
+	<script type="text/javascript" src="../../../script/assembly/voicePlayer.js" ></script>
+	<script type="text/javascript" src="../../../script/init/iphone/index.js" ></script>
+	<script type="text/javascript" src="../../../script/init/iphone/init_quanzi.js"></script>
+	<script type="text/javascript">
+		var param_json={"header_h":"","footer_h":"","rect_h":"","is_first":1,"hsh_is_first":1,"is_class":false};//初始化全局参数
+		var menuBack_type = '';
+		var header_h;//顶部高度
+		var wz_id;//文章id
+		var wz_name;//文章名称
+		var back_type = 'index';//返回参数
+		var BASE_URL_ACTION = '';
+		var title = '';//名
+		var voice_type = 2;//朗读页面显示隐藏判断参数，2是打开，1是隐藏
+		var voice_content;//朗读内容
+		var bShowDelete = false;//详情界面更多列表是否显示删除按钮
+		var isGly = false;//是否是管理员
+		var isCancelPraiseing = false;
+		var isClickDelt = false;
+		apiready = function() {
+			commonSetTheme({"level":3,"type":0});
+			BASE_URL_ACTION = $api.getStorage('BASE_URL_ACTION');
+			header_h = api.pageParam.header_h;
+			wz_id = api.pageParam.wz_id;
+			title = api.pageParam.title;
+			$api.html($api.byId('btn_title'), title);
+			$api.byId('touxiang').src = api.pageParam.avatar_fileid;
+			$api.html($api.byId('person-name'), api.pageParam.person_name);
+			$api.html($api.byId('create-time'), api.pageParam.create_time);
+			
+			var fun = onclick="getPersonData(null,'"+api.pageParam.person_name+"','"+api.pageParam.loging_name+"','"+api.pageParam.avatar_fileid+"',"+api.pageParam.person_id+","+api.pageParam.identity+")"
+			$api.attr($api.byId('person-name'), 'onclick', fun);
+			$api.attr($api.byId('touxiang'), 'onclick', fun);
+			
+			
+			var isGly = false;
+			commonJudgeRoles(function (type){
+				isGly = type != 0 && type < 5;
+			});
+			if(isGly){
+				bShowDelete = true;
+			}else{
+				if(api.pageParam.org_type == 104){
+					var is_xxgly = 0;
+					var rolesArray = $api.getStorage('roles');
+					for (var i = 0; i < rolesArray.length; i++) {
+						if (rolesArray[i].role_id * 1 == 2) {
+							is_xxgly = 1;
+						}
+					}
+					if(is_xxgly == 1 || api.pageParam.person_id == $api.getStorage('person_id')){
+						bShowDelete = true;			
+					}
+				}else{
+					if(api.pageParam.person_id == $api.getStorage('person_id')){
+	                    bShowDelete = true;
+	                }
+//	                else if($api.getStorage('identity') == 5 && api.pageParam.identity == 6){
+//	                    bShowDelete = true;
+//	                }else if($api.getStorage('identity') == 7 && api.pageParam.identity != 7){
+//	                    commonGetStudentInfoByParentId($api.getStorage('person_id'), $api.getStorage('identity'), function(flag,data){
+//	                         if(flag){
+//	                            if(data.student_id == api.pageParam.person_id){
+//	                                bShowDelete = true;
+//	                            }
+//	                         }
+//	                    })
+//	                }
+				}
+			}
+			if (bShowDelete){
+				commonAddOrRemoveHideCss('delete-quanzi',1);	
+			}
+			openContentFrame();
+			isExistsPraise();
+			if (api.systemType == 'android') {
+				api.addEventListener({
+					name : "keyback"
+				}, function(ret, err) {
+					back(true);
+				});
+			}
+			commonIosAuiHeader();//定位header位置，留出上面电池等空隙，苹果需要
+		};
+		/*
+		 *author:zhaoj
+		 *function:打开content页面
+		 *date：20160321
+		 */
+		function openContentFrame() {
+			var type = 1;
+			if(api.pageParam.type && api.pageParam.type == 2){
+				type = 2;
+			}
+			var pageParamJson={
+				"header_h":header_h,
+				"wz_id":wz_id,
+				"expand_id":api.pageParam.expand_id,
+				"menu_type":api.pageParam.menu_type,
+				"menu_id":api.pageParam.menu_id,
+				"type":api.pageParam.type,
+				"currentPage":api.pageParam.currentPage,
+				"title" : title,
+				"avatar_fileid":api.pageParam.avatar_fileid,
+				"is_jump" : api.pageParam.is_jump,
+				"person_id" : api.pageParam.person_id,
+				"type" : type
+			};
+			commonOpenFrame('init_content_frame', 'init_content_frame.html',header_h+70, true, false,"#ffffff", pageParamJson);
+			if(api.pageParam.type == 1){
+				setTimeout(function(){
+	                commonExecScript('','init_content_frame','turnToBottom();',2);
+				},1000);
+			}
+		}
+		
+
+	/*
+	 * 功能：删除圈子
+	 * 作者：张自强
+	 * 时间：20170915
+	 */
+	function deleteArticle(){
+		showSelfProgress('删除中...');
+		var ids = [{"id":api.pageParam.wz_id,"category_id":api.pageParam.category_id,"expand_id":api.pageParam.expand_id}];
+		api.ajax({
+			url : BASE_URL_ACTION + '/blog/deleteArticle',
+			method : 'post',
+			dataType : 'json',
+			timeout : 30,
+			cache : false,
+			data : {
+				values : {
+					"random_num":creatRandomNum(),
+		            "ids": JSON.stringify(ids)
+				}
+			},
+			headers : {
+				'Cookie' : 'person_id='+$api.getStorage("person_id")+';identity_id='+$api.getStorage("identity")+'; token='+$api.getStorage("token_ypt")+';'
+			}
+		}, function(ret, err) {
+			if(err){
+	            popToast('删除失败');
+			} else {
+				if(ret.success) {	
+					setTimeout(function(){
+						api.hideProgress();
+						isClickDelt = true;
+						back();
+					},2000);
+				} else {
+					popToast('删除失败');
+				}
+			}
+		});
+	}
+	
+	/*
+	 * 功能：打开评论页面
+	 * 作者：张自强
+	 * 时间：20170918
+	 */
+	function openCommentWindow(){
+         commonExecScript('','init_content_frame','openCommentWindow(0,0,0,"' + api.pageParam.person_id + '","' + api.pageParam.identity + '","' + api.pageParam.person_name + '");',2);
+	}
+		/*
+		 * 功能：点赞
+		 * 作者：张自强
+		 * 时间：20170918
+		 */
+		function addPraiseInfo() {
+			api.ajax({
+				url : BASE_URL_ACTION + '/ypt/space/praise/add_praise_info',
+				method : 'post',
+				timeout : 0,
+				dataType : 'json',
+				timeout : 30,
+				data : {
+					values : {
+						random_num : creatRandomNum(),
+						business_id : wz_id,
+						business_type : 1,
+						identity_id	 : $api.getStorage("identity"),
+						person_id :$api.getStorage("person_id")
+					}
+				},
+				headers : {
+		'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+	}
+			}, function(ret, err) {
+				if (err) {
+					popToast('点赞失败');
+				} else {
+					if(ret.success){
+						var show_quanzi_info = $api.getStorage('show_quanzi_info');
+						show_quanzi_info.praise_count++;
+						$api.setStorage('show_quanzi_info',show_quanzi_info);
+						popToast('点赞成功');
+                        commonExecScript('','init_content_frame','useGetPraiseinfoList();',2);
+						isExistsPraise();
+					}else{
+						popToast('点赞失败');
+					}
+				}
+			});
+		}
+		
+		/*
+		 *author:zhaoj
+		 *function:验证本人是否已经点赞
+		 *date：20160602
+		 */
+		function isExistsPraise() {
+			api.ajax({
+				url : BASE_URL_ACTION + '/ypt/space/praise/isexists_praise?random_num='+creatRandomNum()+'&business_id='+wz_id+'&business_type=1&person_id='+$api.getStorage("person_id")+'&identity_id='+$api.getStorage("identity"),
+				method : 'get',
+				timeout : 30,
+				dataType : 'json',
+				headers : {
+		'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+	}
+			}, function(ret, err) {
+				if (err) {
+					
+				} else {
+					if(ret.success){
+						if(ret.is_exists_praise){
+							var tip = "cancelPraise()";
+							$api.attr($api.byId('dianzan'), 'onclick', tip);
+							$api.removeCls($api.byId('dianzan'), 'w-dianzan');
+							$api.addCls($api.byId('dianzan'), 'y-dianzan');
+						}
+					}else{
+						
+					}
+				}
+			});
+		}
+		
+		
+		/*
+		*author:zhaoj
+		*function:取消点赞
+		*date：20160604
+		*/
+		function cancelPraise(){
+			if (isCancelPraiseing){
+				return;
+			}
+			isCancelPraiseing = true;
+			api.ajax({
+				url : BASE_URL_ACTION + '/ypt/space/praise/cancel_praise_info',
+				method : 'post',
+				timeout : 30,
+				dataType : 'json',
+				data : {
+					values : {
+						random_num : creatRandomNum(),
+						business_id : wz_id,
+						business_type : 1,
+						identity_id	 : $api.getStorage("identity"),
+						person_id :$api.getStorage("person_id")
+					}
+				},
+				headers : {
+		'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+	}
+			}, function(ret, err) {
+				isCancelPraiseing = false;
+				if (err) {
+					popToast('取消失败');
+				} else {
+					if(ret.success){
+						var show_quanzi_info = $api.getStorage('show_quanzi_info');
+						show_quanzi_info.praise_count--;
+						$api.setStorage('show_quanzi_info',show_quanzi_info);
+						var tip = "addPraiseInfo()";
+						$api.attr($api.byId('dianzan'), 'onclick', tip);
+						$api.removeCls($api.byId('dianzan'), 'y-dianzan');
+						$api.addCls($api.byId('dianzan'), 'w-dianzan');
+                        commonExecScript('','init_content_frame','useGetPraiseinfoList();',2);
+					}else{
+						popToast('取消失败');
+					}
+				}
+			});
+		}
+		
+		/**
+		 * 返回应用页面
+		 * 周枫
+		 * 2015.10.11
+		 */
+		function back(isReturn) {
+			if (isReturn){
+				if ($api.getStorage('idy_type') == 'work'){
+					commonExecScript('quanzi_index_window','quanzi_index_frame','refrashInfo()',1);
+				}else{
+					commonExecScript('root','center_index','refrashInfo()',1);
+				}
+				api.closeWin();
+			}else{
+				switch(back_type){
+					case 'index':
+						if ($api.getStorage('idy_type') == 'work'){
+	                        if(isClickDelt){
+								commonExecScript('quanzi_index_window','quanzi_index_frame','deleteAndRemoveChild("'+wz_id+'")',1);  
+	                        }else{
+	                            commonExecScript('quanzi_index_window','quanzi_index_frame','initData('+api.pageParam.currentPage+',"",true);',1);  
+	                        }
+	         			}else{
+	         				if(isClickDelt){
+								commonExecScript('root','center_index','deleteAndRemoveChild("'+wz_id+'")',1);
+	                        }else{
+	                            commonExecScript('root','center_index','initData('+api.pageParam.currentPage+',"",true);',1);
+	                        }
+	         			}
+			            api.closeWin();
+						break;
+					case 'picture_detail':
+					case 'picture':
+						reBackType('index');
+						break;
+					case 'voice_c':
+						reBackType('index');
+						commonCloseFrame('common_playaudio_frame');
+						break;
+				}
+			}
+		}
+		
+		/*
+		 * 功能：重置返回页面
+		 * 作者：张自强
+		 * 时间：20170108
+		 */
+		function reBackType(type){
+			switch(type){
+				case 'index':
+					back_type = 'index';
+					break;
+				case 'picture_detail':
+					back_type = 'picture_detail';
+					break;
+				case 'picture':
+					back_type = 'picture';
+					break;
+				case 'voice_c':
+					back_type = 'voice_c';
+					break;
+			}
+		}
+		
+		/**
+		 * 打开详情界面更多列表 
+		 * 王俭
+		 * 2018.4.24
+		 */
+		function openQuanziContentMenu(){
+			back_type = 'int_content_menu_frame';
+			api.addEventListener({
+				name : "keyback"
+			}, function(ret, err) {
+				closeContentMenu(ret,err);
+			});
+			var pageParamJson={
+				"header_h":api.pageParam.header_h,
+				"bShowDelete":bShowDelete,
+				"wz_id":wz_id,
+				"menu_type":api.pageParam.menu_type,
+				"expand_id":api.pageParam.expand_id,
+				"menu_id":api.pageParam.menu_id,
+				
+				"type":api.pageParam.type,
+				"currentPage":api.pageParam.currentPage,
+				"title" : title,
+				"avatar_fileid":api.pageParam.avatar_fileid,
+				"is_jump" : api.pageParam.is_jump,
+				"person_id" : api.pageParam.person_id,
+				"h":api.winHeight
+			};
+			commonOpenFrame("int_content_menu_frame","int_content_menu_frame.html",0,false,false,"rgba(0,0,0,0)",pageParamJson);//打开frame页面
+		}
+		
+		/**
+		 * 关闭更多列表 
+		 */
+		function closeContentMenu(ret,err){
+			if (back_type == 'int_content_menu_frame'){
+					commonCloseFrame('int_content_menu_frame');
+					api.removeEventListener({
+					    name: 'keyback'
+					});
+					back_type = 'index';
+				}
+		}
+	</script>
+</html>

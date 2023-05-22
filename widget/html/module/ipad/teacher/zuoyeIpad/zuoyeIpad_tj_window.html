@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<!-- html5：在创建html时为了防止页面缩放等不兼容效果，要创建个viewport  -->
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<!-- 在IOS设备上，有时会将数字转为手机号，这里也要禁止下 -->
+		<meta name="format-detection" content="telephone=no"/>
+		<title>检测详情页面</title>
+		<link rel="stylesheet" type="text/css" href="../../../../../css/aui/aui.css" />
+		<link id="j_theme_base" rel="stylesheet" type="text/css" href="" /><style>
+			.history-date {
+				font-size: 12px;
+			}
+			#message-content {
+				overflow-y: auto;
+				display: none;
+			}
+			
+			
+			.t_display_n {
+				display: none;
+			}
+			.t_display_b {
+				display: block;
+			}
+		</style>
+	</head>
+	<body class="common-ipad-zuoyeIpad-tea">
+		<div id="wrap">
+			<header class="aui-bar aui-bar-nav aui-bar-primary" id="aui-header">
+				<div id="cloud" class="topbar activebar">
+					<div id="back" class="back" onclick="back();" tapmode="">
+						<i class="aui-iconfont aui-icon-left"></i>返回
+					</div>
+					<div  class="mTitle" id="mTitle">
+						检测详情
+					</div>
+					<div class="win-menu">
+						<a id='menu' class="aui-iconfont aui-icon-menu back" onclick="openMenuFrame()"></a>
+					</div>
+				</div>
+			</header>
+			<div  class="aui-content aui-content-padded" id="message-content">
+				<p class="aui-text-center history-date"></p>
+			</div>
+		</div>
+	</body>
+	<script type="text/javascript" src="../../../../../script/api.js"></script>
+	<script type="text/javascript" src="../../../../../script/plug-in/base64.js" ></script>
+	<script type="text/javascript" src="../../../../../script/common/common.js" ></script>
+	<script type="text/javascript">
+		var header_h;//定位header位置，留出上面电池等空隙，苹果需要
+		var back_type = 'index';//返回参数
+		var zy_name;//检测的名称 
+		var win_height;//手机屏幕高度
+		var old_type=1;//记录上次打开页面
+		apiready = function() {
+			commonSetTheme({"level":5,"type":0});
+			header_h = api.pageParam.header_h;
+			zy_name=Base64.decode(api.pageParam.zy_name_base64);
+			win_height=api.winHeight;
+			resetName(zy_name);
+			openCommonFrame('zuoyeIpad_xstj_frame',45,0);
+			openCommonFrame('zuoyeIpad_sttj_frame',45,0);
+			openCommonFrame('zuoyeIpad_zsdtj_frame',45,0);
+			openCommonFrame('zuoyeIpad_zttj_frame',1,win_height - header_h);
+			//安卓关闭
+			if (api.systemType == 'android') {
+				backForAndroid();
+			}
+			//定位header位置，留出上面电池等空隙，苹果需要
+			var header = $api.byId('aui-header');
+			$api.fixStatusBar(header);
+		};
+
+		/*
+		*author:zhaoj
+		*function:打开检测详情的frame
+		*date：20160524
+		*/
+		function openCommonFrame(name,height,frameHeight){
+			api.openFrame({
+				name : name,
+				scrollToTop : true,
+				allowEdit : false,
+				url : name+'.html',
+				rect : {
+					x : 0,
+					y : header_h+height-1,
+					w : 'auto',
+					h : frameHeight+1,
+				},
+				pageParam : {
+					header_h : header_h,
+					zy_id : api.pageParam.zy_id,
+					zy_name_base64 : api.pageParam.zy_name_base64
+				},
+				vScrollBarEnabled : true,
+				hScrollBarEnabled : true,
+				//页面是否弹动 为了下拉刷新使用
+				bounces : false
+			});
+		}
+		/*
+		*作者:zhaoj
+		*功能:打开统计选项切换
+		*日期：20160912
+		*/
+		function openMenuFrame(){
+			reBackType('menu');
+			api.openFrame({
+				name : 'zuoyeIpad_tj_menu_frame',
+				scrollToTop : true,
+				allowEdit : false,
+				url : 'zuoyeIpad_tj_menu_frame.html',
+				rect : {
+					x : 0,
+					y : 0,
+					w : 'auto',
+					h : api.winHeight,
+				},
+				pageParam : {
+					header_h : header_h
+				},
+				bgColor:'rgba(0,0,0,0)',
+				vScrollBarEnabled : true,
+				hScrollBarEnabled : true,
+				//页面是否弹动 为了下拉刷新使用
+				bounces : false
+			});
+		}
+		/*
+		*author:zhaoj
+		*function:返回页面
+		*date：20160307
+		*/
+		function resetName(name){
+			$api.text($api.byId('mTitle'), name);
+		}
+		/*
+		*author:zhaoj
+		*function:返回页面
+		*date：20160307
+		*/
+		function back() {
+			switch(back_type) {
+				case 'index':
+					api.closeWin();
+					resetName(name)
+					break;
+				case 'menu':
+					api.closeFrame({
+						name : 'zy_tj_menu_frame'
+					});
+					reBackType('index');
+					break;
+				case 'single':
+					api.closeFrame({
+						name : 'zuoyeIpad_single_frame'
+					});
+					reBackType('index');
+					break;
+				case 'person':
+					api.closeFrame({
+						name : 'zuoyeIpad_person_frame'
+					});
+					reBackType('index');
+					break;
+				case 'child':
+					openCommonFrame('zuoyeIpad_zttj_frame',0,win_height - header_h);
+					old_type = 1;
+					reBackType('index');
+					break;
+			}
+		}
+
+		/**
+		 * 安卓点击返回的时候
+		 * 周枫
+		 * 2015.10.14
+		 */
+		function backForAndroid() {
+			api.addEventListener({
+				name : "keyback"
+			}, function(ret, err) {
+				back();
+			});
+		}
+		/**
+		 * 重置从哪个页面退出
+		 * 周枫
+		 * 2015.12.17
+		 */
+		function reBackType(type) {
+			switch(type) {
+				//如果通知列表页面退出
+				case 'index':
+					back_type = 'index';
+					$api.css($api.byId('menu'),'display:block');
+					resetName(zy_name);
+					break;
+				//如果微课内容页面退出
+				case 'set':
+					back_type = 'menu';
+					$api.css($api.byId('menu'),'display:block');
+					resetName(zy_name);
+					break;
+				//如果微课内容页面退出
+				case 'single':
+					back_type = 'single';
+					$api.css($api.byId('menu'),'display:none');
+					break;
+				//如果微课内容页面退出
+				case 'person':
+					back_type = 'person';
+					$api.css($api.byId('menu'),'display:none');
+					break;
+				case 'child':
+					back_type = 'child';
+					$api.css($api.byId('menu'),'display:block');
+					resetName(zy_name);
+			}
+		}
+		/*
+		*作者:zhaoj
+		*功能:切换选项
+		*日期：20160913
+		*/
+		function changeOption(type){
+			if(type != old_type){
+				switch(type){
+					case 1:
+						openCommonFrame('zuoyeIpad_zttj_frame',0,win_height - header_h);
+						hiddenData("zuoyeIpad_xstj_frame");
+						hiddenData("zuoyeIpad_sttj_frame");
+						hiddenData("zuoyeIpad_zsdtj_frame");
+						old_type = 1;
+						break;
+					case 2:
+						reBackType('child');
+						commonCloseNavigationBar();
+						intiTjData('zuoyeIpad_xstj_frame');
+						openCommonFrame('zuoyeIpad_zttj_frame',0,0);
+						openCommonFrame('zuoyeIpad_xstj_frame',45,win_height - header_h - 45);
+						hiddenData("zuoyeIpad_sttj_frame");
+						hiddenData("zuoyeIpad_zsdtj_frame");
+						old_type = 2;
+						break;
+					case 3:
+						commonCloseNavigationBar();
+						reBackType('child');
+						intiTjData('zuoyeIpad_sttj_frame');
+						openCommonFrame('zuoyeIpad_zttj_frame',0,0);
+						openCommonFrame('zuoyeIpad_sttj_frame',45,win_height - header_h - 45);
+						hiddenData("zuoyeIpad_xstj_frame");
+						hiddenData("zuoyeIpad_zsdtj_frame");
+						old_type = 3;
+						break;
+					case 4:
+						commonCloseNavigationBar();
+						reBackType('child');
+						intiTjData('zuoyeIpad_zsdtj_frame');
+						openCommonFrame('zuoyeIpad_zttj_frame',0,0);
+						openCommonFrame('zuoyeIpad_zsdtj_frame',45,win_height - header_h - 45);
+						hiddenData("zuoyeIpad_xstj_frame");
+						hiddenData("zuoyeIpad_sttj_frame");
+						old_type = 4;
+						break;
+					default:
+						break;
+				}
+			}
+		}
+		/*
+		*作者:zhaoj
+		*功能:隐藏数据
+		*日期：20160927
+		*/
+		function hiddenData(name){
+			api.execScript({
+				name : 'zuoyeIpad_tj_window',
+				frameName:name,
+				script : 'hiddenData();'
+			});
+		}
+		/*
+		*作者:zhaoj
+		*功能:关闭每个页面的滑动条
+		*日期：20160919
+		*/
+		function closeNav(){
+			//关闭滑动条
+			commonCloseNavigationBar();
+		}
+		/*
+		*作者:zhaoj
+		*功能:打开每个页面的滑动条
+		*日期：20160919
+		*/
+		function intiTjData(frameName){
+			api.execScript({
+				name : 'zuoyeIpad_tj_window',
+				frameName:frameName,
+				script : 'intiTjData("'+frameName+'");'
+			});
+		}
+	</script>
+</html>

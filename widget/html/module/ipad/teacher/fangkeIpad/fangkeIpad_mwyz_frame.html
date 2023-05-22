@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<!-- html5：在创建html时为了防止页面缩放等不兼容效果，要创建个viewport  -->
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<!-- 在IOS设备上，有时会将数字转为手机号，这里也要禁止下 -->
+		<meta name="format-detection" content="telephone=no"/>
+		<title>门卫验证页面</title>
+		<link rel="stylesheet" type="text/css" href="../../../../../css/aui/aui.css" />
+		<link rel="stylesheet" type="text/css" href="../../../../../css/module/common/passwordkeyboard.css" />
+		<link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+		<style>
+			/* 设置条目 */
+			.item {
+				background-color: #fff;
+			}
+			.h1 {
+				height: 1px;
+				background: #f0f0f0;
+			}
+			.aui-iconfont {
+				float: right;
+			}
+			.menu-i-card {
+				float: left;
+				padding-left: 10px;
+				margin-bottom: 0px;
+				border: 0px none;
+				margin-top: 13px;
+			}
+			.note-gray-form {
+				position: absolute;
+				font-size: 16px;
+				margin-top: 13px;
+			}
+			.presshover {
+				background-color: #A8A8A8;
+			}
+			.keyboard li {
+				border: 1px solid #A8A8A8;
+			}
+			#foot_div {
+				display: block;
+				bottom: 0px;
+				width: 100%;
+				/*right: 1px !important;*/
+				/*right: 18px;*/
+				min-width: 200px;
+				line-height: 30px;
+				position: fixed;
+				/*border: 1px solid #fff;*/
+				text-align: center;
+				color: #fff;
+				background: transparent;
+			}
+			.permit button {
+				width: 80%;
+				height: 58px;
+				line-height: 46px;
+				text-align: center;
+				font-size: 30px;
+				text-decoration: none;
+				border-radius: 40px;
+				margin-top: 20px;
+			}
+			.mr0 {
+				margin-right: 0 !important;
+			}
+			.ml45 {
+				margin-left: 0.45% !important;
+			}
+		</style>
+	</head>
+	<body class="common-ipad-fangkeIpad-tea">
+		<div id="yz_keyboard">
+			<div>
+				<div style="text-align: center;padding-top: 10px;">
+					<span id="set_text" style="font-size: large;"></span>
+				</div>
+				<div style="padding-top: 20px;text-align: center;">
+					<form id="password" >
+						<input oninput="commonRemoveExpression(this)" id="input_0" readonly class="pass pass_right" maxlength="1" value="">
+						<input oninput="commonRemoveExpression(this)" id="input_1" readonly class="pass pass_right" maxlength="1" value="">
+						<input oninput="commonRemoveExpression(this)" id="input_2" readonly class="pass pass_right" maxlength="1" value="">
+						<input oninput="commonRemoveExpression(this)" id="input_3" readonly class="pass pass_right" maxlength="1" value="">
+						<input oninput="commonRemoveExpression(this)" id="input_4" readonly class="pass pass_right" maxlength="1" value="">
+						<input oninput="commonRemoveExpression(this)" id="input_5" readonly class="pass pass_right" maxlength="1" value="">
+					</form>
+				</div>
+			</div>
+			<div id="keyboardDIV">
+				<div id="key" style="position:absolute;width:99.5%;bottom:0px;">
+					<ul id="keyboard" class="keyboard" style="font-size:20px;margin:2px -2px 1px 2px">
+						<li onclick="dianji(1)" tapmode="presshover" class="item ml45">
+							<span>1</span>
+						</li>
+						<li class="symbol" onclick="dianji(2)" tapmode="presshover">
+							<span>2</span>
+						</li>
+						<li class="symbol btn_number_ mr0" onclick="dianji(3)" tapmode="presshover">
+							<span class="off">3</span>
+						</li>
+						<li class="tab ml45" onclick="dianji(4)" tapmode="presshover">
+							<span class="off">4</span>
+						</li>
+						<li class="symbol" onclick="dianji(5)" tapmode="presshover" >
+							<span class="off">5</span>
+						</li>
+						<li class="symbol btn_number_ mr0" onclick="dianji(6)" tapmode="presshover">
+							<span class="off">6</span>
+						</li>
+						<li class="tab ml45" onclick="dianji(7)" tapmode="presshover">
+							<span class="off">7</span>
+						</li>
+						<li class="symbol" onclick="dianji(8)" tapmode="presshover" >
+							<span class="off">8</span>
+						</li>
+						<li class="symbol btn_number_  mr0" onclick="dianji(9)" tapmode="presshover">
+							<span class="off">9</span>
+						</li>
+						<li class="delete lastitem ml45" onclick="sc()">
+							回退
+						</li>
+						<li class="symbol" onclick="dianji(0)" tapmode="presshover" >
+							<span class="off">0</span>
+						</li>
+						<li class="cancle btn_number_  mr0" onclick="qs()">
+							清空
+						</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+		<div class="aui-content" id="fk_info" style="display: none; height:100%;padding: 10%;">
+			<!--<form class="aui-input-group">
+			<div class="aui-input-row">
+			<label>访客姓名</label>
+			<font id="fk_name" class="note-gray note-gray-form" ></font>
+			</div>
+			<!--<div class="aui-input-row">
+			<label>访客电话</label>
+			<font id="fk_tel" class="note-gray note-gray-form" ></font>
+			</div>
+			<div class="aui-input-row" onclick="getFkTime();">
+			<label>预约时间</label>
+			<font id="fk_time" class="note-gray note-gray-form" ></font>
+			</div>
+			<div class="aui-input-row" onclick="getFkNum();">
+			<label>人数限制</label>
+			<font id="fk_num" class="note-gray note-gray-form" ></font>
+			</div>
+			<div class="aui-input-row">
+			<label>备注内容</label>
+			<label id="fk_memo" style="width: 98%" class="note-gray"></label>
+			</div>
+			</form> -->
+			<div style="height: 40%;text-align: center; background: #F8F7F3; border-radius: 30px;width: 80%;margin-left: 10%;margin-top:10%">
+				<table width="100%" height="100%">
+					<tr>
+						<td valign="middle" align="center">
+						<div style="font-size: 37px; display: block;margin-top:5%;">
+							邀请人姓名
+						</div><div class="fangke_name" style="padding: 55px 0px 10px 0; font-size: 26px;" class="" id="bf_name"></div></td>
+					</tr>
+					<tr>
+						<td valign="middle" align="center" style="color:#595757;" >
+						<div style="font-size: 20px; display: block; width:100%; text-align: center;padding-bottom: 30px;">
+							预约时间：<span style="font-size: 20px;color: #595757;" class="" id="fk_time">123333222</span>
+						</div>
+						</td>
+					</tr>
+				</table>
+			</div>
+			<div id="foot_div" class="permit" style="height: 50%;width:80%;margin-left:10%;bottom:7%; position: relative;">
+				<!-- <button class="aui-btn aui-btn-success" onclick="isInOut(true);">
+				允许
+				</button>
+				&nbsp;&nbsp;
+				<button class="aui-btn aui-btn-info" onclick="isInOut(false);">
+				拒绝
+				</button>
+				&nbsp;&nbsp;
+				<button class="aui-btn aui-btn-info" onclick="back();">
+				返回
+				</button>  -->
+				<table width="100%" height="100%">
+					<tr>
+						<td valign="middle" align="center">
+						<button class="aui-btn aui-btn-success" onclick="isInOut(true);">
+							允许
+						</button>
+						<button class="aui-btn aui-btn-info" onclick="back();">
+							返回
+						</button></td>
+					</tr>
+				</table>
+			</div>
+		</div>
+		<input oninput="commonRemoveExpression(this)" type="hidden" id="fk_id" value="" />
+		<!--<div onclick="openKeyBoard();">
+		<font id="fk_sn" class="note-gray note-gray-form" >请点击输入验证码</font>
+		</div>-->
+	</body>
+	<script type="text/javascript" src="../../../../../script/api.js" ></script>
+	<script type="text/javascript" src="../../../../../script/base_config.js" ></script>
+	<script type="text/javascript" src="../../../../../script/common/common.js" ></script>
+	<script type="text/javascript">
+		var header_h;
+		var fk_sn_dj = '';
+		apiready = function() {
+			commonSetTheme({"level":5,"type":0});
+			header_h = api.pageParam.header_h;
+			fk_sn_dj = '';
+		};
+		function dianji(index) {
+			var aa = document.getElementsByTagName("input");
+			var bb = "";
+			for (var i = 0; i < aa.length; i++) {
+				if (aa[i].value.length == 0) {
+					bb = i
+					break;
+				}
+			}
+			if (null != document.getElementById("input_" + bb)) {
+				document.getElementById("input_" + bb).value = index;
+				fk_sn_dj = fk_sn_dj + index;
+				if (fk_sn_dj.length == 6) {
+					getFkInfoBySn(fk_sn_dj);
+				}
+			}
+		}
+
+		/**
+		 * 清空
+		 * 周枫
+		 * 2016.3.23
+		 */
+		function qs() {
+			var aa = document.getElementsByTagName("input");
+			for (var i = 0; i < aa.length; i++) {
+				aa[i].value = "";
+			}
+			fk_sn_dj = '';
+		}
+
+		/**
+		 * 回退
+		 * 周枫
+		 * 2016.3.23
+		 */
+		function sc() {
+			var aa = document.getElementsByTagName("input");
+			var bb = 0;
+			for (var i = 5; i > -1; i--) {
+				if (aa[i].value.length != 0) {
+					aa[i].value = "";
+					bb = i;
+					break;
+				}
+			}
+			fk_sn_dj = fk_sn_dj.substring(0, bb);
+		}
+
+		/**
+		 * 获取验证码有效性
+		 * 周枫
+		 * 2016.3.18
+		 */
+		function getFkInfoBySn(sn_msg) {
+			api.ajax({
+				url : $api.getStorage('BASE_URL_ACTION') + '/fangke/getFangKeInfoBySN',
+				method : 'get',
+				dataType : 'json',
+				timeout : 30,
+				data : {
+					values : {
+						"sn" : sn_msg,
+						"mw_id" : $api.getStorage('person_id')
+					}
+				}
+			}, function(ret, err) {
+				if (err) {
+					api.toast({
+						msg : '对不起，邀请码不可用，请检查后重新输入',
+						location : 'middle'
+					});
+				} else {
+					if (ret.success) {
+						var fk_tm = ret.fk_status;
+						//判断当前时间和传入时间，邀请码是否有效
+						//如果true,则有效
+						if (compareNowDateAndForDate(fk_tm)) {
+							qs();
+							isSetYzKeyBoard(false);
+							isSetFkInfo(true);
+							//$api.html($api.byId('fk_name'), ret.fk_name);
+							//							$api.text($api.byId('fk_tel'), ret.fk_tel);
+							//							fk_tm = fk_tm.substring(0, 4) + '年' + fk_tm.substring(4, 6) + '月' + fk_tm.substring(6, 8) + '日';
+							//							$api.text($api.byId('fk_time'), fk_tm);
+							//							$api.text($api.byId('fk_memo'), ret.memo);
+							$api.val($api.byId('fk_id'), ret.id);
+							//							if (ret.fk_person_count != 0) {
+							//								$api.text($api.byId('fk_num'), ret.fk_person_count + '人');
+							//							} else {
+							//								$api.text($api.byId('fk_num'), '不限人数');
+							//							}
+							$api.html($api.byId('bf_name'), ret.bf_name);
+							$api.html($api.byId('fk_time'), ret.fk_status);
+						} else {
+							api.toast({
+								msg : '对不起，邀请码已经失效',
+								location : 'middle'
+							});
+						}
+					} else {
+						api.toast({
+							msg : '对不起，邀请码不可用，请检查后重新输入',
+							location : 'middle'
+						});
+					}
+				}
+			});
+		}
+
+		/**
+		 * div切换
+		 * 周枫
+		 * 2016.03.17
+		 */
+		function isSetYzKeyBoard(flag) {
+			if (flag) {
+				$api.css($api.byId('yz_keyboard'), 'display:inline;');
+			} else {
+				$api.css($api.byId('yz_keyboard'), 'display:none;');
+			}
+		}
+
+		/**
+		 * div切换
+		 * 周枫
+		 * 2016.03.17
+		 */
+		function isSetFkInfo(flag) {
+			if (flag) {
+				$api.css($api.byId('fk_info'), 'display:inline;');
+			} else {
+				$api.css($api.byId('fk_info'), 'display:none;');
+			}
+		}
+
+		/**
+		 * 是否运行允许进入学校
+		 * 周枫
+		 * 2016.3.19
+		 */
+		function isInOut(flag) {
+			var fk_id = $api.val($api.byId('fk_id'));
+			if (flag) {
+				setFangKeInOut(fk_id, 1);
+			} else {
+				setFangKeInOut(fk_id, 2)
+			}
+		}
+
+		/**
+		 * 设置是否允许进入学校，inout  1：允许  2：不允许
+		 * 周枫
+		 * 2016.3.19
+		 */
+		function setFangKeInOut(fk_id, in_out_type) {
+			api.ajax({
+				url : $api.getStorage('BASE_URL_ACTION') + '/fangke/setFangKeInOut',
+				method : 'get',
+				dataType : 'json',
+				timeout : 30,
+				data : {
+					values : {
+						"id" : fk_id,
+						"mw_id" : $api.getStorage('person_id'),
+						"inout" : in_out_type
+					}
+				}
+			}, function(ret, err) {
+				if (err) {
+					api.toast({
+						msg : '操作失败',
+						location : 'middle'
+					});
+				} else {
+					if (ret.success) {
+						api.toast({
+							msg : '操作成功',
+							location : 'middle'
+						});
+						reLoadMwList();
+						back();
+					} else {
+						api.toast({
+							msg : '操作失败',
+							location : 'middle'
+						});
+					}
+				}
+				$api.val($api.byId('fk_id'), '');
+			});
+		}
+
+		function back() {
+			isSetFkInfo(false);
+			isSetYzKeyBoard(true);
+		}
+
+		/**
+		 * 刷新列表页面
+		 * 周枫
+		 * 2016.3.21
+		 */
+		function reLoadMwList() {
+			api.execScript({
+				frameName : 'fangkeIpad_mwlist_frame',
+				script : 'getFkList(1, true);'
+			});
+		}
+
+		/**
+		 * 获取当前时间和参数时间比较
+		 * 周枫
+		 * 2016.3.21
+		 */
+		function compareNowDateAndForDate(fTime) {
+			//获取现在日期并转换成毫秒数：
+			var nDate = new Date();
+			//取当前时间月
+			var n_date_m = nDate.getMonth();
+			n_date_m = parseInt(n_date_m + 1);
+			n_date_m = n_date_m + '';
+			if (n_date_m.length == 1) {
+				n_date_m = '0' + n_date_m
+			}
+			//取当前时间日
+			var n_date_d = nDate.getDate();
+			n_date_d = parseInt(n_date_d);
+			n_date_d = n_date_d + '';
+			if (n_date_d.length == 1) {
+				n_date_d = '0' + n_date_d
+			}
+			var n_date = nDate.getFullYear() + '\/' + n_date_m + '\/' + n_date_d;
+			nDate = Date.parse(n_date);
+			//
+			fTime = fTime.substring(0, 4) + '\/' + fTime.substring(4, 6) + '\/' + fTime.substring(6, 8);
+			var fDate = Date.parse(new Date(fTime));
+			
+			if (nDate <= fDate) {
+				return true;
+			} else {
+				return false;
+			}
+		}
+	</script>
+</html>

@@ -1,0 +1,813 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>主题活动</title>
+    <link rel="stylesheet" type="text/css" href="../../../../../css/aui/aui.css"/>
+    <link id="j_theme_base" rel="stylesheet" type="text/css" href="" /><style>
+    	body{color:#595757;padding:10px 0;font-size:14px;}
+    	.content{position:relative;padding:10px 10px;width: 100%;}
+    	.content .name{position:absolute;left:9px;top:50%;margin-top:-10px;padding-left:20px;background:url(../../../../../image/fun-module/ipad/zthd/star.png) 0 -1px no-repeat;background-size:18px auto;z-index:1;font-size:16px;}
+    	.content .name-hdfm{position:absolute;left:9px;top:50%;margin-top:-10px;padding-left:20px;background:url(../../../../../image/fun-module/ipad/zthd/star.png) 0 5px no-repeat;background-size:18px auto;z-index:1;font-size:16px;}
+    	.content .no-bg{background:none;}
+    	.input-box{padding-left:100px}
+    	input[type="text"],textarea,select{margin-bottom:0;color:#ddd;}
+    	input[type="text"],textarea{float:left;}
+    	input[type="text"].can-edit{color:#595757;}
+    	.wid50{width:50%;}
+    	.content .top-show{top:25px;}
+    	.down-show,.select-show{position:relative;padding-top:33px;}
+    	.down-show .left{float:left;padding-left:25px;width:75%;padding-top:20px;}
+    	.down-show .right{background:url(../../../../../image/fun-module/ipad/zthd/zthd.png) 0 0 no-repeat;background-size:100% 100%;width: 31%;height:100%;position: absolute;top:0;right:0;text-align:center;vertical-align:middle;visibility:visible;}
+    	.down-show .left .select-img-btn{font-size:14px;width:198px;border:1px dashed rgba(0, 0, 0, 0.2);line-height:35px;text-align:center;color:#ddd;}
+    	.down-show .left .tip-infor{width:100%;font-size:14px;color:#f00;padding-top:5px;}
+    	.down-show .left .tip-infor div{padding-top:10px;}
+    	.down-show .right img{width:100%;height:100%;}
+    	.down-show .right-div{position: absolute;width: 100%;background: #000;height: 100%;opacity: 0.5;}
+    	.down-show .right-span{position: absolute;display: block;width: 100%;top: 50%;margin-top: -10px;color: #fff;}
+    	.down-show .right .mr-img{position:absolute;top:5px;right:0;width:25%;height:85%;line-height:85%;z-index:1;background:rgba(0,0,0,0.5);color:#fff;text-align:center;padding-top:9%}
+    	.resource-content{position:relative;width:100%}
+    	.pl370{padding-left:10px;}
+    	.pl370 .name{left:10px;}
+    	.add-fj{position:relative;display:inline-block;padding:0 20px 0 35px;background:url(../../../../../image/fun-module/ipad/zthd/qbz.png) 10px 0 no-repeat;background-size:17px auto;border-left:1px solid #595757;}
+    	.triangle-top{position:absolute;right:0;top:5px;display:inline-block;width: 0; height: 0;border-left: 7px solid transparent;border-right: 7px solid transparent;}
+    	.down-show ul li{width:100%;float:left;margin-bottom:10px;}
+    	.down-show ul li:nth-child(odd){padding-left:10px;}
+    	.down-show ul li:nth-child(even){padding-left:10px;}
+    	.down-show ul li .fj-detail{position:relative;display:inline-block;padding:0 37px;max-width:100%;width:100%;line-height:38px;background:#E0F2FC url(../../../../../image/fun-module/ipad/zthd/fj-qbz.png) 9px 10px no-repeat;background-size:17px auto;}
+    	.down-show ul li .fj-detail .delete{position:absolute;right:0;top:0;width:30px;height:38px;background:url(../../../../../image/ipad/zthd/dm_close.png) center center no-repeat;background-size:13px auto;}
+    	.cyqx{display:inline-block;width:120px;border-left:1px solid #595757;color:#595757;padding-left:8px;position: relative;}
+    	.cyqx select{width:150px;float:right;height:34px;padding:7px 0;margin-right:0px;border-radius:0;margin-top:-7px;position: absolute;top:-15px;left:0;}
+    	.select-down{width:18px;height:34px;background:#CCCCCC;position:absolute;top:-22px;right:-30px;}
+    	.select-down .triangle-top{border-top: 5px solid #999;top:15px;right:3px;border-right: 5px solid transparent;border-left: 5px solid transparent;}
+    	.select-person{position:relative;padding:10px 0 10px 60px;}
+    	.select-person .per-name{position:absolute;left:0;line-height:50px;padding-left:20px;}
+    	.select-show ul li{display:inline-block;padding: 5px 10px 4px 10px;margin:7px 10px 0 0;background:#EEEEEE;line-height:26px;}
+    	.select-show ul li.active{color:#fff;}
+    	.btn{text-align:center;padding:20px 0;}
+    	.btn button{width:200px;color:#fff;font-size:18px;padding:8px 12px;}
+    	.role{float:right;padding-top:10px;}
+    	.role div{display:inline-block;height:35px;line-height:35px;padding: 0 15px;margin-right:10px;background:#EEEEEE;}
+    	.role div.active{color:#fff;}
+    	.t20{top:20px !important;}
+    	.m-height{min-height:60px;}
+    	.input-box-jieshao{padding-left:25px;}
+    	.edit-select-picture{display:inline-block;width:80px;height:30px;line-height:30px;border:1px solid #ddd;text-align:center;margin-left:10px;color:#ddd;}
+    	.canyu-quanxian{position:relative;display:inline-block;padding:0 20px 0 8px;border-left:1px solid #595757;}
+    	/*.select-duixiang{position:absolute;left:100px;top:-5px;display:inline-block;width:120px;height:50px;font-size:10px;}*/
+    	.select-duixiang{float:right}
+    	.down-show .right-old{float:right;width:25%;margin-top:-5px;height:85%;border:1px solid #FFFFFF}
+    	.down-show .right-old img{width:100%;height:100%;}
+    	.ptt0{padding-top:0;}
+    	.tip{margin-left:30px; color:#f00;margin-top:8px;}
+    	.tip2{font-size:14px; color:#f00;margin-top:10px;margin-bottom:10px;}
+    	.fengmian .left{padding-left:19px;}
+    </style>
+</head>
+<body class="common-iphone-zthdstu">
+	<div class="clearfix">
+		<div class="content fl">
+			<div class="name">活动名称</div></br>
+		</div>
+	</div>
+	<div class="content ptt0">
+		<div class="input-box-jieshao clearfix">
+			<input oninput="commonRemoveExpression(this)" id="name" maxlength="40" type="text" placeholder="40字符以内"  disabled="true" style="height:40px"/>
+		</div>
+	</div>
+	<div class="clearfix">
+		<div class="content fl">
+			<div class="name">活动介绍</div></br>
+		</div>
+	</div>
+	<div class="content ptt0" style="margin-bottom:10px;">
+		<div class="input-box-jieshao clearfix">
+			<textarea id="remarks" placeholder="活动介绍，最多支持200字符（必填）"  maxlength="200" disabled="true"></textarea>
+		</div>
+	</div>
+	<div class="clearfix" style="margin-bottom:10px;">
+		<div class="content">
+			<div class="name">活动日期</div>
+		</div> 
+		<div class="tip">注：仅支持修改结束日期！</div>
+	</div>
+	<div class="content wid50 fl ptt0">
+		<div class="input-box-jieshao clearfix">
+			<input oninput="commonRemoveExpression(this)" id="j_time_0" type="text" disabled="true" placeholder="开始日期（必填）"  style="height:40px;padding-left:10px;"/>
+		</div>
+	</div>
+	<div class="content wid50 fl ptt0">
+		<div style="position:absolute;left:0;top:50%;margin-top:-10px;padding-left:5px;">至</div>
+		<div class="input-box-jieshao clearfix" onclick="openTime(1);">
+			<input oninput="commonRemoveExpression(this)" id="j_time_1" type="text" disabled="true" class="can-edit" placeholder="结束日期（必填）"  style="height:40px;padding-left:10px;"/>
+		</div>
+	</div>
+	
+	<div class="clearfix">
+		<div class="content fl">
+			<div class="name">活动地点</div></br>
+		</div>
+	</div>
+	<div class="content ptt0">
+		<div class="input-box-jieshao clearfix">
+			<textarea id="address" placeholder="活动地点，最多支持20字符（必填）"  maxlength="20" disabled="true"></textarea>
+		</div>
+	</div>
+	<div class="resource-content fl clearfix">
+		<div >
+			<div class="content">
+				<div class="name-hdfm top-show">活动封面<div class="edit-select-picture">选择图片</div></div>
+				<div class="down-show fengmian clearfix" style="padding-top:10px">
+					<div class="left">
+						<div class="tip-infor">
+							<div>&nbsp;</div>
+						</div>
+					</div>
+					<div id="right" class="right">
+					<div  class="right-div"></div>
+					<span  class="right-span" id="j_cover_url" fileID="zthd.png">默认封面</span>
+						<!--<div id="j_mr_cover" class="mr-img">默认封面</div>-->
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="content pl370">
+			<div class="name top-show">
+				活动附件&nbsp;
+			</div>
+			<div class="down-show clearfix">
+				<div id="j_fj_no_data" class="no-data">暂无附件</div>
+				<ul id="j_attachment" class="aui-hide ptt0">
+					
+				</ul>
+			</div>
+		</div>
+	</div>
+	<div class="content m-height fl clearfix">
+		<div class="name t20 top-show">
+			参与对象&nbsp;
+			<span class="cyqx">
+				<select id="j_select" onchange="changeCyqx(this.value)">
+					<option id="j_option_1" value="1">所有人</option>
+					<option id="j_option_2" value="2">全部教师</option>
+                    <option id="j_option_3" value="3">全部学生</option>
+					<option id="j_option_4" value="4">指定参与对象</option>
+				</select>
+				<div class="select-down">
+					<div class="triangle-top"></div>
+				</div>
+			</span>
+			<div id="j_object_tip" class="tip2">注：仅支持增加参与对象！</div>
+		</div>
+		<div id="j_xzdx" class="select-show aui-hide clearfix" style="margin-top:12px;">
+			 <div class="select-person clearfix">
+                <div class="per-name">班级:</div>
+                <ul id="j_select_object" class="clearfix pb10">
+                </ul>
+                <script id="select_object_script" type="text/html">
+                    <%if(class_length == 0){%>
+                        <span>暂无班级</span>
+                    <%}else{%>
+                        <%for(var i=0;i<list.length;i++){%>
+                            <%if(!list[i].is_group){%>
+                              <li id="j_<%=list[i].org_id%>" onclick="selectObject(this,<%=list[i].org_id%>,<%=list[i].is_group%>);"><%=list[i].org_name%>全部同学</li>
+                            <%}%>
+                        <%}%>
+                    <%}%>   
+                </script>
+            </div>
+            <div id="qunzu" class="select-person clearfix">
+                <div class="per-name">群组:</div>
+                <ul id="j_select_object_qz" class="clearfix pb10">
+                </ul>
+                <script id="select_object_script_qz" type="text/html">
+                    <%if(group_list.length == 0){%>
+                        
+                    <%}else{%>
+                        <%for(var i=0;i<list.length;i++){%>
+                             <%if(list[i].is_group){%>
+                                <li id="j_<%=list[i].org_id%>" onclick="selectObject(this,<%=list[i].org_id%>,<%=list[i].is_group%>);"><%=list[i].org_name%></li>
+                            <%}%>
+                        <%}%>
+                    <%}%>   
+                </script>
+            </div>
+		</div>
+	</div>
+	<div class="btn" onclick="getTopicParam();">
+		<button>保存</button>
+	</div>
+</body>
+<script type="text/javascript" src="../../../../../script/api.js"></script>
+<script type="text/javascript" src="../../../../../script/base_config.js" ></script>
+<script type="text/javascript" src="../../../../../script/plug-in/template.js" ></script>
+<script type="text/javascript" src="../../../../../script/common/common.js"></script>
+<script type="text/javascript" src="../../../../../script/assembly/openPicker.js"></script>
+<script type="text/javascript" src="../../../../../script/assembly/UIAlbumBrowser2.js"></script>
+<script type="text/javascript" src="../../../../../script/assembly/getPicture.js"></script>
+<script type="text/javascript" src="../../../../../script/assembly/photoBrowser.js"></script>
+<script type="text/javascript" src="../../../../../script/assembly/executeApp.js" ></script>
+<script type="text/javascript" src="../../../../../script/assembly/openResource.js" ></script>
+<script type="text/javascript" src="../../../../../script/plug-in/base64.js" ></script>
+<script type="text/javascript">
+	var object_json="";//选择对象的json数据
+	var lobal_variable={};//全局变量json
+	var oparam;
+	var release_org;//参与对象
+	apiready = function(){
+		commonSetTheme({"level":5,"type":0});
+		oparam = JSON.parse(Base64.decode(api.pageParam.oparam_base64));
+		get_topic_by_id();
+	};
+	/*
+	*author:zhaoj
+	*function:活动日期选择
+	*param:type=0:活动开始日期；type=1：活动结束日期（必填）；
+	*date：201701019
+	*/
+	function openTime(type){
+		var now_time = $api.val($api.byId('j_time_'+type));
+		if(now_time){
+			setTime(type,now_time);
+		}else{
+			getCurrentData(function(time){
+                lobal_variable.now_time = time;
+				setTime(type,time);
+			});
+		}
+		
+	}
+	/*
+	*author:zhaoj
+	*function:获取当前服务器时间
+	*date：201701019
+	*/
+	function setTime(type,nowTime){
+		openPicker.open({"type":0,"time":nowTime},function(time){
+			if(type){
+				//结束日期
+                if(Date.parse(lobal_variable.end_time.replace(/-/g,'\/'))<=Date.parse(time.replace(/-/g,'\/'))){
+                    $api.val($api.byId('j_time_'+type), time);
+                }else{
+                    popAlert('仅支持推迟结束日期！');
+                }
+			}else{
+				//开始日期
+                if(Date.parse(lobal_variable.now_time.substring(0,10).replace(/-/g,'\/'))<=Date.parse(time.replace(/-/g,'\/'))){
+                    $api.val($api.byId('j_time_'+type), time);
+                }else{
+                    popAlert('不能是过去日期，请重新选择！');
+                }
+			}
+		});
+	}
+	/*
+	*author:zhaoj
+	*function:获取当前服务器时间
+	*date：201701019
+	*/
+	function getCurrentData(callback){
+		commonGetCurrentDate(function(nowTime,nowMillisecond){
+			var year = nowTime.getFullYear();    //获取完整的年份(4位,1970-????)
+			var month = nowTime.getMonth()*1+1;       //获取当前月份(0-11,0代表1月)
+			month = month < 10?'0'+month:month;
+			var day = nowTime.getDate();        //获取当前日(1-31)
+			day = day < 10?'0'+day:day;
+			var hour = nowTime.getHours();       //获取当前小时数(0-23)
+			hour = hour < 10?'0'+hour:hour;
+			var minutes = nowTime.getMinutes();     //获取当前分钟数(0-59)
+			minutes = minutes < 10?'0'+minutes:minutes;
+			var time = year+'-'+month+'-'+day+' '+hour+':'+minutes;
+			callback(time);
+		});
+	}
+	/*
+    *author:zhaoj
+    *function:选择图片
+    *date：20171019
+    */
+    function getAlbum() {
+		UIAlbumBrowser.open(1,function(data){
+			if(api.systemType == "ios"){
+                 UIAlbumBrowser.transPath(data[0].path,function(pic_url_new){
+                     openImageClipFrame(pic_url_new);
+                 });
+            }else{
+                 openImageClipFrame(data[0].path);
+            }
+		});
+    }
+    /*
+    *author:zhaoj
+    *function:打开拍照
+    *date：20170914
+    */
+    function openPicture(){
+    	getPicture.open({},function(data){
+    		openImageClipFrame(data);
+    	});
+    }
+    /*
+    *author:zhaoj
+    *function:打开才将
+    *date：20171020
+    */
+    function openImageClipFrame(img_url){
+    	commonExecScript(api.winName,'','reBackType("imageClip");',0);
+    	var param = {"img_url":img_url,"frameName":api.frameName,"winName":api.winName,"backFun":"getClipImageUrl","type":1};
+    	commonOpenImageClipFrame(param);
+    }
+    /*
+    *author:zhaoj
+    *function:获取裁剪后的图片路径
+    *date：20171020
+    */
+    function getClipImageUrl(img_url){
+      	  	//递归上传图片
+            dgUploadFiles(0, [{"path":img_url,"thumbPath":img_url}],open_type, function(is_true) {
+            	commonExecScript(api.winName,'','back();',0);
+                if (is_true) {
+                    api.hideProgress();
+                } else {
+                    popToast("服务器繁忙，请稍候再试");
+                }
+            });
+    }
+    /**
+     * 递归上传图片
+     * 赵静
+     * param:type=0:活动封面；type=1:附件；
+     * 2017.09.14
+     */
+    function dgUploadFiles(p_c, pic_list,type, callback) {
+        var pic_l = getJsonObjLength(pic_list);
+        if (p_c < pic_l) {
+            var pic_url_old = pic_list[p_c].path;
+            if (api.systemType == 'ios') {
+                //将相册图片地址转换为可以直接使用的本地路径地址
+                UIAlbumBrowser.transPath(pic_url_old,function(pic_url_new){
+                    commonUploadFiles(pic_url_new, function(is_true, a_file_id, a_ext) {
+                        if (is_true) {
+                            var param_json = {"file_id" : a_file_id,"ext" : a_ext};
+                            type?showPicture(param_json):showCover(param_json);
+                            p_c++;
+                            return dgUploadFiles(p_c, pic_list,type, callback);
+                        } else {
+                            return dgUploadFiles(p_c, pic_list,type, callback);
+                        }
+                    });
+                });
+            } else {
+                commonUploadFiles(pic_url_old, function(is_true, a_file_id, a_ext) {
+                    if (is_true) {
+                        var param_json = {"file_id" : a_file_id,"ext" : a_ext};
+                        type?showPicture(param_json):showCover(param_json);
+                        p_c++;
+                        return dgUploadFiles(p_c, pic_list,type, callback);
+                    } else {
+                        return dgUploadFiles(p_c, pic_list,type, callback);
+                    }
+                });
+            }
+        } else {
+            callback(true);
+        }
+    }
+    /*
+    *author:zhaoj
+    *function:显示活动封面
+    *date：20171019
+    */
+    function showCover(param_json){
+    	var img_url='';//图片路径
+    	if (BASE_APP_TYPE == 1) {
+			img_url = BASE_IMAGE_PRE+"down/Material/" + param_json.file_id.substring(0, 2) + "/" + param_json.file_id + commonReturnPhotoCutSize(0);		
+		} else {
+			img_url = BASE_URL_ACTION + "/html/thumb/Material/" + param_json.file_id.substring(0, 2) + "/" + param_json.file_id+ commonReturnPhotoCutSize(0);
+		}
+		img_url = '<img id="j_cover_url" src="'+img_url+'" onerror="this.src=../../../../../image/fun-module/common/zthd/zthd.png" onclick="displayImg(this);"/>'
+		$api.removeCls($api.byId('right'),'right');
+		$api.addCls($api.byId('right'), 'right-old');
+		$api.html($api.byId('right'),img_url);
+		commonAddOrRemoveHideCss('j_mr_cover',0);
+		$api.attr($api.byId('j_cover_url'), 'fileID', param_json.file_id);
+    }
+    /*
+    *author:zhaoj
+    *function:将封面图片放大
+    *date：20171019
+    */
+    function displayImg(self){
+    	var openImgArray=[$api.attr(self, 'src')];
+		//打开图片
+		openPictureShowWin(openImgArray,0);
+    }
+    /*
+    *author:zhaoj
+    *function:设置参与权限
+    *date：20171019
+    */
+    function changeCyqx(type){
+    	p_object = type;
+    	switch(type*1){
+    		case 1:
+    			//公开
+    			lobal_variable.p_object =1;
+    			commonAddOrRemoveHideCss('j_xzdx',0);
+    			break;
+    		case 4:
+    			//指定参与对象
+    			lobal_variable.p_object =4;
+    			get_class_bystudentid();
+    			break;
+    	}
+    }
+    
+    /*
+     * 功能：上传图片
+     * 作者：张自强
+     * 时间：201710232
+     */
+    function openUpload(){
+    	open_type = 0;
+		var  buttons = ['图片','拍照'];
+		commonOpenActionSheet('','取消', '', buttons, function(index){
+			if(index == 1){
+	         	getAlbum();//从相册中上传
+	         }
+	         if(index == 2){
+	         	openPicture();//从相机中上传
+	         }
+		});
+	}
+	/*
+    *author:zhaoj
+    *function:通过学生id和身份获取所在的班级
+    *interface:张海
+    *date：20171023
+    */
+    function get_class_bystudentid(){
+    	showSelfProgress('加载中...');
+    	api.ajax({
+	    	url : BASE_URL_ACTION+'/ypt/space/topic/get_class_bystudentid?random_num='+creatRandomNum()+'&person_id='+$api.getStorage("person_id")+'&identity_id='+$api.getStorage("identity"),
+			method : 'get',
+			timeout : 30,
+			dataType : 'json',
+			headers : {
+				'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+			}
+        },function(ret,err){
+        	if(err){
+        		api.hideProgress();
+        		popToast('获取班级失败，请稍候重试');
+        	}else{
+        		if(ret.success){
+        		      ret.class_list = 1;
+        			ret.is_group = 0;
+        			get_group_bypersonid({"list":[ret]});
+        		}else{
+        			api.hideProgress();
+        			popToast('获取班级失败，请稍候重试');
+        		}
+        	}
+        });
+    }
+	
+	 /*
+    *author:zhaoj
+    *function:通过person_id和身份id 获取所在的群组
+    *interface:张海
+    *date：20171023
+    */
+    function get_group_bypersonid(data){
+    		api.ajax({
+	    	url : BASE_URL_ACTION+'/ypt/space/topic/get_group_bypersonid?random_num='+creatRandomNum()+'&person_id='+$api.getStorage("person_id")+'&identity_id='+$api.getStorage("identity"),
+			method : 'get',
+			timeout : 30,
+			dataType : 'json',
+			headers : {
+				'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+			}
+        },function(ret,err){
+        	if(err){
+        		popToast('获取群组失败，请稍候重试');
+        	}else{
+        		if(ret.success){
+        		      data.group_list = ret.list.length;
+        			for(var i =0; i < ret.list.length; i++){
+        				ret.list[i].is_group = 1;
+        				ret.list[i].org_level = 106;
+        				ret.list[i].org_name = ret.list[i].group_name;
+        				ret.list[i].org_id = ret.list[i].group_id;;
+        				data.list.push(ret.list[i]);
+        			}
+        		}else{
+        			popToast('获取群组失败，请稍候重试');
+        		}
+        	}
+        	api.hideProgress();
+        	object_json= data;
+        	commonAddOnceHtml('j_select_object','select_object_script',data);
+        	commonAddOnceHtml('j_select_object_qz','select_object_script_qz',data);
+        	if(data.group_list == 0){
+        		commonAddOrRemoveHideCss('qunzu',0);
+        	}
+			commonAddOrRemoveHideCss('j_xzdx',1);
+			if(lobal_variable.p_object == 4 && release_org){
+				for(var i = 0; i < release_org.length; i++){
+					//设置选中对象选中样式
+					$api.addCls($api.byId('j_'+release_org[i].org_id), 'active');
+					$api.removeAttr($api.byId('j_'+release_org[i].org_id), 'onclick');
+				}
+				release_org = false;
+			}
+        });
+    }
+	
+	/*
+	 * 功能：选择发布范围（学生或教师或学生和教师）
+	 * 作者：张自强
+	 * 时间：20171024
+	 */
+	function selectStuOrTea(type,e){
+		if($api.hasCls(e, 'active')){
+			$api.removeCls(e, 'active');
+			identity_sum=identity_sum-type;
+		}else{
+			$api.addCls(e, 'active');
+			identity_sum=identity_sum+type;
+		}	
+	}
+	
+	 /*
+    *author:zhaoj
+    *function:获取保存主题活动所有参数数值
+    *date：20171023
+    */
+    function getTopicParam(){
+    	lobal_variable.end_time = $api.val($api.byId('j_time_1'))+' 23:59:59';
+    	if($api.trimAll(lobal_variable.end_time).length == 0){
+    		popToast('活动结束日期不能为空');
+    		return;
+    	}
+    	//参与对象
+    	lobal_variable.release_org=[];
+    	if(lobal_variable.p_object == 1){
+    		//公开
+    		var release_param = {"org_id": $api.getStorage("school_id"),"org_type": 104,"r_identity_id": "5,6,7","org_name":$api.getStorage("school_name")};
+    		lobal_variable.release_org.push(release_param);
+    	}else if(lobal_variable.p_object == 2){
+            //全体老师
+            var release_param = {"org_id": $api.getStorage("school_id"),"org_type": 104,"r_identity_id": "5","org_name":$api.getStorage("school_name")};
+            lobal_variable.release_org.push(release_param);
+        }else if(lobal_variable.p_object == 3){
+            //全校学生
+            var release_param = {"org_id": $api.getStorage("school_id"),"org_type": 104,"r_identity_id": "6","org_name":$api.getStorage("school_name")};
+            lobal_variable.release_org.push(release_param);
+    	}else if(lobal_variable.p_object == 4){
+    		//指定对象
+    		for(var i = 0; i < object_json.list.length; i++){
+				if(!object_json.list[i].is_group){
+					if($api.hasCls($api.byId('j_'+object_json.list[i].org_id), 'active')){
+						var release_param = {"org_id": object_json.list[i].org_id,"org_type": object_json.list[i].org_level,"r_identity_id": "6","org_name":object_json.list[i].org_name};
+						lobal_variable.release_org.push(release_param);
+					}
+				}else{
+					//群组
+					if($api.hasCls($api.byId('j_'+object_json.list[i].org_id), 'active')){
+						var release_param = {"org_id": object_json.list[i].org_id,"org_type": object_json.list[i].org_level,"r_identity_id": "5,6,7","org_name":object_json.list[i].org_name};
+						lobal_variable.release_org.push(release_param);
+					}
+				}
+			}
+    	}
+    	if(lobal_variable.release_org.length == 0){
+    		popToast('请选择参与对象！');
+    		return;
+    	}
+    	update_topic();
+    }
+
+	  /*
+    *author:zhaoj
+    *function:保存主题活动接口
+    *interface:张海
+    *date：20171023
+    */
+    function update_topic(){
+    	showSelfProgress('保存中...');
+    	api.ajax({
+	    	url : BASE_URL_ACTION+'/ypt/space/topic/update_topic',
+			method : 'post',
+			timeout : 30,
+			dataType : 'json',
+			data : {
+				values : {
+					"random_num":creatRandomNum(),
+		            "end_time":lobal_variable.end_time,
+		            "topic_id":oparam.id,
+		            "release_org" :JSON.stringify(lobal_variable.release_org),
+				}
+			},
+			headers : {
+				'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+			}
+        },function(ret,err){
+        	if(err){
+        		api.hideProgress();
+        		popToast('保存失败，请稍候重试');
+        	}else{
+        		if(ret.success){
+        			setTimeout(function(){
+        				popToast('保存成功');
+        				api.hideProgress();
+        				commonExecScript(api.winName,'zthd_hdjs_frame','getTopic();',1);
+        			},2900);
+        			setTimeout(function(){
+        				commonExecScript(api.winName,'','back();',0);
+        			},3000);
+        		}else{
+        			api.hideProgress();
+        			popToast('保存失败，请稍候重试');
+        		}
+        	}
+        });
+    }
+    /*
+    *author:zhaoj
+    *function:显示附件图片
+    *date：20171023
+    */
+    function showPicture(param_json){
+    	 //删除事件
+        var li_html ='<li attachment="'+param_json.resource_myinfo_id+'" resource_info_id="'+param_json.resource_info_id+'" resource_id_int="'+param_json.resource_id_int +'" fileName="'+param_json.resource_title+'" onclick="displayAttachmentImg(this)">';
+            li_html +='<div class="fj-detail ellipsis">';
+            li_html +=param_json.resource_title;
+            li_html +='</div>';
+            li_html +='</li>';
+        $api.append($api.byId('j_attachment'), li_html);
+        commonAddOrRemoveHideCss('j_fj_no_data',0);
+        commonAddOrRemoveHideCss('j_attachment',1);
+    }
+    
+   /*
+    *author:zhaoj
+    *function:将封面图片放大
+    *date：20171019
+    */
+    function displayAttachmentImg(self){
+        var resource_id_int=$api.attr(self, 'resource_id_int');
+        var resource_info_id=$api.attr(self, 'resource_info_id');
+        var param_json = {"is_show_tip":1,"resource_id_int":resource_id_int,"resource_info_id":resource_info_id};
+        commonGetResInfo(param_json,function(flag,ret){
+            api.hideProgress();
+            if(flag){
+                var oparam ={"res_type":ret.resource_format, "res_path":ret.file_id, "res_title":ret.resource_title,"m3u8_status":ret.m3u8_status,"winName":api.winName,"setBackFun":'reBackType("voice");',"backFun":'back();',"res_id":'open_picture',"pic_back":'picture_edit'};
+                
+ common_openResource.open_new(JSON.stringify(oparam));
+                }else{
+                    popToast('打开失败，请稍候重试');
+            }
+        });
+    }
+    
+   /*
+    *author:zhaoj
+    *function:删除上传图片
+    *date：20171020
+    */
+    function deleteImg(self, parent, grandpa,e ) {
+        var top_parent = $api.byId('j_attachment');
+        grandpa.removeChild(parent);
+        top_parent.removeChild(grandpa);
+        judgeImgLength();//判断已有图片数目
+        e.stopPropagation();
+    }
+    
+   /*
+    *author:zhaoj
+    *function:判断图片的数量
+    *date：20171020
+    */
+    function judgeImgLength(){
+    	imgArray = $api.domAll($api.byId('j_attachment'), '.fj-detail');
+    	if(imgArray.length > 0){
+    		commonAddOrRemoveHideCss('j_fj_no_data',0);
+    		commonAddOrRemoveHideCss('j_attachment',1);
+    	}else{
+    		commonAddOrRemoveHideCss('j_attachment',0);
+    		commonAddOrRemoveHideCss('j_fj_no_data',1);
+    	}
+    }
+    
+    /*
+     * 功能：显示默认封面
+     * 作者：张自强
+     * 时间：20171024
+     */
+    function showMoRen(){
+    	var openImgArray=['../../../../../image/fun-module/common/zthd/zthd.png'];
+		//打开图片
+		openPictureShowWin(openImgArray,0);
+    }
+    
+      /*
+    *author:zhaoj
+    *function:设置选中角色的样式
+    *date：20171023
+    */
+    function selectRole(self){
+    	if($api.hasCls(self, 'active')){
+			//取消选中的情况
+			$api.removeCls(self, 'active');
+		}else{
+			//选中
+			$api.addCls(self, 'active');
+		}
+    }
+    
+         /*
+    *author:zhaoj
+    *function:隐藏角色
+    *date：20171023
+    */
+    function hideRole(){
+    	var roleArray = $api.domAll($api.byId('j_role'), 'div');
+    	for(var i = 0; i < roleArray.length; i++){
+    		$api.addCls(roleArray[i], 'aui-hide');
+    	}
+    }
+    
+   /*
+    *author:zhaoj
+    *function:选择对象
+    *date：20171023
+    */
+    function selectObject(self,org_id,is_group){
+		//是群组
+		if($api.hasCls(self, 'active')){
+			//取消选中的情况
+			$api.removeCls(self, 'active');
+		}else{
+			//选中
+			$api.addCls(self, 'active');
+		}
+    }
+    
+    /*
+    *author:zhaoj
+    *function:通过作品id获取作品详细
+    *interface:张海
+    *date：20171023
+    */
+	function get_topic_by_id(){
+		showSelfProgress('加载中...');
+		api.ajax({
+			url : BASE_URL_ACTION + '/ypt/space/topic/get_topic_by_id?random_num='+creatRandomNum()+'&id='+oparam.id,
+			method : 'get',
+			timeout : 0,
+			dataType : 'json',
+			headers : {
+	'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+	}
+			}, function(ret, err) {
+				if(err){
+					popToast('获取主题活动详细失败，请稍候重试');
+				}else{
+					if(ret.success){
+						lobal_variable.p_object =ret.p_object;
+						if(ret.p_object == 4){
+							changeCyqx(ret.p_object);
+							document.getElementById('j_option_'+ret.p_object).selected = true;
+							commonAddOrRemoveHideCss('j_object_tip',1);
+						}
+						$api.attr($api.byId('j_select'), 'disabled', 'true');
+						//参与对象选中
+						release_org = ret.release_org;
+						$api.attr($api.byId('j_option_'+ret.p_object), 'selected', 'selected');
+						$api.val($api.byId('name'), ret.name);
+						$api.val($api.byId('remarks'), ret.remarks);
+						$api.val($api.byId('j_time_0'), ret.start_time.substring(0,10));
+                        $api.val($api.byId('j_time_1'), ret.end_time.substring(0,10));
+                        lobal_variable.end_time = ret.end_time.substring(0,10);
+						$api.val($api.byId('address'), ret.address);
+						if(ret.thumb_id && ret.thumb_id!='null'){
+							showCover({"file_id":ret.thumb_id});
+						}
+						var attachment = ret.attachment;
+						if(attachment.length > 0 ){
+							for(var i = 0; i < attachment.length;i++){
+								showPicture(attachment[i]);
+							}
+						}
+					}else{
+						popToast('获取主题活动详细失败，请稍候重试');
+					}
+				}
+			api.hideProgress();
+		});
+	}
+</script>
+</html>

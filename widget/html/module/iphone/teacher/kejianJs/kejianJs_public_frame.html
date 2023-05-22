@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <title>导学发布</title>
+    <link rel="stylesheet" type="text/css" href="../../../../../css/aui/aui.css" />
+    <link id="j_theme_base" rel="stylesheet" type="text/css" href="" /><style>
+    	body{margin:0;}
+    	.clearfix:after{content: ' ';display: block;clear: both;visibility: hidden;line-height: 0;height: 0;}
+    	.zuoye-name{line-height:55px;width:100%;}
+    	.each-look{line-height:55px;width:100%;color:#606060;}
+    	.each-look input{vertical-align:middle;margin-top:-5px;}
+    	.plr15{padding:0 15px;}
+    	.plr30{padding:0 30px;}
+    	.fr{float:right;}
+    	.title-kj-js{height:55px;line-height:55px;color:#606060;}
+    	.time{height:55px;line-height:45px;color:#606060;}
+    	.class-title{height:65px;}
+    	.class-title div{height:35px;display:inline-block;line-height:35px;margin-top:22px;padding:0 15px;color:#ffffff;}
+    	ul li{width:47%;float:left;text-align:center;height:50px;line-height:50px;list-style:none;margin-bottom:15px;border:1px solid #e4e4e4;color:#747474;border-radius:5px;}
+    	ul li:nth-child(odd){margin-right:6%;}
+    	.bt{border-top:1px solid #EEF0F2;}
+    	.mt10{margin-top:10px;}
+    	.btn{line-height:55px;text-align:center;box-shadow:3px 0 4px #aaaaaa;color:#666666;margin-top:10px;}
+		.kb{height:65px;}
+		.footer-div{position:fixed;height:55px;background:#F6F6F6;display: block;bottom: 0px;width:100%;border-top:1px solid #E2E2E2;font-size:14px;z-index:1;}
+		.footer-div .wid{width:92%;line-height:36px;text-align:center;color:#ffffff;margin-top:9px;border-radius:2px;margin-left:4%;}
+		.shadow{position:absolute;left:0;top:0;width:100%;height:100%;z-index: -1;background:rgba(0,0,0,0);}
+    </style>
+</head>
+<body id="body" class="common-iphone-kenjianJs">
+	<div id="j_shadow" class="shadow" tapmode></div>
+	<div id="class_body" class="content"></div>
+	<script type="text/html" id="class_script">
+		<% if(class_list.length == 0){ %>
+			<div class="no-data"><span>暂无任教班级，请到“我”设置任课计划</span></div>
+		<% }else{ %>
+			<%for(var i=0; i<class_list.length; i++) {%>
+				<div class="class-title bt">
+					<div id="j_name_<%=i%>"><%=class_list[i].class_name%></div>
+				</div>
+				<div class="plr15 clearfix">
+					<div class="title-kj-js">发布范围</div>
+					<div class="range">
+						<ul id="j_class_<%=i%>">
+							<li id="j_all_<%=i%>" class="active" objID=<%=class_list[i].class_id%> objName="<%=class_list[i].class_name%>"  onclick="selectedClass(<%=i%>,1,this)">全班</li>
+							<%for(var j=0; j<class_list[i].group_list.length; j++) {%>
+								<li class="j_group_<%=i%>" objID=<%=class_list[i].group_list[j].group_id%> objName="<%=class_list[i].group_list[j].group_name%>" onclick="selectedClass(<%=i%>,2,this)"><%=class_list[i].group_list[j].group_name%></li>
+							<% } %>
+						</ul>
+					</div>
+					<div class="time">发布时间&nbsp;&nbsp;<span id="start_time_show_<%=i%>"></span><input oninput="commonRemoveExpression(this)" id="start_type_<%=i%>" value="1" style="display:none;" /></div>
+					<div class="">
+						<ul id="start_time_<%=i%>">
+							<li class="active" onclick="startTime(<%=i%>,1,this)">现在</li>
+							<li onclick="startTime(<%=i%>,2,this)">自选时间</li>
+						</ul>
+					</div>
+				</div>
+			<% } %>
+		<% } %>
+	</script>
+	<div class="kb">
+		&nbsp;
+	</div>
+	<div class="footer-div">
+		<div class="wid" onclick="submit();">确定</div>
+	</div>
+</body>
+<script type="text/javascript" src="../../../../../script/api.js"></script>
+<script type="text/javascript" src="../../../../../script/base_config.js" ></script>
+<script type="text/javascript" src="../../../../../script/plug-in/template.js" ></script>
+<script type="text/javascript" src="../../../../../script/plug-in/base64.js" ></script>
+<script type="text/javascript" src="../../../../../script/common/common.js" ></script>
+<script type="text/javascript" src="../../../../../script/module/common/kejianJs.js" ></script>
+<script type="text/javascript">
+	var header_h;
+	var xq_id;//当前学期id
+	var class_length;//任教班级个数
+	var nowTime;
+	var nowMillisecond;
+	var nowTimeLast;
+	var xiafa_obj_name=[];
+	var lobal_variable;
+	var flag = 0;//根据此参数来判断是否再次调用发布事件
+	apiready = function(){
+		commonSetTheme({"level":5,"type":0});
+		header_h = api.pageParam.header_h;
+		lobal_variable = JSON.parse(api.pageParam.lobal_variable);
+		test();
+	};
+	
+	function test(){
+		getCurrentTerm(function(xq_id){
+			getTeachPlanByPersonId(1,xq_id,function(class_ids){
+				if(class_ids == ""){
+					var ret = {"class_list":[]};
+					commonAddOnceHtml('class_body','class_script',ret);
+				}else{
+					getPublishArea(class_ids,function(data){
+						getCurrentDate(1,function(nowTime,nowMillisecond){
+							api.hideProgress();
+							for(var i = 0; i<data.class_list.length; i++){
+								setStartTimeValue(i,getStartTime(nowTime));
+								setEndTimeValue(i,getStartTime(nowTime).substring(0,10)+' '+'23:59');
+							}
+						});
+					});
+				}
+			});
+		});
+	}
+	/*
+	*author:zhaoj
+	*function:获取对象长度
+	*date：20160406
+	*/
+	function count(o){
+	    var t = typeof o;
+		if(t == 'object'){
+            var n = 0;
+            for(var i in o){
+                    n++;
+            }
+	    }
+	    return n;
+	};
+	/*
+	*author:zhaoj
+	*function:发布范围选择
+	*date：20160330
+	*/
+	function selectedClass(groupType,isAll,self){
+		if($api.hasCls(self, 'active')){
+			//去掉已选得范围
+			//if(activeCount(groupType) != 1){
+				$api.removeCls(self, 'active');
+			//}
+		}else{
+			//添加范围
+			if(isAll == 1){
+				var groupArray = $api.domAll($api.byId('j_class_'+groupType),'.j_group_'+groupType);
+				for(var i = 0 ;i < groupArray.length; i++){
+					$api.removeCls(groupArray[i], 'active');
+				}
+				$api.addCls($api.byId('j_all_'+groupType), 'active');
+			}else{
+				$api.removeCls($api.byId('j_all_'+groupType), 'active');
+				$api.addCls(self, 'active');
+			}
+		}
+	}
+	/*
+	*author:zhaoj
+	*function:分组返回已选范围的数量
+	*date：20160330
+	*/
+	function activeCount(groupType){
+		var activeCount = 0;
+		var liArray = $api.domAll($api.byId('j_class_'+groupType),'li');
+		for(var i = 0; i <liArray.length;i++){
+			if($api.hasCls(liArray[i], 'active')){
+				activeCount++;
+			}
+		}
+		return activeCount;
+	}
+	/*
+	*author:zhaoj
+	*function:发布时间
+	*date：20160330
+	*/
+	function startTime(groupType,type,self){
+		var activeCount = 0;
+		var liArray = $api.domAll($api.byId('start_time_'+groupType),'li');
+		for(var i = 0; i <liArray.length;i++){
+			$api.removeCls(liArray[i], 'active');
+		}
+		$api.addCls(self, 'active');
+		if(type == 1){
+			setStartTimeValue(groupType,getStartTime(nowTime));
+			//judgeEndTimeType(groupType,Date.parse(getStartTime(nowTime).replace(/\-/g, "/")));
+			$api.val($api.byId('start_type_'+groupType),1);
+		}else{
+			//自定义时间	
+			openPicker(1,groupType);
+			$api.val($api.byId('start_type_'+groupType),2);	
+		}
+	}
+	/*
+	*author:zhaoj
+	*function:设置截止时间
+	*date：20160330
+	*/
+	function getStartTime(time){
+		time = new Date(time);
+		var year = time.getFullYear();
+		var month = time.getMonth() + 1;
+		month = month > 9 ? month : '0'+month;
+		var day = time.getDate();
+		day = day > 9 ? day : '0'+day;
+		var hours = time.getHours();
+		hours  = hours  > 9 ? hours  : '0'+ hours;
+		var minutes = time.getMinutes();
+		minutes  = minutes  > 9 ? minutes  : '0'+ minutes;
+		var startTime = year+'-'+month+'-'+day +' '+hours+':'+minutes;
+		return startTime;
+	}
+	/*
+	*author:zhaoj
+	*function:截止时间
+	*date：20160330
+	*/
+	function stopTime(groupType,type,self){
+		var activeCount = 0;
+		var liArray = $api.domAll($api.byId('stop_time_'+groupType),'li');
+		for(var i = 0; i <liArray.length;i++){
+			$api.removeCls(liArray[i], 'active');
+		}
+		$api.addCls(self, 'active');
+		var startTime = $api.text($api.byId('start_time_show_'+groupType)).replace(/-/g,'\/');
+		var last = startTime.substring(11,16);
+		startTime=Date.parse(startTime);
+		if(type == 1){
+			//一天
+			setEndTimeValue(groupType,getStopTime(startTime,'23:59'));
+			$api.val($api.byId('end_type_'+groupType),1);
+		}else if(type == 2){
+			//两天	
+			setEndTimeValue(groupType,getStopTime(startTime+1 * 24 * 3600 * 1000,last));
+			$api.val($api.byId('end_type_'+groupType),1);
+		}else if(type == 3){
+			//一周
+			setEndTimeValue(groupType,getStopTime(startTime+6 * 24 * 3600 * 1000,last));
+			$api.val($api.byId('end_type_'+groupType),1);
+		}else{
+			//自定义时间
+			openPicker(2,groupType);
+			$api.val($api.byId('end_type_'+groupType),2);
+		}
+	}
+	/*
+	*author:zhaoj
+	*function:设置截止时间
+	*date：20160330
+	*/
+	function getStopTime(time,last){
+		time = new Date(time);
+		var year = time.getFullYear();
+		var month = time.getMonth() + 1;
+		month = month > 9 ? month : '0'+month;
+		var day = time.getDate();
+		day = day > 9 ? day : '0'+day;
+		var endTime = year+'-'+month+'-'+day+' '+last;
+		return endTime;
+	}
+	/*
+	*author:zhaoj
+	*function:设置自定义日期type=1，发布时间；type=2，截止时间；
+	*date：20160331
+	*/
+	function openPicker(type,groupType){
+		var customDay;//时间选择器获取的时间
+		//发布的初始化时间多一天
+		var initDay = nowTime.replace(/\//g, "-");
+		if(api.systemType=='android'){
+		    api.openPicker({
+		        type: 'date',
+				date: initDay.substring(0,10),
+		        title:'选择日期',
+		    },function(ret,err){
+				if(ret){
+			        var year = ret.year;
+			        var month = ret.month;
+					month = month > 9 ? month : '0'+month;
+			        var day = ret.day;
+					day = day > 9 ? day : '0'+day;
+			        //这是选择的是日期
+			        var value1 = year+'-'+month+'-'+day;
+			        //选择时间
+					setTimeout(function(){
+						api.openPicker({
+				            type: 'time',
+							date: initDay.substring(11,16),
+				            title:'选择时间',
+				        },function(ret,err){
+				            var hours = ret.hour;
+							hours  = hours  > 9 ? hours  : '0'+ hours;
+				            var minutes = ret.minute;
+							minutes  = minutes  > 9 ? minutes  : '0'+ minutes;
+				            var value2 = hours+':'+minutes;
+				            var time = value1+' '+value2;
+							if(type == 1){
+					    		if(Date.parse(time.replace(/-/g,'\/'))>=Date.parse(nowTime)){
+							    	customDay = time;
+					    			setStartTimeValue(groupType,customDay);
+					    			//judgeEndTimeType(groupType,Date.parse(time));
+					    		}else{
+					    			popToast('不能是过去日期，请重新选择日期');
+					    		}
+					    	}
+				        });
+					},250);
+				}
+			});
+		}else{
+			api.openPicker({
+		        type: 'date_time',
+				date: initDay,
+		        title:'选择日期',
+		    },function(ret,err){
+		        var year = ret.year;
+		        var month = ret.month;
+				month = month > 9 ? month : '0'+month;
+		        var day = ret.day;
+				day = day > 9 ? day : '0'+day;
+				var hours = ret.hour;
+				hours  = hours  > 9 ? hours  : '0'+ hours;
+	            var minutes = ret.minute;
+				minutes  = minutes  > 9 ? minutes  : '0'+ minutes;
+		        //这是选择的是日期
+				var value1=year+'-'+month+'-'+day;
+		        var time = year+'-'+month+'-'+day+' '+hours+':'+minutes;
+				if(type == 1){
+		    		if(Date.parse(time.replace(/-/g,'\/'))>=Date.parse(nowTime)){
+				    	customDay = time;
+		    			setStartTimeValue(groupType,customDay);
+		    			//judgeEndTimeType(groupType,Date.parse(time));
+		    		}else{
+		    			popToast('不能是过去日期，请重新选择日期');
+		    		}
+		    	}
+		    });
+		} 
+	}
+	/*
+	*author:zhaoj
+	*function:对比是否是和今天的日期相同
+	*date：20160530
+	*/
+	function judgeTimeSame(time){
+		if(Date.parse(time.replace(/-/g,'\/')) == Date.parse(nowTime.substring(0,10))){
+    		return time+' '+nowTimeLast;
+    	}else{
+    		return time+' 08:00';
+    	}
+	}
+	/*
+	*author:zhaoj
+	*function:给发布时间设值
+	*date：20160331
+	*/
+	function setStartTimeValue(groupType,time){
+		$api.text($api.byId('start_time_show_'+groupType),time);
+	}
+	/*
+	*author:zhaoj
+	*function:给截止时间设值
+	*date：20160331
+	*/
+	function setEndTimeValue(groupType,time){
+		//$api.text($api.byId('end_time_show_'+groupType),time);
+	}
+	/*
+	*author:zhaoj
+	*function:判断是截止时间类型，在进行赋值
+	*date：20160331
+	*/
+	function judgeEndTimeType(groupType,time){
+		var liArray = $api.domAll($api.byId('stop_time_'+groupType),'li');
+		for(var i = 0;i < liArray.length; i++){
+			if($api.hasCls(liArray[i], 'active')){
+				if(i == 0){
+					setEndTimeValue(groupType,getStopTime(time,'23:59'));
+				}else if(i == 1){
+					setEndTimeValue(groupType,getStopTime(time+1 * 24 * 3600* 1000,nowTimeLast));
+					
+				}else if(i == 2){
+					setEndTimeValue(groupType,getStopTime(time+6 * 24 * 3600* 1000,nowTimeLast));
+				}else{
+					var endTime = $api.text($api.byId('end_time_show_'+groupType)).replace(/-/g,'\/');
+		    		endTime = Date.parse(endTime);
+		    		if(time == endTime || time > endTime){
+		    			setEndTimeValue(groupType,getStopTime(time+1 * 24 * 3600* 1000));
+		    		}
+				}
+			}
+		}
+	}
+	/*
+	*author:zhaoj
+	*function:获取当前时间
+	*date：20160523
+	*/
+	function getCurrentDate(type,callback){
+		if(type == 1){showSelfProgress('加载中...');}
+		api.ajax({
+			url : BASE_URL_ACTION + '/xx/getCurrentDate',
+			method : 'post',
+			timeout : 0,
+			dataType : 'json',
+			data : {
+				values : {
+					"random_num" : creatRandomNum()
+				}
+			},
+			headers : {
+	'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+}
+		}, function(ret, err) {
+			if (err) {
+//				nowTime = new Date();
+//				nowMillisecond = Date.parse(nowTime);
+//				callback(nowTime,nowMillisecond);
+			} else {
+				if(ret.success){
+					nowTime = ret.dateStr2.replace(/\-/g, "/");
+					nowTimeLast = nowTime.substring(11,16);
+					nowMillisecond = Date.parse(new Date(ret.dateStr2.replace(/\-/g, "/")));
+					callback(nowTime,nowMillisecond);
+				}else{
+//					nowTime = new Date();
+//					nowMillisecond = Date.parse(nowTime);
+//					callback(nowTime,nowMillisecond);
+				}
+			}
+		});
+	}
+	/*
+	*author:zhaoj
+	*function:获取具体分组
+	*date：20160528
+	*/
+	function getPublishArea(class_ids,callback){
+		api.ajax({
+			url : BASE_URL_ACTION + '/ypt/xx/getPublishArea',
+			method : 'post',
+			timeout : 0,
+			dataType : 'json',
+			data : {
+				values : {
+					"random_num" : creatRandomNum(),
+					"class_id" : class_ids,
+					"person_id" : $api.getStorage("person_id"),
+					"across_type" : 1
+				}
+			},
+			headers : {
+	'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+}
+		}, function(ret, err) {
+			api.hideProgress();
+			if (err) {
+				popToast('对不起，获取任教班级失败');
+			} else {
+				if(ret.success){
+				console.log(JSON.stringify(ret))
+					var html_type = template.render('class_script', ret);
+					document.getElementById('class_body').innerHTML = html_type;
+					callback(ret);
+				}else{
+					popToast('对不起，获取任教班级失败');
+				}
+			}
+		});
+	}
+	/*
+	*author:zhaoj
+	*function:点击确定
+	*date：20160528
+	*/
+	function submit(){
+		$api.css($api.byId('j_shadow'),'z-index:3');
+		var height = $api.cssVal($api.byId('class_body'),'height');
+		height = height.substring(0,height.length-2)*1+65;
+		$api.css($api.byId('j_shadow'),'height:'+height+'px;');
+		showSelfProgress('发布中...');
+		getPublicClassInfo(function(data){
+			if(data.length == 0){
+				popAlert('请选择发布范围');
+				api.hideProgress();
+				$api.css($api.byId('j_shadow'),'z-index:-1');
+			}else{
+				publishLead(data,api.pageParam.id,function(pub_flag,pub_data){
+					if(pub_flag){
+						api.hideProgress();
+						popToast('发布成功');
+						api.execScript({
+							name : 'kejianJs_index_window',
+							script : 'changeBtnTitle(0)'
+						});
+						api.execScript({
+							name : 'kejianJs_index_window',
+							frameName:'kejianJs_index_frame',
+							script : 'updataList()'
+						});
+						setTimeout(function(){
+							api.execScript({
+								name : 'kejianJs_public_window',
+								script : 'back();'
+							});
+						},2000);
+					}else{
+						$api.css($api.byId('j_shadow'),'z-index:-1');
+						api.hideProgress();
+						popToast(pub_data);
+					}
+				});
+			}
+		});
+	}
+	/*
+	*author:zhaoj
+	*function:发布课件
+	*date：20160921
+	*/
+	function publishLead(data,id,callback){
+		showSelfProgress('发布中...');
+		api.ajax({
+			url : BASE_URL_ACTION + '/ypt/space/lead/publish_lead',
+			method : 'post',
+			timeout : 0,
+			dataType : 'json',
+			data : {
+				values : {
+					"random_num" : creatRandomNum(),
+					"b_type" : 2,
+					"is_public" : 0,
+					"lead_id" : api.pageParam.res_id,
+					"package_id" : lobal_variable.package_id,
+					"res_type_id" : lobal_variable.res_type_id,
+					"teacher_id" : $api.getStorage("person_id"),
+					"publish_obj" : JSON.stringify(data),
+					"publish_obj_name" : xiafa_obj_name.toString()
+				}
+			},
+			headers : {
+	'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+}
+		}, function(ret, err) {
+			if (err) {
+				flag++;
+				if(flag == 2){
+					flag = 0;
+					callback(false,'发布失败，请稍候重试');
+				}else{
+					submit();
+				}
+			} else {
+				if(ret.success){	
+					callback(true,ret);
+				}else{
+					flag++;
+					if(flag == 2){
+						flag = 0;
+						callback(false,'发布失败，请稍候重试');
+					}else{
+						submit();
+					}
+				}
+			}
+		});
+	}
+	function getPublicClassInfo(callback){
+		var xiafa_data = new Array();
+		xiafa_obj_name = new Array();
+		//getCurrentDate(0,function(nowTime,nowMillisecond){
+			for(var i = 0; i < class_length; i++){
+				var count = 0;
+				var oparam = new Object();
+				oparam.obj_id = new Array();
+				oparam.obj_name = new Array();
+				oparam.start_time = $api.text($api.byId('start_time_show_'+i));
+				oparam.end_time = '2100-01-01 00:00';
+				oparam.start_type = $api.val($api.byId('start_type_'+i));
+				var liArray = $api.domAll($api.byId('j_class_'+i),'li');
+				for(var j = 0; j <liArray.length;j++){
+					if($api.hasCls(liArray[j], 'active')){
+						var objID = liArray[j].getAttribute("objID");
+						var objName = liArray[j].getAttribute("objName");
+						if(j==0){
+							oparam.obj_type = 1;
+							xiafa_obj_name.push(objName);
+						}else{
+							oparam.obj_type = 2;
+							xiafa_obj_name.push($api.text($api.byId('j_name_'+i))+'（'+objName+'）');
+						}
+						oparam.obj_id.push(objID);
+						oparam.obj_name.push(objName);
+						count++;
+					}
+				}
+				if(count != 0){
+					xiafa_data.push(oparam);
+				}
+			}
+			callback(xiafa_data);
+		//});
+	}
+	/*
+	*author:zhaoj
+	*function:获取任教班级
+	*date：20160528
+	*/
+	function getTeachPlanByPersonId(type,xq_id,callback){
+		api.ajax({
+			url : BASE_URL_ACTION + '/class/getTeachPlanByPersonId',
+			method : 'post',
+			timeout : 30,
+			dataType : 'json',
+			data : {
+				values : {
+					"random_num" : creatRandomNum(),
+					"xq_id" : xq_id,
+					"person_id" : $api.getStorage("person_id")
+				}
+			},
+			headers : {
+	'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+	}
+			}, function(ret, err) {
+				if (err) {
+					api.hideProgress();
+					popToast('对不起，获取任教班级失败');
+			} else {
+				if(ret){
+					var subjectArray = [];
+					var count = 0;//记录任教班级中是否和当前检测所属学科匹配
+					for(var i = 0; i<ret.length; i++){
+						if(type){
+							if(ret[i].subject_id == lobal_variable.subject_id){
+								class_length = ret[i].class_ids.split(',').length;
+								callback(ret[i].class_ids);	
+							}else{
+								count++;
+							}
+						}else{
+							subjectArray.push(ret[i].subject_id)
+						}
+					}	
+					if(!type){
+						callback(subjectArray.toString());	
+					}else{
+						if(count == ret.length){
+							callback("");
+						}
+					}
+				}else{
+					api.hideProgress();
+					popToast('对不起，获取任教班级失败');
+				}
+			}
+		});	
+	}
+</script>
+</html>

@@ -1,0 +1,125 @@
+<!-- 名称：通用页面：浏览器window -->
+<!-- 功能：用浏览器打开外部http通用页面 -->
+<!-- 作者：周枫  -->
+<!-- 时间：2016.12.02 -->
+<!-- 传参说明： header_h：header高度； title：window标题；  http_url：打开http的地址 -->
+<!-- 使用说明：调用时，使用api.openWin方法打开此页面，并传递参数header_h，title，http_url -->
+<!-- 范例页面：hh_chat_frame.js -->
+<!-- 注意事项： -->
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+		<title>通用页面：浏览器window</title>
+		<link rel="stylesheet" type="text/css" href="../../css/aui/aui.css" />
+		<style>
+			body {
+			}
+			.close-window-button {
+				position: absolute;
+				margin: 0.5px 10px 0px 90px;
+				font-size: 15px;
+			}
+		</style>
+	</head>
+	<body>
+		<div id="wrap">
+			<header class="aui-bar aui-bar-nav aui-bar-primary" id="aui-header">
+				<div id="cloud" class="topbar activebar">
+					<div id="back" class="back" onclick="historyBack();" tapmode="">
+						<i class="aui-iconfont aui-icon-left"></i>返回
+					</div>
+					<div  class="mTitle" id="mTitle">
+						网页
+					</div>
+					<div class="win-menu">
+						<a tapmode="tap-active" style="font-size: 15px;" onclick="closeView()">关闭</a>
+					</div>
+				</div>
+			</header>
+		</div>
+	</body>
+	<script type="text/javascript" src="../../script/api.js"></script>
+	<script type="text/javascript" src="../../script/assembly/webBrowser.js"></script>
+	<script type="text/javascript">
+		//顶部header高度
+		var header_h;
+		apiready = function() {
+			var header_h = api.pageParam.header_h;
+			var title = api.pageParam.title;
+			var http_url = api.pageParam.http_url;
+			//定位header位置，留出上面电池等空隙，苹果需要
+			var header = $api.byId('aui-header');
+			$api.fixStatusBar(header);
+			var headerPos = $api.offset(header);
+			reWriteTitle(title);
+			openView(header_h, http_url);
+			//安卓关闭
+			if (api.systemType == 'android') {
+				backForAndroid();
+			}
+		};
+		
+		/**
+		 * 打开webView页面
+		 * 周枫
+		 * 2016.12.02 
+		 */
+		function openView(header_h, http_url) {
+			webBrowser.openView(header_h, http_url, function(is_true, html_title){
+				reWriteTitle(html_title);
+				if(is_true){
+					
+				} else {
+					api.alert({
+						msg : '对不起，您当前的网址不合法，请核对。'
+	                },function(ret,err){
+	                	closeView();
+	                });
+				}
+			});
+		}
+		
+		/**
+		 * 重写title标题
+		 * 周枫
+		 * 2016.12.02 
+		 */
+		function reWriteTitle(title) {
+			$api.html($api.byId('mTitle'), title);
+		}
+		
+		/**
+		 * 安卓返回键
+		 * 周枫
+		 * 2016.12.02 
+		 */
+		function backForAndroid() {
+			api.addEventListener({
+				name : "keyback"
+			}, function(ret, err) {
+				historyBack();
+			});
+		}
+		
+		/**
+		 * 后退上一层
+		 * 周枫
+		 * 2016.12.02 
+		 */
+		function historyBack() {
+			webBrowser.historyBack();
+		}
+		
+		/**
+		 * 退出webView
+		 * 周枫
+		 * 2016.12.02 
+		 */
+		function closeView() {
+			webBrowser.closeView();
+		}
+	</script>
+</html>

@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <!-- html5：在创建html时为了防止页面缩放等不兼容效果，要创建个viewport  -->
+        <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+        <!-- 在IOS设备上，有时会将数字转为手机号，这里也要禁止下 -->
+        <meta name="format-detection" content="telephone=no"/>
+        <title>绑定页面</title>
+        <link rel="stylesheet" type="text/css" href="../../../../css/aui/aui.css" />
+        <link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+        <style>
+            .history-date {
+                font-size: 12px;
+            } 
+            #message-content {
+                overflow-y: auto;
+                display: none;
+            }
+            
+            
+            .t_display_n {
+                display: none;
+            }
+            .t_display_b {
+                display: block;
+            }
+            .tag-title{height:45px; line-height:43px;background:#ffffff ;border-bottom:2px solid #E6E6E6;}
+            .tag-title div{width:50%;text-align:center;color:#62656A;}
+            .float-clear{overflow:auto}
+            .tag-title-button{height:55px; line-height:43px;background:#f6f6f6;}
+            .tag-title-button button{float:right}
+            .menu{display:inline-block;width:28px;height:100%;background:url(../../image/fun-module/iphone/kaoqin/static.png) center center no-repeat;background-size: 16px 16px;}
+    .win-menu{height:100%;}
+            .fl{float:left;}
+            .fr{float:right;}
+            .button-reset{margin-right:5px;margin-top:16px;background:#3498db;height:30px;padding-top:5px;}
+            .button-all-selected{margin-right:5px;margin-top:16px;background:#2ecc71;height:30px;padding-top:5px;}
+        </style>
+    </head>
+    <body class="w-iphone-common">
+        <div id="wrap">
+            <header class="aui-bar aui-bar-nav aui-bar-primary" id="aui-header" style="border-bottom:1px solid #efefef">
+                <div id="cloud" class="topbar activebar">
+                    <div id="back" class="back" onclick="back();" tapmode="">
+                        <i class="aui-iconfont aui-icon-left"></i>返回
+                    </div>
+                    <div  class="mTitle" id="mTitle">
+                        
+                    </div>
+                </div>
+            </header>
+            <div  class="aui-content aui-content-padded" id="message-content">
+                <p class="aui-text-center history-date"></p>
+            </div>
+        </div>
+    </body>
+    <script type="text/javascript" src="../../../../script/api.js"></script>
+    <script type="text/javascript" src="../../../../script/common/common.js"></script>
+    <script type="text/javascript" src="../../../../script/base_config.js" ></script>
+    <script type="text/javascript">
+        //顶部header高度
+        var header_h;
+        var back_type = 'index';
+        var title = "";
+        var now_sxbMac = "";
+        apiready = function() {
+            commonSetTheme({"level":4,"type":0});
+            header_h = api.pageParam.header_h;
+            title = api.pageParam.name;
+            now_sxbMac = api.pageParam.sxbMac;
+            commonSetWindowName(title);
+            api.closeWin({
+                name :'xyk_work_bdfinish_window'
+            });
+            commonBackForAndroid();//安卓关闭
+            commonIosAuiHeader();//定位header位置，留出上面电池等空隙，苹果需要
+            openBdFrame();
+        };
+        /*
+        *author:zhaoj
+        *function:返回页面
+        *date：20160307
+        */
+        function back() {
+            switch(back_type){
+                case 'index':
+                    api.closeWin({name:'xyk_work_bdfinish_window'});
+                    api.closeWin();
+                    break;
+                case 'bd_content':
+                    commonCloseFrame('xyk_work_bdcontent_frame');
+                    title = api.pageParam.name;
+                    reBackType('index');
+                    break;
+            }
+        }
+        
+        /*
+         * 功能：重置返回页面参数
+         * 作者：张自强
+         * 时间：20190219
+         */
+        function reBackType(type){
+            back_type = type;
+            commonSetWindowName(title);
+        }
+        
+        /*
+         * 功能：打开学生列表
+         * 作者：张自强
+         * 时间：20171011
+         */
+        function openBdFrame(){
+            var pageParamJson = {
+                'id' : api.pageParam.id,
+                'type' : api.pageParam.stu_type,//已绑定
+                'sxbMac':now_sxbMac,
+                'name':api.pageParam.name,
+                'class_type':api.pageParam.class_type,
+                'class_id':api.pageParam.class_id
+            };
+            commonOpenFrame('xyk_work_bd_frame', 'xyk_work_bd_frame.html', header_h, false, false, '#f6f6f6', pageParamJson);
+        }
+        
+        /*
+         * 功能：打开学生列表
+         * 作者：张自强
+         * 时间：20171011
+         */
+        function openBdFinishFrame(sxbMac_num){
+            is_open_finish = true;
+            commonCloseFrame('xyk_work_bdcontent_frame');
+            title = api.pageParam.name;
+            reBackType('index');
+            var param = {
+               'header_h' : api.pageParam.header_h,
+               'id':api.pageParam.id,
+               'stu_type':api.pageParam.stu_type,
+               'name':api.pageParam.name,
+               'sxbMac':sxbMac_num,
+               'class_type':api.pageParam.class_type,
+               'class_id':api.pageParam.class_id
+           }
+           commonOpenWin('xyk_work_bdfinish_window', 'xyk_work_bdfinish_window.html', false, false, param)
+           commonExecScript('xyk_work_bdfinish_window','xyk_work_bdfinish_frame','changeMac("'+sxbMac_num+'");',1);
+        }
+        
+        /*
+         * 功能：打开绑定详情页面
+         * 作者：张自强
+         * 时间：20190219
+         */
+        function openBdContentFrame(type,num,id,name,class_type,class_id){
+            title = "手动输入绑定";
+            if(type == 1){
+                title = "扫码绑定";
+            }
+            reBackType('bd_content');
+            commonSetWindowName(title);
+            var pageParamJson = {
+                'num' : now_sxbMac,
+                'type' : type,//已绑定
+                'sxbMac':num,
+                'name':name,
+                'id':id,
+                'class_id':class_id,
+                'class_type':class_type
+            };
+            commonOpenFrame('xyk_work_bdcontent_frame', 'xyk_work_bdcontent_frame.html', header_h, false, false, '#f6f6f6', pageParamJson);
+            setTimeout(function(){
+                if(type == 1){
+                    commonExecScript(api.winName,'xyk_work_bdcontent_frame','openBdFrame(1,"'+num+'")',1);
+                }else{
+                    commonExecScript(api.winName,'xyk_work_bdcontent_frame','changeBd("'+num+'");',1);
+                }
+                
+            },500);
+        }
+        
+        /*
+         * 功能：修改mac
+         * 作者：张自强
+         * 时间：20190403
+         */
+        function changeBdState(nowMac){
+            now_sxbMac = nowMac;
+        }
+    </script>
+</html>

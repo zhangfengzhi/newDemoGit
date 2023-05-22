@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<!-- html5：在创建html时为了防止页面缩放等不兼容效果，要创建个viewport  -->
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<!-- 在IOS设备上，有时会将数字转为手机号，这里也要禁止下 -->
+		<meta name="format-detection" content="telephone=no"/>
+		<title>题本</title>
+		<link rel="stylesheet" type="text/css" href="../../../../../css/aui/aui.css" />
+		<link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+		<style>
+			.menu{padding-right:20px;background:url(../../../../../image/fun-module/common/down-menu.png) right center no-repeat;background-size:15px auto;}
+		</style>
+	</head>
+	<body class="common-iphone-jstb">
+		<div id="wrap">
+			<header class="aui-bar aui-bar-nav aui-bar-primary" id="aui-header">
+				<div id="cloud" class="topbar activebar">
+					<div id="back" class="back" onclick="back();" tapmode="">
+						<i class="aui-iconfont aui-icon-left"></i>返回
+					</div>
+					<div  class="mTitle" id="mTitle">
+						题本
+					</div>
+					<div class="win-menu">
+						<div id="j_name" class="aui-iconfont aui-icon-menu back" onclick="openMenuFrame();"></div>
+					</div>
+				</div>
+			</header>
+			<div  class="aui-content aui-content-padded" id="message-content">
+				<p class="aui-text-center history-date"></p>
+			</div>
+		</div>
+	</body>
+	<script type="text/javascript" src="../../../../../script/api.js"></script>
+	<script type="text/javascript" src="../../../../../script/common/common.js"></script>
+	<script type="text/javascript" src="../../../../../script/assembly/tongjiData.js"></script>
+	<script type="text/javascript">
+		var header_h;//定位header位置，留出上面电池等空隙，苹果需要
+		var back_type;//返回参数
+		var flag = 0;
+		var type=0;//0错题本，1好题本
+		var index_menu;  //设置选中下来菜单标识
+		apiready = function() {
+			commonSetTheme({"level":5,"type":0});
+			header_h = api.pageParam.header_h;
+			//打开题本列表frame
+			initFrameGroup();
+			back_type = 'index';
+			commonBackForAndroid();//安卓关闭
+			commonIosAuiHeader();//定位header位置，留出上面电池等空隙，苹果需要
+			commonOpenTjData($api.getStorage("identity")+'_'+api.winName);//记录统计
+		};
+		
+		/*
+		 * 功能：打开列表页面
+		 * 作者：张自强
+		 * 时间：20171012
+		 */
+		function initFrameGroup() {
+			var pageParam = {
+					header_h : header_h
+				}
+			commonOpenFrame('jstb_index_frame', 'jstb_index_frame.html', header_h+45, false, false, '#ffffff', pageParam) 
+		}
+	
+		/*
+		 * 功能：返回页面
+		 * 作者：张自强
+		 * 时间：20171013
+		 */
+		function back() {
+			switch(back_type) {
+				case 'index':
+					commonCloseTjData($api.getStorage("identity")+'_'+api.winName);//记录统计
+					api.closeWin();
+					break;
+				case 'menu':
+				  	commonCloseFrame('jstb_menu_frame');
+				  	reBackType('index');
+					break;	
+			}
+		}
+
+		/*
+		 * 功能：重置从哪个页面返回
+		 * 作者：张自强
+		 * 时间：20171013
+		 */
+		function reBackType(type) {
+			switch(type) {
+				//如果列表页面退出
+				case 'index':
+					$api.html($api.byId('mTitle'), "题本");
+					back_type = 'index';
+					break;
+				case 'menu' : 
+					back_type = 'menu';
+					break;
+			}
+		}
+		
+		/*
+		 * 功能：显示当前学段学科
+		 * 作者：张自强
+		 * 时间：20171013
+		 */
+		function setStageSubject(stage_name,subject_name,index){
+			index_menu = index;
+			commonExecScript('jstb_index_window','jstb_index_frame','getClass('+index+');',1);//显示学段学科
+		}
+		
+
+		/*
+		 * 功能：打开下拉菜单页面
+		 * 作者：张自强
+		 * 时间：20171013
+		 */
+		function openMenuFrame(){
+			reBackType('menu');
+			commonExecScript('jstb_index_window','jstb_index_frame','openMenuFrame('+index_menu+');',1);//打开下拉菜单页面
+		}
+		
+		/*
+		 * 功能：隐藏menu键
+		 * 作者：张自强
+		 * 时间：20171013
+		 */
+		function hideMenu(){
+			if($api.hasCls($api.byId('j_name'), 'aui-hide')){
+				commonAddOrRemoveHideCss('j_name',1);
+			}else{
+				commonAddOrRemoveHideCss('j_name',0);
+			}
+		}
+	</script>
+</html>

@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<title>好题本</title>
+		<link rel="stylesheet" type="text/css" href="../../../../../css/aui/aui.css" />
+		<link rel="stylesheet" type="text/css" href="../../../../../css/module/common/testQuestionShow.css" />
+		<link rel="stylesheet" type="text/css" href="../../../../../css/module/common/jyeoo/ques_data.css" />
+		<link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+		<style>
+			body {
+				background: #f7f9f8;
+				color:#98979D;
+				font-size: 14px;
+			}
+			.zy-div {
+				padding: 10px 15px 0 15px;
+			}
+			.zuoye-content li {
+				position: relative;
+				display: block;
+				width: 100%;
+				padding: 10px 10px 7px 10px;
+				background: #ffffff;
+				border-radius: 1px;
+				margin-bottom: 10px;
+			}
+			.zuoye-content li .time {
+				height: 20px;
+				font-size: 14px;
+				color: #000;
+			}
+			.zuoye-content li .time font {
+				font-size: 12px;
+				margin-right: 5px;
+			}
+			.zuoye-content li .name {
+				color: #686868;
+				line-height: 40px;
+				display: inline-block;
+				padding-top: 10px;
+			}
+			.zuoye-content li .name img {
+				max-width: 100%;
+			}
+			.wid100 {
+				width: 100%;
+			}
+			.fl {
+				float: left;
+			}
+			.fr {
+				float: right;
+			}
+			.ellipsis {
+				white-space: nowrap;
+				overflow: hidden;
+				text-overflow: ellipsis;
+			}
+			.mgr5 {
+				margin-right: 5%;
+			}
+			.fr {
+				float: right;
+			}
+			.no-data {
+				text-align: center;
+				color: #666;
+				margin-top: 15px;
+			}
+			.clearfix:after {
+				content: ' ';
+				display: block;
+				clear: both;
+				visibility: hidden;
+				line-height: 0;
+				height: 0;
+			}
+			.master{
+				display:inline-block;
+				float:left;
+				line-height:20px;
+				margin-right:9px;
+				padding:0 6px;
+				border-radius:12px;
+				color:#FFFFFF;
+				font-size:12px;
+			}
+			.no-master{
+				line-height:46px;
+				padding-left:15px;
+				border-bottom:1px solid #efefef;
+				background:#ffffff;
+				color:#333;
+				font-size:15px;
+				font-weight:400;
+			}
+			.no-master .aui-checkbox{
+				line-height:13px;
+				margin:12px 15px;
+			}
+		</style>
+	</head>
+	<body class="common-iphone-tibenJy">
+		<!--试题列表-->
+			<!--<div class="no-master">
+				未掌握的题目<input oninput="commonRemoveExpression(this)" id="j_all" class="aui-pull-right aui-checkbox aui-checkbox-success" type="checkbox" onclick="showNoMaster(this)" />
+			</div>-->
+			<div id="tblist_div" class="default-testQuestionShow"></div>
+			<script type="text/html" id="tblist_script">
+				<% if(que_list.length == 0){ %>
+					<div class="no-data"><span>暂无试题</span></div>
+				<% }else{ %>
+					<%for(var i=0; i<que_list.length; i++) {%>
+						<%if(que_list[i].que_source == 1) {%>
+							<%if(que_list[i].html_json) {%>
+								<div id="zy_div" class="zy-div clearfix">
+									<ul class="zuoye-content">
+										<li onclick="openDetailWin('<%=que_list[i].zy_id %>','<%=que_list[i].question_id %>','<%=que_list[i].question_id_char %>','<%=que_list[i].is_have_wk %>','<%=que_list[i].is_master %>','<%=que_list[i].dic_type %>','<%=que_list[i].dic_text %>','<%=que_list[i].que_source %>','<%=que_list[i].jy_subject_en_name %>','<%=que_list[i].qt_name %>');">
+											<div class="time wid100">
+												<%if(que_list[i].is_master){%>
+													<span class="master">掌握</span>
+												<%}%>
+												<%=que_list[i].create_time%>
+											</div>
+											<div class="name wid100 ellipsis">
+												<%=#que_list[i].question_title_base64 %>
+											</div>
+	<!--										<div class="detail wid100">
+												<span class="tijiao mgr5">错误次数：<font><%=que_list[i].t_count %></font>次</span>
+												<span class="tijiao mgr5">错题标签：<%=que_list[i].dic_text %></span>
+											</div>-->
+										</li>
+									</ul>
+								</div>
+							<%}%>
+						<%}else{%>
+							<div id="zy_div" class="zy-div clearfix">
+								<ul class="zuoye-content">
+									<li onclick="openDetailWin('<%=que_list[i].zy_id %>','<%=que_list[i].question_id %>','<%=que_list[i].question_id_char %>','<%=que_list[i].is_have_wk %>','<%=que_list[i].is_master %>','<%=que_list[i].dic_type %>','<%=que_list[i].dic_text %>','<%=que_list[i].que_source %>','<%=que_list[i].jy_subject_en_name %>','<%=que_list[i].qt_name %>');">
+										<div class="time wid100">
+											<%if(que_list[i].is_master){%>
+												<span class="master">掌握</span>
+											<%}%>
+											<%=que_list[i].create_time%>
+										</div>
+										<div class="name wid100 ellipsis">
+											<%=#que_list[i].html_json.Content%>
+										</div>
+<!--										<div class="detail wid100">
+											<span class="tijiao mgr5">错误次数：<font><%=que_list[i].t_count %></font>次</span>
+											<span class="tijiao mgr5">错题标签：<%=que_list[i].dic_text %></span>
+										</div>-->
+									</li>
+								</ul>
+							</div>
+						<%}%>
+					<% } %>
+				<% } %>
+			</script>
+	</body>
+	<script type="text/javascript" src="../../../../../script/api.js"></script>
+	<script type="text/javascript" src="../../../../../script/base_config.js" ></script>
+	<script type="text/javascript" src="../../../../../script/plug-in/base64.js" ></script>
+	<script type="text/javascript" src="../../../../../script/plug-in/template.js" ></script>
+	<script type="text/javascript" src="../../../../../script/common/common.js"></script>
+	<script type="text/javascript">
+		var header_h;
+		var BASE_URL_ACTION;
+		var BASE_APP_TYPE
+		//当前页面为第一页
+		var currentPage;
+		//总记录数
+		var totalCount = 0;
+		//总页数
+		var totalPages = 0;
+		//定义一个变量存储第一次加载返回来的总记录数
+		var totalData = 0;
+		//定义区域id
+		var bar_id = 0;
+		//人person_id
+		var p_id = 0;
+		//身份id
+		var i_id = 0;
+		var dic_type=-1;//错题标签
+		var is_master=-1;//0显示未掌握的题目，-1显示的是全部试题
+		var dic_json={"list":[]};//错题标签json数据
+		apiready = function() {
+		    commonSetTheme({"level":5,"type":0});	
+			initData();
+		};
+		/*
+		*author:zhaoj
+		*function:初始化数据
+		*date：20161209
+		*/
+		function initData(){
+			header_h = api.pageParam.header_h;
+			p_id = $api.getStorage('person_id');
+			i_id = $api.getStorage('identity');
+			bar_h = 40;
+			currentPage = 1;
+			BASE_APP_TYPE = $api.getStorage('BASE_APP_TYPE');		 
+			getQuestionDicType(function(flag,ret){
+				if(flag){
+					dic_json=ret;
+				}
+				//打开学科滑动
+				openNavigationBar();
+			})
+			//下拉刷新
+			refreshDataInfo();
+			//加载上拉加载数据方法
+			scrollBottomReload();
+		}
+		/**
+		 * 打开题本学科滑动
+		 * 周枫
+		 * 2016.04.12
+		 */
+		function openNavigationBar() {
+			getStuSubject(function(is_true, data) {
+				if (is_true) {
+					openNavigationBarToHtml(data);
+				} else {
+				    popToast(data);
+				}
+			});
+		}
+		
+		/**
+		 * 获取学生学科题本列表
+		 * 周枫
+		 * 2016.04.13 
+		 */
+		function getStuSubject(callback){
+			commonGetStudentInfoByParentId(p_id, i_id, function(is_true, stu_info_json){
+				if(is_true) {
+					var stu_id = stu_info_json.student_id;
+					api.ajax({
+						url : BASE_URL_ACTION + '/xx/getWqSubjectList',
+						method : 'post',
+						dataType : 'json',
+						timeout : 30,
+						data : {
+							values : {
+								"student_id" : stu_id,
+								"wq_type" : 2
+							}
+						}
+					}, function(ret, err) {
+						if(err) {
+							callback(false, '获取学生学科题本列表失败');
+						} else {
+							if(ret.success) {
+								var subject_list = ret.subject_list;
+								var s_l = subject_list.length;
+								callback(true, ret.subject_list);
+							} else {
+								callback(false, '获取学生学科题本列表失败');
+							}
+						}
+					});
+					//原代码复制到这里
+				} else {
+				    popToast(stu_info_json);
+				}	
+			});
+			
+			
+		}
+		
+		/**
+		 * 打开menu列表
+		 * 周枫
+		 * 2016.1.13
+		 */
+		function openNavigationBarToHtml(bar_list) {
+			var bar_items = [{
+				"title":"全部",
+				"id":0
+			}];
+			for (var i = 0; i < bar_list.length; i++) {
+				var arr = {
+					title : bar_list[i].subject_name,
+					id : bar_list[i].subject_id,
+				}
+				bar_items.push(arr);
+			}
+			
+			commonCloseNavigationBar();
+			var params = {
+				y : header_h,
+				items : bar_items,
+				winName:'tibenJy_index_window',
+				frameName:'tibenJy_right_frame',
+				file_level:2
+			};
+			commonMyNavigationBar(params);
+		}
+
+		function callBackNew(id,index) {
+			currentPage = 1;
+			bar_id = id;
+			loadStuRightListData(1, true, '加载中...');
+		}
+		/*
+		*author:zhaoj
+		*function:是否显示未掌握的题目
+		*date：20161209
+		*/
+		function showNoMaster(self){
+			if(self.checked){
+				is_master = 0;
+			}else{
+				is_master = -1;
+			}
+			currentPage = 1;
+			loadStuRightListData(1, true, '加载中...');
+		}
+		/*
+		*author:zhaoj
+		*function:根据错题标签显示题目
+		*date：20161209
+		*/
+		function changeTagType(type){
+			dic_type = type;
+			currentPage = 1;
+			loadStuRightListData(1, true, '加载中...');
+		}
+		/**
+		 * 加载学生错题本列表
+		 * 周枫
+		 * 2016.4.7
+		 */
+		function loadStuRightListData(currentPage, isReload, text) {
+			commonGetStudentInfoByParentId(p_id, i_id, function(is_true, stu_info_json){
+				if(is_true) {
+					var stu_id = stu_info_json.student_id;
+					showSelfProgress('请稍候...');
+					currentPage = isReload ? 1 : currentPage;
+					api.ajax({
+						url : BASE_URL_ACTION + '/xx/getStuWrongQuestions',
+						method : 'post',
+						timeout : 30,
+						dataType : 'json',
+						data : {
+							values : {
+								"student_id" : stu_id,
+								"pageSize" : BASE_PAGE_SIZE,
+								"pageNumber" : currentPage,
+								"subject_id" : bar_id,
+								"wq_type" : 2,
+								"dic_type":dic_type,
+								"is_master":is_master
+							}
+						}
+					}, function(ret, err) {
+						if (err) {
+							api.hideProgress();
+		                    popToast('获取题本列表失败');
+						} else {
+							if (ret.success) {
+								totalData = ret.totalRow;
+								totalPages = ret.totalPage;
+								if (isReload) {
+									// 重新设置为1
+									currentPage = 1;
+								}
+								var que_list = ret.que_list;
+								var que_list_l = getJsonObjLength(que_list);
+								if(que_list_l > 0) {
+									for(var i=0; i<getJsonObjLength(que_list); i++) {
+										if(que_list[i].que_source == 1){
+											if(que_list[i].html_json){
+												var question_title = Base64.decode(que_list[i].html_json.question_title);
+												var key = '/dsideal_yy';
+												var key_re = BASE_URL_ACTION;
+												que_list[i].question_title = question_title;
+												if(que_list[i].question_title.indexOf(key_re) == -1){
+												   que_list[i].question_title = question_title.replaceAll(key, key_re); 
+												}
+												//试题内容转html
+												que_list[i]["question_title_base64"] = que_list[i].question_title;
+											}
+										}
+									}
+								}
+								//设置错题标签
+							  	for(var i = 0; i < ret.que_list.length; i++){
+						  			if(ret.que_list[i].dic_type == -1){
+						  				ret.que_list[i].dic_text="未设置";
+						  			}else{
+						  				for(var j = 0; j < dic_json.list.length; j++){
+						  					if(ret.que_list[i].dic_type == dic_json.list[j].id){
+						  						ret.que_list[i].dic_text = dic_json.list[j].type_name;
+						  						break;
+						  					}
+						  				}
+						  			}
+							  	}
+								var html_type = template.render('tblist_script', ret);
+								if (currentPage == 1) {
+									document.getElementById('tblist_div').innerHTML = html_type;
+								} else {
+									$api.append($api.byId('tblist_div'), html_type);
+								}
+								
+								//通知顶部下拉刷新数据加载完毕，组件会恢复到默认状态
+								commonControlRefresh();
+								api.hideProgress();
+							} else {
+			                    popToast('获取题本列表失败');
+			                    api.hideProgress();
+							}
+						}
+					});
+				} else {
+					popToast(stu_info_json);
+				}	
+			});
+			
+		}
+
+		/*
+		 *author:zhaoj
+		 *function:打开错题xiangqing
+		 *date：20160326
+		 */
+		function openDetailWin(zy_id, que_id, que_id_char, is_have_wk,is_master,dic_type,dic_text,que_source,jy_subject_en_name,qt_name) {
+		    var pageParamJson = {
+		            'header_h' : header_h,
+                    'zy_id' : zy_id,
+                    'que_id' : que_id,
+                    'que_id_char' : que_id_char,
+                    'jr_type' : 2,
+                    'is_have_wk' : is_have_wk,
+                    'is_master':is_master,
+                    'dic_type':dic_type,
+                    'dic_text':dic_text,
+                    'que_source':que_source,
+                    'jy_subject_en_name':jy_subject_en_name,
+                    'qt_name':qt_name
+            };
+		    commonOpenWin('tibenJy_detail_window', 'tibenJy_detail_window.html', false, false, pageParamJson);
+		}
+		
+		function refreshDataInfo() {
+			//绑定下拉刷新历史会话事件
+			api.setRefreshHeaderInfo({
+				visible : true,
+				loadingImg : 'widget://image/local_icon_refresh.png',
+				bgColor : '#F5F5F5',
+				textColor : '#8E8E8E',
+				textDown : '下拉加载更多...',
+				textUp : '松开加载...',
+				showTime : true
+			}, function(ret, err) {
+				//从服务器加载数据，完成后调用commonControlRefresh()方法恢复组件到默认状态
+				//调用获取历史会话监听
+				//打开滑动条
+				loadStuRightListData(1, true, '加载中...');
+			});
+		}
+		
+		/**
+		 * 上拉刷新页面数据
+		 * 周枫
+		 * 2015.11.24
+		 */
+		function scrollBottomReload() {
+			//下移到底部：
+			api.addEventListener({
+				name : 'scrolltobottom',
+				extra : {
+					threshold : 100 //设置距离底部多少距离时触发，默认值为0，数字类型
+				}
+			}, function(ret, err) {
+				if ((currentPage + 1) <= totalPages) {
+					loadStuRightListData(currentPage + 1, false, '加载中...');
+					currentPage = currentPage + 1;
+					// 页码+1
+				} else {
+					api.toast({
+						msg : '已加载全部数据',
+						location : 'bottom'
+					});
+				}
+			});
+		}
+		/*
+		*author:zhaoj
+		*function:获取错题标签
+		*date：20161209
+		*/
+		function getQuestionDicType(callback){
+			api.ajax({
+				url : $api.getStorage('BASE_URL_ACTION') + '/ypt/xx/getQuestionDicType',
+				method : 'get',
+				dataType : 'json',
+				timeout : 30,
+				headers : {
+'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+}
+			}, function(ret, err) {
+				api.hideProgress();
+				if (err) {
+                    callback(false,'');
+				} else {
+					if (ret.success) {
+						callback(true,ret);
+					} else {
+						callback(false,'');
+					}
+				}
+			});
+		}
+	</script>
+</html>

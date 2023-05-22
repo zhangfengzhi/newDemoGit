@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<!-- html5：在创建html时为了防止页面缩放等不兼容效果，要创建个viewport  -->
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<!-- 在IOS设备上，有时会将数字转为手机号，这里也要禁止下 -->
+		<meta name="format-detection" content="telephone=no"/>
+		<title>成绩分析试题解析</title>
+		<link rel="stylesheet" type="text/css" href="../../../../../../css/aui/aui.css" />
+		<link rel="stylesheet" type="text/css" href="../../../../../../css/aui_css_new/aui.css" />
+		<link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+		<style>
+			.tag-title{height:45px; line-height:43px;background:#ffffff ;border-bottom:2px solid #E6E6E6;}
+			.tag-title div{width:33%;text-align:center;color:#62656A;}
+			.tag-title div:last-child{width:34%;text-align:center;color:#62656A;}			
+			.fl{float:left;}
+			.fr{float:right;}
+		</style>
+	</head>
+	<body  class="common-ipad-cjfx">
+		<div id="wrap">
+			<header class="aui-bar aui-bar-nav aui-bar-primary" id="aui-header">
+				<div id="cloud" class="topbar activebar">
+					<div id="back" class="back" onclick="back();" tapmode="">
+						<i class="aui-iconfont aui-icon-left"></i>返回
+					</div>
+					<div class="mTitle" id="mTitle">
+						试题详情
+					</div>
+					<div class="win-menu">
+					</div>
+				</div>
+				<div id="j_tag" class="tag-title">
+					<div id="stjx" class="fl active" onclick="changTag('stjx',0);">试题解析</div>
+					<div id="wkjj" class="fl" onclick="changTag('wkjj',1);">试题讲解</div>
+					<div id="tzxl" class="fr" onclick="changTag('tzxl',2);">同质训练</div>
+				</div>
+			</header>
+			<div  class="aui-content aui-content-padded" id="message-content">
+				<p class="aui-text-center history-date"></p>
+			</div>
+		</div>
+	</body>
+	<script type="text/javascript" src="../../../../../../script/api.js"></script>
+	<script type="text/javascript" src="../../../../../../script/common/common.js"></script>
+	<script type="text/javascript" src="../../../../../../script/module/common/cjfxXs.js"></script>
+	<script type="text/javascript">
+		apiready = function() {
+			commonSetTheme({"level":6,"type":0});
+			changePersonInfo();
+			changTag('stjx',0);
+			commonBackForAndroid();//安卓关闭
+			commonIosAuiHeader();//定位header位置，留出上面电池等空隙，苹果需要
+		};
+		/*
+		*author:zhaoj
+		*function:返回页面
+		*date：20170118
+		*/
+		function back() {
+			api.closeWin();
+		}
+		/*
+		*author:zhaoj
+		*function:试题分析、微课讲解、同质训练切换
+		*date：20170722
+		*/
+		function changTag(id,type){
+			var divArray = $api.domAll($api.byId('j_tag'), 'div');
+			for(var i = 0; i < divArray.length; i++){
+				$api.removeCls(divArray[i], 'active');
+			}
+			$api.addCls($api.byId(id), 'active');
+			var header_h = api.pageParam.header_h;
+			var pageParamJson={"header_h":header_h,"transmit_param":api.pageParam.transmit_param,"type":api.pageParam.type};//打开frame页面所需参数
+			if(type == 0){
+				//试题分析
+				commonOpenFrame('cjfx_st_frame', 'cjfx_st_frame.html',header_h+45, false, false,"#ffffff",pageParamJson,0);	//打开index页面
+			}else if(type == 1){
+				//微课讲解
+				commonOpenFrame('cjfx_wk_frame', 'cjfx_wk_frame.html',header_h+45, false, false,"#ffffff",pageParamJson,0);	//打开index页面
+			}else{
+				//同质训练
+				commonOpenFrame('cjfx_tzxl_frame', 'cjfx_tzxl_frame.html',header_h+45, false, false,"#ffffff",pageParamJson,0);	//打开index页面
+			}
+		}
+	</script>
+</html>

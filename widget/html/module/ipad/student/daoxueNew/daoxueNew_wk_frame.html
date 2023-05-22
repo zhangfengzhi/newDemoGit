@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <!-- html5：在创建html时为了防止页面缩放等不兼容效果，要创建个viewport  -->
+        <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+        <!-- 在IOS设备上，有时会将数字转为手机号，这里也要禁止下 -->
+        <meta name="format-detection" content="telephone=no"/>
+        <title>导学微课</title>
+        <link rel="stylesheet" type="text/css" href="../../../../../css/aui/aui.css" />
+        <link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+       	<style>
+       		body{padding:20px;font-size:18px;}
+       		.wk-name{font-size:20px;font-weight:bold;width:100%;padding:0px 0 20px 0;}
+       		.top .vedio{position: absolute;left:20px;bottom:20px;}
+       		.top .vedio-right{border:1px solid #d0d0d0;float:right;background:#fff;overflow-y: auto;}
+       		.vedio-nav{position: absolute;left:20px;bottom:70px;}
+       		.fl{float:left;}
+       		.fr{float:right;}
+       		.zan,.teacher{height:40px;line-height:40px;}
+       		.zan{width:50%;padding:0 15px;text-align:right;}	
+ 			.zan-icon{position:absolute;left:0;top:0;width:45px;background:url(../../../../../image/fun-module/ipad/daoxue/zan.png) center 9px no-repeat;background-size:28px auto;z-index:999;}
+ 			.yizan{position:absolute;left:0;top:0;width:45px;background:url(../../../../../image/fun-module/ipad/daoxue/zan.png) center -53px no-repeat;background-size:28px auto;}	
+	 		.teacher{position:relative;width:50%;}
+	 		.zan .zan-num{font-size:20px;}
+	 		.zan .zan-content{position:relative;padding:0 5px 0 45px;display:inline-block;}
+	 		.teacher font{position:absolute;}
+	 		.res .name{font-weight:bold;}
+	 		.code .name{padding-top:15px;}
+	 		.code{width:100%;height:100px;padding:10px 15px 0 15px;}
+	 		.code-picture{position:relative;text-align:center;}
+	 		.code-picture img{position:absolute;top:50%;left:50%;margin-top:-90px;margin-left:-75px;width:150px;height:150px;}
+	 		.teacher-name{padding:0 15px 0 85px;}
+	 		.res{padding:0 15px;width:100%;border-bottom:1px solid #e0e0e0;}
+	 		.res:last-child{border:none;}
+	 		.res .name{padding-top:15px;}
+	 		.res .res-content{padding-bottom:15px;}
+	 		.res .title{height:55px;line-height:55px;font-weight:bold;border-bottom:1px solid #e0e0e0;}
+	 		.res .instr{line-height:28px;padding-top:20px;}
+	 		.res .instr,.res .res-detail{padding-top:10px;}
+	 		.res .res-detail{color:#0000FF;max-width:100%;}
+	 		.aui-icon-link{float:left;margin-right:8px;}
+       	</style>
+    </head>
+    <body id="j_body" class="aui-hide axis-body common-ipad-daoxueNewstu">
+	    <div class="top clearfix">
+	    	<div id="j_vedio_nav" class="vedio-nav">
+	    		<div id="j_wk_name" class="wk-name ellipsis"></div>
+	    		<div class="teacher fl">
+	    			<font>主讲教师</font>
+	    			<div id="j_person_name" class="teacher-name ellipsis"></div>
+	    		</div>
+	    		<div class="zan fr">
+	    			<div class="zan-content">
+	    				<div id="j_zan" class="zan-icon" onclick="saveLike(this)">&nbsp;</div>
+	    				<font id="zan_num" class="zan-num"></font>人已赞
+	    			</div>
+	    		</div>
+	    	</div>
+	    	<div id="j_vedio" class="vedio fl"></div>
+	    	<div id="j_vedio_r" class="vedio-right">
+	    		<!--<div class="teacher fl">
+	    			<font>主讲教师</font>
+	    			<div id="j_person_name" class="teacher-name ellipsis"></div>
+	    		</div>
+	    		<div class="zan fr">
+	    			<div class="zan-content">
+	    				<div id="j_zan" class="zan-icon" onclick="saveLike(this)">&nbsp;</div>
+	    				<font id="zan_num" class="zan-num"></font>人已赞
+	    			</div>
+	    		</div>-->
+	    		<div class="res fl">
+                    <div class="name">素材</div>
+                  	<div id="j_res" class="res-content"></div>
+		    		<script type="text/html" id="sc_script_1">
+		    			<%if(sc_list.length == 0){%>
+		    				<div class="instr">老师还没有添加素材</div>
+		    			<%}else{%>
+			    			<%for(var i = 0; i < sc_list.length; i++){%>
+			    				<div class="res-detail ellipsis" onclick="openAttachment('<%=sc_list[i].extension%>','<%=sc_list[i].title%>','<%=sc_list[i].file_id %>');">
+				    				<span class="aui-iconfont aui-icon-link"></span><%=sc_list[i].title%>
+				    			</div>
+			    			<%}%>
+			    		<%}%>
+		    		</script>
+                </div>
+                <div class="res fl">
+                    <div class="name">设计说明</div>
+                    <div id="j_res_1" class="res-content">
+		    		</div>
+		    		<script type="text/html" id="design_script">
+		    			<div id="j_design_instr" class="instr"></div>
+		    			<%for(var i = 0; i < design_list.length; i++){%>
+		    				<div class="res-detail ellipsis" onclick="openAttachment('<%=design_list[i].extension%>','<%=design_list[i].title%>','<%=design_list[i].file_id %>');">
+			    				<span class="aui-iconfont aui-icon-link"></span><%=design_list[i].title%>
+			    			</div>
+		    			<%}%>
+		    		</script>
+                </div>
+                <div class="res fl">
+                    <div class="name">学习指导</div>
+                    <div id="j_res_2" class="res-content">
+		    		</div>
+		    		<script type="text/html" id="study_script">
+		    			<div id="j_study_instr" class="instr"></div>
+		    			<%for(var i = 0; i < design_list.length; i++){%>
+		    				<div class="res-detail ellipsis" onclick="openAttachment('<%=design_list[i].extension%>','<%=design_list[i].title%>','<%=design_list[i].file_id %>');">
+			    				<span class="aui-iconfont aui-icon-link"></span><%=design_list[i].title%>
+			    			</div>
+		    			<%}%>
+		    		</script>
+                </div>
+                <div class="res fl">
+                    <div class="name">练习</div>
+                    <div id="j_res_3" class="res-content">
+		    		</div>
+		    		<script type="text/html" id="practice_script">
+		    			<div id="j_practice_instr" class="instr"></div>
+		    			<%for(var i = 0; i < design_list.length; i++){%>
+		    				<div class="res-detail ellipsis" onclick="openAttachment('<%=design_list[i].extension%>','<%=design_list[i].title%>','<%=design_list[i].file_id %>');">
+			    				<span class="aui-iconfont aui-icon-link"></span><%=design_list[i].title%>
+			    			</div>
+		    			<%}%>
+		    		</script>
+                </div>
+	    	</div>
+	    </div>
+    </body>
+     <script type="text/javascript" src="../../../../../script/api.js" ></script>
+    <script type="text/javascript" src="../../../../../script/base_config.js" ></script>
+    <script type="text/javascript" src="../../../../../script/plug-in/template.js" ></script>
+    <script type="text/javascript" src="../../../../../script/plug-in/base64.js" ></script>
+    <script type="text/javascript" src="../../../../../script/common/common.js" ></script>
+	<script type="text/javascript" src="../../../../../script/assembly/executeApp.js" ></script>
+	<script type="text/javascript" src="../../../../../script/assembly/scrollPicture.js"></script>
+    <script type="text/javascript" src="../../../../../script/assembly/openResource.js" ></script>
+    <script type="text/javascript" src="../../../../../script/assembly/photoBrowser.js"></script>
+    <script type="text/javascript">
+    	var wk_vedio_json={"image":[],"file_id":[],"title":[],"m3u8_status":[],"extension":[]};//所有微课的缩略图、播放路径、视频的预览状态、视频名称以及视频格式
+    	var params_json={"paths":[],"captions":[],"x":20,"y":0,"w":0,"h":0,"styles":{"caption":{"height":50,"size":18}}};//轮播图参数
+        apiready = function() {
+        	commonSetTheme({"level":5,"type":0});
+        	showSelfProgress('加载中...');       	
+        	$api.css($api.byId('j_blank'),"height:"+Math.floor(api.frameWidth/4*3)+'px;');
+        	getwkdsInfo();
+        	recordWkPlayRecord();
+        	isLiked();
+        	saveLeadResRelaLog();
+        };
+        /*
+		*作者:zhaoj
+		*功能:设置各个模块的宽高
+		*日期：20170824
+		*/
+        function setModeWidthHeight(){
+        	var nav_h = 140;
+        	var vedio_h = Math.floor(api.winHeight-nav_h-60-api.pageParam.header_h);
+        	var height = api.winHeight-40-api.pageParam.header_h;
+        	var vedio_w = Math.floor(vedio_h/3*4);
+        	var vedio_r = Math.floor(api.winWidth-60-vedio_w);
+        	params_json.y = 20;
+        	params_json.w = vedio_w;
+        	params_json.h = vedio_h;
+        	//设置左侧视频宽高
+        	$api.css($api.byId('j_vedio'),"width:"+vedio_w+"px;height:"+vedio_h+"px;");
+        	//设置左侧视频宽高
+        	$api.css($api.byId('j_vedio_nav'),"width:"+vedio_w+"px;");
+        	//设置视频右侧内容宽高
+        	$api.css($api.byId('j_vedio_r'),"width:"+vedio_r+"px;height:"+height+"px;max-height:"+height+"px;");
+        	$api.removeCls($api.byId('j_body'), 'aui-hide');
+        }
+        /*
+		*作者:zhaoj
+		*功能:获取微课详细
+		*日期：20170705
+		*/
+        function getwkdsInfo(){
+        	api.ajax({
+				url : $api.getStorage('BASE_URL_ACTION')+'/wkds/getwkdsInfo?random_num='+creatRandomNum()+'&id='+api.pageParam.id,
+				method : 'get',
+				timeout : 30,
+				dataType : 'json',
+				returnAll : false,		
+			}, function(ret, err) {
+				if(err) {
+					api.hideProgress();
+					popToast('获取微课失败，请稍候重试');
+				} else {
+					if(ret) {
+						if(ret.success){
+							$api.text($api.byId('j_wk_name'),'微课名称：'+ret.wkds_name);
+							$api.text($api.byId('j_person_name'),ret.teacher_name);
+							$api.html($api.byId('zan_num'),ret.like_count);
+							//转义学习指导内容
+		                    ret.study_instr = Base64.decode(ret.study_instr);
+		                    //转义设计说明内容
+		                    ret.design_instr = Base64.decode(ret.design_instr);
+		                    //转义练习内容
+		                    ret.practice_instr = Base64.decode(ret.practice_instr);
+		                    showDetailData(ret);
+							getAllWkImgPlayPath(ret.sp_list);
+						}else{
+							popToast(ret.info);
+						}
+					} else {
+						api.hideProgress();
+						popToast('获取微课失败，请稍候重试');
+					}
+				}
+			});
+        }
+        /*
+		*作者:zhaoj
+		*功能:获取所有微课的缩略图、播放路径、视频的预览状态、视频名称以及视频格式
+		*日期：20170705
+		*/
+		function getAllWkImgPlayPath(data){
+			api.hideProgress();
+			if(data.length > 0){
+				var BASE_APP_TYPE = $api.getStorage('BASE_APP_TYPE');
+				for(var i = 0; i < data.length; i++){
+					wk_vedio_json.title.push(data[i].title);
+					wk_vedio_json.m3u8_status.push(data[i].m3u8_status);
+					wk_vedio_json.file_id.push(data[i].file_id);
+					wk_vedio_json.extension.push(data[i].extension);
+					var wk_thumb_url;//视频缩略图地址
+					if (BASE_APP_TYPE == 1) {
+		                wk_thumb_url = url_path + BASE_THUMB_BEGIN + data[i].thumb_id.substring(0, 2) + '\/' + data[i].thumb_id + BASE_THUMB_END;
+		            } else {
+		                wk_thumb_url = $api.getStorage('BASE_URL_ACTION') + BASE_THUMB_BEGIN + data[i].thumb_id.substring(0, 2) + '/' + data[i].thumb_id + BASE_THUMB_END;
+		            }
+		            wk_vedio_json.image.push(wk_thumb_url);
+				}
+				//获取轮播图的图片路径
+				params_json.paths = wk_vedio_json.image;
+				params_json.captions = wk_vedio_json.title;
+			}else{
+				params_json.paths.push('widget://res/yy/weike/wk_default.png');
+				params_json.captions.push('当前微课没有视频文件');
+			}
+			//打开录播图
+			UIScrollPicture.open(params_json,function(flag,data){
+				openVideo(flag,data);
+			});
+		}
+		/*
+		*author:zhaoj
+		*function:播放视频文件
+		*date：20170706
+		*/
+		function openVideo(flag,data){
+			if(data.status){
+				if(data.eventType == 'click'){
+					if(wk_vedio_json.file_id.length > 0){
+						common_openResource.open(wk_vedio_json.extension[data.index],wk_vedio_json.file_id[data.index],wk_vedio_json.title[data.index],wk_vedio_json.m3u8_status[data.index],api.winName,'reBackType("voice")','back();','');
+					}else{
+						popToast('当前微课没有视频文件');
+					}
+				}
+			}
+		}
+		/*
+		*作者:zhaoj
+		*功能:展示设计说明、学习指导、联系以及素材
+		*日期：20170706
+		*/
+		function showDetailData(data){
+			//设计说明
+			commonAddOnceHtml('j_res_1','design_script',data);
+			showTeacherExplain('j_design_instr',data.design_instr);
+			//学习指导
+			commonAddOnceHtml('j_res_2','study_script',data);
+			showTeacherExplain('j_study_instr',data.study_instr);
+			//练习
+			commonAddOnceHtml('j_res_3','practice_script',data);
+			showTeacherExplain('j_practice_instr',data.practice_instr);
+			//素材
+			commonAddOnceHtml('j_res','sc_script_1',data);
+			
+        	setModeWidthHeight();
+		}
+		/*
+		*作者:zhaoj
+		*功能:将展示到对应id元素中
+		*日期：20170706
+		*/
+		function showTeacherExplain(id,text){
+			if(isEmptyString(text)){
+				$api.html($api.byId(id), '老师还没有添加说明');
+			}else{
+				$api.html($api.byId(id), text);
+			}
+		}
+		/*
+		*作者:zhaoj
+		*功能:将展示到对应id元素中
+		*日期：20170706
+		*/
+		function openAttachment(format, file_name, file_id){
+			common_openResource.open(format,file_id,file_name,"",api.winName,'reBackType("voice")','back();','');
+		}
+		/*
+		*作者:zhaoj
+		*功能:记录微课播放
+		*日期：20170706
+		*/
+		function recordWkPlayRecord(){
+			var class_id;//班级id
+			$api.getStorage("identity") == 5 ? class_id = "":class_id = $api.getStorage("class_id");
+			api.ajax({
+				url : $api.getStorage('BASE_URL_ACTION')+'/ypt/wkds/recordWkPlayRecord',
+				method : 'post',
+				timeout : 30,
+				dataType : 'json',
+				returnAll : false,
+				data : {
+					values : {
+						"random_num" : creatRandomNum(),
+					    "class_id" : class_id,
+					    "identity_id":$api.getStorage("identity"),
+					    "person_id":$api.getStorage("person_id"),
+					    "wkds_id":api.pageParam.id
+					}
+				},
+				headers : {
+					'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+				}		
+			}, function(ret, err) {
+			});
+		}
+		/*
+		*作者:zhaoj
+		*功能:是否点赞
+		*日期：20170706
+		*/
+		function isLiked(){
+			api.ajax({
+				url : $api.getStorage('BASE_URL_ACTION')+'/ypt/common/like/isLiked',
+				method : 'post',
+				timeout : 30,
+				dataType : 'json',
+				returnAll : false,
+				data : {
+					values : {
+						"random_num" : creatRandomNum(),
+					    "target_id" : api.pageParam.wkds_id_int,
+					    "target_id_char":  "",
+					    "target_type" : 4
+					}
+				},
+				headers : {
+					'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+				}		
+			}, function(ret, err) {
+				if(err){
+				}else{
+					if(ret.success){
+						if(ret.isLiked){
+							$api.addCls($api.byId('j_zan'), 'yizan');
+						}
+					}else{
+					}
+				}
+			});
+		}
+		/*
+		*作者:zhaoj
+		*功能:点赞
+		*日期：20170706
+		*/
+		function saveLike(self){
+			if(!$api.hasCls(self,'yizan')){
+				showSelfProgress('点赞中...');
+				api.ajax({
+					url : $api.getStorage('BASE_URL_ACTION')+'/ypt/common/like/saveLike',
+					method : 'post',
+					timeout : 30,
+					dataType : 'json',
+					returnAll : false,
+					data : {
+						values : {
+							"random_num" : creatRandomNum(),
+						    "target_id" : api.pageParam.wkds_id_int,
+						    "target_id_char":  "",
+						    "target_type" : 4
+						}
+					},
+					headers : {
+						'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+					}		
+				}, function(ret, err) {
+					api.hideProgress();
+					if(err){
+						popToast('点赞失败');
+					}else{
+						if(ret.success){
+							popToast('点赞成功');
+							$api.addCls(self,'yizan');						
+							var num = $api.text($api.byId('zan_num'));
+							num = num*1 + 1;
+							$api.text($api.byId('zan_num'),num);
+						}else{
+							popToast('点赞失败');
+						}
+					}
+				});
+			}
+		}
+		
+		/**
+		 * 增加导学微课学习次数 
+		 */
+		function saveLeadResRelaLog(){
+			var param = {
+				lead_id: api.pageParam.dx_id,//导学id
+                identity_id: $api.getStorage("identity"),
+                org_id: $api.getStorage("class_id"),
+                org_type: 105,
+                person_id: $api.getStorage("person_id"),
+                res_id: api.pageParam.id,
+                res_type: 5,
+                is_cloud: 1,
+                random_num: creatRandomNum()
+            };
+            console.log(JSON.stringify(param))
+            api.ajax({
+					url : $api.getStorage('BASE_URL_ACTION')+'/ypt/space/lead/save_lead_res_rela_log',
+					method : 'post',
+					timeout : 30,
+					dataType : 'json',
+					returnAll : false,
+					data : {
+						values : param
+					},
+					headers : {
+						'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+					}		
+				}, function(ret, err) {
+				console.log(JSON.stringify(ret))
+				console.log(JSON.stringify(err))
+				});
+		}
+    </script>
+</html>

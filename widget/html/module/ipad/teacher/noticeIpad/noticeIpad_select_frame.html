@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<!-- html5：在创建html时为了防止页面缩放等不兼容效果，要创建个viewport  -->
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<!-- 在IOS设备上，有时会将数字转为手机号，这里也要禁止下 -->
+		<meta name="format-detection" content="telephone=no"/>
+		<title>学校管理员</title>
+		<link rel="stylesheet" type="text/css" href="../../../../../css/aui/aui.css" />
+		<link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+		<style>
+			.body_main {width: 100%;height: 100%;background: url(../../../../../image/fun-module/ipad/notice/boy.png) no-repeat center;background-size:auto 70%;margin-left: auto;margin-right: auto;}
+			.top img {position:absolute;width:100%;height:100%;top:0;left:0; z-index: -1;}
+			.tea_stu {height: 40%;position: absolute;width: 100%;bottom: 0;}
+			.tea_stu a {display: inline-block;text-align: center;background: #fff;border: 3px solid #fff100;font-size: 28px;color: #595757;text-decoration: none;border-radius: 40px;padding: 16px 50px;
+margin: 0 100px;background-clip:padding-box !important;}
+			.tea_stu a em{color:#8fc31f;}
+			.tea_stu a:hover, .tea_stu a.selected {background: #a5c94b;color:#fff;}
+			.tea_stu a:hover em, .tea_stu a.selected em {color:#fff100;}
+		</style>
+	</head>
+	<body class="common-ipad-noticeIpad-tea">
+		<div class="body_main">
+			<div class="top">
+				<img src="../../../../../image/fun-module/ipad/notice/bg.jpg" />
+			</div>
+			<div class="tea_stu">
+				<table width="100%" height="100%">
+					<tr>
+						<td valign="middle" align="center">
+						<a href="javascript:openFkSecFrame('fangke_jsindex_window',1);" id="fangke_jsindex_ida" style="margin-bottom:30px;"><em>查看</em>发布通知</a>
+						<a href="javascript:openFkSecFrame('fangke_mwindex_window',0);" id="fangke_mwindex_ida" ><em>查看</em>接收通知</a></td>
+					</tr>
+				</table>
+			</div>
+		</div>
+	</body>
+	<script type="text/javascript" src="../../../../../script/api.js" ></script>
+	<script type="text/javascript" src="../../../../../script/base_config.js" ></script>
+	<script type="text/javascript" src="../../../../../script/common/common.js" ></script>
+	<script type="text/javascript">
+		var header_h;
+		apiready = function() {
+			commonSetTheme({"level":5,"type":0});
+			header_h = api.pageParam.header_h;
+			$api.getStorage('name');
+		};
+		function openFkSecFrame(win_name, is_xxgly) {
+			var fangke_jsindex_ida = $api.dom('#fangke_jsindex_ida');
+			var fangke_mwindex_ida = $api.dom('#fangke_mwindex_ida');
+			$api.removeCls(fangke_mwindex_ida, 'selected');
+			$api.removeCls(fangke_jsindex_ida, 'selected');
+			if (win_name == 'fangke_jsindex_window') {
+				$api.addCls(fangke_jsindex_ida, 'selected');
+			} else {
+				$api.addCls(fangke_mwindex_ida, 'selected');
+			}
+			api.execScript({
+				name : 'noticeIpad_index_window',
+				script : 'addShow(' + is_xxgly + ');'
+			});
+			api.execScript({
+				name : 'noticeIpad_index_window',
+				script : 'winShow(true);'
+			});
+			api.execScript({
+				name : 'noticeIpad_index_window',
+				script : 'tagChange();'
+			});
+			api.execScript({
+				name : 'noticeIpad_index_window',
+				script : 'reBackType("index");'
+			});
+			openNoticeIndexFrame(is_xxgly);
+		}
+
+		/*
+		 *author:zhaoj
+		 *function:打开通知列表frame页面
+		 *date：20160625
+		 */
+		function openNoticeIndexFrame(is_xxgly) {
+//			var frame_w = Math.floor(api.winWidth*0.6);
+//			var frame_x = 0;
+//			frame_w=frame_w-140;
+//			frame_x = 140;
+			var frame_w = Math.floor(api.winWidth*0.55);
+			var frame_x = 0;
+			if(frame_w <= 614){
+				frame_w=frame_w-140;
+				frame_x = 140;
+			}else{
+				frame_w=frame_w-140;
+				frame_x = 140;
+			}
+			pageParamJson={"header_h":header_h,'w':frame_w,"x":frame_x,"is_xxgly" : is_xxgly};//打开frame页面json数据
+			//打开通知frame页面
+			commonOpenFrame("noticeIpad_index_frame","noticeIpad_index_frame.html",header_h,false,false,"rgba(0,0,0,0)",pageParamJson);
+			api.setFrameAttr({// 隐藏内容层
+				name : 'noticeIpad_select_frame',
+				hidden : true,
+			});
+		}
+	</script>
+</html>

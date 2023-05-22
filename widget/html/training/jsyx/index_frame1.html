@@ -1,0 +1,301 @@
+<!doctype html>	
+<html>	
+<head>	
+    <meta charset="utf-8">	
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>	
+    <title>frame</title>	
+	<meta name="app-mobile-web-app-capable" content="yes"> 
+    <link rel="stylesheet" type="text/css" href="../../../css/training/jsyx/api.css"/>	
+    <style>	
+        html, body {	
+            height: 100%;	
+            background-color: #e6ded6;	
+        }	
+        .h10 {	
+            height: 10px;	
+        }	
+
+        /* 条目总体样式 */	
+        .item {	
+            display: table;	
+            height: 90px;	
+            width: 100%;	
+        }	
+	
+        .item .itemlogo, .item .itemshelf {	
+            display: table-cell;	
+            vertical-align: middle;	
+        }	
+	
+        .item .itemlogo {	
+            width: 20px;	
+        }	
+	
+        .item .itemlogo img {	
+            margin-left: 10px;	
+            width: 80px;	
+        }	
+	
+        .item .itemshelf .shelfinfo01 {	
+            font-size: 20px;	
+            color: #AFAFAF;	
+        }	
+	
+        /* 第三部分 */	
+        .section3 .item {	
+            background-color: #fff;	
+            position: relative;	
+            border-bottom: 1px solid #d3d3d3;	
+        }	
+	
+        .section3 .item .itemlogo {	
+            position: absolute;	
+            top: 10px;	
+        }	
+	
+        .section3 .itemshelf {	
+            margin-left: 110px;	
+            display: block;	
+        }	
+	
+        .section3 .item .userlogo img {	
+            width: 80px;	
+            height: 60px;
+            padding: 2px;	
+            border: 1px solid #e7e7e7;	
+            border-radius: 2px;	
+        }	
+	
+        .section3 .itemshelf .shelfinfo01 {	
+            color: #000;	
+            font-size: 16px;	
+            line-height: 18px;	
+            margin-top: 14px;	
+        }	
+	
+        .section3 .itemshelf .ordering {	
+            color: #fff;	
+            font-size: 12px;	
+            background-color: #5bb06c;	
+            padding: 2px 4px;	
+            display: inline-block;	
+        }	
+	
+        .section3 .itemshelf .shelfinfo03 {	
+            color: #999;	
+            font-size: 12px;	
+            margin-right: 10px;	
+            border-bottom: 1px dotted #666;	
+            padding: 10px 0;	
+        }	
+	
+        .section3 .style2 .itemshelf .shelfinfo03 {	
+            color: #999;	
+            font-size: 12px;	
+            margin-right: 10px;	
+            border-bottom: 0;	
+            padding: 10px 0;	
+        }	
+	
+        .section3 .itemshelf .staring {	
+            color: #999;	
+            font-size: 12px;	
+            line-height: 14px;	
+            margin-top: 5px;	
+        }	
+	
+        .section3 .itemshelf .staring img {	
+            height: 12px;	
+        }	
+	
+        .section3 .itemshelf .shelfinfo04 {	
+            color: #999;	
+            font-size: 12px;	
+            padding: 10px 0;	
+        }	
+	
+        .section3 .itemshelf .shelfinfo05 {	
+            color: #999;	
+            font-size: 12px;	
+            padding: 10px 0 0 0;	
+        }	
+	
+        /* 标题栏小图标 */	
+        .section3 .itemshelf .shelfinfo01 .pei {	
+            color: #fff;	
+            font-size: 12px;	
+            background-color: #82782f;	
+            margin-left: 5px;	
+            padding: 1px;	
+            border-radius: 3px;	
+        }	
+	
+        .section3 .itemshelf .shelfinfo01 .ticket {	
+            color: #fff;	
+            font-size: 12px;	
+            background-color: #3585b7;	
+            margin-left: 5px;	
+            padding: 2px;	
+            border-radius: 3px;	
+        }	
+	
+        .section3 .itemshelf .shelfinfo01 .fu {	
+            color: #fff;	
+            font-size: 12px;	
+            background-color: #e5322d;	
+            margin-left: 5px;	
+            padding: 2px;	
+            border-radius: 3px;	
+        }	
+	
+        .section3 .itemshelf .shelfinfo01 .compensate {	
+            color: #fff;	
+            font-size: 12px;	
+            background-color: #2768ba;	
+            margin-left: 5px;	
+            padding: 2px;	
+            border-radius: 3px;	
+        }	
+	
+        .section3 .itemshelf .shelfinfo01 .new {	
+            color: #fff;	
+            font-size: 12px;	
+            background-color: #e5322d;	
+            margin-left: 5px;	
+            padding: 2px;	
+            border-radius: 3px;	
+        }	
+	
+        .section3 .itemshelf .shelfinfo04 .jian {	
+            color: #fff;	
+            font-size: 12px;	
+            background-color: #cd22e2;	
+            padding: 1px;	
+            border-radius: 3px;	
+            margin-right: 5px;	
+        }	
+	
+        .section3 .itemshelf .shelfinfo05 .quatity {	
+            color: #fff;	
+            font-size: 12px;	
+            background-color: #dc0414;	
+            padding: 1px;	
+            border-radius: 3px;	
+            margin-right: 5px;	
+        }	
+	
+	
+	
+        /*slide*/	
+        .swipe {	
+            overflow: hidden;	
+            position: relative;	
+        }	
+	
+        .swipe-wrap {	
+            overflow: hidden;	
+            position: relative;	
+        }	
+	
+        .swipe-wrap > div {	
+            float: left;	
+            width: 100%;	
+            position: relative;	
+        }	
+	
+        .swipe-wrap > div {	
+            overflow: hidden;	
+            position: relative;	
+        }	
+	
+        .swipe-wrap img {	
+            width: 100%;	
+            height: auto;	
+            max-height: 280px;	
+            min-height: 132px;	
+           min-width: 320px;	
+            max-width: 100%;
+        }	
+	
+        #slide {	
+            margin: 0 auto;	
+            position: relative;	
+        }	
+	
+        #pointer {	
+            position: absolute;	
+            bottom: 12px;	
+            overflow: hidden;	
+            width: 100%;	
+            text-align: center;	
+        }	
+	
+        #pointer a {	
+            display: inline-block;	
+            width: 10px;	
+            height: 10px;	
+            border-radius: 5px;	
+            margin-right: 4px;	
+            background-color: #c5bda8;
+            filter:alpha(opacity=90); /*IE滤镜，透明度50%*/
+            -moz-opacity:0.9; /*Firefox私有，透明度50%*/
+            opacity:0.9;/*其他，透明度50%*/	
+        }	
+	
+        #pointer a.active {	
+            background-color: #fff;	
+        }	
+        .ul_ico{ width:100%; height:140px; background-color: #FFFFFF;}
+	    .ul_ico li{ float:left;width:86px; height:110px;margin:20px 15px;}
+	    .ul_ico li span{ width:86px;height: 24px; line-height:24px; font-size: 14px; color: #000000;text-align: center; background-color: #FFFFFF;margin-top:6px;}
+		.ul_ico li .check{ color: orange;}
+		.ul_ico01 a{width:86px;height:80px; background:url(../../../image/training/jsyx/ico_01.jpg) no-repeat; display:block;}
+		.ul_ico02 a{width:86px;height:80px;background:url(../../../image/training/jsyx/ico_02.jpg) no-repeat;display:block;}
+		.ul_ico03 a{width:86px;height:80px;background:url(../../../image/training/jsyx/ico_03.jpg) no-repeat;display:block;}
+        /*slide*/	
+    </style>	
+</head>	
+<body>	
+<div id='slide' class='swipe'>	
+    <div class='swipe-wrap' id="banner-content">	
+        <div  class="swipe-box">	
+            <img src="../../../image/training/jsyx/45.png"/>	
+        </div>	
+        <div class="swipe-box">	
+            <img src="../../../image/training/jsyx/46.png"/>	
+        </div>	
+        <div class="swipe-box">	
+            <img src="../../../image/training/jsyx/47.png"/>	
+        </div>	
+        <div class="swipe-box">	
+            <img src="../../../image/training/jsyx/48.png"/>	
+        </div>	
+        <div class="swipe-box">	
+            <img src="../../../image/training/jsyx/49.png"/>	
+        </div>	 
+    </div>	
+    <div id="pointer" class="pointer">	
+        <a class="active"></a>	
+        <a></a>	
+        <a></a>	
+        <a></a>	
+        <a></a>	
+    </div>	
+</div>	
+<div class="middle">
+	<ul class="ul_ico">
+		<li class="ul_ico01"><a href="javascript:changeType(1);"></a><span id="type1" class="check">专家讲座</span></li>
+		<li class="ul_ico02"><a href="javascript:changeType(2);"></a><span id="type2">网络课程</span></li>
+		<li class="ul_ico03"><a href="javascript:changeType(3);"></a><span id="type3">案例分析</span></li>
+	</ul>
+</div>
+<div class="section3" id="kcListDiv">	
+</div>	
+<script type="text/javascript" src="../../../script/api.js"></script>	
+<script type="text/javascript" src="../../../script/base_config.js"></script>
+<script type="text/javascript" src="../../../script/swipe.js"></script>	
+<script type="text/javascript" src="../../../script/training/jsyx/constant.js"></script>
+<script type="text/javascript" src="../../../script/training/jsyx/index_frame1.js"></script>	
+</body>	
+	
+</html>	

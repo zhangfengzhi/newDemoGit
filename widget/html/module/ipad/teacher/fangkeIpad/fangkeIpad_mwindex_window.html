@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<!-- html5：在创建html时为了防止页面缩放等不兼容效果，要创建个viewport  -->
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<!-- 在IOS设备上，有时会将数字转为手机号，这里也要禁止下 -->
+		<meta name="format-detection" content="telephone=no"/>
+		<title>访客教师</title>
+		<link rel="stylesheet" type="text/css" href="../../../../../css/aui/aui.css" />
+		<link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+		<style>
+			.history-date {
+				font-size: 12px;
+			}
+			#message-content {
+				overflow-y: auto;
+				display: none;
+			}
+		</style>
+	</head>
+	<body class="common-ipad-fangkeIpad-tea">
+		<div id="wrap">
+			<header class="aui-bar aui-bar-nav aui-bar-primary" id="aui-header">
+				<div id="cloud" class="topbar activebar">
+					<div id="back" class="back" onclick="back();" tapmode="">
+						<i class="aui-iconfont aui-icon-left"></i>返回
+					</div>
+					<div class="mTitle" id="mTitle">
+						访客验证
+						<!--注释原因：访客记录不需要显示 2016.3.21<div id="btn_title" class="btn-title">
+							<div class="btn-l btn-top-active btn-top" onclick="changeBtnTitle(this,0);">
+								访客验证
+							</div>
+							<div class="btn-r btn-top" onclick="changeBtnTitle(this,1);">
+								访客记录
+							</div>
+						</div>-->
+					</div>
+					<div class="win-menu">
+						<i id='set'  class="aui-iconfont aui-icon-sitting" onclick="setFkConfig();"></i>
+					</div>
+				</div>
+			</header>
+			<div  class="aui-content aui-content-padded" id="message-content">
+				<p class="aui-text-center history-date"></p>
+			</div>
+		</div>
+	</body>
+	<script type="text/javascript" src="../../../../../script/api.js"></script>
+	<script type="text/javascript" src="../../../../../script/base_config.js" ></script>
+	<script type="text/javascript" src="../../../../../script/common/common.js"></script>
+	<script type="text/javascript">
+		//顶部header高度
+		var header_h;
+		apiready = function() {
+			commonSetTheme({"level":5,"type":0});
+			//定位header位置，留出上面电池等空隙，苹果需要
+			var header = $api.byId('aui-header');
+			$api.fixStatusBar(header);
+			header_h = api.pageParam.header_h;
+			//打开访客验证列表frame
+			openFkyzFrame();
+//			initFrameGroup();
+			//安卓关闭
+			if (api.systemType == 'android') {
+				backForAndroid();
+			}
+		};
+		
+		/**
+		 * 打开访客验证页面
+		 * 周枫
+		 * 2016.3.21 
+		 */
+		function openFkyzFrame(){
+			api.openFrame({
+				name : 'fangkeIpad_mwyz_frame',
+				scrollToTop : true,
+				allowEdit : true,
+				url : 'fangkeIpad_mwyz_frame.html',
+				rect : {
+					x : 0,
+					y : header_h,
+					w : 'auto',
+					h : api.winHeight - header_h,
+				},
+				pageParam : {
+					header_h : header_h
+				},
+				vScrollBarEnabled : true,
+				hScrollBarEnabled : false,
+				//页面是否弹动 为了下拉刷新使用
+				bounces : true
+			});
+		}
+		
+		/**
+		 * 切换按钮
+		 * 周枫
+		 * 2016.1.21
+		 */
+		function changeBtnTitle(btn_obj, btn_type) {
+			var $btn_title = $api.byId('btn_title');
+			var $btn_title_all = $api.domAll($btn_title, 'div');
+			for (var j = 0; j < $btn_title_all.length; j++) {
+				$api.removeCls($btn_title_all[j], 'btn-top-active');
+			}
+			//定义切换页面样式json
+			var rect_json = {};
+			if (btn_type == 0) {
+				$api.addCls(btn_obj, 'btn-top-active');
+				$api.addCls($api.byId('btn_title'), 't_display_b');
+				$api.removeCls($api.byId('back'), 't_display_n');
+				isAddDisplay(true);
+				isSetDisplay(true);
+			} else {
+				$api.addCls(btn_obj, 'btn-top-active');
+				$api.removeCls($api.byId('btn_title'), 't_display_b');
+				$api.removeCls($api.byId('back'), 't_display_n');
+				isAddDisplay(false);
+				isSetDisplay(true);
+			}
+			api.setFrameGroupIndex({
+				name : 'friends_group',
+				index : btn_type,
+				scroll : true
+			});
+		}
+
+		function initFrameGroup() {
+			api.openFrameGroup({
+				name : 'friends_group',
+				scrollEnabled : false,
+				rect : {
+					'x' : 0,
+					'y' : header_h,
+					'w' : 'auto',
+					'h' : api.winHeight - header_h
+				},
+				index : 0,
+				//预加载
+				preload : 1,
+				scrollToTop : true,
+				bounces : true,
+				scrollEnabled : false,
+				frames : [{
+					name : 'fangkeIpad_mwyz_frame',
+					scrollToTop : true,
+					allowEdit : true,
+					url : 'fangkeIpad_mwyz_frame.html',
+					bgColor:'#f7f9f8',
+					pageParam : {
+						header_h : header_h
+					},
+					vScrollBarEnabled : true,
+					hScrollBarEnabled : false,
+					//页面是否弹动 为了下拉刷新使用
+					bounces : true
+				}, {
+					name : 'fangkeIpad_mwlist_frame',
+					scrollToTop : true,
+					allowEdit : true,
+					url : 'fangkeIpad_mwlist_frame.html',
+					bgColor:'#f7f9f8',
+					pageParam : {
+						header_h : header_h
+					},
+					vScrollBarEnabled : true,
+					hScrollBarEnabled : false,
+					//页面是否弹动 为了下拉刷新使用
+					bounces : true
+				}]
+			}, function(ret, err) {
+			});
+		}
+
+		/**
+		 * 安卓点击返回的时候
+		 * 周枫
+		 * 2015.10.14
+		 */
+		function backForAndroid() {
+			api.addEventListener({
+				name : "keyback"
+			}, function(ret, err) {
+				back();
+			});
+		}
+
+		/**
+		 * 返回应用页面
+		 * 周枫
+		 * 2016.03.17
+		 */
+		function back() {
+			api.closeFrame({
+			    name: 'fangkeIpad_index_frame'
+			});
+			api.closeWin({
+			    name: 'fangkeIpad_index_window',
+			    animation: {
+			        type: 'reveal',
+			        subType: 'from_left',
+			        duration: 300
+			    }
+			});
+			api.closeFrame({
+			    name: 'fangkeIpad_jsindex_frame'
+			});
+			api.closeWin({
+			    name: 'fangkeIpad_jsindex_window',
+			    animation: {
+			        type: 'reveal',
+			        subType: 'from_left',
+			        duration: 300
+			    }
+			});
+			api.closeWin();
+		}
+
+		/**
+		 * 判断增加访客图标是否显示
+		 * 周枫
+		 * 2016.03.17
+		 */
+		function isAddDisplay(flag) {
+			if (flag) {
+				$api.css($api.byId('save'), 'display:inline;');
+			} else {
+				$api.css($api.byId('save'), 'display:none;');
+			}
+		}
+
+		/**
+		 * 判断配置图标是否显示
+		 * 周枫
+		 * 2016.03.17
+		 */
+		function isSetDisplay(flag) {
+			if (flag) {
+				$api.css($api.byId('set'), 'display:inline;');
+			} else {
+				$api.css($api.byId('set'), 'display:none;');
+			}
+		}
+		
+		function setFkConfig() {
+			api.openWin({
+				name : 'fangkeIpad_index_window',
+				url : 'fangkeIpad_index_window.html',
+				pageParam : {
+					header_h : header_h
+				},
+				bounces : false,
+				opaque : false,
+				showProgress : false,
+				bgColor : '#f7f9f8',
+				vScrollBarEnabled : false,
+				hScrollBarEnabled : false,
+				slidBackEnabled : false,
+				delay : 0,
+				animation : {
+					type : "reveal", //动画类型（详见动画类型常量）
+					subType : "from_right", //动画子类型（详见动画子类型常量）
+					duration : 300
+				},
+			});
+			
+		}
+	</script>
+</html>

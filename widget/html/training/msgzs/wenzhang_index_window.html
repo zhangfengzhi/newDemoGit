@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<!-- html5：在创建html时为了防止页面缩放等不兼容效果，要创建个viewport  -->
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<!-- 在IOS设备上，有时会将数字转为手机号，这里也要禁止下 -->
+		<meta name="format-detection" content="telephone=no"/>
+		<title>文章</title>
+		<link rel="stylesheet" type="text/css" href="../../../css/aui/aui.css" />
+		<style>
+			.history-date {
+				font-size: 12px;
+			}
+			#message-content {
+				overflow-y: auto;
+				display: none;
+			}
+			.t_display_n {
+				display: none;
+			}
+			.t_display_b {
+				display: block;
+			}
+			.win-menu .flgl{font-size:14px;}
+			
+		</style>
+	</head>
+	<body>
+		<div id="wrap">
+			<header class="aui-bar aui-bar-nav aui-bar-primary" id="aui-header">
+				<div id="cloud" class="topbar activebar">
+					<div id="back" class="back" onclick="back();" tapmode="">
+						<i class="aui-iconfont aui-icon-left"></i>返回
+					</div>
+					<div  class="mTitle" id="mTitle">
+					</div>
+					<div class="win-menu">
+						
+						<!--我的文章——增加文章-->
+						<a id='add' class="aui-iconfont aui-icon-add back"  style="display: none;" onclick="openAddWenzhangFrame()"></a>
+						<!--全部文章——选择筛选范围-->
+						<a id='menu' class="aui-iconfont aui-icon-menu back" tapmode="tap-active"  style="display: none;" onclick="openMenu();"></a>
+						<!--发布文章——文章分类-->
+						<a id='flgl' style="display:none;" class="aui-iconfont back flgl"  style="display: none;" onclick="openManageWindow()">分类管理</a>
+					</div>
+				</div>
+			</header>
+			<div  class="aui-content aui-content-padded" id="message-content">
+				<p class="aui-text-center history-date"></p>
+			</div>
+		</div>
+	</body>
+	<script type="text/javascript" src="../../../script/api.js"></script>
+	<script type="text/javascript">
+		//顶部header高度
+		var header_h;
+		//全部文章:0，我的文章:1
+		var wz_from_t;
+		var back_type = 'index';
+		//返回参数
+		var article_type = 0;
+		var is_add_show=false;//添加按钮是否显示
+		var isadmin=0;
+		
+		//文章类型
+		apiready = function() {
+			var identity = $api.getStorage('identity');
+			header_h = api.pageParam.header_h;
+			isadmin = api.pageParam.isadmin;
+			
+			//打开文章列表frame
+			/*if($api.getStorage('wenzhang_person_id') == $api.getStorage('person_id')){
+				if($api.getStorage('wenzhang_menu_id')==1){
+					openMyListFrame($api.getStorage('wenzhang_menu_id'),$api.getStorage('wenzhang_menu_type'),$api.getStorage('wenzhang_menu_name'));
+				}else if($api.getStorage('wenzhang_menu_id')!=1&&$api.getStorage('wenzhang_menu_id')){
+					openAllListFrame($api.getStorage('wenzhang_menu_id'),$api.getStorage('wenzhang_menu_type'),$api.getStorage('wenzhang_menu_name'));
+				}else{
+					openAllListFrame(0,0,'全部文章');
+				}
+			}else{
+				openAllListFrame($api.getStorage('school_id'),104,'本校文章');
+			}*/
+			openAllListFrame(0,0,'工作室文章');
+			//安卓关闭
+			if (api.systemType == 'android') {
+				backForAndroid();
+			}
+			//定位header位置，留出上面电池等空隙，苹果需要
+			var header = $api.byId('aui-header');
+			$api.fixStatusBar(header);
+			var headerPos = $api.offset(header);
+			var identity = parseInt($api.getStorage('identity_id'));
+			if(identity == 7 && base_server_name == 'tsedu') {
+				isAddDisplay(false);
+			}
+		};
+		/*
+		*author:zhaoj
+		*function:打开alllistFrame页面
+		*date：20160425
+		*/
+		function openAllListFrame(menu_id, menu_type, menu_name){
+			//记录上一次的操作
+			recordLastOperation(menu_id, menu_type, menu_name);
+			resetWinName(menu_name);
+			myListFrameOpt(function(flag){
+				api.closeFrame({
+					name : 'wenzhang_mylist_frame'
+				});
+			});
+			allListFrameOpt(function(flag){
+				api.closeFrame({
+					name : 'wenzhang_alllist_frame'
+				});
+			});
+			if(menu_type == 104||menu_type == 105){
+				var identity = parseInt($api.getStorage('identity_id'));
+				var base_server_name = $api.getStorage('BASE_SERVER_NAME');
+				if(identity != 7 && base_server_name == 'tsedu') {
+					isAddDisplay(true);
+					is_add_show = true;
+				}
+			}else{
+				//isAddDisplay(false);
+				//is_add_show = false;
+			}
+			api.execScript({
+				name : 'wenzhang_index_window',
+				frameName : 'wenzhang_alllist_frame',
+				script : 'closeNav();'
+			});
+			api.openFrame({
+				name : 'wenzhang_alllist_frame',
+				scrollToTop : true,
+				allowEdit : false,
+				url : 'wenzhang_alllist_frame.html',
+				rect : {
+					x : 0,
+					y : header_h+81,
+					w : api.winWidth,
+					h : api.winHeight-header_h-81,
+				},
+				pageParam : {
+					header_h : header_h,
+					menu_id : api.pageParam.org_id*1,
+					menu_type : api.pageParam.org_type*1,
+					menu_name : api.pageParam.org_name,
+					isadmin:isadmin
+				},
+				vScrollBarEnabled : true,
+				hScrollBarEnabled : true,
+				//页面是否弹动 为了下拉刷新使用
+				bounces : true
+			});
+		}
+		/*
+		*author:zhaoj
+		*function:我的文章页面
+		*date：20160425
+		*/
+		function openMyListFrame(menu_id, menu_type, menu_name){
+			//记录上一次的操作
+			recordLastOperation(menu_id, menu_type, menu_name);
+			
+			resetWinName(menu_name);
+			allListFrameOpt(function(flag){
+				api.closeFrame({
+					name : 'wenzhang_alllist_frame'
+				});
+			});
+			var identity = parseInt($api.getStorage('identity_id'));
+			if(identity != 7) {
+				isAddDisplay(true);
+				is_add_show = true;
+			}
+			api.openFrame({
+				name : 'wenzhang_mylist_frame',
+				scrollToTop : true,
+				allowEdit : false,
+				url : '../../html/yingyong/wenzhang_mylist_frame.html',
+				rect : {
+					x : 0,
+					y : header_h,
+					w : api.winWidth,
+					h : api.winHeight-header_h,
+				},
+				pageParam : {
+					header_h : header_h,
+					menu_id : menu_id*1,
+					menu_type : menu_type*1,
+					menu_name : menu_name
+				},
+				vScrollBarEnabled : true,
+				hScrollBarEnabled : true,
+				//页面是否弹动 为了下拉刷新使用
+				bounces : true
+			});
+		}
+		/*
+		*author:zhaoj
+		*function:打开我的文章页面，对allListFrame页面的一些操作
+		*date：20160425
+		*/
+		function allListFrameOpt(callback){
+			//隐藏全部文章页面数据
+			api.execScript({
+				name : 'wenzhang_index_window',
+				frameName : 'wenzhang_alllist_frame',
+				script : 'closeNav();'
+			});
+			api.execScript({
+				name : 'wenzhang_index_window',
+				frameName : 'wenzhang_alllist_frame',
+				script : 'hideInput();'
+			});
+			callback(true);
+		}
+		/*
+		*author:zhaoj
+		*function:打开我的文章页面，对allListFrame页面的一些操作
+		*date：20160425
+		*/
+		function myListFrameOpt(callback){
+			//隐藏全部文章页面数据
+			api.execScript({
+				name : 'wenzhang_index_window',
+				frameName : 'wenzhang_mylist_frame',
+				script : 'closeNav();'
+			});
+			callback(true);
+		}
+		/*
+		*author:zhaoj
+		*function:记录上一次的操作
+		*date：20160426
+		*/
+		function recordLastOperation(menu_id, menu_type, menu_name){
+			$api.setStorage('wenzhang_menu_id',menu_id);
+			$api.setStorage('wenzhang_menu_type',menu_type);
+			$api.setStorage('wenzhang_menu_name',menu_name);
+			$api.setStorage('wenzhang_person_id',$api.getStorage('person_id'));
+		}
+		/*
+		*author:zhaoj
+		*function:对win页面进行更改name
+		*date：20160425
+		*/
+		function resetWinName(name){
+			$api.text($api.byId('mTitle'),name);
+		}
+		/*
+		 *author:zhaoj
+		 *function:打开添加文章页面的frame
+		 *date：20160314
+		 */
+		function openAddWenzhangFrame() {
+			reBackType('add');
+			api.openFrame({
+				name : 'wenzhang_add_frame',
+				scrollToTop : true,
+				allowEdit : true,
+				url : '../../html/yingyong/wenzhang_add_frame.html',
+				rect : {
+					x : 0,
+					y : header_h,
+					w : api.winWidth,
+					h : api.winHeight - header_h,
+				},
+				pageParam : {
+					header_h : header_h,
+					menu_id : $api.getStorage('wenzhang_menu_id')*1,
+					menu_type : $api.getStorage('wenzhang_menu_type')*1,
+					menu_name : $api.getStorage('wenzhang_menu_name')
+				},
+				vScrollBarEnabled : true,
+				hScrollBarEnabled : true,
+				//页面是否弹动 为了下拉刷新使用
+				bounces : false
+			});
+		}
+
+		/*
+		 *author:zhaoj
+		 *function:打开个人分类管理页面
+		 *date：20160314
+		 */
+		function openManageWindow() {
+			api.openWin({
+				name : 'wenzhang_person_classification_window',
+				url : 'wenzhang_person_classification_window.html',
+				pageParam : {
+					header_h : header_h
+				},
+				bounces : false,
+				opaque : false,
+				showProgress : false,
+				vScrollBarEnabled : false,
+				hScrollBarEnabled : false,
+				slidBackEnabled : false,
+				delay : 0,
+				animation : {
+					type : "reveal", //动画类型（详见动画类型常量）
+					subType : "from_right", //动画子类型（详见动画子类型常量）
+					duration : 300
+				},
+			});
+		}
+		/*
+		 *author:zhaoj
+		 *function:判断添加文章是否显示
+		 *date：20160314
+		 */
+		function isAddDisplay(flag) {
+			if (flag) {
+				$api.css($api.byId('add'), 'display:inline;');
+			} else {
+				$api.css($api.byId('add'), 'display:none;');
+			}
+		}
+		
+		/**
+		 * menu是否显示
+		 * 周枫
+		 * 2016.4.5 
+		 */
+		function isMenuDisplay(flag) {
+			if (flag) {
+				$api.css($api.byId('menu'), 'display:inline;');
+			} else {
+				$api.css($api.byId('menu'), 'display:none;');
+			}
+		}
+
+		/**
+		 * 安卓点击返回的时候
+		 * 周枫
+		 * 2015.10.14
+		 */
+		function backForAndroid() {
+			api.addEventListener({
+				name : "keyback"
+			}, function(ret, err) {
+				back();
+			});
+		}
+
+		/**
+		 * 返回应用页面
+		 * 周枫
+		 * 2015.10.11
+		 */
+		function back() {
+			switch(back_type) {
+				case 'index':
+					api.closeWin();
+					break;
+				case 'add':
+					api.closeFrame({
+						name : 'wenzhang_add_frame'
+					});
+					reBackType('index');
+					break;
+			}
+		}
+
+		/*
+		 *author:zhaoj
+		 *function:添加文章成功后返回到文章首页调用的函数
+		 *date：20160318
+		 */
+		function addBack() {
+			api.closeFrame({
+				name : 'wenzhang_add_frame'
+			});
+			reBackType('index');
+			if($api.getStorage('wenzhang_menu_type')*1 == 1){
+				api.execScript({
+					name : 'wenzhang_index_window',
+					frameName : 'wenzhang_mylist_frame',
+					script : 'getBlogInfo();'
+				});
+				api.execScript({
+					name : 'wenzhang_index_window',
+					frameName : 'wenzhang_mylist_frame',
+					script : 'openNavigationBar();'
+				});
+				api.execScript({
+					name : 'wenzhang_index_window',
+					frameName : 'wenzhang_mylist_frame',
+					script : 'loadData(0, 1, true,"加载中...");'
+				});
+			}else{
+				api.execScript({
+					name : 'wenzhang_index_window',
+					frameName : 'wenzhang_alllist_frame',
+					script : 'openNavigationBar();'
+				});
+				api.execScript({
+					name : 'wenzhang_index_window',
+					frameName : 'wenzhang_alllist_frame',
+					script : 'loadData(0, 1, true,"加载中...");'
+				});
+			}
+		}
+
+		/*
+		 *author:zhaoj
+		 *function:重置从哪个页面返回
+		 *date：20160307
+		 */
+		function reBackType(type) {
+			switch(type) {
+				//如果列表页面退出
+				case 'index':
+					$api.css($api.byId('flgl'), 'display:none;');
+					resetWinName($api.getStorage('wenzhang_menu_name'));
+					isMenuDisplay(true);
+					var identity = parseInt($api.getStorage('identity_id'));
+					if(identity != 7) {
+						isAddDisplay(true);
+					}
+					back_type = 'index';
+					break;
+				//如果添加内容页面退出
+				case 'add':
+					isAddDisplay(false);
+					resetWinName('添加文章');
+					isMenuDisplay(false);
+					back_type = 'add';
+					break;
+			}
+		}
+		
+		/**
+		 * 更改全部文章的文字
+		 * 周枫
+		 * 2016.4.5 
+		 */
+		function reAllTitleName(tab_title){
+			wenzhang_title = tab_title;
+			$api.html($api.byId('all'), wenzhang_title);
+			
+		}
+		
+		function openMenu(){
+			api.openFrame({
+	            name: 'wenzhang_menu_frame',
+	            url: 'wenzhang_menu_frame.html',
+	            bounces: false,
+	            rect: {
+	                x: 0,
+	                y: 0,
+	                w: 'auto',
+	                h: 'auto'
+	            },
+	            bgColor : 'rgba(0,0,0,0)',
+	            pageParam : {
+					header_h : header_h
+				},
+	            reload: true
+	        });
+		}
+	</script>
+</html>

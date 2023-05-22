@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <title>评论页面</title>
+    <link rel="stylesheet" type="text/css" href="../../../css/aui/aui.css" />
+    <style>
+    	body{background:#F5F5F5;padding:10px;}
+    	textarea{margin-bottom:3px;}
+    	.tip{width:100%;font-size:13px;color:#bbbbbb;text-align:right;}
+    </style>
+</head>
+<body>
+	<textarea id="comt_content" rows="8" placeholder="鼓励、吐槽、表扬......想说啥就说啥！" oninput='showTip(this.value.length);' maxlength ='100'></textarea>
+	<div id="tip" class="tip">100</div>
+</body>
+<script type="text/javascript" src="../../../script/api.js"></script>
+<script type="text/javascript" src="../../../script/base_config.js" ></script>
+<script type="text/javascript" src="../../../script/common/common.js" ></script>
+<script type="text/javascript">
+	var header_h;
+	var BASE_URL_ACTION;
+	apiready = function(){
+		header_h = api.pageParam.header_h;
+		BASE_URL_ACTION = $api.getStorage('BASE_URL_ACTION');
+	};
+	/*
+	*author:zhaoj
+	*function:发表评论
+	*date：20160319
+	*/
+	function messageBoard_addDialog(){
+		//评论内容
+		var comt_content = $api.val($api.byId('comt_content'));
+		//验证评论内容
+		var comt_content_vad = $api.trimAll(comt_content);
+		var session_id;
+		if(comt_content_vad.length == 0){
+			popAlert("请填写评论内容！");
+			return;
+		}
+		api.showProgress({
+			title : '发布中...',
+			modal : true
+		});
+		api.ajax({
+			url : BASE_URL_ACTION + '/yx/captcha/getSessionId?math='+Math.random(),
+			method : 'post',
+			dataType : 'json',
+			cache : false,
+			}, function(ret, err) {
+				if(ret){
+					session_id=ret.jsessionid;
+				//alert(session_id);
+		api.ajax({
+			url : BASE_URL_ACTION + '/yx/pxtl/ht/htAddMb;jsessionid='+session_id,
+			method : 'post',
+			dataType : 'json',
+			cache : false,
+			data : {
+				values : {
+					
+		            "person_id": $api.getStorage("person_id"),
+		            "person_name":$api.getStorage("person_name"),
+		            
+		            "content": comt_content,
+		            
+		            
+		            "ft_id": api.pageParam.id
+				}
+			},
+			headers : {
+				'Cookie' : 'person_id='+$api.getStorage("person_id")+';identity_id='+$api.getStorage("identity")+'; token='+$api.getStorage("token_ypt")+';'
+			}
+		}, function(ret, err) {
+			//alert(JSON.stringify(err));
+			//alert(JSON.stringify(ret));
+			if(ret.result){
+				api.execScript({
+					name : 'discuss_content_window',
+					frameName:'discuss_content_frame',
+					script : 'getCommentInfo(1);'
+				});
+				setTimeout(function() {
+				api.execScript({
+					name : 'discuss_comment_window',
+					script : 'back(1);'
+				});
+			}, 100);
+				//addCommentNum(api.pageParam.id);
+				//发送系统消息给被评论的人
+				if(api.pageParam.login_name){
+					//var target_login_names = [api.pageParam.login_name];
+					//var params = [api.pageParam.article_title,'文章评论','文章'];
+					//commonSendSysMsg($api.getStorage('person_id'), $api.getStorage("person_name"), commonNewParamToOldParam($api.getStorage("login_name")), $api.getStorage("identity"), target_login_names, 1, 'wenzhang_index_window', 2, 'WENZHANG_INDEX', -1, -1, -1, -1, params,function(is_true){
+						
+					//});
+				}
+			}else{
+				api.hideProgress();
+				popToast('评论失败');
+			}
+		});
+		}
+			});
+    }
+    /*
+	*author:zhaoj
+	*function:个人评论数加1
+	*date：20160319
+	*/
+    function addCommentNum(article_id){
+    	api.ajax({
+			url : BASE_URL_ACTION + '/blog/addCommentNum',
+			method : 'post',
+			dataType : 'json',
+			cache : false,
+			data : {
+				values : {
+					"random_num":creatRandomNum(),
+                    "article_id": article_id,
+                    "person_id":$api.getStorage("person_id"),
+                    "identity_id":$api.getStorage("identity")
+				}
+			},
+			headers : {
+				'Cookie' : 'person_id='+$api.getStorage("person_id")+';identity_id='+$api.getStorage("identity")+'; token='+$api.getStorage("token_ypt")+';'
+			}
+		}, function(ret, err) {
+			if(api.pageParam.d==0){
+				creditWriteToQueue(108,'',api.pageParam.person_id,api.pageParam.identity_id,$api.getStorage("person_name")+ "评论了" + api.pageParam.person_name + "的文章。")
+			}
+			setTimeout(function() {
+				api.execScript({
+					name : 'discuss_comment_window',
+					script : 'back(1);'
+				});
+			}, 100);
+		});
+    }
+    /*
+	*author:zhaoj
+	*function:积分处理
+	*date：20160319
+	*/
+	function creditWriteToQueue(business_type,relatived_id,r_person_id,r_identity_id,operation_content){
+		if(creditFlag == 0){
+	        return false;
+	    }
+	    api.ajax({
+			url : BASE_URL_ACTION + '/credit/writeToQueue',
+			method : 'post',
+			dataType : 'json',
+			cache : false,
+			data : {
+				values : {
+					"random_num":creatRandomNum(),
+		            "person_id":$api.getStorage("person_id"),
+		            "identity_id":$api.getStorage("identity"),
+		            "platform_type":1,
+		            "ip_addr":"",
+		            "operation_system":"",
+		            "browser":"",
+		            "business_type":business_type,
+		            "relatived_id":relatived_id,
+		            "r_person_id":r_person_id,
+		            "r_identity_id":r_identity_id,
+		            "operation_content":operation_content
+				}
+			}
+		}, function(ret, err) {
+		});
+	}
+	/*
+	*author:zhaoj
+	*function:提示评论还剩多少个字
+	*date：20160318
+	*/
+	function showTip(length,self){
+        var count = 100 - length;
+        $api.text($api.byId('tip'),count);
+    }
+    /*
+	*author:zhaoj
+	*function:弹出Toast提示框
+	*date：20160314
+	*/
+	function popToast(message){
+		api.toast({
+			msg : message,
+			location : 'middle'
+		});
+	}
+	/*
+	*author:zhaoj
+	*function:弹出Alert提示框
+	*date：20160314
+	*/
+	function popAlert(message){
+		api.alert({
+			msg : message
+		}, function(ret, err) {
+		});
+	}
+	
+	
+</script>
+</html>

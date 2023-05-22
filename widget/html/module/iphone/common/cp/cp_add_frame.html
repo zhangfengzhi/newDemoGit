@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<!-- html5：在创建html时为了防止页面缩放等不兼容效果，要创建个viewport  -->
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<!-- 在IOS设备上，有时会将数字转为手机号，这里也要禁止下 -->
+		<meta name="format-detection" content="telephone=no"/>
+		<title>发布食谱</title>
+		<link rel="stylesheet" type="text/css" href="../../../../../css/aui/aui.css" />
+		<link rel="stylesheet" type="text/css" href="../../../../../css/module/ipad/four_add.css" />
+		<link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+	</head>
+	<body class="common-iphone-cp">
+		<div id="shadow" class="shadow"></div>
+		<div class="aui-content">
+			<div class="aui-input-row">
+				<input oninput="commonRemoveExpression(this)" id="notice_title" class="name-input" type="text" placeholder="请输入标题，最多支持30个字符" maxlength ='30' />
+			</div>
+			<div class="aui-input-row" style="border-bottom:none;">
+				<textarea onscroll="this.rows++;" id="notice_content" rows="7" placeholder="请输入内容（必填）"></textarea>
+			</div>
+			<div class="aui-input-row">
+				<div id="j_files" class="question-file clearfix">
+					<dl id="j_add_btn" class="mr0" onclick="openAddFilesOpn()">
+						<dt class="add-img">
+							<i class="aui-iconfont aui-icon-camera"></i>
+						</dt>
+						<dd></dd>
+					</dl>
+				</div>
+			</div>
+			<div id="ossfile"></div>
+			<div id="xwzx_img_div" style="display: none;">
+				<ul class="aui-list-view aui-grid-view">
+					<li class="aui-list-view-cell aui-img aui-col-xs-12">
+						<img id="xwzx_img" class="aui-img-object" src="">
+					</li>
+				</ul>
+			</div>
+		</div>
+		<div class="hr bb"></div>
+		<div class="footer-div clearfix">
+			<div class="wid" onclick="addNotice('cp',104);">发布</div>
+		</div>
+	</body>
+	<script type="text/javascript" src="../../../../../script/api.js" ></script>
+	<script type="text/javascript" src="../../../../../script/base_config.js" ></script>
+	<script type="text/javascript" src="../../../../../script/plug-in/template.js" ></script>
+	<script type="text/javascript" src="../../../../../script/plug-in/base64.js" ></script>
+	<script type="text/javascript" src="../../../../../script/common/common.js" ></script>
+	<script type="text/javascript" src="../../../../../script/common/six_common.js" ></script>
+	<script type="text/javascript">
+		var uICustomPicker;
+		var notice_img_path;//附件图片上传服务器路径
+		var header_h;
+		var obj_scan;
+		apiready = function() {
+			commonSetTheme({"level":5,"type":0});
+			obj_scan = api.require('UIAlbumBrowser');
+			//初始化管辖区域选择器
+			uICustomPicker = api.require('UIAlbumBrowser');
+			$api.css($api.byId('foot_div'), 'width:' + api.winWidth + 'px;');
+			setImgBtnHeight();
+			header_h = api.pageParam.header_h;
+		};
+	</script>
+</html>

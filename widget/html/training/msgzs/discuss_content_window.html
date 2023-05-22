@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<!-- html5：在创建html时为了防止页面缩放等不兼容效果，要创建个viewport  -->
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<!-- 在IOS设备上，有时会将数字转为手机号，这里也要禁止下 -->
+		<meta name="format-detection" content="telephone=no"/>
+		<title>通知</title>
+		<link rel="stylesheet" type="text/css" href="../../../css/aui/aui.css" />
+		<style>
+			.history-date {
+				font-size: 12px;
+			}
+			#message-content {
+				overflow-y: auto;
+				display: none;
+			}
+			.win-menu img{width:20px;height:20px; margin-top: 13px;}
+		</style>
+	</head>
+	<body>
+		<div id="wrap">
+			<header class="aui-bar aui-bar-nav aui-bar-primary" id="aui-header">
+				<div id="cloud" class="topbar activebar">
+					<div id="back" class="back" onclick="back();" tapmode="">
+						<i class="aui-iconfont aui-icon-left"></i>返回
+					</div>
+					<div class="mTitle" id="mTitle">
+						<div id="btn_title" class="btn-title">
+							讨论详情
+						</div>
+					</div>
+					<div id="play" class="win-menu" style="display:none;">
+						<img src="../../../image/yingyong/wenzhang/erji.png" />
+					</div>
+				</div>
+			</header>
+			<div  class="aui-content aui-content-padded" id="message-content">
+				<p class="aui-text-center history-date"></p>
+			</div>
+		</div>
+		<script type="text/javascript" src="../../../script/api.js"></script>
+		<script type="text/javascript" src="../../../script/plug-in/base64.js" ></script>
+	</body>
+	<script type="text/javascript">
+		var header_h;
+		var wz_id;
+		var wz_name;
+		var back_type = 'index';
+		var org_id;
+		apiready = function() {
+			//定位header位置，留出上面电池等空隙，苹果需要
+			var header = $api.byId('aui-header');
+			$api.fixStatusBar(header);
+			header_h = api.pageParam.header_h;
+			wz_name = api.pageParam.wz_name;
+			wz_id = api.pageParam.wz_id;
+			org_id= api.pageParam.org_id;
+			//$api.html($api.byId('btn_title'), Base64.decode(api.pageParam.wz_name));
+			openAddFriendsFrame();
+
+			//安卓关闭
+			if (api.systemType == 'android') {
+				backForAndroid();
+			}
+		};
+		function openAddFriendsFrame() {
+			//打开通知frame页面
+			api.openFrame({
+				name : 'discuss_content_frame',
+				scrollToTop : true,
+				allowEdit : true,
+				url : 'discuss_content_frame.html',
+				rect : {
+					x : 0,
+					y : header_h,
+					w : api.winWidth,
+					h : api.winHeight - header_h,
+				},
+				pageParam : {
+					header_h : header_h,
+					discuss_id : api.pageParam.discuss_id,
+					title : api.pageParam.title,
+					gzs_id:api.pageParam.gzs_id
+				},
+				vScrollBarEnabled : true,
+				hScrollBarEnabled : false,
+				//页面是否弹动 为了下拉刷新使用
+				bounces : false
+			});
+		}
+		/*
+		*author:zhaoj
+		*function:语音播放文章
+		*date：20160321
+		*/
+		function listernArticle() {
+//			api.execScript({
+//				name : 'wenzhang_content_window',
+//				frameName : 'wenzhang_content_frame',
+//				script : 'listernArticle();'
+//			});
+			reBackType('listern');
+			api.openFrame({
+	            name: 'wenzhang_listern_frame',
+	            url: 'wenzhang_listern_frame.html',
+	            bounces: false,
+	            rect: {
+	                x: 0,
+	                y: 0,
+	                w: 'auto',
+	                h: 'auto'
+	            },
+	            bgColor : 'rgba(0,0,0,0)',
+	            pageParam : {
+					header_h : header_h
+				},
+	            reload: true
+	        });
+		}
+		/*
+		*author:zhaoj
+		*function:语音播放文章隐藏
+		*date：20160508
+		*/
+		function displayVoice() {
+			//$api.css($api.byId('play'),'display:block;');
+		}
+		/**
+		 * 安卓点击返回的时候
+		 * 周枫
+		 * 2015.10.14
+		 */
+		function backForAndroid() {
+			api.addEventListener({
+				name : "keyback"
+			}, function(ret, err) {
+				back();
+			});
+		}
+		/**
+		 * 返回应用页面
+		 * 周枫
+		 * 2015.10.11
+		 */
+		function back() {
+			switch(back_type) {
+				case 'index':
+					api.closeWin();
+					break;	
+				case 'listern':
+					api.closeFrame({
+						name : 'wenzhang_listern_frame'
+					});
+					reBackType('index');
+					break;
+				case 'islistern':
+					api.execScript({
+						name : 'discuss_content_window',
+						frameName : 'discuss_content_frame',
+						script : 'stopRead();'
+					});
+					reBackType('index');
+					popToast('已退出语音朗读');
+					break;
+			}
+		}
+		/*
+		*author:zhaoj
+		*function:给语音播放添加点击事件
+		*date：20160322
+		*/
+		function addClickedEvent(){
+			var name = document.getElementById('play');
+			name.addEventListener("click", listernArticle);
+		}
+		/*
+		*author:zhaoj
+		*function:弹出Toast提示框
+		*date：20160314
+		*/
+		function popToast(message){
+			api.toast({
+				msg : message,
+				location : 'middle'
+			});
+		}
+		/*
+		*author:zhaoj
+		*function:重置从哪个页面返回
+		*date：20160321
+		*/
+		function reBackType(type) {
+			switch(type) {
+				//如果列表页面退出
+				case 'index':
+					back_type = 'index';
+					break;
+				//如果添加内容页面退出
+				case 'listern':
+					back_type = 'listern';
+					break;
+				//如果添加内容页面退出
+				case 'islistern':
+					back_type = 'islistern';
+					break;
+			}
+		}
+	</script>
+</html>

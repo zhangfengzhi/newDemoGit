@@ -1,0 +1,1758 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <!-- 在IOS设备上，有时会将数字转为手机号，这里也要禁止下 -->
+    <meta name="format-detection" content="telephone=no"/>
+    <title>考试成绩详情页面</title>
+    <link rel="stylesheet" type="text/css" href="../../../../../../css/aui/aui.css" />
+    <link rel="stylesheet" type="text/css" href="../../../../../../css/module/common/cjfxXs.css" />
+    <link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+    <style>
+    </style>
+</head>
+<body class="cjxq-body common-ipad-cjfx">
+	<div id="msg_top_all" style="height:0px; overflow:hidden"></div>
+	<div id="j_all" class="display-none">
+	    <div class="cj-detail-top">
+	        <div id="j_test_title" class="test-title"></div>
+	        <div class="zcj">
+	            <font id="j_total" class="rate"></font>
+	            <font class="name">总成绩</font>
+	        </div>
+	        <img src="../../../../../../image/fun-module/ipad/xybg/1-2.png" />
+	        <div id="j_top_2" class="rank w2 display-none">
+	            <span>
+	                <div id="j_class_pm_2" class="num"></div>
+	                <div class="title">班级排名</div>
+	            </span>
+	            <span>
+	                <div id="j_school_pm_2" class="num"></div>
+	                <div class="title">学校排名</div>
+	            </span>
+	        </div>
+	         <div id="j_top_3" class="rank w3 display-none">
+	            <span>
+	                <div id="j_class_pm_3" class="num"></div>
+	                <div class="title">班级排名</div>
+	            </span>
+	            <span>
+	                <div id="j_school_pm_3" class="num"></div>
+	                <div class="title">学校排名</div>
+	            </span>
+	            <span>
+	                <div id="j_total_pm" class="num"></div>
+	                <div id="j_total_pm_title" class="title"></div>
+	            </span>
+	        </div>
+	        <!--<div class="sjfx-button" onclick="openSjfxWin()">试卷分析</div>-->
+	    </div>
+	    <!--各科成绩-->
+	    <div class="each-subject clearfix">
+	    	<div class="detail-tip">如果你的考试成绩存在问题，请联系班主任！</div>
+	        <ul id="j_subject" class="clearfix">
+	        </ul>
+	        <script type="text/html" id="subject_script">
+	            <%for(var i = 1; i < data.length; i++) {%>
+	                <li>
+	                    <div>
+	                        <font class="num"><%=data[i].score%></font>
+	                        <font class="name ellipsis"><%=data[i].subjectName%></font>
+	                    </div>
+	                </li>
+	            <% } %>
+	        </script>
+	    </div>
+	    <!--//考试评语-->
+	    <div class="cjgk-div clearfix">
+	        <div class="cjxq-title">
+	            <div class="name">考试评语</div>
+	            <div class="hr"></div>
+	        </div>
+	        <div class="kspy">
+	        	<p id="j_kspy"></p>
+	        </div>
+	    </div>
+	    <!--//考试评语-->
+	    <!--成绩概况-->
+	    <div id="j_cjgk" class="cjgk-div clearfix"></div>
+	    <script type="text/html" id="cjgk_script">
+	        <div class="cjxq-title">
+	            <div class="name">成绩概况</div>
+	            <div class="hr"></div>
+	        </div>
+	        <div class="com-tag">
+	            <ul>
+	                <% if(testType == '校考'){ %>
+	                    <li class="ml25 <% if(type == 0){ %>active<%}%>" onclick="changeType(0)">本班</li>
+	                <%}else if(testType == '区县考' || testType == '市考'){ %>
+	                    <li class="ml12 <% if(type == 0){ %>active<%}%>" onclick="changeType(0)">本班</li>
+	                <%}else{%>
+	                    <li class="<% if(type == 0){ %>active<%}%>" onclick="changeType(0)">本班</li>
+	                <%}%>
+	                <li class="<% if(type == 1){ %>active<%}%>" onclick="changeType(1)">本校</li>
+	                <% if(testType == '区县考'){ %>
+	                    <li class="<% if(type == 2){ %>active<%}%>" onclick="changeType(2)">本区</li>
+	                <% }else if(testType == '市考'){ %>
+	                    <li class="<% if(type == 3){ %>active<%}%>" onclick="changeType(3)">本市</li>
+	                <% } %>
+	            </ul>
+	            <div id="cjgk" style="width:100%;height:300px;margin-top:20px;padding-left:5%"></div>
+	            <table class="cz_table" style="table-layout: fixed; width: 100%;">
+	                <tbody>
+	                    <tr>
+	                        <th width="55px;" height="40px;">
+	                            <div class="cz_out">
+	                                <em class="cz_b">分类</em>
+	                                <em class="cz_em">科目</em>
+	                            </div>
+	                        </th>
+	                        <% if(type == 0){ %>
+	                            <th>我的分数</th>
+	                            <th>平均分</th>
+	                            <th>排名</th>
+	                            <th>最高分</th>
+	                        <% }else if(type == 1){ %>
+	                            <th>我的分数</th>
+	                            <th>平均分</th>
+	                            <th>排名</th>
+	                        <% }else if(type == 2){  %>
+	                            <th>我的分数</th>
+	                            <th>平均分</th>
+	                            <th>排名</th>
+	                        <% }else{  %>
+	                            <th>我的分数</th>
+	                            <th>平均分</th>
+	                            <th>排名</th>
+	                        <% }%>
+	                    </tr>
+	                    <%for(var i=0; i<data.length; i++) {%>
+	                        <% if(type == 0){ %>
+	                            <tr class="timetabletr">
+	                                <td><%=data[i].subjectName%></td>
+	                                <td><%=data[i].score*1%></td>
+	                                <td class="timetabletd" ><%=data[i].classAvgScore*1%>&nbsp;&nbsp;<%=#data[i].class_cz%></td>
+	                                <td class="timetabletd" ><%=data[i].classPm%></td>
+	                                <td><%=data[i].highestScore*1%></td>
+	                            </tr>
+	                        <% }else if(type == 1){ %>
+	                            <tr class="timetabletr">
+	                                <td><%=data[i].subjectName%></td>
+	                                <td><%=data[i].score*1%></td>
+	                                <td class="timetabletd" ><%=data[i].schoolAvgScore*1%>&nbsp;&nbsp;<%=#data[i].school_cz%></td>
+	                                <td class="timetabletd" ><%=data[i].schoolPm*1%></td>
+	                            </tr>
+	                        <% }else if(type == 2){  %>
+	                            <tr class="timetabletr">
+	                                <td><%=data[i].subjectName%></td>
+	                                <td><%=data[i].score*1%></td>
+	                                <td class="timetabletd" ><%=data[i].districtAvgScore*1%>&nbsp;&nbsp;<%=#data[i].dir_cz%></td>
+	                                <td class="timetabletd" ><%=data[i].totalPm*1%></td>
+	                            </tr>
+	                        <% }else{  %>
+	                            <tr class="timetabletr">
+	                                <td><%=data[i].subjectName%></td>
+	                                <td><%=data[i].score*1%></td>
+	                                <td class="timetabletd" ><%=data[i].cityAvgScore*1%>&nbsp;&nbsp;<%=#data[i].city_cz%></td>
+	                                <td class="timetabletd" ><%=data[i].totalPm*1%></td>
+	                            </tr>
+	                        <% }%>
+	                    <% } %>
+	                </tbody>
+	            </table>
+	        </div>
+	    </script>
+	    <!--//成绩概况-->
+	    <!--//进步情况-->
+	    <div class="cjgk-div clearfix">
+	        <div class="cjxq-title">
+	            <div class="name">成绩变化情况</div>
+	            <div class="hr"></div>
+	        </div>
+	        <div class="com-tag">
+	            <ul id="j_1">
+	            </ul>
+	        </div>
+	        <div class="cjbh-tip">标准分是一种由原始分推导出来的相对地位量数，可以说明原始分在所属的一批分数中的相对位置。</div>
+	        <div id="main" style="width:90%;height:300px;margin-top:-40px;margin-left:5%;"></div>
+	        <div id="j_all_description" class="analysis-text"></div>
+	    </div>
+	    <!--//进步情况-->
+	    <!--//科目均衡性-->
+	    <div class="cjgk-div clearfix">
+	        <div class="cjxq-title">
+	            <div class="name">科目均衡性</div>
+	            <div class="hr"></div>
+	        </div>
+	        <div class="com-tag">
+	            <ul id="j_2">
+	            </ul>
+	        </div>
+	        <div id="ylxkdb" style="width:90%;height:300px;margin-left:5%;"></div>
+	        <div class="dbylxk-summary">
+	            <div class="ysxk clearfix">
+	                <div class="ysxk-title">优势学科</div>
+	                <div id="j_ys_subject" class="ysxk-name"></div>
+	            </div>
+	            <div class="lsxk clearfix">
+	                <div class="lsxk-title">劣势学科</div>
+	                <div id="j_ls_subject" class="lsxk-name"></div>
+	            </div>
+	        </div>
+	    </div>
+	    <!--//科目均衡性-->
+	    <!--//期望成绩-->
+	    <div class="cjgk-div clearfix">
+	        <div class="cjxq-title">
+	            <div class="name">期望成绩</div>
+	            <div class="hr"></div>
+	        </div>
+	       	<div class="lxcj-tip">这次考试有哪些题目马虎了，看看改掉这些问题，排名有什么变化吧！</div>
+	       	<div class="lxcj-detail">
+	       		<span>科目</span>
+	       		<ul id="j_subject_list" class="subject-list display-none"></ul>
+	       		<span id="j_lxcj_subject_name" onclick="changeSubject('j_lxcj_subject_name');"><i class="aui-iconfont aui-icon-unfold"></i></span>
+	       	</div>
+	       	<div class="lxcj-detail">
+	       		<span>输入分数</span>
+	       		<span>
+	       			<input oninput="commonRemoveExpression(this)" id="j_lxcj_input" onkeyup="this.value=this.value.replace(/[^\d.]/g,'')" onafterpaste="this.value=this.value.replace(/[^\d.]/g,'')" placeholder="分数" maxlength=20 />
+	       		</span>
+	       	</div>
+	       	<div class="lxcj-detail">
+	       		<span id="j_lxcj_subject_name_show"></span>
+	       		<span id="j_lxcj_subject_scores"></span>
+	       	</div>
+	       	<div class="lxcj-detail">
+	       		<span>班级排名</span>
+	       		<span id="j_lxcj_class_pm"></span>
+	       	</div>
+	       	<div class="lxcj-detail">
+	       		<span>年级排名</span>
+	       		<span id="j_lxcj_school_pm"></span>
+	       	</div>
+<!--	       	<div id="j_lxcj_city" class="lxcj-detail display-none">
+	       		<span id="j_lxcj_name"></span>
+	       		<span id="j_lxcj_city_pm"></span>
+	       	</div>-->
+	       	<button id="j_lxcj_button" onclick="getIdealPm()">看看排名变化</button>
+	    </div>
+	    <!--//期望成绩-->
+	    <!--成绩榜-->
+	    <div class="cjgk-div clearfix">
+	        <div class="cjxq-title">
+	            <div class="name">成绩排行榜</div>
+	            <div class="hr"></div>
+	        </div>
+	        <ul id="j_cjb" class="cjb-content">        
+	        </ul>
+	        <script type="text/html" id="cjb_script">
+	            <li>
+	                <div class="person-detail clearfix" onclick="displayDetail(0,0,0,0,0,0,0,0,this.parentNode);">
+	                    <span class="name"><div class="bpm"><%=self_subject_info[0].classPm%></div><%=list[0].studentName%>&nbsp;&nbsp;<font><%=self_subject_info[0].score%>分</font></span>
+	                    <span class="zf"></span>
+	                </div>
+	                <div class="j_pk pk clearfix">
+	                    <span>班排名：<%=self_subject_info[0].classPm%></span>
+	                    <span>校排名：<%=self_subject_info[0].schoolPm%></span>
+	                    <%for(var i = 1; i < self_subject_info.length; i++) {%>
+	                        <span><%=self_subject_info[i].subjectName%>：<%=self_subject_info[i].score%></span>
+	                    <% } %>
+	                </div>
+	            </li>
+	            <%for(var i = 1; i < list.length; i++) {%>
+	                <li>
+	                    <div class="person-detail clearfix" onclick="displayDetail(<%=i%>,<%=list.length%>,<%=list[i].studentId%>,'<%=list[i].testCn%>',<%=self_subject_info[0].classPm%>,<%=self_subject_info[0].schoolPm%>,<%=list[i].classPm%>,<%=list[i].schoolPm%>,this.parentNode);">
+	                        <span class="name"><div class="bpm"><%=list[i].classPm%></div>&nbsp;&nbsp;<font><%=list[i].score%>分</font></span>
+	                        <span class="zf">PK一下</span>
+	                    </div>
+	                    <div class="j_pk pk clearfix display-none">
+	                    </div>
+	                </li>
+	            <% } %>
+	        </script>
+	    </div>
+	    <div id="msg_end" style="height:0px; overflow:hidden"></div>
+	    <!--//成绩榜-->
+	 </div>
+	 <div id="j_subject_all" class="display-none">
+	 	<div id="msg_top" style="height:0px; overflow:hidden"></div>
+	 	<div class="cj-detail-top">
+	        <div id="j_test_title_subject" class="test-title"></div>
+	        <div class="zcj">
+	            <font id="j_total_subject" class="rate"></font>
+	            <font id="j_total_subject_name" class="name"></font>
+	        </div>
+	        <img src="../../../../../../image/fun-module/ipad/xybg/1-2.png" />
+	        <div id="j_top_subject_2" class="rank w2 display-none">
+	            <span>
+	                <div id="j_class_pm_subject_2" class="num"></div>
+	                <div class="title">班级排名</div>
+	            </span>
+	            <span>
+	                <div id="j_school_pm_subject_2" class="num"></div>
+	                <div class="title">学校排名</div>
+	            </span>
+	        </div>
+	        <div id="j_top_subject_3" class="rank w3 display-none">
+	            <span>
+	                <div id="j_class_pm_subject_3" class="num"></div>
+	                <div class="title">班级排名</div>
+	            </span>
+	            <span>
+	                <div id="j_school_pm_subject_3" class="num"></div>
+	                <div class="title">学校排名</div>
+	            </span>
+	            <span>
+                    <div id="j_total_pm_subject" class="num"></div>
+                    <div id="j_total_pm_title_subject" class="title"></div>
+                </span>
+	        </div>
+	       <!-- <div class="sjfx-button" onclick="openSjfxWin()">试卷分析</div>-->
+	    </div>	
+	     <!--成绩概况-->
+	    <div id="j_cjgk_subject" class="cjgk-div clearfix"></div>
+	    <script type="text/html" id="cjgk_script_subject">
+	        <div class="cjxq-title">
+	            <div class="name">成绩概况</div>
+	            <div class="hr"></div>
+	        </div>
+	        <div class="com-tag">
+	            <ul>
+	                <% if(testType == '校考'){ %>
+	                    <li class="ml25 <% if(type == 0){ %>active<%}%>" onclick="changeType(0)">本班</li>
+	                <%}else if(testType == '区县考' || testType == '市考'){ %>
+	                    <li class="ml12 <% if(type == 0){ %>active<%}%>" onclick="changeType(0)">本班</li>
+	                <%}else{%>
+	                    <li class="<% if(type == 0){ %>active<%}%>" onclick="changeType(0)">本班</li>
+	                <%}%>
+	                <li class="<% if(type == 1){ %>active<%}%>" onclick="changeType(1)">本校</li>
+	                <% if(testType == '区县考'){ %>
+	                    <li class="<% if(type == 2){ %>active<%}%>" onclick="changeType(2)">本区</li>
+	                <% }else if(testType == '市考'){ %>
+	                    <li class="<% if(type == 3){ %>active<%}%>" onclick="changeType(3)">本市</li>
+	                <% } %>
+	            </ul>
+	            <table class="cz_table" style="table-layout: fixed; width: 100%;">
+	                <tbody>
+	                    <tr>
+	                        <th width="55px;" height="40px;">
+	                            <div class="cz_out">
+	                                <em class="cz_b">分类</em>
+	                                <em class="cz_em">科目</em>
+	                            </div>
+	                        </th>
+	                        <% if(type == 0){ %>
+	                            <th>我的分数</th>
+	                            <th>平均分</th>
+	                            <th>排名</th>
+	                            <th>最高分</th>
+	                        <% }else if(type == 1){ %>
+	                            <th>我的分数</th>
+	                            <th>平均分</th>
+	                            <th>排名</th>
+	                        <% }else if(type == 2){  %>
+	                            <th>我的分数</th>
+	                            <th>平均分</th>
+	                            <th>排名</th>
+	                        <% }else{  %>
+	                            <th>我的分数</th>
+	                            <th>平均分</th>
+	                            <th>排名</th>
+	                        <% }%>
+	                    </tr>
+	                    <%for(var i=0; i<data.length; i++) {%>
+	                        <% if(type == 0){ %>
+	                            <tr class="timetabletr">
+	                                <td><%=data[i].subjectName%></td>
+	                                <td><%=data[i].score*1%></td>
+	                                <td class="timetabletd" ><%=data[i].classAvgScore*1%>&nbsp;&nbsp;<%=#data[i].class_cz%></td>
+	                                <td class="timetabletd" ><%=data[i].classPm%></td>
+	                                <td><%=data[i].highestScore%></td>
+	                            </tr>
+	                        <% }else if(type == 1){ %>
+	                            <tr class="timetabletr">
+	                                <td><%=data[i].subjectName%></td>
+	                                <td><%=data[i].score*1%></td>
+	                                <td class="timetabletd" ><%=data[i].schoolAvgScore*1%>&nbsp;&nbsp;<%=#data[i].school_cz%></td>
+	                                <td class="timetabletd" ><%=data[i].schoolPm%></td>
+	                            </tr>
+	                        <% }else if(type == 2){  %>
+	                            <tr class="timetabletr">
+	                                <td><%=data[i].subjectName%></td>
+	                                <td><%=data[i].score*1%></td>
+	                                <td class="timetabletd" ><%=data[i].districtAvgScore*1%>&nbsp;&nbsp;<%=#data[i].dir_cz%></td>
+	                                <td class="timetabletd" ><%=data[i].totalPm%></td>
+	                            </tr>
+	                        <% }else{  %>
+	                            <tr class="timetabletr">
+	                                <td><%=data[i].subjectName%></td>
+	                                <td><%=data[i].score*1%></td>
+	                                <td class="timetabletd" ><%=data[i].cityAvgScore*1%>&nbsp;&nbsp;<%=#data[i].city_cz%></td>
+	                                <td class="timetabletd" ><%=data[i].totalPm%></td>
+	                            </tr>
+	                        <% }%>
+	                    <% } %>
+	                </tbody>
+	            </table>
+	        </div>
+	    </script>
+	     <!--//基本情况-->
+	    <div class="cjgk-div clearfix">
+	        <div class="cjxq-title">
+	            <div class="name">基本情况</div>
+	            <div class="hr"></div>
+	        </div>
+	        <div id="j_jbqk_sftm" class="jbqk-subject">
+	        </div>
+	    </div>
+	     <!--//成绩变化情况-->
+	    <div class="cjgk-div clearfix">
+	        <div class="cjxq-title">
+	            <div class="name">成绩变化情况</div>
+	            <div class="hr"></div>
+	        </div>
+	        <div class="com-tag">
+	            <ul id="j_3">
+	            </ul>
+	        </div>
+	        <div class="cjbh-tip">标准分是一种由原始分推导出来的相对地位量数，可以说明原始分在所属的一批分数中的相对位置。</div>
+	        <div id="cjbh" style="width:90%;height:300px;margin-top:-40px;margin-left:5%;"></div>
+	        <div id="j_subject_description" class="analysis-text">
+			</div>
+	    </div>
+	    <!--难易题得分率-->
+		 <div class="cjgk-div clearfix">
+		     <div class="cjxq-title">
+	            <div class="name">难易题得分率</div>
+	            <div class="hr"></div>
+		     </div>
+		     <div class="com-tag">
+	            <ul id="j_5"></ul>
+	        </div>
+		     <div id="nytdfl" style="width:100%;height:300px;margin-top:20px;padding-left:5%"></div>
+		     <div class="nytdfl-detail">
+	        	<div id="j_sfnt"></div>
+	        	<div id="j_sfzdt"></div>
+	        	<div id="j_sfjdt"></div>
+		     </div>
+<!--	        <div id="j_subject_nytdfl_description" class="analysis-text"></div>-->
+	        <div id="j_subject_nytdfl_description" class="common-analysis-text"></div>
+		</div>
+		<!--//知识点维度-->
+    <div class="cjgk-div clearfix">
+        <div class="cjxq-title">
+            <div class="name">知识维度</div>
+            <div class="hr"></div>
+        </div>
+        <div id="zsdwd" style="width:90%;height:300px;margin-left:5%;"></div>
+<!--        <div id="j_zsdwd_analysis" class="common-analysis-text"><font>【分析】</font>从上述图表可得，你在圆锥曲线和函数与导学等知识点上需要加强。可查看相应<font>【同质题】</font>进行训练</div>-->
+    </div>
+    <!--//知识点维度-->
+    <!--//能力维度-->
+    <div class="cjgk-div clearfix">
+        <div class="cjxq-title">
+            <div class="name">能力维度</div>
+            <div class="hr"></div>
+        </div>
+        <div id="nlwd" style="width:90%;height:300px;margin-left:5%;"></div>
+       <!-- <div id="j_nlwd_analysis" class="common-analysis-text"><font>【分析】</font>需要加强推理论证能力，应用意识和创新意识的训练</div>-->
+    </div>
+    <!--//能力维度-->
+    <!--//学科素养-->
+    <div class="cjgk-div clearfix">
+        <div class="cjxq-title">
+            <div id="j_xkwd_subject_name" class="name"></div>
+            <div class="hr"></div>
+        </div>
+        <div id="xksy" style="width:90%;height:300px;margin-left:5%;"></div>
+       <!-- <div id="j_xkwd_analysis" class="common-analysis-text"><font>【分析】</font>你需要多做一些训练<font>【逻辑推理】</font>和<font>【数学运算】</font>素养的试题。</div>-->
+    </div>
+    <!--//学科素养-->
+	 <!--试题分析-->
+    <div class="cjgk-div clearfix">
+        <div class="cjxq-title">
+            <div class="name">试题分析</div>
+            <div class="hr"></div>
+        </div>
+        <div class="com-tag">
+            <ul id="j_4"></ul>
+        </div>
+        <div id="stfx_body_subject">
+    	<!--<ul class="detail-stfx">
+            	<li>
+	               <div class="top">
+						<span>第1题</span>
+						<span onclick="openStfxDetail(this,<%=i%>)">
+							1>分/1分<i class="aui-iconfont aui-icon-unfold"></i></span>
+					</div>
+					<div id="j_stfx_<%=i%>" class="bottom">
+						<span>题型：1</span
+                        <span>难度：2</span>
+						<span>考察能力：3</span>
+						<div>知识点：4</div>
+						<div>正确答案：5</div>
+						<div class="stfx-btn">
+							<div>查看详情</div>
+							<div>移出题本</div>
+							<div>学习微课</div>
+						</div>
+					</div>
+          	 </ul>-->
+        </div>
+		 <script type="text/html" id="stfx_script_subject">
+	 		<%if(data.length == 0){%>
+	 			<div class="no-data bgf">暂无试题</div>
+</		 		<%}else{%>
+	 			<ul class="detail-stfx">
+	            <%for(var i = 0; i < data.length; i++) {%>
+	            	<li>
+		               <div class="top <%if(data[i].score*1 == data[i].totalScore){%>mf<%}else if(data[i].score*1 == 0){%>lf<%}else{%>bd<%}%>" onclick="openStfxDetail(this,<%=i%>,'<%=data[i].questionIdChar%>')">
+							<span>第<%=data[i].questionName%>题</span>
+							<span>
+								<%=data[i].score*1%>分/<%=data[i].totalScore*1%>分<i class="aui-iconfont aui-icon-unfold"></i></span>
+						</div>
+						<div id="j_stfx_<%=i%>" class="bottom display-none">
+							<span>题型：<%=data[i].questionType%></span>
+							<% if(type == 0){ %>
+	                            <span>满分人数：<%=data[i].classFullMarkCount%>人</span>
+								<span>得分率：<%=data[i].classScoreRate%>%</span>
+								<span>平均分：<%=data[i].classAvg%>分</span>
+	                        <% }else if(type == 1){ %>
+	                            <span>满分人数：<%=data[i].schoolFullMarkCount%>人</span>
+								<span>得分率：<%=data[i].schoolScoreRate%>%</span>
+								<span>平均分：<%=data[i].schoolAvg%>分</span>
+	                        <% }else if(type == 2){  %>
+	                        	<span>满分人数：<%=data[i].districtFullMarkCount%>人</span>
+								<span>得分率：<%=data[i].districtScoreRate%>%</span>
+								<span>平均分：<%=data[i].districtAvg%>分</span>
+	                        <% }else{  %>
+	                        	<span>满分人数：<%=data[i].cityFullMarkCount%>人</span>
+								<span>得分率：<%=data[i].cityScoreRate%>%</span>
+								<span>平均分：<%=data[i].cityAvg%>分</span>
+	                        <% }%>
+	                        <span>难度：<%=data[i].difficulty%></span>
+							<%if(data[i].questionAnswer){%>
+								<span>正确答案：<%=data[i].questionAnswer%></span>
+							<%}%>
+							<%if(data[i].knowledgePoint){%>
+								<div>知识点：
+									<%for(var j = 0; j < data[i].knowledgePoint.length; j++){%>
+										<%if(j == 0){%>
+											<%=data[i].knowledgePoint[j].strucName%><br/>
+										<%}else{%>
+											<p class="stfx-zsd-p"><%=data[i].knowledgePoint[j].strucName%></p>
+										<%}%>
+									<%}%>
+								</div>
+							<%}%>
+							<div class="stfx-btn">
+								<div onclick="openStAllDetailWin('<%=data[i].transmit_param%>',<%=type%>);">试题详情</div>
+								<div id="j_stfx_btn_<%=i%>" type="1" onclick="removeOrAddWrongTiben(<%=i%>,'<%=data[i].questionIdChar%>','<%=data[i].qt_id%>','<%=data[i].qt_type%>');"></div>
+								<div onclick="openStudyWkWin(<%=i%>);">学习微课</div>
+							</div>
+						</div>
+					</li>
+	          	 <%}%>
+	          	 </ul>
+          	 <%}%>
+        </script>
+		</div>
+    </div>
+    <div id="cxwjg" class="cxwjg">查询无结果</div>
+</body>
+<script type="text/javascript" src="../../../../../../script/api.js"></script>
+<script type="text/javascript" src="../../../../../../script/base_config.js" ></script>  
+<script type="text/javascript" src="../../../../../../script/plug-in/template.js" ></script>     
+<script type="text/javascript" src="../../../../../../script/plug-in/echarts.min.js" ></script>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                
+<script type="text/javascript" src="../../../../../../script/common/common.js" ></script>
+<script type="text/javascript" src="../../../../../../script/module/common/cjfxXs.js"></script>
+<script type="text/javascript">
+    var testId;//考试id
+    var testType;//考试所属类型
+    var cjbg_data;//最上方各科成绩数据，以及成绩概况数据
+    var subjectId;//学科id
+    var stfx_data;//试题分析数据
+    var nytdfl_data;//难易题得分率数据
+    var student_id;//学生id
+    apiready = function(){
+   	 commonSetTheme({"level":6,"type":0});
+        testId = api.pageParam.testId;
+        testType = api.pageParam.testType;
+       	changePersonInfo();
+        commonGetStudentInfoByParentId(student_id_mr, identity_mr, function(is_true, stu_info_json){
+			if(is_true) {
+				student_id = stu_info_json.student_id;
+				initTag();
+				getExamSubject(function(data){
+		        	openNavigationBar(data);//打开滑动条	
+		        	showAccordSubjectId();	
+		        });
+    		}
+        });
+        //openZsddfl();
+        //openKcnldfl();
+    };
+    /*
+    *author:zhaoj
+    *function:初始化tag标签
+    *date：20170428
+    */
+    function initTag(){
+    	setTagChange(1);
+        setTagChange(2);
+        setTagChange(3);
+        setTagChange(4);
+        setTagChange(5);
+    }
+    /*
+    *author:zhaoj
+    *function:打开滑动条
+    *date：20170419
+    */
+    function openNavigationBar(data) {
+		commonCloseNavigationBar();
+		//获取游戏类型
+		var bar_items = [
+			{
+				"title" : '全科',
+				"id" : -1,
+			}
+		];
+		for(var i = 0; i < data.data.length; i++){
+			var oparam = new Object();
+			oparam.title = data.data[i].subjectName;
+			oparam.id = data.data[i].subjectId;
+			bar_items.push(oparam);
+		}
+		var params = {
+			y : api.pageParam.header_h,
+			items : bar_items,
+			winName : 'cjfx_detail_window',
+			frameName : 'cjfx_detail_frame',
+			file_level:1,
+			bgColor:"#34A8FA",
+			border:"1px solid #2493E0",
+			font:{
+				"color":"#ffffff",
+				"colorSelected":"#ffffff"
+			}
+		};
+		commonMyNavigationBar(params);
+	}
+	/*
+	*author:zhaoj
+	*function:点击学科回调函数
+	*date：20161220
+	*/
+	function callBackNew(id, index) {
+		subjectId = id;
+		showAccordSubjectId();
+		initTag();
+		subjectId < 0?initAllData():initSingleSubjectData();
+	}
+	/*
+	*author:zhaoj
+	*function:根据学科id显示全科报告还是分科报告
+	*date：20170420
+	*/
+	function showAccordSubjectId(){
+		if(subjectId > 0){
+			$api.addCls($api.byId('j_all'),'display-none');
+			$api.removeCls($api.byId('j_subject_all'),'display-none');
+		}else{
+			$api.addCls($api.byId('j_subject_all'),'display-none');
+			$api.removeCls($api.byId('j_all'),'display-none');
+		}
+	}
+	/*
+	*author:zhaoj
+	*function:初始化全科数据
+	*date：20170420
+	*/
+	function initAllData(){
+		 showSelfProgress('加载中...');
+		msg_top_all.scrollIntoView(); 
+		getScoreInfo(function(data){
+			//获取考试评语
+			getStudentComment(function(kspy_data){
+				$api.html($api.byId('j_kspy'),kspy_data.data);
+				data.testType = testType;
+	            data.type = 0;
+	            setTopInfo(data);
+	            commonAddOnceHtml('j_subject','subject_script',data);
+	            commonAddOnceHtml('j_cjgk','cjgk_script',dealCjgkData(data));
+	            getCjgkData(0);//设置成绩概况上方图表
+	            initSetDesiredResults(0,data);//设置理想成绩数据显示
+	            //进步情况
+	            getProgressCircumstance(0,function(jbqk_data){
+	            	$api.html($api.byId('j_all_description'),jbqk_data.description);
+	                dealJbqkData(0,jbqk_data);
+	                //成绩榜
+	                getScoreList(function(cjb_data){
+	                    dealCjbData(cjb_data);
+	                    getSubjectCompareInfo(0,function(ylxk_data){
+	                        api.hideProgress();
+	                        dealYlxkdbData(ylxk_data);
+	                    });
+	                });
+	            });
+			});
+        });
+	}
+	/*
+	*author:zhaoj
+	*function:初始化单科成绩数据
+	*date：20170420
+	*/
+	function initSingleSubjectData(){
+		showSelfProgress('加载中...');
+		getScoreInfo(function(data){
+		    if(typeof(data) == undefined || typeof(data.data) == undefined || data.data.length <=0){
+		      $api.css($api.byId('j_subject_all'), 'display:none');
+		      $api.css($api.byId('j_all'), 'display:none');
+		      $api.css($api.byId('cxwjg'), 'display:block');
+		      api.hideProgress();
+		    }else{
+		        $api.css($api.byId('j_subject_all'), 'display:block');
+                $api.css($api.byId('j_all'), 'display:block');
+                $api.css($api.byId('cxwjg'), 'display:none');
+		        msg_top.scrollIntoView();
+		        data.testType = testType;
+                data.type = 0;
+                setTopInfo(data);
+                commonAddOnceHtml('j_cjgk_subject','cjgk_script_subject',dealCjgkData(data));
+                initSetDesiredResults(0,data);//设置理想成绩数据显示
+                //获取进步情况
+                getStudentQuestionScoreByType(function(jbxq_data){
+                    setJbqkData(jbxq_data);//设置进步情况数据显示
+                    //进步情况
+                    getProgressCircumstance(0,function(jbqk_data){
+                        $api.html($api.byId('j_subject_description'),jbqk_data.description);
+                        dealJbqkData(0,jbqk_data);
+                        getQuestionBaseInfo(function(stfxData){
+                            stfx_data = stfxData;
+                            stfx_data.type = 0;
+                            dealStfxData();
+                            //获取难易题得分率
+                            getDificultyScoreRate(1,function(nytdflData){
+                                $api.html($api.byId('j_subject_nytdfl_description'),nytdflData.description);
+                                nytdfl_data = nytdflData;
+                                dealNytdfxData(0);
+                                api.hideProgress();
+                            });
+                            openZsdwd();//打开知识点维度
+                            //获取能力维度数据
+                            getStudentQuestionPropertyByType(1,function(nlwd_data){
+                                dealNlwdData(nlwd_data);//处理能力维度的数据
+                                //获取能学科素养数据
+                                getStudentQuestionPropertyByType(2,function(xksy_data){
+                                    dealXksyData(xksy_data);//处理学科素养的数据
+                                });
+                            });
+                        });
+                    });
+                });
+		    }
+        });
+	}
+	/*
+	*author:zhaoj
+	*function:处理成绩概况数据格式
+	*date：20170421
+	*/
+    function dealCjgkData(data){
+    	for(var i = 0; i < data.data.length; i++){
+			data.data[i].score = data.data[i].score*1;
+			data.data[i].score = data.data[i].score.toFixed(2);
+			data.data[i].classAvgScore = data.data[i].classAvgScore*1;
+			data.data[i].classAvgScore = data.data[i].classAvgScore.toFixed(2);
+			data.data[i].schoolAvgScore = data.data[i].schoolAvgScore*1;
+			data.data[i].schoolAvgScore = data.data[i].schoolAvgScore*1;
+			data.data[i].districtAvgScore = data.data[i].districtAvgScore.toFixed(2);
+			data.data[i].districtAvgScore = data.data[i].districtAvgScore*1;
+			data.data[i].cityAvgScore = data.data[i].cityAvgScore.toFixed(2);
+			data.data[i].cityAvgScore = data.data[i].cityAvgScore*1;
+			var a = changeTwoDecimal(data.data[i].score);
+			var b = changeTwoDecimal(data.data[i].classAvgScore);
+			var c = changeTwoDecimal(data.data[i].schoolAvgScore);
+			var d = changeTwoDecimal(data.data[i].districtAvgScore);
+			var e = changeTwoDecimal(data.data[i].cityAvgScore);
+			var class_cz = "";
+			var school_cz = "";
+			var dir_cz = "";
+			var city_cz = "";
+			if(a>b){
+				class_cz = "<font class='up'>↑"+changeTwoDecimal(a -b)+'</font>';
+			} else if(a<b){
+				class_cz ="<font class='down'>↓"+changeTwoDecimal(b -a)+'</font>';
+			}
+			if(a>c){
+				school_cz = "<font class='up'>↑"+changeTwoDecimal(a -c)+'</font>';
+			} else if(a<c){
+				school_cz ="<font class='down'>↓"+changeTwoDecimal(c -a)+'</font>';
+			}
+			if(a>d){
+				dir_cz = "<font class='up'>↑"+changeTwoDecimal(a -d)+'</font>';
+			} else if(a<d){
+				dir_cz ="<font class='down'>↓"+changeTwoDecimal(d -a)+'</font>';
+			}
+			if(a>e){
+				city_cz = "<font class='up'>↑"+changeTwoDecimal(a -e)+'</font>';
+			} else if(a<e){
+				city_cz ="<font class='down'>↓"+changeTwoDecimal(e -a)+'</font>';
+			}
+			data.data[i].class_cz = class_cz;
+			data.data[i].school_cz = school_cz;
+			data.data[i].dir_cz = dir_cz;
+			data.data[i].city_cz = city_cz;
+		}
+		cjbg_data = data;
+		return data;
+    }
+    /*
+	*author:zhaoj
+	*function:处理试题分析数据格式
+	*date：20170422
+	*/
+    function dealStfxData(){
+    	for(var i =0; i < stfx_data.data.length; i++){
+    		stfx_data.data[i].classScoreRate = getTwoDecimal(stfx_data.data[i].classScoreRate,1);
+    		stfx_data.data[i].classAvg = getTwoDecimal(stfx_data.data[i].classAvg,0);
+    		
+    		stfx_data.data[i].schoolScoreRate = getTwoDecimal(stfx_data.data[i].schoolScoreRate,1);
+    		stfx_data.data[i].schoolAvg = getTwoDecimal(stfx_data.data[i].schoolAvg,0);
+    		
+    		stfx_data.data[i].districtScoreRate = getTwoDecimal(stfx_data.data[i].districtScoreRate,1);
+    		stfx_data.data[i].districtAvg = getTwoDecimal(stfx_data.data[i].districtAvg,0);
+    		
+    		stfx_data.data[i].cityScoreRate = getTwoDecimal(stfx_data.data[i].cityScoreRate,1);
+    		stfx_data.data[i].cityAvg = getTwoDecimal(stfx_data.data[i].cityAvg,0);
+    		//最高分
+    		stfx_data.data[i].highestScore = getTwoDecimal(stfx_data.data[i].highestScore,0);
+    		//最低分
+    		stfx_data.data[i].lowestScore = getTwoDecimal(stfx_data.data[i].lowestScore,0);
+    		var oparam = new Object();
+    		oparam.id = stfx_data.data[i].id;
+    		oparam.questionIdChar = stfx_data.data[i].questionIdChar;
+    		oparam.questionName = stfx_data.data[i].questionName;
+    		oparam.questionType = stfx_data.data[i].questionType;
+    		oparam.score = stfx_data.data[i].score*1;
+    		oparam.totalScore = stfx_data.data[i].totalScore*1;
+    		oparam.questionAnswer = stfx_data.data[i].questionAnswer;
+    		oparam.classAvg = stfx_data.data[i].classAvg;
+    		oparam.schoolAvg = stfx_data.data[i].schoolAvg;
+    		oparam.districtAvg = stfx_data.data[i].districtAvg;
+    		oparam.cityAvg = stfx_data.data[i].cityAvg;
+    		oparam.classScoreRate = stfx_data.data[i].classScoreRate;
+    		oparam.schoolScoreRate = stfx_data.data[i].schoolScoreRate;
+    		oparam.districtAvg = stfx_data.data[i].districtAvg;
+    		oparam.districtScoreRate = stfx_data.data[i].districtScoreRate;
+    		oparam.cityAvg = stfx_data.data[i].cityAvg;
+    		oparam.cityScoreRate = stfx_data.data[i].cityScoreRate;
+    		oparam.highestScore = stfx_data.data[i].highestScore;
+    		oparam.lowestScore = stfx_data.data[i].lowestScore;
+    		oparam.knowledgePoint = stfx_data.data[i].knowledgePoint;
+    		oparam.qt_id = stfx_data.data[i].qt_id;
+    		oparam.qt_type = stfx_data.data[i].qt_type;
+    		oparam.wkidint = stfx_data.data[i].wkidint;
+    		oparam.wkid = stfx_data.data[i].wkid;
+    		oparam.examination = stfx_data.data[i].examination;
+    		oparam.myAnswer = stfx_data.data[i].myAnswer;
+    		stfx_data.data[i].transmit_param = JSON.stringify(oparam);
+    	}
+    	commonAddOnceHtml('stfx_body_subject','stfx_script_subject',stfx_data);
+    }
+    /*
+    *author:zhaoj
+    *function:设置最上方
+    *date：20170318
+    */
+    function setTopInfo(data){
+        var testName = api.pageParam.testName;
+        if(subjectId <0){
+        	$api.text($api.byId('j_test_title'), testName);
+        	$api.text($api.byId('j_total'), data.data[0].score);
+        	//如果是市级或区级考试，显示市排名或区排名
+        	if(testType=="市考" || testType=="区县考"){
+        		if(testType=="市考"){
+        			$api.text($api.byId('j_total_pm_title'), '市排名');
+        		}else{
+        			$api.text($api.byId('j_total_pm_title'), '区排名');
+        		}
+        		$api.text($api.byId('j_total_pm'), data.data[0].totalPm);
+        		$api.text($api.byId('j_class_pm_3'), data.data[0].classPm);
+		        $api.text($api.byId('j_school_pm_3'), data.data[0].schoolPm);
+		        $api.removeCls($api.byId('j_top_3'),'display-none');
+        	}else{
+		        $api.text($api.byId('j_class_pm_2'), data.data[0].classPm);
+		        $api.text($api.byId('j_school_pm_2'), data.data[0].schoolPm);
+		        $api.removeCls($api.byId('j_top_2'),'display-none');
+		     }
+	   	}else{
+	        $api.text($api.byId('j_test_title_subject'), testName);
+	        $api.text($api.byId('j_total_subject'), data.data[0].score);
+	        $api.text($api.byId('j_total_subject_name'), data.data[0].subjectName);
+	        $api.text($api.byId('j_xkwd_subject_name'), data.data[0].subjectName+'素养');
+	        //如果是市级或区级考试，显示市排名或区排名
+	        if(testType=="市考" || testType=="区县考"){
+        		if(testType=="市考"){
+        			$api.text($api.byId('j_total_pm_title_subject'), '市排名');
+        		}else{
+        			$api.text($api.byId('j_total_pm_title_subject'), '区排名');
+        		}
+        		$api.text($api.byId('j_total_pm_subject'), data.data[0].totalPm);
+        		$api.text($api.byId('j_class_pm_subject_3'), data.data[0].classPm);
+		        $api.text($api.byId('j_school_pm_subject_3'), data.data[0].schoolPm);
+		        $api.removeCls($api.byId('j_top_subject_3'),'display-none');
+        	}else{
+		        $api.text($api.byId('j_class_pm_subject_2'), data.data[0].classPm);
+		        $api.text($api.byId('j_school_pm_subject_2'), data.data[0].schoolPm);
+		        $api.removeCls($api.byId('j_top_subject_2'),'display-none');
+		    }
+	   	}
+    }
+    /*
+    *author:zhaoj
+    *function:本班、本校、本区、本校切换
+    *date：20170318
+    */
+    function changeType(type){
+        cjbg_data.type = type;
+        if(subjectId < 0){	
+       		commonAddOnceHtml('j_cjgk','cjgk_script',cjbg_data);
+       		getCjgkData(type);
+       	}else{
+       		commonAddOnceHtml('j_cjgk_subject','cjgk_script_subject',cjbg_data);
+       	}
+    }
+    /*
+    *author:zhaoj
+    *function:本班、本校、本区、本校切换
+    *date：20170318
+    */
+    function tagChangeType(type,obj,mode_type){
+        var li_array = obj.parentNode.children;
+        for(var i = 0; i < li_array.length; i++){
+            $api.removeCls(li_array[i], 'active');
+        }
+        $api.addCls(obj, 'active');
+        if(mode_type == 1 || mode_type == 3){
+             getProgressCircumstance(type,function(jbqk_data){
+                dealJbqkData(type,jbqk_data);
+            });
+        }else if(mode_type == 2){
+            getSubjectCompareInfo(type,function(ylxk_data){
+                dealYlxkdbData(ylxk_data);
+                //进步情况
+            });
+        }else if(mode_type == 4){
+        	stfx_data.type = type;
+        	commonAddOnceHtml('stfx_body_subject','stfx_script_subject',stfx_data);
+        }else if(mode_type == 5){
+        	dealNytdfxData(type);
+        }
+    }
+    /*
+    *author:zhaoj
+    *function:打开进步曲线
+    *date：20170318
+    */
+    function setTagChange(mode_type){
+        var li_html = '';
+        if(testType=="校考"){
+            li_html += '<li class="ml25 active" onclick="tagChangeType(0,this,'+mode_type+')">本班</li>';
+        }else if(testType == '区县考'){ 
+            li_html += '<li class="ml12 active" onclick="tagChangeType(0,this,'+mode_type+')">本班</li>';
+        }else if(testType == '市考'){ 
+            li_html += '<li class="ml12 active" onclick="tagChangeType(0,this,'+mode_type+')">本班</li>';
+        }
+        li_html +='<li onclick="tagChangeType(1,this,'+mode_type+')">本校</li>';
+        if(testType=="区县考"){
+            li_html += '<li onclick="tagChangeType(2,this,'+mode_type+')">本区</li>';
+        }else if(testType == '市考'){ 
+            li_html += '<li onclick="tagChangeType(3,this,'+mode_type+')">本市</li>';
+        }
+        $api.html($api.byId('j_'+mode_type),li_html);
+    }
+    /*
+    *author:zhaoj
+    *function:处理进步情况数据
+    *date：20170322
+    */
+    function dealJbqkData(type,data){
+        var jbqx_data={"time":[],"value":[]};
+        var start = 0;
+        if(data.data.length >= 5){
+        	start =data.data.length -5;
+        }
+        for(var i = start; i < data.data.length; i++){
+            jbqx_data.time.push(data.data[i].testDate);
+            if(type ==0 ){
+            	jbqx_data.value.push(data.data[i].classStandardScore*1);
+            }else if(type == 1){
+            	jbqx_data.value.push(data.data[i].schoolStandardScore*1);
+            }else if(type == 2){
+            	jbqx_data.value.push(data.data[i].districtStandardScore*1);
+            }else{
+            	jbqx_data.value.push(data.data[i].cityStandardScore*1);
+            }
+        }
+        if(subjectId < 0){
+        	openJbqx(jbqx_data,'main');
+        }else{
+        	openJbqx(jbqx_data,'cjbh');
+        }
+    }
+    /*
+    *author:zhaoj
+    *function:处理成绩榜数据
+    *date：20170322
+    */
+    function dealCjbData(cjb_data){
+        var stu_data={'list':[]};
+        stu_data.self_subject_info = cjbg_data.data;
+        //去除自己的，其余学生进行处理
+        for(var i = 0; i < cjb_data.data.length; i++){
+            var stu_info = cjb_data.data[i];
+            if(stu_info.studentId == student_id_mr){
+            	//自己添加的班排名
+            	stu_data.self_subject_info[0].classPm = i+1;
+            	//自己添加的班排名
+                stu_data.list.push(returnStuData(i,cjb_data));
+            }
+        }
+        //去除自己的，其余学生进行处理
+        for(var i = 0; i < cjb_data.data.length; i++){
+            var stu_info = cjb_data.data[i];
+            if(stu_info.studentId != student_id_mr){
+                stu_data.list.push(returnStuData(i,cjb_data));
+            }
+        }
+        commonAddOnceHtml('j_cjb','cjb_script',stu_data);
+    }
+    /*
+    *author:zhaoj
+    *function:返回学生成绩相关的数据对象
+    *date：20170322
+    */
+    function returnStuData(i,cjb_data){
+        var stu_info = cjb_data.data[i];
+        var oparam = new Object();
+        oparam.classAvgScore = stu_info.classAvgScore;
+        oparam.score = stu_info.score;
+        oparam.schoolPm = stu_info.schoolPm;
+        oparam.subjectStandardScore = stu_info.subjectStandardScore;
+        oparam.subjectMap = stu_info.subjectMap;
+        oparam.highestScore = stu_info.highestScore;
+        oparam.cityStandardScore = stu_info.cityStandardScore;
+        oparam.beforeScore = stu_info.beforeScore;
+        oparam.districtStandardScore = stu_info.districtStandardScore;
+        oparam.schoolStandardScore = stu_info.schoolStandardScore;
+        oparam.classStandardScore = stu_info.classStandardScore;
+        oparam.subjectName = stu_info.subjectName;
+        oparam.studentName = stu_info.studentName;
+        oparam.testCn = stu_info.testCn;
+        oparam.classPm = i+1;//自己排的班排名
+        //oparam.classPm = stu_info.classPm;
+        oparam.schoolAvgScore = stu_info.schoolAvgScore;
+        oparam.studentId = stu_info.studentId;
+        oparam.totalPm = stu_info.totalPm;
+        oparam.subjectId = stu_info.subjectId;
+        oparam.districtAvgScore = stu_info.districtAvgScore;
+        oparam.cityAvgScore = stu_info.cityAvgScore;
+        return oparam;
+    }
+    /*
+    *author:zhaoj
+    *function:打开进步曲线
+    *date：20170318
+    */
+    function openJbqx(jbqx_data,id){
+        // 基于准备好的dom，初始化echarts实例
+        var myChart = echarts.init(document.getElementById(id));
+        // 指定图表的配置项和数据
+        option = {
+        	title: {
+		        text: '标准分（T）',
+		        textStyle: {
+	                color: '#333',
+	                fontFamily: 'Microsoft YaHei',
+	                fontSize: 12,
+	                fontWeight:'normal',
+	            },
+	            y:'33px',
+		    },
+            tooltip: {
+                trigger: 'axis'
+            },
+            grid: {
+                left: '3%',
+                right: '4%',
+                bottom: '15%',
+                containLabel: true
+            },
+            xAxis: {
+                type: 'category',
+                boundaryGap: false,
+                 axisLabel : {  
+                 	interval:0, 	
+                  	rotate: 45
+                 },
+                 data: jbqx_data.time
+            },
+            yAxis: {
+                type: 'value'
+              },
+            series: [
+                {
+                    name:'标准分',
+                    type:'line',
+                    stack: '总量',
+                    data:jbqx_data.value,
+                    label: {
+                        normal: {
+                            show: true,
+                            position: 'top'
+                        }
+                    } 
+                }
+                
+            ],
+            itemStyle: {
+                normal: {
+                    color: '#34A8FA'
+                }
+            },
+            showSymbol: false
+        };
+        // 使用刚指定的配置项和数据显示图表。
+        myChart.setOption(option);
+    }
+   /*
+    *author:zhaoj
+    *function:打开科目均衡性
+    *date：20170318
+    */
+    function dealYlxkdbData(data,type){
+        var chartData={"indicator":[],"value":[],"value_my":[],'ys_subject':[],'ls_subject':[]};
+        //获取雷达图的最大数值和最小数值
+        var max_num=0;
+        var min_num=0;
+        //班级，校，区等图标最大值
+        for(var i = 0; i<data.data.length; i++){
+            var avgScore = data.data[i].avgScore*1;
+            avgScore = avgScore*1;
+            avgScore =avgScore.toFixed(2);
+            if( avgScore> max_num){
+                max_num =  avgScore;
+            }
+        }
+        //学生个人图标最大值，学生图表数据获取
+        for(var i = 0; i<data.data1.length; i++){
+            var avgScore_my = data.data1[i].avgScore*1;
+            avgScore_my = avgScore_my.toFixed(2);
+            //获取优势和劣势学科数
+            if(avgScore_my <= 1){
+                chartData.value_my.push(avgScore_my);                
+            }
+            if( avgScore_my*1> max_num){
+                max_num =  avgScore_my;
+            }
+        }
+        for(var i = 0; i<data.data.length; i++){
+        	//公共数据
+            var avgScore = data.data[i].avgScore*1;
+            //我的数据
+            var avgScore_my = data.data[i].avgScore*1;;
+            avgScore =avgScore.toFixed(2);
+            avgScore_my =avgScore_my.toFixed(2);
+            //获取优势和劣势学科数
+            if(avgScore <= 1){
+                chartData.value.push(avgScore);
+                //获取雷达图相关数据
+                var oparam = new Object();
+                oparam.max = max_num;
+                oparam.min = min_num;
+                oparam.name = data.data[i].subjectName;
+                chartData.indicator.push(oparam);
+                if(avgScore <= avgScore_my){
+                    chartData.ys_subject.push(data.data[i].subjectName);
+                }else{
+                    chartData.ls_subject.push(data.data[i].subjectName);
+                }
+                //优劣学科显示
+                if(chartData.ys_subject.length != 0){
+                	 $api.text($api.byId('j_ys_subject'), chartData.ys_subject.toString()+',请继续努力保持！');
+                }else{
+                	$api.text($api.byId('j_ys_subject'), '不存在优势学科，需要继续努力！');
+                }
+               if(chartData.ls_subject.length != 0){
+                	 $api.text($api.byId('j_ls_subject'), chartData.ls_subject.toString()+',结合学科知识点和能力诊断，看看自己哪些知识点没有掌握，好好分析一下吧，争取下次考试追上来！');
+                }else{
+                	$api.text($api.byId('j_ls_subject'), '不存在劣势学科，需要继续保持');
+                }
+                
+            }
+        }
+        openYlxkdb(chartData,type);//打开雷达图
+    }
+     function valueFormat(value){
+        return Math.round(value*1);
+    };
+    /*
+    *author:zhaoj
+    *function:打开科目均衡性
+    *date：20170318
+    */
+    function openYlxkdb(chartData){
+        // 基于准备好的dom，初始化echarts实例
+        var myChart = echarts.init(document.getElementById('ylxkdb'));
+        option = {
+            title: {
+                text: '得分率',
+                textStyle: {
+                    color: '#333',
+                    fontFamily: 'Microsoft YaHei',
+                    fontSize: 12,
+                    fontWeight:'normal'
+                }
+            },
+            tooltip: {
+            },
+            radar: {
+                indicator: chartData.indicator,
+                radius: 90
+                
+            },
+            series: [{
+                name: '科目均衡性',
+                type: 'radar',
+                data : [
+                    {
+                        value : chartData.value,
+                        name : '得分率',
+                        label: {
+                        normal: {
+                            show: true,
+                            position: 'top'
+                        }
+                    } 
+                    }
+                ]
+            }],
+            itemStyle: {
+                normal: {
+                    color: '#34A8FA'
+                }
+            },
+        };
+        // 使用刚指定的配置项和数据显示图表。
+        myChart.setOption(option);
+    }
+    /*
+    *author:zhaoj
+    *function:成绩榜详情展示
+    *date：20170318
+    */
+    function displayDetail(type,length,other_stu_id,testCn,self_classPm,self_schoolPm,other_classPm,other_schoolPm,parentNode){
+        if($api.hasCls($api.dom(parentNode, '.j_pk'), 'display-none')){
+            if(type != 0){
+                showSelfProgress('PK中...');
+                getExamCompare(other_stu_id,testCn,function(data){//获取各科的对比数据
+                    api.hideProgress();
+                    //各个科目显示顺序和我的成绩各个科目显示顺序一致
+                    var final_data = {"list":[]};
+                    for(var i = 1; i < cjbg_data.data.length; i++){
+                        for(var j = 0; j < data.data.length; j++){
+                            if(cjbg_data.data[i].subjectId == data.data[j].subjectId){
+                                final_data.list.push(data.data[j]);
+                            }
+                        }
+                    }
+                    //获取对比数据的htnml代码
+                    var span_html ="";
+                    //获取班级排名和学校排名的差值
+                    var self_class = changeTwoDecimal(self_classPm);
+                    var self_school = changeTwoDecimal(self_schoolPm);
+                    var other_class = changeTwoDecimal(other_classPm);
+                    var other_school = changeTwoDecimal(other_schoolPm);
+                    span_html+='<span>班排名：'+other_class+'</span>';
+                    span_html+='<span>校排名：'+other_school+'</span>';
+                    //获取各个学科的分数以及差值
+                    for(var i = 0; i < final_data.list.length; i++){
+                        if(final_data.list[i].score > 0){
+                            span_html+='<span>'+final_data.list[i].subjectName+'：'+final_data.list[i].field2+'&nbsp;&nbsp;<font class="up">↑'+final_data.list[i].score +'</font></span>'
+                        }else if(final_data.list[i].score != 0){
+                            span_html+='<span>'+final_data.list[i].subjectName+'：'+final_data.list[i].field2+'&nbsp;&nbsp;<font class="down">↓'+final_data.list[i].score*(-1) +'</font></span>'
+                        }else{
+                            span_html+='<span>'+final_data.list[i].subjectName+'：'+final_data.list[i].field2+'</span>'
+                        }
+                    }
+                    $api.html($api.dom(parentNode, '.j_pk'), span_html);
+                    if(type+1 == length){
+                    	msg_end.scrollIntoView(); 
+                    }
+                });
+            }
+            //显示各个项目对比数据
+            $api.removeCls($api.dom(parentNode, '.j_pk'), 'display-none');
+        }else{
+            //隐藏各个项目对比数据
+            $api.addCls($api.dom(parentNode, '.j_pk'), 'display-none');
+        }
+    }
+    function changeTwoDecimal(x)
+    {
+    var f_x = parseFloat(x);
+    
+    f_x = Math.round(f_x *100)/100;
+    
+    
+    return f_x;
+    }
+    /*
+    *author:zhaoj
+    *function:切换学科
+    *date：20170417
+    */
+    function changeSubject(){
+    	if($api.hasCls($api.byId('j_subject_list'), 'display-none')){
+    		$api.removeCls($api.byId('j_subject_list'), 'display-none');
+    		$api.removeCls($api.dom($api.byId('j_lxcj_subject_name'), 'i'), 'aui-icon-unfold');
+    		$api.addCls($api.dom($api.byId('j_lxcj_subject_name'), 'i'), 'aui-icon-fold');
+    	}else{
+    		$api.addCls($api.byId('j_subject_list'), 'display-none');
+    		$api.removeCls($api.dom($api.byId('j_lxcj_subject_name'), 'i'), 'aui-icon-fold');
+    		$api.addCls($api.dom($api.byId('j_lxcj_subject_name'), 'i'), 'aui-icon-unfold');
+    	}
+    }
+    /*
+    *author:zhaoj
+    *function:打开试卷分析window页面
+    *date：20170418
+    */
+    function openSjfxWin(){
+    	commonOpenWin('cjfx_sjfx_window', 'cjfx_sjfx_window.html', false, false, {'header_h':api.pageParam.header_h,"subjectId":subjectId,"testId":api.pageParam.testId})
+    }
+    /*
+    *author:zhaoj
+    *function:处理难易题得分率
+    *date：20170422
+    */
+    function dealNytdfxData(type){
+    	var chart_data={'xAxis':[],"bar":[],"line":[],max_value:0};
+    	if(type == 0){
+    		chart_data.legend_data = ['学生','班级'];
+    	}else if(type == 1){
+    		chart_data.legend_data = ['学生','本校'];
+    	}else if(type == 2){
+    		chart_data.legend_data = ['学生','本区'];
+    	}else{
+    		chart_data.legend_data = ['学生','本市'];
+    	}
+    	for(var i = 0; i < nytdfl_data.data.length; i++){
+    		chart_data.xAxis.push(nytdfl_data.data[i].difficulty);
+    		var scoreRate = nytdfl_data.data[i].scoreRate*1;
+    		scoreRate = scoreRate.toFixed(2);
+    		chart_data.bar.push(scoreRate);
+    		if(type == 0){
+    			var classScoreRate = nytdfl_data.data[i].classScoreRate*1;
+    			classScoreRate = classScoreRate.toFixed(2);
+	    		chart_data.line.push(classScoreRate);
+	    	}else if(type == 1){
+	    		var schoolScoreRate = nytdfl_data.data[i].schoolScoreRate*1;
+    			schoolScoreRate = schoolScoreRate.toFixed(2);
+	    		chart_data.line.push(schoolScoreRate);
+	    	}else if(type == 2){
+	    		var districtScoreRate = nytdfl_data.data[i].districtScoreRate*1;
+    			districtScoreRate = districtScoreRate.toFixed(2);
+	    		chart_data.line.push(districtScoreRate);
+	    	}else{
+	    		var cityScoreRate = nytdfl_data.data[i].cityScoreRate*1;
+    			cityScoreRate = cityScoreRate.toFixed(2);
+	    		chart_data.line.push(cityScoreRate);
+	    	}
+    	}
+    	//获取最大值
+    	for(var i = 0; i < chart_data.bar.length; i++){
+    		if(chart_data.bar[i] > chart_data.max_value){
+    			chart_data.max_value = Math.ceil(chart_data.bar[i]);
+    		}
+    		if(chart_data.line[i] > chart_data.max_value){
+    			chart_data.max_value = Math.ceil(chart_data.line[i]);
+    		}
+    	}
+    	setNytdflValue("中","");
+    	setNytdflValue("易","");
+    	setNytdflValue("难","");
+    	for(var i = 0; i < nytdfl_data.subjectList.length; i++){
+    		setNytdflValue(nytdfl_data.subjectList[i].difficulty,nytdfl_data.subjectList[i].questionName);
+    	}
+    	openNytdfl(chart_data);
+    }
+    /*
+    *author:zhaoj
+    *function:设置难易题得分率的题号
+    *date：20170422
+    */
+    function setNytdflValue(tip,value){
+    	if(tip == "中"){
+			$api.text($api.byId('j_sfzdt'), '失分中等题：'+value);
+		}
+		if(tip == "易"){
+			$api.text($api.byId('j_sfjdt'), '失分简单题：'+value);
+		}
+		if(tip == "难"){
+			$api.text($api.byId('j_sfnt'), '失分难题：'+value);
+		}
+    }
+    /*
+    *author:zhaoj
+    *function:打开难易题得分率
+    *date：20170418
+    */
+    function openNytdfl(data){
+    	// 基于准备好的dom，初始化echarts实例
+        var myChart = echarts.init(document.getElementById('nytdfl'));
+    	option = {
+		    tooltip: {
+		        trigger: 'axis',
+		        axisPointer: {
+		            type: 'cross',
+		            crossStyle: {
+		                color: '#999'
+		            }
+		        }
+		    },
+		    legend: {
+		        data:data.legend_data
+		    },
+		    xAxis: [
+		        {
+		            type: 'category',
+		            data: data.xAxis,
+		            axisPointer: {
+		                type: 'shadow'
+		            }
+		        }
+		    ],
+		    yAxis: [
+		        {
+		            type: 'value',
+		            name: '得分率 ',
+		            min: 0,
+		            max: data.max_value,
+		            interval: 10
+		        },
+		        {
+		            type: 'value',
+		            name: '温度',
+		            min: 0,
+		            max: data.max_value,
+		            interval: 10,
+		            show:false,
+		            axisLabel: {
+		                formatter: '{value} °C'
+		            }
+		        }
+		    ],
+		    series: [
+		        {
+		            name:data.legend_data[0],
+		            type:'bar',
+		             label: {
+		                normal: {
+		                    show: true,
+		                    position: 'top'
+		                }
+		            },
+		            itemStyle : { normal: {color:"#34A8FA"}},
+		            data:data.bar
+		        },
+		        {
+		            name:data.legend_data[1],
+		            type:'line',
+		            yAxisIndex: 1,
+		            itemStyle : { normal: {color:"#C12E34"}},
+		            data:data.line
+		        }
+		    ]
+		};
+	// 使用刚指定的配置项和数据显示图表。
+        myChart.setOption(option); 
+    }
+    /*
+    *author:zhaoj
+    *function:打开知识点得分率
+    *date：20170418
+    */
+    function openZsddfl(){
+    	// 基于准备好的dom，初始化echarts实例
+        var myChart = echarts.init(document.getElementById('zsddfl'));
+        option = {
+		    title: {
+		        text: '得分率（%）',
+		        textStyle: {
+                    color: '#333',
+                    fontFamily: 'Microsoft YaHei',
+                    fontSize: 12,
+                    fontWeight:'normal'
+                }
+		    },
+		    tooltip: {},
+		    legend: {
+		        data: ['我', '本班', '本校', '本区县', '本市']
+		    },
+		    radar: {
+		        indicator: [
+		           { name: '导数', max: 100},
+		           { name: '几何', max: 100},
+		           { name: '统计与概率', max: 100},
+		           { name: '函数', max: 100}
+		        ]
+		    },
+		    series: [{
+		        name: '知识点得分率',
+		        type: 'radar',
+		        data : [
+		            {
+		                value : [45, 67, 78, 99],
+		                name : '我'
+		            },
+		             {
+		                value : [30, 40, 50, 78],
+		                name : '本班'
+		            },
+		             {
+		                value : [60, 50, 30, 12],
+		                name : '本校'
+		            },
+		             {
+		                value : [56, 78, 78, 60],
+		                name : '本区县'
+		            },
+		             {
+		                value : [66, 77, 88, 99],
+		                name : '本市'
+		            }
+		        ]
+		    }]
+		};
+        // 使用刚指定的配置项和数据显示图表。
+        myChart.setOption(option);
+    }
+    /*
+    *author:zhaoj
+    *function:打开考察能力得分率
+    *date：20170418
+    */
+    function openKcnldfl(){
+    	// 基于准备好的dom，初始化echarts实例
+        var myChart = echarts.init(document.getElementById('kcnldfl'));
+        option = {
+		    title: {
+		        text: '得分率（%）',
+		        textStyle: {
+                    color: '#333',
+                    fontFamily: 'Microsoft YaHei',
+                    fontSize: 12,
+                    fontWeight:'normal'
+                }
+		    },
+		    tooltip: {},
+		    legend: {
+		        data: ['我', '本班', '本校', '本区县', '本市']
+		    },
+		    radar: {
+		        indicator: [
+		           { name: '基础', max: 100},
+		           { name: '识记', max: 100},
+		           { name: '扩展', max: 100},
+		           { name: '应用', max: 100}
+		        ]
+		    },
+		    series: [{
+		        name: '考察能力得分率',
+		        type: 'radar',
+		        data : [
+		            {
+		                value : [45, 67, 78, 99],
+		                name : '我'
+		            },
+		             {
+		                value : [30, 40, 50, 78],
+		                name : '本班'
+		            },
+		             {
+		                value : [60, 50, 30, 12],
+		                name : '本校'
+		            },
+		             {
+		                value : [56, 78, 78, 60],
+		                name : '本区县'
+		            }
+		        ]
+		    }]
+		};
+        // 使用刚指定的配置项和数据显示图表。
+        myChart.setOption(option);
+    }
+    /*
+    *author:zhaoj
+    *function:试题分析详情展示
+    *date：20170420
+    */
+    function openStfxDetail(self,id,questionIdChar){
+    	if($api.hasCls($api.byId('j_stfx_'+id),'display-none')){
+    		checkIsInWrongQuestionsForcjfx(questionIdChar,id);
+    		$api.removeCls($api.dom(self, 'i'), 'aui-icon-unfold');
+    		$api.addCls($api.dom(self, 'i'), 'aui-icon-fold');
+    		$api.removeCls($api.byId('j_stfx_'+id),'display-none');
+    	}else{
+    		$api.removeCls($api.dom(self, 'i'), 'aui-icon-fold');
+    		$api.addCls($api.dom(self, 'i'), 'aui-icon-unfold');
+    		$api.addCls($api.byId('j_stfx_'+id),'display-none');
+    	}
+    }
+    /*
+    *author:zhaoj
+    *function:设置理想成绩数据显示
+    *date：20170421
+    */
+    function initSetDesiredResults(index,data){
+    	$api.html($api.byId('j_lxcj_subject_name'),cjbg_data.data[index].subjectName+'<i class="aui-iconfont aui-icon-unfold"></i>');
+    	$api.attr($api.byId('j_lxcj_subject_name'),'subjectId',cjbg_data.data[index].subjectId);
+    	$api.text($api.byId('j_lxcj_subject_name_show'),cjbg_data.data[index].subjectName);
+    	$api.text($api.byId('j_lxcj_subject_scores'),cjbg_data.data[index].score*1);
+    	$api.attr($api.byId('j_lxcj_subject_name'),'score',cjbg_data.data[index].score*1);
+    	$api.text($api.byId('j_lxcj_class_pm'),cjbg_data.data[index].classPm);
+    	$api.attr($api.byId('j_lxcj_subject_name'),'classPm',cjbg_data.data[index].classPm);
+    	$api.text($api.byId('j_lxcj_school_pm'),cjbg_data.data[index].schoolPm);
+    	$api.attr($api.byId('j_lxcj_subject_name'),'schoolPm',cjbg_data.data[index].schoolPm);
+//  	if(testType == '市考'){ 
+//         	$api.text($api.byId('j_lxcj_city_pm'),cjbg_data.data[index].totalPm);
+//         	$api.text($api.byId('j_lxcj_name'), '市排名');
+//  		$api.attr($api.byId('j_lxcj_subject_name'),'cityPm',cjbg_data.data[index].totalPm);
+//  		$api.removeCls($api.byId('j_lxcj_city'),'display-none');
+//      }else if(testType == '区县考'){
+//      	$api.text($api.byId('j_lxcj_city_pm'),cjbg_data.data[index].totalPm);
+//         	$api.text($api.byId('j_lxcj_name'), '区排名');
+//  		$api.attr($api.byId('j_lxcj_subject_name'),'cityPm',cjbg_data.data[index].totalPm);
+//  		$api.removeCls($api.byId('j_lxcj_city'),'display-none');
+//      }
+    	var li_html='';
+    	for(var i = 0; i < cjbg_data.data.length; i++){
+    		if(cjbg_data.data[i].subjectName != "理综合" && cjbg_data.data[i].subjectName != "文综合"){
+    			if(i == index){
+	    			var onclick_name = 'changeDesiredResultSubject(0,'+i+')';
+	    			li_html += '<li class="active" onclick='+onclick_name+'>'+cjbg_data.data[i].subjectName+'</li>'
+	    		}else{
+	    			var onclick_name = 'changeDesiredResultSubject(1,'+i+')';
+	    			li_html += '<li onclick='+onclick_name+'>'+cjbg_data.data[i].subjectName+'</li>'
+	    		}
+    		}
+    	}
+    	$api.html($api.byId('j_subject_list'), li_html);
+    }
+    /*
+    *author:zhaoj
+    *function:切换理想成绩学科
+    *date：20170421
+    */
+    function changeDesiredResultSubject(type,index){
+    	if(type){
+    		initSetDesiredResults(index);
+    		changeSubject();//将学科显示隐藏
+    	}
+    }
+    /*
+    *author:zhaoj
+    *function:打开学习微课的页面
+    *date：20170722
+    */
+    function openStudyWkWin(index){
+    	var data = stfx_data.data;
+    	var btnArray = [];
+    	var zsdIdArray = [];
+    	for(var i = 0; i < data[index].knowledgePoint.length;i++){
+    		btnArray.push(data[index].knowledgePoint[i].strucName);
+    		zsdIdArray.push(data[index].knowledgePoint[i].strucId);
+    	}
+    	if(btnArray.length > 0){
+	    	api.actionSheet({
+			    cancelTitle: '取消',
+			    buttons:btnArray,
+			    style:{
+			    	titleFontColor:'#ff0000'
+			    }
+			},function( ret, err ){
+			    if( ret ){
+			    	if(ret.buttonIndex <= btnArray.length ){
+			        	 commonOpenWin('cjfx_studyWk_window', 'cjfx_studyWk_window.html', false, false, {'header_h':api.pageParam.header_h,'zsd_id':zsdIdArray[ret.buttonIndex-1],'zsd_name':btnArray[ret.buttonIndex-1],'stageId':api.pageParam.stageId,"subjectId":subjectId})
+			     	}
+			    }else{
+					popToast('网络繁忙，请稍候重试');
+			    }
+			});
+		}else{
+			popToast('本题没有相关知识点');
+		}
+    }
+    /*
+    *author:zhaoj
+    *function:打开试题解析页面
+    *date：20170722
+    */
+   	function openStAllDetailWin(transmit_param,type){
+   		commonOpenWin('cjfx_st_window', 'cjfx_st_window.html', false, false, {'header_h':api.pageParam.header_h,"transmit_param":transmit_param,"type":type})
+   	}
+   	/*
+    *author:zhaoj
+    *function:移出题本或者收藏试题
+    *date：20170722
+    */
+   	function removeOrAddWrongTiben(i,question_id_char,qt_id,qt_type){
+   		if(identity_mr == 6){
+	   		var type = $api.attr($api.byId('j_stfx_btn_'+i), 'type');
+	   		type=type*1;
+	   		if(type){
+	     		addToWrontQuestionsForcjfx(question_id_char,qt_id,qt_type,function(flag){
+	     			if(flag){
+	     				popToast('加入成功');
+	     				setTibenBtn(1,i);
+	     			}else{
+	     				popToast('加入失败，请稍候重试');
+	     			}
+	     		});
+	     	}else{
+	     		deleteFromWrontQuestions(question_id_char,qt_id,qt_type,function(flag){
+	     			if(flag){
+	     				popToast('移出成功');
+	     				setTibenBtn(0,i);
+	     			}else{
+	     				popToast('移出失败，请稍候重试');
+	     			}
+	     		});
+	     	}
+	     }else{
+	     	popToast('家长不支持该操作');
+	     }
+   	}
+   	/*
+    *author:zhaoj
+    *function:设置按钮显示
+    *date：20170725
+    */
+   	function setTibenBtn(type,i){
+   		if(type){
+			$api.attr($api.byId('j_stfx_btn_'+i), 'type',0)
+			$api.text($api.byId('j_stfx_btn_'+i), '移出题本');
+   		}else{
+			$api.attr($api.byId('j_stfx_btn_'+i), 'type',1)
+			$api.text($api.byId('j_stfx_btn_'+i), '收藏试题');
+   		}
+   	}
+</script>
+</html>

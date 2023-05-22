@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<title>办公-接收通知</title>
+		<link rel="stylesheet" type="text/css" href="../../css/aui.css" />
+		<style>
+			body {
+			}
+			.close {
+				position: absolute;
+				margin: 1px 10px 0px 80px;
+				font-size: 15px;
+			}
+		</style>
+	</head>
+	<body>
+		<div id="wrap">
+			<header class="aui-bar aui-bar-nav aui-bar-primary" id="aui-header">
+				<div id="cloud" class="topbar activebar">
+					<div id="back" class="back" onclick="back();" tapmode="">
+						<i class="aui-iconfont aui-icon-left"></i>返回
+					</div>
+					<div id="close" class="close" onclick="closeWin();" tapmode="">
+						关闭
+					</div>
+					<div class="mTitle" id="mTitle">
+						
+					</div>
+					<!--<div class="win-menu">
+						<a id='menu' class="aui-iconfont aui-icon-add" ></a>
+					</div>-->
+				</div>
+			</header>
+			<div  class="aui-content aui-content-padded" id="message-content">
+				<p class="aui-text-center history-date"></p>
+			</div>
+		</div>
+		<script type="text/javascript" src="../../script/api.js"></script>
+		<script type="text/javascript" src="../../script/base_config.js"></script>
+	</body>
+	<script type="text/javascript">
+		//顶部header高度
+		var header_h;
+		var bg_token;
+		var win_path;
+		var win_name;
+		apiready = function() {
+			//定位header位置，留出上面电池等空隙，苹果需要
+			var header = $api.byId('aui-header');
+			$api.fixStatusBar(header);
+			header_h = api.pageParam.header_h;
+			bg_token = api.pageParam.bg_token;
+			win_name = api.pageParam.win_name;
+			win_path = api.pageParam.win_path;
+			$api.html($api.byId('mTitle'), win_name);
+			openBgContentFrame();
+		};
+		/**
+		 * 打开办公的接收通知页面
+		 * 周枫
+		 * 2016.2.2
+		 */
+		function openBgContentFrame() {
+			api.openFrame({
+					name : win_name,
+					scrollToTop : true,
+					allowEdit : true,
+					showProgress : true,
+					url : BASE_URL_ACTION+'/base-server/app?sys=business_bg&path='+win_path+'&token=' + bg_token,
+					rect : {
+						x : 0,
+						y : header_h,
+						w : api.winWidth,
+						h : api.winHeight - header_h,
+					},
+					vScrollBarEnabled : true,
+					hScrollBarEnabled : false,
+					//页面是否弹动 为了下拉刷新使用
+					bounces : true
+				});
+		}
+
+		/**
+		 * 返回应用页面
+		 * 周枫
+		 * 2015.10.11
+		 */
+		function back() {
+			var js_fun = 'window.location.href=document.referrer;';
+			api.execScript({
+				frameName : win_name,
+				script : js_fun
+			});
+		}
+
+		/**
+		 * 安卓点击返回的时候
+		 * 周枫
+		 * 2015.10.14
+		 */
+		function backForAndroid() {
+			api.addEventListener({
+				name : "keyback"
+			}, function(ret, err) {
+				back();
+			});
+		}
+		
+		function closeWin() {
+			api.closeWin();
+		}
+	</script>
+</html>

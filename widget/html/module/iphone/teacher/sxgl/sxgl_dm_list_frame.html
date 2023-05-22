@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+		<title>实训管理学生点名frame</title>
+		<link rel="stylesheet" type="text/css" href="../../../../../css/aui/aui.css"/>
+		<link rel="stylesheet" type="text/css" href="../../../../../css/module/common/aui-list-swipe.css" />
+		<link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+		<style>
+			.person-name {
+				display: inline-block;
+				margin-top: 10px;
+			}
+			.ellipsis{white-space: nowrap;overflow: hidden;text-overflow: ellipsis;}
+			.pstyle {
+				color: #FFB90F;
+				margin-top: 5px;
+			}
+			.tip-image {
+				position: absolute;
+				top: -12px;
+				right: -15px;
+				width: 35px;
+			}
+			.aui-list-view:before {
+				height: 0;
+			}
+			.aui-user-view-cell:last-child:after {
+				height: 1px;		
+			}
+			.aui-list-view::after {
+				height: 0;
+			}
+			
+			.qxcd-style{
+			   font-size:12px !important;
+			   color: #FF9900 !important;
+			   margin-top: 5px;
+			}
+			
+		</style>
+	</head>
+	<body>
+		<section class="aui-content" id="banner">
+			<ul id="dm_body" class="aui-list-view">
+			</ul>
+			<script type="text/html" id="dm_script">
+				<% if(stu_list.length == 0){ %>
+				<div class="no-data"><span>暂时没有相关学生信息</span></div>
+				<% }else{ %>
+				<%for(var i = 0; i < stu_list.length; i++) {%>
+				<li id = "stu_click" class="aui-user-view-cell aui-img" tapmode onclick="studentItemInfo(this,<%=stu_list[i].person_id%>)">
+				<div class="aui-swipe-div aui-swipe-handle">
+				<img class="aui-img-object aui-pull-left" onerror="this.src='../../../../../image/person/default.jpg'"  src="../../../../../image/person/default.jpg" />
+				<div class="aui-img-body">
+				<div class="person-name ellipsis"><%=stu_list[i].person_name%></div>
+				<div ><span class="qxcd-style" >缺席：<%=stu_list[i].queqin%>次</span>&nbsp;<span class="qxcd-style">迟到：<%=stu_list[i].chidao%>次</span></div>
+				</div>
+				</div>
+				<div class="aui-swipe-right-btn aui-bg-danger" levelId="1" tapmode onclick="rightBtn(this,1,<%=stu_list[i].person_id%>);">缺席</div>
+				<div class="aui-swipe-right-btn aui-bg-warning" levelId="2" tapmode onclick="rightBtn(this,2,<%=stu_list[i].person_id%>);">迟到</div>
+				</li>
+				<% } %>
+				<% } %>
+			</script>
+		</section>
+	</body>
+	<script type="text/javascript" src="../../../../../script/api.js"></script>
+	<script type="text/javascript" src="../../../../../script/plug-in/aui-list-swipe.js"></script>
+	<script type="text/javascript" src="../../../../../script/base_config.js" ></script>
+	<script type="text/javascript" src="../../../../../script/plug-in/template.js" ></script>
+	<script type="text/javascript" src="../../../../../script/common/common.js"></script>
+	<script type="text/javascript" src="../../../../../script/common/kaoqin_common.js"></script>
+	<script type="text/javascript">
+		var practice_id;//任务id
+		var swipe;
+		apiready = function() {
+		    commonSetTheme({"level":5,"type":0});
+			header_h = api.pageParam.header_h;
+			practice_id = api.pageParam.practice_id;
+			BASE_URL_ACTION = $api.getStorage('BASE_URL_ACTION');
+			//打开滑动条
+			openNavigationBar();
+		};
+		/*
+		 *author:ws
+		 *function:滑动条
+		 *date：20161130
+		 */
+		function openNavigationBar() {
+			var bar_items = [{
+				title : '点名',
+				titleSelected : '点名',
+				bg : "#ffffff",
+				alpha : 0.8,
+				bgSelected : "#ffffff"
+			}];
+			var itemWidth = Math.floor(api.frameWidth / 4);
+			var params = {
+				y : header_h + 1,
+				items : bar_items,
+				file_level : '2',
+				winName : 'sxgl_dm_list_window',
+				frameName : 'sxgl_dm_list_frame',
+				itemSize : {
+					w : Math.floor(api.frameWidth / 4)
+				}
+			};
+			commonMyNavigationBar(params);
+		}
+
+        /*
+		 *author:ws
+		 *function:滑动条回调函数
+		 *date：20161130
+		 */
+		function callBackNew(id, index) {
+			studentData();
+		}
+
+         /*
+		 *author:ws
+		 *function:加载数据
+		 *date：20161130
+		 */
+		function studentData() {
+			showSelfProgress('加载中...');
+			api.ajax({
+				url : BASE_URL_ACTION + '/practice/get_tea_stu?person_id=' + $api.getStorage("person_id") + '&practice_id=' + practice_id,
+				method : 'get',
+				timeout : 30,
+				dataType : 'json',
+			}, function(ret, err) {
+				api.hideProgress();
+				if (ret.success) {
+				    commonAddOnceHtml('dm_body','dm_script', ret);
+					api.parseTapmode();
+					// 初始化
+					swipe = new ListSwipe();
+				}
+			});
+		}
+        /*
+		 *author:ws
+		 *function:缺席、迟到
+		 *date：20161130
+		 */
+		function rightBtn(obj, index, student_id) {
+			//1缺席2迟到
+			if (index == 1) {
+				api.ajax({
+					url : BASE_URL_ACTION + '/roll_call/rollCall_Add',
+					method : 'post',
+					dataType : 'json',
+					timeout : 30,
+					data : {
+						values : {
+							"task_id" : practice_id, //任务ID
+							"student_id" : student_id, //学生ID
+							"teacher_id" : $api.getStorage("person_id"), //教师ID
+							"type_id" : 1	//类型ID	1：缺席 2：迟到
+						}
+					}
+				}, function(ret, err) {
+					if (ret.success) {
+						api.toast({
+							msg : '操作成功'
+						});
+						studentData();
+					} else {
+						api.toast({
+							msg : '操作失败'
+						});
+					}
+				});
+			} else if (index == 2) {
+				api.ajax({
+					url : BASE_URL_ACTION + '/roll_call/rollCall_Add',
+					method : 'post',
+					dataType : 'json',
+					timeout : 30,
+					data : {
+						values : {
+							"task_id" : practice_id, //任务ID
+							"student_id" : student_id, //学生ID
+							"teacher_id" : $api.getStorage("person_id"), //教师ID
+							"type_id" : 2	//类型ID	1：缺席 2：迟到
+						}
+					}
+				}, function(ret, err) {
+					console.log(JSON.stringify(ret));
+					if (ret.success) {
+						api.toast({
+							msg : '操作成功'
+						});
+						studentData();
+					} else {
+						api.toast({
+							msg : '操作失败'
+						});
+					}
+				});
+			}
+		}
+
+		/*
+		 *author:ws
+		 *function:点击每个学生进入点名信息页面
+		 *date：20161130
+		 */
+		function studentItemInfo(el, student_id) {
+			if (!el.classList.contains("aui-swipe-selected")) {	
+		        var pageParamJson = {"header_h" : header_h, "practice_id" : practice_id,"student_id" :student_id};
+			    commonOpenWin('sxgl_dm_detail_window','sxgl_dm_detail_window.html',false,false,pageParamJson);	
+			}
+		}
+	</script>
+</html>

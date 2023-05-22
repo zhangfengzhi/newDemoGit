@@ -1,0 +1,461 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <!-- 在IOS设备上，有时会将数字转为手机号，这里也要禁止下 -->
+	<meta name="format-detection" content="telephone=no"/>
+    <title>圈子</title>
+    <link rel="stylesheet" type="text/css" href="../../../../../css/aui/aui.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../../../css/module/ipad/left-right-layout.css"/>
+    <link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+    <style>
+    	.aui-list-view.aui-grid-view{
+    		padding: 0 10px 0 0;
+    	}
+    	.aui-list-view.aui-grid-view:before,.aui-list-view.aui-grid-view:after{
+    		background-color: transparent !important;
+    	}
+    </style>
+</head>
+
+<body class="left-layout-body common-ipad-quanziIpad-tea">
+	<div id="j_top" style="height:0px; overflow:hidden"></div>
+	<div id="j_box_shadow" class="box-shadow aui-hide"></div>
+	<div id="no_quanzi" class="no-data" style="display:none">暂无圈子</div>
+	<div id="quanzi_div" class="right-content"></div>
+		<script id="quanzi_script" type="text/html">
+			<ul id="ul_body">
+				<%for(var i=0;i<list.length;i++){%>
+					<%if(list[i].is_del){%>
+					<%}else{%>	
+					    <li id="j_li_<%=list[i].id%>">
+					    	<div class="left"  onclick="getPersonData('<%=list[i].person_name%>','<%=list[i].loging_name%>','<%=list[i].avatar_fileid%>','<%=list[i].person_id%>','<%=list[i].identity_id%>','<%=list[i].loging_name%>')">
+								<img class="mt20" onerror="this.src='../../../../../image/common/header.png'" src="<%=list[i].avatar_fileid%>" />
+							</div>
+							<div class="right fl">
+								<div class="person-name pt5 ellipsis" onclick="getPersonData('<%=list[i].person_name%>','<%=list[i].loging_name%>','<%=list[i].avatar_fileid%>','<%=list[i].person_id%>','<%=list[i].identity_id%>')"><%=list[i].person_name%></div>
+								<div  onclick="openXQ(<%=list[i].id%>,<%=list[i].expand_id%>,'<%=list[i].title%>','<%=list[i].avatar_fileid%>',0,'<%=category_id%>','<%=list[i].person_name%>','<%=list[i].create_time.substring(0,16)%>',<%=list[i].person_id%>,<%=list[i].identity_id%>);">
+									<div class="infor clearfix">
+										<div class="time"><%=list[i].create_time.substring(0,16)%></div>
+										<div class="fr">评论<span id="comment_<%=list[i].id%>"><%=list[i].comment_num%></span>次 浏览<span id="browse_<%=list[i].id%>"><%=list[i].browse_num%></span>次  点赞<span id="praise_<%=list[i].id%>"><%=list[i].praise_count%></span>次</div>
+									</div>
+									<div class="title">
+										<span class="ellipsis">
+											
+											<%=list[i].title%>
+											
+										</span>
+									</div>
+									<div class="content"><%=list[i].overview%></div>
+									<%if(list[i].thumb_id != ""){%>							        
+										<div class="aui-list-view aui-grid-view zoomImage-full-4-3">
+								            <%for(var j=0;j<list[i].thumb_ids.length;j++){%>
+								            	<%if(list[i].thumb_ids.length > 9 && j>8){%>
+								            	<%}else{%>
+								            		<%if(list[i].open_thumbs_id[j] != -1){%>
+								            		<div class="aui-list-view-cell aui-img aui-col-xs-4" onclick="openImage(event,'<%=list[i].open_thumbs_id[j] %>');">
+										                <img class="aui-img-object" onerror="this.src='../../../../../image/common/tpsx.png'" src="<%=list[i].thumb_ids[j]%>" style="height:80px">
+										            </div>
+										            <%}%>
+								            	<%}%>								      
+								            <%}%>
+							        <%}%>
+								</div>
+								
+							</div>
+					    </li>
+					<%}%>
+				<%}%>	
+			</ul>
+		</script>
+</body>
+<script type="text/javascript" src="../../../../../script/api.js" ></script>
+<script type="text/javascript" src="../../../../../script/base_config.js" ></script>
+<script type="text/javascript" src="../../../../../script/plug-in/template.js" ></script>
+<script type="text/javascript" src="../../../../../script/plug-in/base64.js" ></script>
+<script type="text/javascript" src="../../../../../script/common/common.js"></script>
+<script type="text/javascript" src="../../../../../script/training/msgzs/wenzhang_common.js" ></script>
+<script type="text/javascript" src="../../../../../script/plug-in/echo.min.js" ></script>
+<script type="text/javascript" src="../../../../../script/assembly/photoBrowser.js"></script>
+<script type="text/javascript">
+    var BASE_SERVER_NAME = '';
+    var currentPage = 1;//当前分页数
+	var totalPages = 0;//总页数
+	var totalData = 0;//定义一个变量存储第一次加载返回来的总记录数
+	var header_h = 0;//定义头高度
+	var org_type = 104;//定义区域类型，104学校，105班级
+	var org_id = 0; //定义区域id，学校id或班级id
+	var org_name = '';
+	var picture_sz = [];
+	
+	var list_url = '';//记录圈子获取地址
+    apiready = function () {
+    	commonSetTheme({"level":5,"type":0});
+    	BASE_SERVER_NAME = $api.getStorage('BASE_SERVER_NAME');
+		header_h = api.pageParam.header_h;
+		org_type = api.pageParam.org_type;
+		header_h = api.pageParam.header_h;
+		org_id = api.pageParam.org_id;
+		list_url = api.pageParam.list_url;
+		if(org_id != null && typeof(org_id) != undefined && org_id != 0){
+			org_id = api.pageParam.org_id;
+			org_type = api.pageParam.org_type;
+		}else{
+			org_type = 104;
+			org_id = $api.getStorage('school_id');
+		}
+		initData(1);
+		commonScrollBottomReload();
+		commonRefreshHeaderInfo();
+		
+    }
+    
+     /*
+     * 加载数据
+     * 张自强
+     * 20170725
+     * 接口提供人：张海
+     */
+    function initData(current_page,url){
+    	api.showProgress({
+			title : '加载中',
+			text : '请稍候...',
+			modal : false
+		});
+   		currentPage = current_page;
+   		
+		if (url){//更新url
+			list_url = url;
+		}
+    	api.ajax({
+	    	url : list_url + '&pagenum=' + current_page,
+			method : 'get',
+			timeout : 30,
+			dataType : 'json',
+			headers : {
+				'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+			}
+        },function(ret,err){
+        	if(err){
+        		popToast('获取圈子信息失败，请稍候重试');
+        		$api.text($api.byId('quanzi_div'), '');
+        		$api.css($api.byId('no_quanzi'),'display:block');
+        	}else{
+        		if(ret.success){
+        			totalData = ret.total_row;
+					totalPages = ret.total_page;
+        			if(ret.list.length > 0){
+        				var index_del = 0;//记录被删除的消息个数
+        				var list = ret.list;
+        				for(var i=0;i<list.length;i++){
+        					var thumbs_id = [];
+        					var open_thumbs_id = [];
+        					if(ret.list[i].thumb_ids != '[]'){
+        						ret.list[i].thumb_ids = ret.list[i].thumb_ids.substring(1,ret.list[i].thumb_ids.length-1);
+        						thumbs_id = ret.list[i].thumb_ids.split(",");
+								for(var j=0;j<thumbs_id.length;j++){
+									var text_str = 'dsideal_yy';
+									if(thumbs_id[j].indexOf(text_str)!=-1){
+										if(BASE_APP_TYPE == 1){
+											open_thumbs_id[j] = thumbs_id[j].substring(1,thumbs_id[j].length-1);
+											thumbs_id[j] =  thumbs_id[j].substring(1,thumbs_id[j].length-1);	 							
+										}else{
+											open_thumbs_id[j] = BASE_URL_ACTION + BASE_IMAGE_BEGIN + thumbs_id[j].substring(thumbs_id[j].indexOf("Material")+9,thumbs_id[j].length-1);
+											thumbs_id[j] = BASE_URL_ACTION + BASE_IMAGE_BEGIN + thumbs_id[j].substring(thumbs_id[j].indexOf("Material")+9,thumbs_id[j].length-1)+ commonReturnPhotoCutSize(0,0,0,thumbs_id[j].substring(thumbs_id[j].length-4,thumbs_id[j].length-1));
+										}
+									}else{
+										open_thumbs_id[j] =thumbs_id[j].substring(1,thumbs_id[j].length-1);
+										thumbs_id[j] =thumbs_id[j].substring(1,thumbs_id[j].length-1);
+									}
+									if(open_thumbs_id[j].indexOf('glyphicon-paperclip-org.png')!=-1){
+										open_thumbs_id[j]=-1;
+									}
+								}
+	        				}
+        					ret.list[i].thumb_ids = thumbs_id;
+        					ret.list[i].open_thumbs_id = open_thumbs_id;
+        					var param = new Object();
+        					param.open_thumbs_id = open_thumbs_id;
+        					picture_sz.push(param);
+        						if(list[i].is_del*1){//判断消息是否别删除，不显示已删除的消息
+									ret.list[i].is_del = true;
+									index_del++;
+								}else{
+									ret.list[i].is_del = false;
+									
+								}
+								
+								if (api.pageParam.type == 0){
+									ret.list[i].avatar_fileid = $api.getStorage('avatar_url');
+								}
+								else{
+									if(BASE_APP_TYPE == 1){
+										ret.list[i].avatar_fileid = BASE_IMAGE_PRE + url_path_suffix + ret.list[i].avatar_fileid.substring(0, 2) + "/" +ret.list[i].avatar_fileid + commonReturnPhotoCutSize(1,96,96,ret.list[i].avatar_fileid.substring((ret.list[i].avatar_fileid.length)-3),0);
+									}else{
+										ret.list[i].avatar_fileid = BASE_URL_ACTION + BASE_IMAGE_BEGIN + ret.list[i].avatar_fileid.substring(0, 2) + "/" + ret.list[i].avatar_fileid + commonReturnPhotoCutSize(1,96,96,ret.list[i].avatar_fileid.substring((ret.list[i].avatar_fileid.length)-3),0);
+									}
+								}
+        						
+		    					if(i==(ret.list.length-1)){//判断循环是否执行完，执行完再渲染页面
+		    						if(index_del == list.length && currentPage == 1){
+		    							$api.text($api.byId('quanzi_div'), '');
+        								$api.css($api.byId('no_quanzi'),'display:block');
+		    						}else{
+		    							commonAddManyHtml('quanzi_div','quanzi_script',ret);
+		    							$api.css($api.byId('no_quanzi'),'display:none');
+		    						//延迟加载图片
+									setTimeout(function() {
+										echoInit();
+									}, 300);	
+		    						}
+		    					}
+        				}
+        			}else{
+        				$api.text($api.byId('quanzi_div'), '');
+        				$api.css($api.byId('no_quanzi'),'display:block');
+        			}
+        		}else{
+        			popToast('获取圈子信息失败，请稍候重试');
+        		}
+        	}
+        	//通知顶部下拉刷新数据加载完毕，组件会恢复到默认状态
+			commonControlRefresh();
+			api.hideProgress();
+        });
+    }
+    
+       /*
+		 * 打开详情页面
+		 * 张自强
+		 * 20170721
+		 */
+		function openXQ(id,expand_id,title,avatar_fileid,type,category_id,person_name,create_time,person_id,identity,loging_name){
+			setLiCss(id);
+			commonCloseFrame('quanziIpad_content_frame');
+			commonCloseFrame('quanziIpad_contentHeader_frame');
+			commonCloseFrame('hh_personinfo_frame');//关闭个人信息界面
+			commonCloseFrame('personalInfo_frame');//关闭个人信息界面
+			addBrowseNum(id, expand_id, function(flag,text){
+				if(!flag){
+					popToast(text);
+				}
+			});
+			var praise_count = $api.text($api.byId('praise_'+id));
+			var comment_count = $api.text($api.byId('comment_'+id));
+			praise = praise_count*1;
+			comment = comment_count*1; 
+			var pageParamJson={
+				"header_h":header_h,
+				"wz_id":id,
+				"expand_id":expand_id,
+				"menu_type":org_type,
+				"menu_id":org_id,
+				"type":type,
+				"title":title,
+				"currentPage":currentPage,
+				'avatar_fileid':avatar_fileid,
+				'is_jump':type,
+				'category_id':category_id,
+				'person_name':person_name,
+				'create_time':create_time,
+				'person_id':person_id,
+				'open_menu_type' : 2,
+				"praise":praise,
+				"comment":comment,
+				"identity":identity,
+				'loging_name':loging_name,
+			};
+//			commonOpenWin('quanziIpad_content_window', 'quanziIpad_content_window.html', false, false, pageParamJson);
+			oparam = Base64.encode(JSON.stringify(pageParamJson));
+			commonExecScript('quanziIpad_index_window','','openDetailFrame("'+oparam+'");',0);
+		}
+		
+		/*
+		 * 添加浏览次数
+		 * 张自强
+		 * 20170720
+		 */
+		function addBrowseNum(wz_id, expand_id, callback) {
+			api.ajax({
+				url : BASE_URL_ACTION + '/blog/addBrowseNum',
+				method : 'post',
+				dataType : 'json',
+				cache : false,
+				timeout : 30,
+				data : {
+					values : {
+						"article_id" : wz_id,
+						"identity_id" : $api.getStorage('identity'),
+						"person_id" : $api.getStorage('person_id')
+					}
+				}
+			}, function(ret, err) {
+				if (err) {
+					callback(false, '添加浏览次数失败');
+				} else {
+					if (ret.success) {
+						var text = $api.text($api.byId('browse_'+wz_id));
+						$api.text($api.byId('browse_'+wz_id),text * 1 + 1);
+						callback(true, ret.info);
+					} else {
+						callback(false, '添加浏览次数失败');
+					}
+				}
+			});
+		}
+
+		
+		/*
+	 * 改变机构类型
+	 * 张自强
+	 * 20170721
+	 */
+	function change_type(o_type,id,name){
+		org_id = id;
+		org_name = name;
+		org_type = o_type;
+		initData(1);
+		api.execScript({
+           	name : 'quanziIpad_index_window',
+            script: 'changeClass('+org_id+',"'+org_name+'");'
+        });
+		if(org_type == 104){
+			$api.css($api.byId('first'),'display:none');
+			api.execScript({
+            	name : 'quanziIpad_index_window',
+            	script: 'qzaddIsShow(true);'
+       		});
+            api.execScript({
+	            name : 'quanziIpad_index_window',
+	            script: 'changeNavigationBar('+104+');'
+            });
+		}else if(org_type == 105){
+			$api.css($api.byId('first'),'display:block');
+            api.execScript({
+	            name : 'quanziIpad_index_window',
+	            script: 'changeNavigationBar('+105+');'
+            });
+		}
+	}
+	
+	/*
+		 * 打开添加圈子页面
+		 * 张自强
+		 * 20170719
+		 */
+		function openAddFrame(){
+//			if($api.getStorage('identity') == 5 && org_type == 104){
+				api.execScript({
+                    name : 'quanziIpad_index_window',
+                    script: 'reBackType("xxadd");'
+                });
+				var  pageParamJson = {
+					'org_id' : org_id,
+					'menu_type' : 104,
+					'org_name' : org_name,
+					'header_h':header_h,
+					'lx_id' : 0
+				};
+				commonOpenFrame('quanziIpad_xxadd_frame','quanziIpad_xxadd_frame.html', 0, false, false, 'rgba(0,0,0,0)', pageParamJson);
+//			}else{
+//				var  pageParamJson = {
+//					'org_id' : org_id,
+//					'menu_type' : 105,
+//					'org_name' : org_name,
+//					'header_h':header_h,
+//					'lx_id' : 0
+//					
+//				};
+//				commonOpenFrame("quanziIpad_add_frame","quanziIpad_add_frame.html",0,false,false,"rgba(0,0,0,0)",pageParamJson);
+//			}
+		}
+		
+			
+	/*
+	 	 * 功能：打开照片
+	 	 * 作者：张自强
+	 	 * 时间：20170918
+	 	 */
+		function openImage(event,openImgUrl) {
+			event.stopPropagation();
+			var openImgArray = [];
+			var index = -1;
+			
+			for(var i=0;i<picture_sz.length;i++){
+				for (var j = 0; j < picture_sz[i].open_thumbs_id.length; j++){
+					var temp = picture_sz[i].open_thumbs_id[j];
+					if (temp != -1){
+						openImgArray.push(temp);
+						if(openImgUrl == temp){
+							index = openImgArray.length - 1;
+						}
+					}
+				}
+				
+				if (index != -1){
+					break;
+				}
+			}
+			
+			if (index != -1){
+			    openPictureShowWin(openImgArray,index);
+			}
+		}
+		
+
+		/*
+		*author:zhaoj
+		*function:是否显示虚线
+		*date：20170919
+		*/
+		function isShowBoxShow(type){
+			type ? $api.removeCls($api.byId('j_box_shadow'), 'aui-hide') : $api.addCls($api.byId('j_box_shadow'), 'aui-hide');
+		}
+		/*
+		*author:zhaoj
+		*function:设置选中样式
+		*date：20170919
+		*/
+		function setLiCss(id){
+			var li_array = $api.domAll($api.byId('ul_body'), 'li');
+			for(var i = 0; i < li_array.length; i++){
+				$api.removeCls(li_array[i], 'active');
+			}
+			$api.addCls($api.byId('j_li_'+id), 'active');
+		}
+		
+		/*
+		*author:zhaoj
+		*function:设置列表数据点赞数量显示
+		*date：20170914
+		*/
+		function setIndexFramePraiseOrCommentNum(type,num,id){
+			if(type == 0){
+				//点赞
+				$api.text($api.byId('praise_'+id),num);
+			}else if(type == 1){
+				//评论
+				$api.text($api.byId('comment_'+id),num);
+			}else{
+				//删除圈子
+				var li_object = $api.byId('j_li_'+id);
+				var li_parent = li_object.parentNode;
+				li_parent.removeChild(li_object);
+			}
+		}
+		
+		/**
+		 * 打开个人信息界面
+		 * 王俭
+		 * 2018.5.15 
+		 */
+		function getPersonData(name,targetName,avatar_fileid,person_id,identity_id){
+//			commonCloseFrame('quanziIpad_contentHeader_frame');
+//			commonCloseFrame('quanziIpad_content_frame');
+			commonCloseFrame('hh_personinfo_frame');
+			commonCloseFrame('personalInfo_frame');
+			commonExecScript('quanziIpad_index_window','','getPersonData("'+name+'","'+ targetName +'","'+ avatar_fileid +'","'+ person_id +'","'+ identity_id +'");',0);
+		}
+</script>
+</html>

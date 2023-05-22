@@ -1,0 +1,1554 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<!-- 在IOS设备上，有时会将数字转为手机号，这里也要禁止下 -->
+		<meta name="format-detection" content="telephone=no"/>
+		<title>检测</title>
+		<link rel="stylesheet" type="text/css" href="../../../../../css/aui/aui.css" />
+		<link rel="stylesheet" type="text/css" href="../../../../../css/module/common/testQuestionShow.css" />
+		<link rel="stylesheet" type="text/css" href="../../../../../css/module/common/list_frame.css" />
+		<link rel="stylesheet" type="text/css" href="../../../../../css/module/common/jyeoo/ques_data.css" />
+		<link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+		<style>
+			body {
+				margin: 0;
+				background: rgba(0,0,0,0);
+				color:#98979D;
+			}
+			.clearfix:after {
+				content: ' ';
+				display: block;
+				clear: both;
+				visibility: hidden;
+				line-height: 0;
+				height: 0;
+			}
+			.zuoye-name-st {
+				line-height: 55px;
+				width: 100%;
+			}
+			.answer-title {
+				border-top: 1px solid #f1f1f1;
+				height: 55px;
+				width: 100%;
+				margin-bottom: 20px;
+			}
+			.title {
+				width: 50%;
+				float: left;
+			}
+			.answer-title div {
+				height: 35px;
+				display: inline-block;
+				line-height: 35px;
+				margin-top: 13px;
+				padding: 0 15px;
+				color: #ffffff;
+			}
+			.seleted {
+				width: 20%;
+				float: right;
+				text-align: right;
+			}
+			.seleted .num {
+				font-size: 22px;
+			}
+			.stem {
+				padding: 20px 5%;
+				max-width:100%;
+				word-break:break-all;
+			}
+			.stem img {
+				max-width: 90%;
+				height:auto;
+			}
+			.stem div,.stem p,.stem span{word-wrap: break-word;word-break: normal; }
+			.option dl {
+				position:relative;
+				border-radius: 5px;
+				min-height: 55px;
+				border: 2px solid #EFF1F1;
+				margin-bottom: 20px;
+			}
+			.option dl dt {
+				position:absolute;
+				top:0px;
+				bottom:-1px;
+				display:block;
+				font-size: 22px;
+				font-weight: 600;
+				width: 12%;
+				height:100%;
+				float: left;
+				background: #EFF1F1;
+		/*		line-height: 53px;*/
+				border-radius: 1px 0 0 1px;
+				text-align: center;
+				color: #666;
+			}
+			.option dl dt div{
+				position:absolute;
+				top:50%;
+				left:50%;
+				margin-top:-10px;
+				margin-left:-8px;
+				height:20px
+			}
+			.option dl dd {
+				width: 75%;
+				float: right;
+				margin-right:30px;
+				min-height: 55px;
+				line-height: 25px;
+				padding:15px 0;
+				color:#98979D;
+				word-wrap: break-word;
+				word-break: normal; 
+			}
+			.option dl dd div p img{
+				vertical-align: middle;
+				margin:10px 0;
+			}
+			.option dl dd img {
+				max-width: 85%;
+			}
+			.option dl dd .judge{position:absolute;right:4%;top:50%;margin-top:-9px;width:18px;height:15px;display:inline-block;border:none !important;}
+			.option dl dd .right{background:url(../../../../../image/fun-module/iphone/zuoye/right.png) left top no-repeat;background-size:18px;}
+			.option dl dd .wrong{background:url(../../../../../image/fun-module/iphone/zuoye/wrong.png) left top no-repeat;background-size:18px;}
+			.option .active dt {
+				color: #ffffff !important;
+			}
+			.option .wrong{border:2px solid #ff0000 !important;}
+    		.option .wrong dt{background:#ff0000  !important;color:#ffffff !important;}
+			.upload-answer button {
+				width: 100%;
+				height: 55px;
+				color: #ffffff;
+				border-radius: 5px;
+				font-size: 16px;
+				margin-bottom: 20px;
+			}
+			.upload-answer button.no-use {
+				background: #f1f1f1;
+				color: #dCdCdc
+			}
+			.upload-answer button .aui-iconfont {
+				margin-right: 5px;
+				font-size: 22px;
+			}
+			.source-img ul {
+				overflow: visible;
+			}
+			.source-img ul li {
+				list-style: none;
+				overflow: visible;
+			}
+			.source-img ul li div {
+				text-align: center;
+				border: 1px solid #f1f1f1;
+				position: relative;
+			}
+			.next {
+				line-height: 55px;
+				text-align: right;
+			}
+			.source-img ul li.voice {
+				position: relative;
+				margin-bottom: 20px;
+				background: url(../../image/fun-module/iphone/zuoye/voice.png) left top no-repeat;
+				height: 50px;
+				text-align: left;
+				line-height: 45px;
+				padding-left: 20px;
+				color: #ffffff;
+			}
+			.source-img ul li.voice .delete-voice {
+				position: absolute;
+				right: -13px;
+				top: -7px
+			}
+			.source-img ul li.voice .voice-right {
+				position: absolute;
+				right: -6px;
+				top: 0;
+				display:block;
+				background: url(../../image/fun-module/iphone/zuoye/voice-right.png) right top no-repeat;
+			}
+			.img img{max-width: 100%;margin : 0 5% 15px 5%;max-width:90%;height:auto;}
+			.plr15 {
+				padding: 0 15px;
+			}
+			.no-data {
+				text-align: center;
+				color: #c0c0c0;
+				margin-bottom: 20px;
+			}
+			.footer-div{
+				position:fixed;
+				height:55px;
+				background:#ffffff;
+				display: block;
+				bottom: 0px;
+				width:100%;
+				box-shadow:3px 0 4px #aaaaaa;
+				z-index: 9999;
+			}
+			.footer-div .prevQ,.footer-div .nextQ{display: inline-block;width:50%;float: left;}
+			.footer-div .prevQ{text-align: left;}
+			.footer-div .nextQ{text-align: right;}
+			.footer_div{height:70px;}
+			.no-question-data{text-align:center;color:#666;height:50px;line-height:50px;}
+			.plrb15{padding:0 15px 15px 15px;}
+			.source-img{color:#9C9C9C;}
+			.right-answer span{z-index: 0 !important;}
+			.analysis-btn{width:92%;line-height:36px;text-align:center;color:#ffffff;margin-top:9px;border-radius:2px;margin-left:4%;margin-bottom:15px;}
+			/*多种作答样式*/
+            .answer-title .answer-btn{width:160px;background:rgba(0,0,0,0);}
+            .answer-btn div.picture{background:#FDFDFD url(../../../../../image/fun-module/iphone/zuoye/zuoye_zd.png) 0 0 no-repeat;}
+            .answer-btn div.pen{background:#FDFDFD url(../../../../../image/fun-module/iphone/zuoye/zuoye_zd.png) 0 -30px no-repeat;}
+            .answer-btn div.vedio{background:#FDFDFD url(../../../../../image/fun-module/iphone/zuoye/zuoye_zd.png) 0 -60px no-repeat;}
+            .answer-btn div.audio{background:#FDFDFD url(../../../../../image/fun-module/iphone/zuoye/zuoye_zd.png) 0 -90px no-repeat;}
+            .answer-title .answer-btn{padding:0;}
+            .answer-title .answer-btn div{height:30px;display:inline-block;width: 25%;margin-top:8px;padding:0;background-size: 30px auto;}
+            .fl{float:left;}
+            .fr{float:right;}
+            .fj-body .fj-title,.text-title{padding:0 15px;color:#000;}
+            .fj-title font{font-size:12px;color:#f00;padding-left:3px;}
+            .fj-content{padding:0 10px;}
+            .fj-ul{padding:15px 0 5px 0;}
+            .fj-ul li{position:relative;width:33.3%;padding:0 5px 10px 5px;}
+            .fj-ul li .delete{position:absolute;right:0;top:0;width:22px;height:22px;background: url(../../../../../image/fun-module/iphone/zuoye/delete.png) 0 1px no-repeat;background-size:16px auto;}
+            .fj-ul li .fj-name{text-align:center;font-size:14px;color:#777;height:20px;line-height: 20px;}
+            .text-content{padding:10px 15px 0 15px;}
+            .text-content .text-info{word-wrap: break-word;word-break: normal;line-height:25px;color:#777;padding:5px 0 15px 0;}
+            .text-content .text-info div{text-align:center;color:#c0c0c0;}
+            .text-content textarea{margin-bottom:5px;height:127px;max-height:127px;overflow-y:auto;}
+            .text-btn button{float:right;background:#036EB6;color:#fff;margin-bottom:70px;}
+            .text-btn button[disabled]{background:#efefef;}
+            .zoomImage{padding-bottom:80%;}
+            .zoomImage img{position:absolute;width:100%;top:0;bottom:0;height:100%;}
+		</style>
+	</head>
+	<body id="body" class="common-iphone-zuoye-tea">
+		<div id="q_title"></div>
+		<div class="q_div default-testQuestionShow" id="q_div">
+		</div>
+		<script type="text/html" id="q_script">
+			<div class="zuoye-name-st  plr15 clearfix">
+				<div class="title"><%=qt_name %></div>
+				<div class="seleted"><font class="num"><%=sort%></font>/<%=list_length%></div>
+			</div>
+			<%if(html_json){%>
+				<%if(que_source == 2){ %>
+					<!--菁优网试题展示-->
+					<div class="stem clearfix">
+						<%=#commonRemoveQuestionEdit(html_json.Content)%>
+					</div>
+					<%if(qt_type == 1){ %>
+						<!--客观题-->
+						<%if(qt_id == 1 || qt_id == 8 && html_json.Answers.length == 1) { %>
+							<!--单选-->
+							<div id="j_option" class="option plr15 clearfix">
+								<%for(var i = 0; i < html_json.Options.length; i++){%>
+									<dl class="clearfix" answerOption="<%=i%>">
+										<dt><div><%=html_json.Options_first[i]%></div></dt>
+										<dd>
+											<%=#html_json.Options[i]%>
+											<div id="j_right_<%=i%>" class="judge right" style="display:none;"></div>
+											<div id="j_wrong_<%=i%>" class="judge wrong" style="display:none;"></div>
+										</dd>
+									</dl>
+								<%}%>
+							</div>
+							<!--//单选-->
+						<%}else if(qt_id == 3 || qt_id == 8 && html_json.Answers.length > 1){%>
+							<!--选择题-->
+							<div id="j_option" class="option plr15 clearfix">
+								<%for(var i = 0; i < html_json.Options.length; i++){%>
+									<dl class="clearfix" answerOption="<%=i%>">
+										<dt><div><%=html_json.Options_first[i]%></div></dt>
+										<dd>
+											<%=#html_json.Options[i]%>
+											<div id="j_right_<%=i%>" class="judge right" style="display:none;"></div>
+											<div id="j_wrong_<%=i%>" class="judge wrong" style="display:none;"></div>
+										</dd>
+									</dl>
+								<%}%>
+							</div> 
+							<!--//选择题-->
+						<%}else if(qt_name.indexOf("判断")!=-1){%>
+							<!--判断题-->
+							<div id="j_option" class="option plr15 clearfix">
+								<dl class="clearfix" answerOption="√">
+									<dt><div>1</div></dt>
+									<dd>正确
+										<div id="j_right_1" class="judge right" style="display:none;"></div>
+										<div id="j_wrong_1" class="judge wrong" style="display:none;"></div>
+									</dd>
+								</dl>
+								<dl class="clearfix" answerOption="×">
+									<dt><div>2</div></dt>
+									<dd>错误
+										<div id="j_right_2" class="judge right" style="display:none;"></div>
+										<div id="j_wrong_2" class="judge wrong" style="display:none;"></div>
+									</dd>
+								</dl>
+							</div>
+							<!--//判断题-->
+						<%}%>
+						<div class="answer-title clearfix">
+							<div>
+								正确答案
+							</div>
+						</div>
+						<div class="source-img plrb15 right-answer img clearfix">
+							<%if(qt_name.indexOf("判断")!=-1){%>
+								<%if(html_json.Answers[0] == "√"){%>
+									正确
+								<%}else{%>
+									错误
+								<%}%>
+							<%}else{%>
+								<%for(var i = 0; i < html_json.Answers.length; i++){%>
+									<%=html_json.Options_first[html_json.Answers[i]]%>
+								<%}%>
+							<%}%>
+						</div>
+						<%if(jx_info == 0){%>
+							<div id="j_jx_btn" class="analysis-btn" onclick="viewAnalysis(<%=sort%>,'<%=question_id_char%>','<%=que_source%>','<%=jy_subject_en_name%>')">查看解析</div>
+							<div id="j_analysis_title" class="answer-title clearfix" style="display:none;">
+								<div>
+									题目解析
+								</div>
+							</div>
+							<div id="j_analysis" class="source-img plrb15 img clearfix" style="display:none;"></div>
+						<%}else{%>
+							<div id="j_analysis_title" class="answer-title clearfix">
+							<div>
+								题目解析
+							</div>
+							</div>
+							<div id="j_analysis" class="source-img plrb15 img clearfix">
+								<%=#jx_info%>
+							</div>
+						<%}%>	
+						<!--//客观题-->
+					<%}else{%>
+						<!--主观题-->
+						<div id="j_answer_title" class="answer-title clearfix">
+			                <div>
+			                   	 我的作答
+			                </div>
+			            </div>
+			            <div id="fj-body" class="fj-body">
+			                <div class="fj-title">附件答案</div>
+			                <div class="fj-content">
+			                    <div id="j_no_data" class="no-data">
+			                        没有附件答案
+			                    </div>
+			                    <ul id="j_zg_answers" class="fj-ul aui-hide" qtID=<%=qt_id%> qtName=<%=qt_name%> questionID="-1" sort="<%=sort%>" questionIDChar="<%=question_id_char%>" queSource="<%=que_source%>" jySubjectEnName="<%=jy_subject_en_name%>">
+			                    </ul>
+			                </div>
+			            </div>
+			            <div id="text-body" class="text-body">
+			                <div class="text-title">文本答案</div>
+			                <div class="text-content clearfix">
+			                    <div id="j_textarea" class="text-info"><div>没有文本答案</div></div>    
+			                </div>
+			            </div>
+			            <div id="j_right_answer_title" class="answer-title clearfix" style="display:none;">
+                            <div>
+                                                                            正确答案
+                            </div>
+                        </div>
+                        <div id="j_right_answer" class="source-img plrb15 right-answer img clearfix" style="display:none;">
+                        </div>
+						<div id="j_teacher_score_title" class="answer-title clearfix" style="display:none;">
+							<div>
+								该题正误
+							</div>
+						</div>
+						<div id="j_teacher_score" class="source-img plrb15 right-answer clearfix"  style="display:none;">
+						</div>
+						<div id="j_teacher_comment_title" class="answer-title clearfix" style="display:none;">
+							<div>
+								教师批语
+							</div>
+						</div>
+						<div id="j_teacher_comment" class="source-img plrb15 right-answer clearfix" style="display:none;"></div>
+						<%if(jx_info == 0){%>
+							<div id="j_jx_btn" class="analysis-btn" onclick="viewAnalysis(<%=sort%>,'<%=question_id_char%>','<%=que_source%>','<%=jy_subject_en_name%>')">查看解析</div>
+							<div id="j_analysis_title" class="answer-title clearfix" style="display:none;">
+								<div>
+									题目解析
+								</div>
+							</div>
+							<div id="j_analysis" class="source-img plrb15 img clearfix" style="display:none;"></div>
+						<%}else{%>
+							<div id="j_analysis_title" class="answer-title clearfix">
+							<div>
+								题目解析
+							</div>
+							</div>
+							<div id="j_analysis" class="source-img plrb15 img clearfix">
+								<%=#jx_info%>
+							</div>
+						<%}%>	
+						<!--//主观题-->
+					<%}%>
+					<!--//菁优网试题展示-->	
+				<%}else{%>
+						<!--东师理想试题展示-->
+					<!--客观题-->
+					<%if(qt_type == 1){ %>
+						<%if(qt_id == 72){ %>
+							<div class="stem clearfix">
+								<%=#commonRemoveQuestionEdit(html_json.question_title)%>
+							</div>
+							<div id="j_option" class="option plr15 clearfix">
+								<dl class="clearfix" answerOption="正确">
+									<dt><div>1</div></dt>
+									<dd>正确
+										<div id="j_right_1" class="judge right" style="display:none;"></div>
+										<div id="j_wrong_1" class="judge wrong" style="display:none;"></div>
+									</dd>
+								</dl>
+								<dl class="clearfix" answerOption="错误">
+									<dt><div>2</div></dt>
+									<dd>错误
+										<div id="j_right_2" class="judge right" style="display:none;"></div>
+										<div id="j_wrong_2" class="judge wrong" style="display:none;"></div>
+									</dd>
+								</dl>
+							</div>
+							<div id="j_right_answer_title" class="answer-title clearfix" style="display:none;">
+								<div>
+									正确答案
+								</div>
+							</div>
+							<div id="j_right_answer" class="source-img plrb15 right-answer img clearfix" style="display:none;">
+								
+							</div>
+							<%if(jx_info == 0){%>
+								<div id="j_jx_btn" class="analysis-btn" onclick="viewAnalysis(<%=sort%>,'<%=question_id_char%>','<%=que_source%>','<%=jy_subject_en_name%>')">查看解析</div>
+								<div id="j_analysis_title" class="answer-title clearfix" style="display:none;">
+									<div>
+										题目解析
+									</div>
+								</div>
+								<div id="j_analysis" class="source-img plrb15 img clearfix" style="display:none;"></div>
+							<%}else{%>
+								<div id="j_analysis_title" class="answer-title clearfix">
+								<div>
+									题目解析
+								</div>
+								</div>
+								<div id="j_analysis" class="source-img plrb15 img clearfix">
+									<%=#jx_info%>
+								</div>
+							<%}%>	
+						<!--//判断题-->
+						<%}else if(qt_id == 2){ %>
+							<!--客观题-->
+							<div class="stem clearfix">
+								<%=#commonRemoveQuestionEdit(html_json.question_title)%>
+							</div>
+							<div id="j_option" class="option plr15 clearfix">
+								<%for(var i = 0; i < html_json.question_answer_length; i++){%>
+									<dl class="clearfix" answerOption="<%=html_json.question_answer_first[i]%>">
+										<dt><div><%=html_json.question_answer_first[i]%></div></dt>
+										<dd>
+											<%=#html_json.quetionOption[i]%>
+											<div id="j_right_<%=html_json.question_answer_first[i]%>" class="judge right" style="display:none;"></div>
+											<div id="j_wrong_<%=html_json.question_answer_first[i]%>" class="judge wrong" style="display:none;"></div>
+										</dd>
+									</dl>
+								<%}%>
+							</div>
+							<div id="j_right_answer_title" class="answer-title clearfix" style="display:none;">
+								<div>
+									正确答案
+								</div>
+							</div>
+							<div id="j_right_answer" class="source-img plrb15 right-answer img clearfix" style="display:none;">
+								
+							</div>
+							<%if(jx_info == 0){%>
+								<div id="j_jx_btn" class="analysis-btn" onclick="viewAnalysis(<%=sort%>,'<%=question_id_char%>','<%=que_source%>','<%=jy_subject_en_name%>')">查看解析</div>
+								<div id="j_analysis_title" class="answer-title clearfix" style="display:none;">
+									<div>
+										题目解析
+									</div>
+								</div>
+								<div id="j_analysis" class="source-img plrb15 img clearfix" style="display:none;"></div>
+							<%}else{%>
+								<div id="j_analysis_title" class="answer-title clearfix">
+								<div>
+									题目解析
+								</div>
+								</div>
+								<div id="j_analysis" class="source-img plrb15 img clearfix">
+									<%=#jx_info%>
+								</div>
+							<%}%>	
+						<% } else if (qt_id == 26 || qt_id == 8) { %>
+							<!--客观题-->
+							<div class="stem clearfix">
+								<%=#commonRemoveQuestionEdit(html_json.question_title)%>
+							</div>
+							<div id="j_option" class="option plr15 clearfix">
+								<%for(var i = 0; i < html_json.question_answer_length; i++){%>
+									<dl class="clearfix" answerOption="<%=html_json.question_answer_first[i]%>">
+										<dt><div><%=html_json.question_answer_first[i]%></div></dt>
+										<dd>
+											<%=#html_json.quetionOption[i]%>
+											<div id="j_right_<%=html_json.question_answer_first[i]%>" class="judge right" style="display:none;"></div>
+											<div id="j_wrong_<%=html_json.question_answer_first[i]%>" class="judge wrong" style="display:none;"></div>
+										</dd>
+									</dl>
+								<%}%>
+							</div>                                      
+							<div id="j_right_answer_title" class="answer-title clearfix" style="display:none;">
+								<div>
+									正确答案
+								</div>
+							</div>
+							<div id="j_right_answer" class="source-img plrb15 right-answer img clearfix" style="display:none;">
+								
+							</div>
+							<%if(jx_info == 0){%>
+								<div id="j_jx_btn" class="analysis-btn" onclick="viewAnalysis(<%=sort%>,'<%=question_id_char%>','<%=que_source%>','<%=jy_subject_en_name%>')">查看解析</div>
+								<div id="j_analysis_title" class="answer-title clearfix" style="display:none;">
+									<div>
+										题目解析
+									</div>
+								</div>
+								<div id="j_analysis" class="source-img plrb15 img clearfix" style="display:none;"></div>
+							<%}else{%>
+								<div id="j_analysis_title" class="answer-title clearfix">
+								<div>
+									题目解析
+								</div>
+								</div>
+								<div id="j_analysis" class="source-img plrb15 img clearfix">
+									<%=#jx_info%>
+								</div>
+							<%}%>	
+						<%}%>
+					<% } else { %>
+						<!--主观题-->
+							<div class="stem clearfix">
+								<%=#commonRemoveQuestionEdit(html_json.question_title)%>
+							</div>
+							<div id="j_answer_title" class="answer-title clearfix">
+				                <div>
+				                   	 我的作答
+				                </div>
+				            </div>
+				            <div id="fj-body" class="fj-body">
+				                <div class="fj-title">附件答案</div>
+				                <div class="fj-content">
+				                    <div id="j_no_data" class="no-data">
+				                        没有附件答案
+				                    </div>
+				                    <ul id="j_zg_answers" class="fj-ul aui-hide" qtID=<%=qt_id%> qtName=<%=qt_name%> questionID="-1" sort="<%=sort%>" questionIDChar="<%=question_id_char%>" queSource="<%=que_source%>" jySubjectEnName="<%=jy_subject_en_name%>">
+				                    </ul>
+				                </div>
+				            </div>
+				            <div id="text-body" class="text-body">
+				                <div class="text-title">文本答案</div>
+				                <div class="text-content clearfix">
+				                    <div id="j_textarea" class="text-info"><div>没有文本答案</div></div>   
+				                </div>
+				            </div>
+							<div id="j_right_answer_title" class="answer-title clearfix" style="display:none;">
+								<div>
+									正确答案
+								</div>
+							</div>
+							<div id="j_right_answer" class="source-img plrb15 right-answer img clearfix" style="display:none;">
+							</div>
+							<div id="j_teacher_score_title" class="answer-title clearfix" style="display:none;">
+								<div>
+									该题正误
+								</div>
+							</div>
+							<div id="j_teacher_score" class="source-img plrb15 right-answer clearfix"  style="display:none;">
+							</div>
+							<div id="j_teacher_comment_title" class="answer-title clearfix" style="display:none;">
+								<div>
+									教师批语
+								</div>
+							</div>
+							<div id="j_teacher_comment" class="source-img plrb15 right-answer clearfix" style="display:none;">
+							</div>
+							<%if(jx_info == 0){%>
+								<div id="j_jx_btn" class="analysis-btn" onclick="viewAnalysis(<%=sort%>,'<%=question_id_char%>','<%=que_source%>','<%=jy_subject_en_name%>')">查看解析</div>
+								<div id="j_analysis_title" class="answer-title clearfix" style="display:none;">
+									<div>
+										题目解析
+									</div>
+								</div>
+								<div id="j_analysis" class="source-img plrb15 img clearfix" style="display:none;"></div>
+							<%}else{%>
+								<div id="j_analysis_title" class="answer-title clearfix">
+								<div>
+									题目解析
+								</div>
+								</div>
+								<div id="j_analysis" class="source-img plrb15 img clearfix">
+									<%=#jx_info%>
+								</div>
+							<%}%>	
+					<% } %>
+					<!--//东师理想试题展示-->
+				<%}%>
+			<%}else{%>
+				<div class="no-question-data">该题目信息正在生成，请稍候查看</div>
+			<%}%>					<!--下一题-->
+			<div class="footer-div next clearfix">
+				<div class="prevQ" onclick="enterPreQuestion();"><span class="aui-iconfont aui-icon-left"></span>上一题</div>
+				<div class="nextQ" onclick="goNextQuestion();">下一题<span class="aui-iconfont aui-icon-right"></span></div>
+			</div>
+		</script>
+		<div id="j_wk_title"  class="answer-title clearfix" style="display: none;">
+			<div>
+				本题配套微课
+			</div>
+		</div>
+		<div id="wklist_div" class="wklist_div"></div>
+		<script type="text/html" id="wklist_script">
+			<% if(wkdetail_list.length > 0){ %>
+				<%for(var i=0; i<wkdetail_list.length; i++) {%>
+					<!--微课列表-->
+					<div class="section3" id="kcListDiv">
+						<div class="item style1" tapmode="itemhover" onclick="openWeikeContent('<%=wkdetail_list[i].id %>','<%=wkdetail_list[i].wkds_name %>','<%=wkdetail_list[i].is_phone_wk %>','<%=wkdetail_list[i].phone_wk_file_id %>');">
+							<div class="itemlogo userlogo"><img onerror="this.src='../../image/fun-module/common/wk_default.png'" src="../../../../../image/fun-module/common/wk_default.png" alt="" data-echo="<%=wkdetail_list[i].wk_thumb_url %>">
+							</div>
+							<div class="itemshelf">
+								<div class="shelfinfo01">
+									<%=wkdetail_list[i].wkds_name %>
+								</div>  
+								<div class="shelfinfo04">
+									<div class="left ellipsis">教师：<%=wkdetail_list[i].teacher_name %>
+										<div class="time">发布：<%=wkdetail_list[i].create_time.substring(0,10) %></div>
+									</div>
+								</div>
+								<div class="shelfinfo06">
+									浏览次数：<%=wkdetail_list[i].play_count %>&nbsp;次
+								</div>
+							</div>
+							
+						</div>
+					</div>
+				<% } %>
+			<% } %>
+
+		</script>
+		<div id="footer_div" class="footer_div">
+			&nbsp;
+		</div>
+	</body>
+	<script type="text/javascript" src="../../../../../script/api.js"></script>
+	<script type="text/javascript" src="../../../../../script/base_config.js" ></script>
+	<script type="text/javascript" src="../../../../../script/plug-in/template.js" ></script>
+	<script type="text/javascript" src="../../../../../script/plug-in/base64.js" ></script>
+	<script type="text/javascript" src="../../../../../script/common/common.js" ></script>
+	<script type="text/javascript" src="../../../../../script/assembly/Merge.js"></script>
+	<script type="text/javascript" src="../../../../../script/plug-in/echo.min.js"></script>
+	<script type="text/javascript" src="../../../../../script/common/jszy_jy_common.js" ></script>
+	<script type="text/javascript" src="../../../../../script/assembly/executeApp.js" ></script>
+	<script type="text/javascript" src="../../../../../script/assembly/openResource.js" ></script>
+	<script type="text/javascript" src="../../../../../script/assembly/photoBrowser.js"></script>
+	<script type="text/javascript" src="../../../../../script/assembly/trans.js"></script>
+	<script type="text/javascript">
+		var header_h;
+		var obj_scan;
+		var qt_id;//题目的类型
+		var q_cur_num;//当前试题
+		var q_sum = 0;//试题总数
+		var q_json_str;//试题json
+		var type;//判断是否要查看学生的答题情况
+		var analysis_array=[];//每个题目对应的题目解析
+		apiready = function() {
+			commonSetTheme({"level":5,"type":0});
+			header_h = api.pageParam.header_h;
+			type = api.pageParam.type; 
+			q_cur_num = api.pageParam.sort-1;
+			type == 1?getZyInfoById():getZyDetailByStuZyId();
+			commonScreenSwipeLeft("goNextQuestion();");//屏幕向左滑动,显示下一题
+			commonScreenSwipeRight("enterPreQuestion();");//屏幕向右滑动,显示上一题
+		};
+		function reWriteQuestion(q_cur) {
+			api.hideProgress();
+			var length = q_json_str.zy_info.list.length;
+			if(length>0){
+				answers_count=0;
+				var cur_list = q_json_str.zy_info.list[q_cur];
+				cur_list.commonRemoveQuestionEdit=commonRemoveQuestionEdit;
+				q_sum = q_json_str.zy_info.list.length - 1;
+				qt_id = cur_list.qt_id;
+				var question_id_char=cur_list.question_id_char;
+				var que_source=cur_list.que_source;
+				var html_type = template.render('q_script', cur_list);
+				document.getElementById('q_div').innerHTML = html_type;
+				judgeLastOrFirst(q_cur+1,length);//判断是最后一题还是第一题
+				//加载微课
+				isShowWk(cur_list.question_id,cur_list.question_id_char,cur_list.que_source,q_json_str.zy_info.zy_id);
+				judgeTextIndent();
+				if(que_source == 1 || que_source == "" || typeof(que_source) == "undefined"){
+					rightAnswer(cur_list.html_json.question_answer,1);
+				}else{
+				    rightAnswer(cur_list.html_json.Answers,1);
+				}
+				if(cur_list.qt_type != 1 && type == 1){
+					$api.css($api.byId('fj-body'),'display:none');
+					$api.css($api.byId('j_answer_title'),'display:none');
+					$api.css($api.byId('text-body'),'display:none');
+				}
+				if(type == 2){
+					if(cur_list.stu_answer.length > 0 || cur_list.stu_answer_txt){
+						getAnswerByStuZyQueId(cur_list.qt_type,cur_list.stu_answer,cur_list.html_json.question_answer,cur_list.score,cur_list.tea_notes_txt,cur_list.stu_answer_txt,que_source);
+					}	
+				}
+			}else{
+				$api.html($api.byId('q_div'), '<div class="no-question-data">暂无题目</div>');
+			}
+		}
+		/*
+		*author:zhaoj
+		*function:判断每个p标签的text-indent属性，解决这个属性过大导致整体页面变宽的问题
+		*date：201604014
+		*/
+		function judgeTextIndent(){
+			var pArray = $api.domAll($api.byId('body'), 'p');
+			var widthValue = Math.floor(api.winWidth/2);
+			for(var i = 0; i < pArray.length; i++){		
+				var textIndentValue = $api.cssVal(pArray[i],'text-indent');
+				textIndentValue = textIndentValue.substring(0,textIndentValue.length-2)*1;
+				if(textIndentValue > widthValue || textIndentValue < -widthValue){
+					$api.css(pArray[i],'text-indent:0em;');
+				}
+				var paddingLeftValue = $api.cssVal(pArray[i],'padding-left');
+				paddingLeftValue = paddingLeftValue.substring(0,paddingLeftValue.length-2)*1;
+				if(paddingLeftValue > widthValue || paddingLeftValue < -widthValue){
+					$api.css(pArray[i],'padding-left:0;');
+				}
+
+			}
+		}
+		/*
+		*author:zhaoj
+		*function:正确答案
+		*date：20160415
+		*/
+		function rightAnswer(question_answer,type){
+		  console.log(question_answer)
+		  if(question_answer=="" || question_answer==[] || typeof(question_answer)=="undefined"){
+              question_answer="暂无正确答案";
+          }
+//			if(type){
+			$api.html($api.byId('j_right_answer'), question_answer);
+//			}else{
+//				$api.text($api.byId('j_right_answer'), question_answer);
+//			}
+			$api.css($api.byId('j_right_answer'), 'display:block;');
+			$api.css($api.byId('j_right_answer_title'), 'display:block;');
+		}
+		/*
+		*author:zhaoj
+		*function:判断是第一题还是最后一题
+		*date：201604019
+		*/
+		function judgeLastOrFirst(q_cur,length){
+			if(q_cur == 1 && length != 1){
+				$api.css($api.dom('.prevQ'),'display:none;');
+				$api.css($api.dom('.nextQ'),'float:right;');
+			}else if(q_cur == length && length != 1){
+				$api.css($api.dom('.prevQ'),'float:left;');
+				$api.css($api.dom('.nextQ'),'display:none;');
+			}else if(q_cur == 1 && length == 1){
+				$api.css($api.dom('.footer-div'),'display:none;');
+				$api.css($api.byId('footer_div'),'display:none;');
+			}
+		}
+		
+		function goNextQuestion(){
+			if (q_cur_num < q_sum) {
+				q_cur_num++;
+				reWriteQuestion(q_cur_num);
+			} else {
+				q_cur_num = q_cur_num;
+				popToast('已经到最后一题');
+			}
+		}
+		/*
+		*author:zhaoj
+		*function:进入下一道题目
+		*date：20160408
+		*/
+		function enterPreQuestion(){
+			if (q_cur_num > 0) {
+				q_cur_num--;
+			} else {
+				popToast('已经到第一题');
+				q_cur_num = 0;
+			}
+			reWriteQuestion(q_cur_num);
+		}
+		/*
+		*author:zhaoj
+		*function:获取检测
+		*date：20160405
+		*/
+		function getZyInfoById(){
+			showSelfProgress('加载中...');
+			api.ajax({
+				url :BASE_URL_ACTION + '/xx/getZyInfoById',
+				method : 'post',
+				timeout : 30,
+				dataType : 'json',
+				data : {
+					values : {
+						"random_num" : creatRandomNum(),
+						"zy_id" : api.pageParam.zy_id,
+						"zy_type" :1,
+						"person_id":$api.getStorage("person_id"),
+						"identity_id":$api.getStorage("identity")
+					}
+				},
+				headers : {
+		'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+	}
+			}, function(ret, err) {
+				api.hideProgress();
+				if (err) {
+					q_json_str = {"zy_info" : {"list":[]}};
+					reWriteQuestion(q_cur_num);
+				} else {
+					if(ret.success){
+						q_json_str = {"zy_info" : {"list":[],"zy_desc":ret.zy_info.zy_desc,"zy_question_ids":ret.zy_info.zy_question_ids,"zy_type":ret.zy_info.zy_type,"zy_name":ret.zy_info.zy_name,"zy_id":ret.zy_info.zy_id}};
+						var  list = ret.zy_info.ques;
+						wk_data = ret.zy_info.ti_fujian_json.replaceAll('\/','');
+						wk_data = JSON.parse(wk_data);
+						if(list.length>0){
+							for(var i = 0; i<list.length;i++){
+								var oparam = new Object();
+								oparam.list_length = list.length;
+								oparam.question_id = list[i].question_id;
+								oparam.que_scores = list[i].que_scores;
+								oparam.que_source = list[i].que_source;
+								oparam.jy_subject_en_name = list[i].jy_subject_en_name;
+								oparam.qt_type = list[i].qt_type;
+								oparam.qt_id = list[i].qt_id;
+								oparam.qt_id_pre = oparam.qt_id;
+								oparam.tea_notes_txt = list[i].tea_notes_txt;
+								oparam.sort = list[i].sort;
+								oparam.qt_name = list[i].qt_name;
+								oparam.question_id_char= list[i].question_id_char;
+								oparam.jx_info = 0;
+								//试题相关操作
+								if(list[i].html_json){
+									if(list[i].que_source == 2){
+											//菁优网试题
+											oparam.qt_id = list[i].html_json.Cate;
+											oparam.html_json={};
+											
+											oparam.html_json.question_answer_nottag = list[i].html_json.Answers.join("");
+											if (oparam.html_json.question_answer_nottag == "对" ||
+												oparam.html_json.question_answer_nottag == "正确" ){
+												oparam.html_json.question_answer_nottag = "√";
+											}
+											if (oparam.html_json.question_answer_nottag == "错" ||
+												 oparam.html_json.question_answer_nottag == "错误"){
+												oparam.html_json.question_answer_nottag = "×";
+											}
+											
+											oparam.html_json.Method= list[i].html_json.Method;
+											oparam.html_json.Answers= list[i].html_json.Answers;
+											oparam.html_json.Topics= list[i].html_json.Topics;
+											oparam.html_json.Analyse= list[i].html_json.Analyse;
+											oparam.html_json.Content= list[i].html_json.Content;
+											oparam.html_json.Discuss= list[i].html_json.Discuss;
+											oparam.html_json.Options= list[i].html_json.Options;
+											oparam.html_json.Options_first = JSON.parse(commonQuetionOptionFirst(list[i].html_json.Options.length));
+											oparam.html_json.Points= list[i].html_json.Points;
+											oparam.html_json.Label= list[i].html_json.Label;
+											
+											if (oparam.qt_id_pre == 26){
+												if (parseInt(list[i].html_json.Answers[0]) != list[i].html_json.Answers[0]){
+													oparam.html_json.question_answer_nottag = list[i].html_json.Answers.join(" ");
+												}else{
+													oparam.html_json.question_answer_nottag = "";
+													for (var m = 0; m < list[i].html_json.Answers.length; m++){
+														oparam.html_json.question_answer_nottag += oparam.html_json.Options_first[list[i].html_json.Answers[m]];
+													}
+												}											
+											}
+											
+										}else{
+											//东师理想本地试题
+											oparam.html_json={};
+											var question_title = Base64.decode(list[i].html_json.question_title);
+											var key = '/dsideal_yy';
+											var key_re = BASE_URL_ACTION;
+											oparam.html_json.question_title = question_title;
+											if(oparam.html_json.question_title.indexOf(key_re) == -1){
+											 oparam.html_json.question_title = question_title.replaceAll(key, key_re);
+											}
+											var question_analysis=Base64.decode(list[i].html_json.question_analysis);
+											oparam.html_json.question_analysis = question_analysis;
+											if(oparam.html_json.question_analysis.indexOf(key_re) == -1){
+											 oparam.html_json.question_analysis = question_analysis.replaceAll(key, key_re);
+											}
+											oparam.html_json.question_analysis = oparam.html_json.question_analysis == ""?"略":oparam.html_json.question_analysis;
+											oparam.html_json.question_answer= Base64.decode(list[i].html_json.question_answer);
+											if(oparam.html_json.question_answer.indexOf(key_re) == -1){
+											 oparam.html_json.question_answer= Base64.decode(list[i].html_json.question_answer).replaceAll(key, key_re);
+											}
+											if(list[i].html_json.quetionOption != ''){
+												var count_length = count(list[i].html_json.quetionOption);
+												oparam.html_json.question_answer_length = count_length;
+												oparam.html_json.quetionOption=JSON.parse(commonQuetionOption(count_length,JSON.stringify(list[i].html_json.quetionOption),key,key_re));
+												oparam.html_json.question_answer_first = JSON.parse(commonQuetionOptionFirst(count_length))
+											}else{
+												oparam.html_json.question_answer_length = 0;
+											}
+										}
+									}else{
+										oparam.html_json = list[i].html_json;
+									}
+								q_json_str.zy_info.list.push(oparam);
+							}
+						}
+						reWriteQuestion(q_cur_num);
+					}else{
+						q_json_str = {"zy_info" : {"list":[]}};
+						reWriteQuestion(q_cur_num);
+					}
+				}
+			});
+		}
+		/*
+		*作者:zhaoj
+		*功能:获取答题详情
+		*日期：20160922
+		*/
+		function getZyDetailByStuZyId(){
+			showSelfProgress('加载中...');
+			api.ajax({
+				url :BASE_URL_ACTION + '/xx/getZyDetailByStuZyId',
+				method : 'post',
+				timeout : 30,
+				dataType : 'json',
+				data : {
+					values : {
+						"random_num" : creatRandomNum(),
+						"student_id" : api.pageParam.student_id,
+						"zy_id" : api.pageParam.zy_id,
+						"p_type" : 2,
+						"zy_type":1,
+						"identity_id" :$api.getStorage("identity")
+					}
+				},
+				headers : {
+		'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+	}
+			}, function(ret, err) {
+				api.hideProgress();
+				if (err) {
+					popToast('获取答题信息失败');
+				} else {
+					if(ret.success){
+						q_json_str = {"zy_info" : {"list":[],"zy_desc":ret.zy_info.zy_desc,"zy_question_ids":ret.zy_info.zy_question_ids,"zy_type":ret.zy_info.zy_type,"zy_name":ret.zy_info.zy_name,"zy_id":ret.zy_info.zy_id}};
+						var  list = ret.zy_info.ques;
+						if(list.length>0){
+							for(var i = 0; i<list.length;i++){
+								var oparam = new Object();							
+								oparam.list_length = list.length;
+                                oparam.question_id = -1;
+                                oparam.qt_type = list[i].qt_type;
+                                oparam.qt_id = list[i].qt_id;
+                                oparam.qt_id_pre = oparam.qt_id;
+                                oparam.sort = list[i].sort;
+                                oparam.qt_name = list[i].qt_name;
+                                oparam.tea_notes_txt = list[i].tea_notes_txt;
+                                oparam.stu_answer_txt = list[i].stu_answer_txt;
+                                oparam.que_nd = list[i].que_nd;
+                                oparam.stu_answer = list[i].stu_answer;
+                                oparam.que_scores= list[i].que_scores;
+                                oparam.is_tijiao= list[i].is_tijiao;
+                                oparam.file_id= list[i].file_id;
+                                oparam.score = list[i].score;
+                                oparam.question_id_char= list[i].question_id_char;
+                                oparam.que_source = list[i].que_source;
+								oparam.jy_subject_en_name = list[i].jy_subject_en_name;
+								oparam.jx_info = 0;
+								//试题相关操作
+								if(list[i].html_json){
+									if(list[i].que_source == 1){
+										//东师理想本地试题
+											oparam.html_json={};
+											var question_title = Base64.decode(list[i].html_json.question_title);
+											var key = '/dsideal_yy';
+											var key_re = BASE_URL_ACTION;
+											oparam.html_json.question_title = question_title.replaceAll(key, key_re);
+											var question_analysis=Base64.decode(list[i].html_json.question_analysis);
+											oparam.html_json.question_analysis = question_analysis.replaceAll(key, key_re);
+											oparam.html_json.question_analysis = oparam.html_json.question_analysis == ""?"略":oparam.html_json.question_analysis;
+											oparam.html_json.question_answer= Base64.decode(list[i].html_json.question_answer).replaceAll(key, key_re);
+											if(list[i].html_json.quetionOption != ''){
+												var count_length = count(list[i].html_json.quetionOption);
+												oparam.html_json.question_answer_length = count_length;
+												oparam.html_json.quetionOption=JSON.parse(commonQuetionOption(count_length,JSON.stringify(list[i].html_json.quetionOption),key,key_re));
+												oparam.html_json.question_answer_first = JSON.parse(commonQuetionOptionFirst(count_length))
+											}else{
+												oparam.html_json.question_answer_length = 0;
+											}
+										}else{
+											//菁优网试题
+											oparam.qt_id = list[i].html_json.Cate;
+											oparam.html_json={};
+											
+											oparam.html_json.question_answer_nottag = list[i].html_json.Answers.join("");
+											if (oparam.html_json.question_answer_nottag == "对" ||
+												oparam.html_json.question_answer_nottag == "正确" ){
+												oparam.html_json.question_answer_nottag = "√";
+											}
+											if (oparam.html_json.question_answer_nottag == "错" ||
+												 oparam.html_json.question_answer_nottag == "错误"){
+												oparam.html_json.question_answer_nottag = "×";
+											}
+											
+											oparam.html_json.Method= list[i].html_json.Method;
+											oparam.html_json.question_answer= list[i].html_json.Answers;
+											oparam.html_json.Answers= list[i].html_json.Answers;
+											oparam.html_json.Topics= list[i].html_json.Topics;
+											oparam.html_json.Analyse= list[i].html_json.Analyse;
+											oparam.html_json.Content= list[i].html_json.Content;
+											oparam.html_json.Discuss= list[i].html_json.Discuss;
+											oparam.html_json.Options= list[i].html_json.Options;
+											oparam.html_json.Options_first = JSON.parse(commonQuetionOptionFirst(list[i].html_json.Options.length));
+											oparam.html_json.Points= list[i].html_json.Points;
+											oparam.html_json.Label= list[i].html_json.Label;
+											if (oparam.qt_id_pre == 26){
+												if (parseInt(list[i].html_json.Answers[0]) != list[i].html_json.Answers[0]){
+													oparam.html_json.question_answer_nottag = list[i].html_json.Answers.join(" ");
+												}else{
+													oparam.html_json.question_answer_nottag = "";
+													for (var m = 0; m < list[i].html_json.Answers.length; m++){
+														oparam.html_json.question_answer_nottag += oparam.html_json.Options_first[list[i].html_json.Answers[m]];
+													}
+												}											
+											}
+										}
+									}else{
+										oparam.html_json = list[i].html_json;
+									}
+								q_json_str.zy_info.list.push(oparam);
+							}
+						}
+						reWriteQuestion(q_cur_num);
+					}else{
+						popToast('获取答题信息失败');
+					}
+				}
+			});
+		}
+		/*
+		*author:zhaoj
+		*function:获取对象长度
+		*date：20160406
+		*/
+		function count(o){
+		    var t = typeof o;
+			if(t == 'object'){
+	            var n = 0;
+	            for(var i in o){
+	                    n++;
+	            }
+		    }
+		    return n;
+		};
+		/*
+		*author:zhaoj
+		*function:查看微课
+		*date：20160412
+		*/
+		function isShowWk(question_id,question_id_char,que_source,zy_id){
+			api.ajax({
+				url : BASE_URL_ACTION + '/xx/checkQuestionWeike',
+				method : 'post',
+				timeout : 30,
+				dataType : 'json',
+				returnAll : false,
+				data : {
+					values : {
+						"random_num" : creatRandomNum(),
+						"question_id_char":question_id_char,
+						"que_source":que_source,
+						"zy_id":zy_id
+					}
+				}
+			}, function(ret, err) {
+				if (err) {
+					$api.css($api.byId('j_wk_title'),'display:none;');
+					$api.css($api.byId('wklist_div'),'display:none;');
+				} else {
+					if(ret.success){
+						loadData(question_id,question_id_char,zy_id);
+						$api.css($api.byId('j_wk_title'),'display:block;');
+						$api.css($api.byId('wklist_div'),'display:block;');
+					}else{
+						$api.css($api.byId('j_wk_title'),'display:none;');
+						$api.css($api.byId('wklist_div'),'display:none;');
+					}
+				}
+			});
+		}
+		/**
+		 * 加载数据
+		 * 周枫
+		 * 2016.4.15
+		 */
+		function loadData(question_id,question_id_char,zy_id) {
+			api.ajax({
+				url : $api.getStorage('BASE_URL_ACTION') + '/xx/getQuestionWeike',
+				method : 'post',
+				dataType : 'json',
+				timeout : 30,
+				data : {
+					values : {
+						"question_id_char":question_id_char,
+						"zy_id":zy_id
+					}
+				}
+			}, function(ret, err) {
+				if(err) {
+					api.toast({
+	                    msg:'获取微课列表失败'
+                    });
+                    
+				} else {
+					if(ret.success) {
+						var wk_list = ret.wkdetail_list;
+						var wk_list_l = getJsonObjLength(wk_list);
+						if (wk_list_l > 0) {
+							for (var i = 0; i < wk_list_l; i++) {
+								var wk_thumb_id = wk_list[i].thumb_id;
+//								var wk_thumb_id = '8E75B87E-68AC-4ACA-87EE-988207BE549C';
+								var wk_thumb_url = '';
+								if (BASE_APP_TYPE == 1) {
+									//https://dsideal.obs.cn-north-1.myhuaweicloud.com/down/Thumbs/8E/8E75B87E-68AC-4ACA-87EE-988207BE549C.thumb
+									wk_thumb_url = url_path + BASE_THUMB_BEGIN + wk_thumb_id.substring(0, 2) + '\/' + wk_thumb_id + BASE_THUMB_END;
+								} else {
+									wk_thumb_url = BASE_URL_ACTION + BASE_THUMB_BEGIN + wk_thumb_id.substring(0, 2) + '\/' + wk_thumb_id + BASE_THUMB_END;
+								}
+								wk_list[i]["wk_thumb_url"] = wk_thumb_url;
+							}
+						}
+						var html_type = template.render('wklist_script', ret);
+						document.getElementById('wklist_div').innerHTML = html_type;
+						
+						//延迟加载图片
+						setTimeout(function() {
+							echoInit();
+						}, 300);
+						
+					} else {
+						api.toast({
+		                    msg:'获取微课列表失败'
+	                    });
+					}
+				}
+				//通知顶部下拉刷新数据加载完毕，组件会恢复到默认状态
+						commonControlRefresh();
+			});
+		}
+		/**
+		 * 打开内容页面
+		 * 周枫
+		 * 2015.12.17
+		 */
+		function openWeikeContent(wk_id, wk_name, is_phone_wk, phone_wk_file_id) {
+			//先重置通知window返回哪个页面
+			commonExecScript('zuoyeJsJy_st_window','','reBackType("content");',0);
+			var pageParamJson={
+				wk_id : wk_id,
+				is_phone_wk : is_phone_wk,
+				phone_wk_file_id : phone_wk_file_id
+			};//打开frame页面json数据
+			commonOpenFrame("common_weike_frame","widget://html/common/common_weike_frame.html",header_h,false,false,"#ffffff",pageParamJson);//打开分组管理的frame页面
+		}
+		/*
+		 *author:zhaoj
+		 *function:判断有几张图片上传，如果有四张，按钮不能触发点击事件，成灰
+		 *date：20160325
+		 */
+		function judgeLength(answers_count) {
+            if(answers_count==0){
+                $api.addCls($api.byId('j_zg_answers'),'aui-hide');
+                $api.removeCls($api.byId('j_no_data'),'aui-hide');
+            } else {
+                $api.addCls($api.byId('j_no_data'),'aui-hide');
+                $api.removeCls($api.byId('j_zg_answers'),'aui-hide');
+            }
+        }
+		/*
+		*author:zhaoj
+		*function:弹出Toast提示框
+		*date：20160407
+		*/
+		function getAnswerByStuZyQueId(qt_type,stu_answer,right_answer,score,tea_notes,stu_answer_txt,que_source){
+			if(qt_type == 1){
+				//客观题
+				var dlArray = $api.domAll($api.byId('j_option'),'dl');
+				var stuAnswerArray;//学生作答的答案
+				var rightArray;
+				if(stu_answer[0] == "正确" || stu_answer[0] == "错误"|| stu_answer[0] == "√" || stu_answer[0] == "×"){
+					//判断题
+					stuAnswerArray = stu_answer;
+					rightArray = [right_answer];
+					
+					if (que_source * 1 == 2){
+						if (stu_answer == "对" ||
+							stu_answer == "正确" ){
+							stuAnswerArray = ["√"];
+						}
+						if (stu_answer == "错" ||
+							 stu_answer == "错误"){
+							stuAnswerArray = ["×"];
+						}
+						
+						if (right_answer == "对" ||
+							right_answer == "正确" ){
+							rightArray = ["√"];
+						}
+						if (right_answer == "错" ||
+							right_answer == "错误"){
+							rightArray = ["×"];
+						}
+					}
+				}else{
+					stuAnswerArray = stu_answer.toString().split("");
+					rightArray = right_answer.toString().split("");
+				}
+				var stuAnswerLast=[];
+				var stuAnswerRight=[];
+				for(var i =0; i<stuAnswerArray.length;i++){
+					var count = 0;
+					for(var j=0; j<rightArray.length;j++){
+						if(stuAnswerArray[i]==rightArray [j]){
+							count++;
+						}
+					}
+					if(count == 0){
+						stuAnswerLast.push(stuAnswerArray[i]);
+					}else{
+						stuAnswerRight.push(stuAnswerArray[i]);
+					}
+				}
+				for(var i=0; i <dlArray.length;i++){
+					var answerOption = dlArray[i].getAttribute("answerOption");
+					for(var j = 0; j<stuAnswerLast.length;j++){
+						if(answerOption == stuAnswerLast[j]){
+							$api.addCls(dlArray[i], 'wrong');
+							if(answerOption == "正确" || answerOption == "√"){
+								$api.css($api.byId('j_wrong_1'),'display:inline-block');
+							}else if(answerOption == "错误" || answerOption == "×"){
+								$api.css($api.byId('j_wrong_2'),'display:inline-block');
+							}else{
+								$api.css($api.byId('j_wrong_'+answerOption),'display:inline-block');
+							}
+						}
+					}
+					for(var k = 0; k<stuAnswerRight.length;k++){
+						if(answerOption == stuAnswerRight[k]){
+							$api.addCls(dlArray[i], 'active');
+							if(answerOption == "正确" || answerOption == "√"){
+								$api.css($api.byId('j_right_1'),'display:inline-block');
+							}else if(answerOption == "错误" || answerOption == "×"){
+								$api.css($api.byId('j_right_2'),'display:inline-block');
+							}else{
+								$api.css($api.byId('j_right_'+answerOption),'display:inline-block');
+							}
+						}
+					}
+				}
+			}else{
+				//文本答案
+				if($api.trim(stu_answer_txt).length > 0){
+                	$api.text($api.byId('j_textarea'),stu_answer_txt);
+                }
+				$api.css($api.byId('j_my_title'),'display:block;');
+				//主观题
+				//教师评分
+				if(score != -2 && score!=null){
+					teacherScore(score);
+				}
+				//教师评语
+				if(tea_notes && tea_notes!=null){
+					teacherComment(tea_notes);
+				}
+				var answer_list = stu_answer;
+				var count = 0;  
+				if(answer_list.length >0){
+					for(var i = 0; i < answer_list.length; i++){
+						if(answer_list[i].create_time != null){
+							if(answer_list[i].resource_id_int > 0){
+								if(answer_list[i].resource_type == 1){
+									//图片
+									answer_list[i].type = 5;
+								}else{
+									//其他格式
+		                    		answer_list[i].type = 3;
+		                    		//answer_list[i].type = 1;
+		                    	}
+		                    }else{
+		                    	answer_list[i].type = 4;
+		                    }
+		                    answer_list[i].img_url = '';
+							answer_list[i].resource_format = answer_list[i].ext;
+							var img_url= getImgUrl(answer_list[i]);
+							answer_list[i].img_url = img_url;
+						}else{
+							count++;
+						}
+					}
+					if(count == answer_list.length){
+						judgeLength(0);
+					}else{	
+						showSelfProgress('答案加载中...');   
+						exePic(0,answer_list,function(flag,data){
+							api.hideProgress();
+							if(flag){
+								for(var i = 0; i < data.length; i++){	
+									showImg(data[i]);
+								}
+							}
+						});
+					}
+				}
+			}
+		}
+		/*
+		*author:zhaoj
+		*function:教师评分
+		*date：20160414
+		*/
+		function teacherScore(score){
+			var stu_score = score*100;
+			if(stu_score == 100){
+				$api.text($api.byId('j_teacher_score'), '正确');
+			}else if(stu_score == 0){
+				$api.text($api.byId('j_teacher_score'), '错误');
+			}else{
+				$api.text($api.byId('j_teacher_score'), '半对'+' ('+stu_score+'%)');
+			}
+			$api.css($api.byId('j_teacher_score'), 'display:block;');
+			$api.css($api.byId('j_teacher_score_title'), 'display:block;');
+		}
+		/*
+		*author:zhaoj
+		*function:教师评语
+		*date：20160414
+		*/
+		function teacherComment(comment){
+			$api.html($api.byId('j_teacher_comment'), comment);
+			$api.css($api.byId('j_teacher_comment'), 'display:block;');
+			$api.css($api.byId('j_teacher_comment_title'), 'display:block;');
+		}
+		//处理图片
+		function exePic(index,answer_list,callback){
+			if(index < answer_list.length){
+				if(answer_list[index].piyue_file_path != null && answer_list[index].resource_type == 1){
+					api.download({
+					    url: answer_list[index].img_url,
+					    savePath: 'fs://lxjxt/yingyong/zuoye/'+answer_list[index].file_id+'.'+answer_list[index].ext,
+					    report: false,
+					    cache: true,
+					    allowResume: true
+					},function( ret, err ){
+						if(err) {
+							api.toast({
+			                    msg:'服务器连接失败，未找到主观题检测'
+		                    });
+		                    callback(true);
+						} else {
+							if(ret.percent == 100) {
+		                    		var savePath = ret.savePath;
+						            MergePic(savePath, answer_list[index].piyue_file_path, function(result) {
+					            		//调用这个方法合成试题和批阅痕迹,reslut为base64；建议用chrome查看该demo
+										for(var i = 0; i < answer_list.length; i++){
+											if(answer_list[i].file_id == answer_list[index].file_id){
+												answer_list[i].img_url = result;
+												answer_list[i].is_base64 = 1;
+												index++;
+												return exePic(index,answer_list,callback);
+											}
+										}
+									});
+		                    }else{
+	                    		index++;
+								return exePic(index,answer_list,callback);
+	                    	} 
+						}
+					});
+				}else{
+					index++;
+					return exePic(index,answer_list,callback);
+				}
+			}else{
+				callback(true,answer_list);
+			}
+		}
+		/*
+		*author:zhaoj
+		*function:查看解析
+		*date：20160414
+		*/
+		function viewAnalysis(sort,question_id_char,que_source,jy_subject_en_name){
+			showSelfProgress('获取解析中...');
+			api.ajax({
+				url : $api.getStorage('BASE_URL_ACTION') + '/xx/getQueHtmlInfo?random_num='+creatRandomNum()+'&question_id_char='+question_id_char+'&que_source='+que_source+'&person_id='+$api.getStorage("person_id")+'&identity_id='+$api.getStorage("identity")+'&jy_subject_en_name='+jy_subject_en_name,
+				method : 'get',
+				timeout : 30,
+				dataType : 'json'
+			}, function(ret, err) {
+				api.hideProgress();
+				if(err) {
+					popToast('获取解析失败，请稍候再试');
+				} else {
+					if(ret.success) {
+						if(que_source == 2){
+							if(ret.html_json.Method){
+								if(ret.html_json.Method){
+									q_json_str.zy_info.list[sort-1].jx_info = ret.html_json.Method;
+								}else{
+									q_json_str.zy_info.list[sort-1].jx_info = "略";
+								}
+							}else{
+								q_json_str.zy_info.list[sort-1].jx_info = "略";
+							}
+						}else{
+							q_json_str.zy_info.list[sort-1].jx_info = Base64.decode(ret.html_json.question_analysis);
+						}	
+						var key = '/dsideal_yy';
+                        var key_re = BASE_URL_ACTION;
+                        q_json_str.zy_info.list[sort-1].jx_info = q_json_str.zy_info.list[sort-1].jx_info.replaceAll(key, key_re);
+                        q_json_str.zy_info.list[sort-1].jx_info = q_json_str.zy_info.list[sort-1].jx_info == ""?"略":q_json_str.zy_info.list[sort-1].jx_info;
+						$api.css($api.byId('j_jx_btn'),'display:none');
+						$api.html($api.byId('j_analysis'),q_json_str.zy_info.list[sort-1].jx_info);
+						$api.css($api.byId('j_analysis'),'display:block');
+						$api.css($api.byId('j_analysis_title'),'display:block');
+					} else {
+						popToast('获取解析失败，请稍候再试');
+					}
+				}
+			});
+		}
+		/*
+        *author:zhaoj
+        *function:获取缩略图路径
+        *date：20170901
+        */
+		function getImgUrl(img_json){
+			var img_url;//缩略图路径
+            if(img_json.type == 0 || img_json.type == 5){
+                //图片
+                if (BASE_APP_TYPE == 1) { 
+                    img_url = BASE_IMAGE_PRE + url_path_suffix + img_json.file_id.substring(0, 2) + '\/' + img_json.file_id + '.' + img_json.resource_format + commonReturnPhotoCutSize(0);
+                } else {
+                    img_url = BASE_URL_ACTION + BASE_IMAGE_BEGIN + img_json.file_id.substring(0, 2) + '/' + img_json.file_id + '.' + img_json.resource_format + commonReturnPhotoCutSize(0);
+                }
+            }else if(img_json.type == 1){
+                //音频
+                img_url = "../../../../../image/fun-module/iphone/zuoye/audio.png";
+            }else if(img_json.type == 2){
+                //视频
+                img_url = "../../../../../image/fun-module/iphone/zuoye/player.png";
+            }else if(img_json.type == 3){
+            	//资源库中的缩略图
+                if (BASE_APP_TYPE == 1) {
+					img_url = url_path + BASE_THUMB_BEGIN + img_json.thumb_id.substring(0, 2) + '\/' + img_json.thumb_id + BASE_THUMB_END;
+				} else {
+					img_url = BASE_URL_ACTION + BASE_THUMB_BEGIN + img_json.thumb_id.substring(0, 2) + '/' + img_json.thumb_id + BASE_THUMB_END;
+				}
+			}else{
+				//之前上传的答案图片
+				 if (BASE_APP_TYPE == 1) {
+					img_url = BASE_IMAGE_PRE+"down/App/"+ file_id.substring(0, 2) + "/" + file_id + '.' + ext + commonReturnPhotoCutSize(0);
+				} else {
+					img_url = BASE_URL_ACTION + "/html/thumb/App/" + file_id.substring(0, 2) + "/" + file_id + '.' + ext + commonReturnPhotoCutSize(0);
+				}
+			}
+			return img_url;
+		}
+		/*
+        *author:zhaoj
+        *function:上传音频、视频、图片的缩略图
+        *date：20170901
+        */
+        function showImg(img_json){
+            var openHtml = "openAnswer('"+img_json.resource_id_int+"','"+img_json.img_url+"','"+ img_json.resource_info_id+"','"+ img_json.resource_type+"','"+ img_json.is_base64+"','"+ img_json.file_id+"','"+ img_json.ext+"')";
+            var li_html = '<li class="fl" onclick="'+openHtml+'">';
+            var mr_picture = "this.src='../../../../../image/fun-module/common/wk_default_square.png'";
+        	if(img_json.type == 2){
+        		//视频默认图片
+        		li_html +='<div class="zoomImage" style="background:#141414 url('+img_json.img_url+') center center no-repeat;background-size:35% auto;"></div>';
+        	}else{
+            	li_html +='<div class="zoomImage"><img src="'+img_json.img_url+'" onerror="'+mr_picture+'" /></div>';
+            }
+            li_html +='<div class="fj-name ellipsis">'+img_json.resource_title+'</div>';
+            li_html +='</li>';
+            $api.append($api.byId('j_zg_answers'), li_html);
+            answers_count = answers_count + 1;
+	        judgeLength(answers_count);
+        }
+        /*
+        *author:zhaoj
+        *function:打开主观题答案
+        *date：20170904
+        */
+        function openAnswer(resource_id_int,img_url,resource_info_id,resource_type,is_base64,file_id,ext){
+        	if(resource_id_int < 0 || resource_type == 1){
+        		api.execScript({
+				    name: api.winName,
+				    script: 'reBackType("picture")'
+				});
+        		if(is_base64==1){
+        			//有批阅痕迹的图片，先将base64转换成图片，接下来在进行显示
+        			var save_url = BASE_DOWNLOAD_YY_PATH.substring(0,BASE_DOWNLOAD_YY_PATH.length-1);
+        			var index = img_url.indexOf('base64');
+        			var finish_img_url = img_url.substring(index+7,img_url.length);
+        			var imgName = file_id+'.'+ext;
+        			trans.saveImage({"base64Str":finish_img_url,"imgPath":save_url,"imgName":imgName},function(flag,data){
+        				if(flag){
+        				    var fsDir = api.fsDir;
+                            if(data.indexOf("fs://")>=0){
+                                data = fsDir+"/"+data.replace("fs://","");
+                            }
+        					common_openPicture.open(data,api.winName);
+        				}else{
+        					popToast('打开失败，请稍候重试');
+        				}
+        			});
+        		}else{
+        			common_openPicture.open(img_url,api.winName);
+        		}
+        	}else{
+        		var param_json = {"is_show_tip":1,"resource_id_int":resource_id_int,"resource_info_id":resource_info_id};
+        		commonGetResInfo(param_json,function(flag,ret){
+        			api.hideProgress();
+        			if(flag){
+ 						common_openResource.open(ret.resource_format,ret.file_id,ret.resource_title,ret.m3u8_status,api.winName,'reBackType("voice");','back();',ret.resource_id_int);
+        			}else{
+        				popToast('打开失败，请稍候重试');
+        			}
+        		});
+        	}
+        }
+	</script>
+</html>

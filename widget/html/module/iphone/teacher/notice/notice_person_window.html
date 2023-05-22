@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<!-- html5：在创建html时为了防止页面缩放等不兼容效果，要创建个viewport  -->
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<!-- 在IOS设备上，有时会将数字转为手机号，这里也要禁止下 -->
+		<meta name="format-detection" content="telephone=no"/>
+		<title>通知</title>
+		<link rel="stylesheet" type="text/css" href="../../../../../css/aui/aui.css" />
+		<link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+		<style>
+			.history-date {
+				font-size: 12px;
+			}
+			#message-content {
+				overflow-y: auto;
+				display: none;
+			}
+			.save {
+				position: absolute;
+				right: 3px;
+				top: 0;
+				font-size: 16px !important;
+				height: 50px;
+				line-height: 50px;
+			}
+		</style>
+	</head>
+	<body class="common-iphone-notice">
+		<div id="wrap">
+			<header class="aui-bar aui-bar-nav aui-bar-primary" id="aui-header">
+				<div id="cloud" class="topbar activebar">
+					<div id="back" class="back" onclick="back();" tapmode="">
+						<i class="aui-iconfont aui-icon-left"></i>返回
+					</div>
+					<div class="mTitle" id="mTitle">
+						选择接收人
+					</div>
+				</div>
+			</header>
+			<div  class="aui-content aui-content-padded" id="message-content">
+				<p class="aui-text-center history-date"></p>
+			</div>
+		</div>
+	</body>
+	<script type="text/javascript" src="../../../../../script/api.js"></script>
+	<script type="text/javascript" src="../../../../../script/common/common.js"></script>
+	<script type="text/javascript" src="../../../../../script/base_config.js" ></script>
+	<script type="text/javascript">
+		//顶部header高度
+		var header_h;
+		var back_type = 'index';//从哪个页面退出
+		apiready = function() {
+			commonSetTheme({"level":5,"type":0});
+			header_h = api.pageParam.header_h;
+			openPersonFrame();
+			commonIosAuiHeader();//定位header位置，留出上面电池等空隙，苹果需要
+			commonBackForAndroid();//安卓关闭
+		};
+		/*
+		*author:zhaoj
+		*function:打开通知列表frame页面
+		*date：20160625
+		*/
+		function openPersonFrame() {
+			var header_h = api.pageParam.header_h;
+			var pageParamJson={
+					header_h : header_h,
+					personArray : api.pageParam.personArray,
+					nameArray : api.pageParam.nameArray,
+					bmArray : api.pageParam.bmArray,
+					loginNameArray : api.pageParam.loginNameArray
+				};//打开frame页面所需参数
+			commonOpenFrame('notice_person_frame', 'notice_person_frame.html',header_h, false, false,"#ffffff",pageParamJson);	//打开index页面
+		}
+		/*
+		*author:zhaoj
+		*function:已经选择完阅读人
+		*date：20160628
+		*/
+		function selectPerson(){
+			commonExecScript('notice_person_window','notice_person_frame','finish();',1);
+		}
+		/**
+		 * 返回应用页面
+		 * 周枫
+		 * 2015.10.11
+		 */
+		function back() {
+		    switch(back_type){
+		      case 'index':
+		          $api.setStorage('now_select_all',[]);
+                  $api.setStorage('now_all_selected',[]);
+                  commonExecScript('notice_add_window','notice_add_frame','checkAndDealData();',1);
+		          api.closeWin();
+		          break;
+		      case 'personXq':
+		          commonExecScript(api.winName,'notice_person_frame','backToLastOrg();',1);
+                  break;
+		    }
+			
+		}
+		
+		/*
+		 * 功能：重置返回页面
+		 * 作者：张自强
+		 * 时间：20180718
+		 */
+		function reBackType(type){
+		  back_type = type;
+		}
+		
+		/*
+		 * 功能：打开已选择列表页面
+		 * 作者：张自强
+		 * 时间：20180724
+		 */
+		function openAllSelectedFrame(){
+		   var header_h = api.pageParam.header_h;
+		   var pageParamJson={
+               header_h : header_h,
+           };//打开frame页面所需参数
+		   api.openFrame({
+            name : 'notice_selected_frame',
+            scrollToTop : true,
+            allowEdit : false,
+            url : 'notice_selected_frame.html',
+            rect : {
+                x : 0,
+                y : api.winHeight-70,
+                w : api.winWidth,
+                h : 70,
+            },
+            pageParam : pageParamJson,
+            bgColor : '#efefef',
+            vScrollBarEnabled : true,
+            hScrollBarEnabled : false,
+            //页面是否弹动 为了下拉刷新使用
+            bounces : false
+        });
+		}
+		
+		/*
+		 * 功能：重置已选人员页面
+		 * 作者：张自强
+		 * 时间：20180724
+		 */
+		function changeSelectedFrameAtrr(type){
+		  var y_now = api.winHeight-70;
+		  var h_now = 70;
+		  var bounces_flag = false;
+		  switch(type){
+		      case 1://弹出
+		          y_now = api.winHeight*0.6;
+		          h_now = api.winHeight*0.6;
+		          bounces_flag = true;
+		          break;
+		      case 0://收起
+		          y_now = api.winHeight-70;
+                  h_now = 70;
+                  bounces_flag = false;
+		          break;
+		  }
+		  api.setFrameAttr({
+	          name: 'notice_selected_frame',
+	          bounces:bounces_flag,
+	          rect : {
+                x : 0,
+                y : y_now,
+                w : api.winWidth,
+                h : h_now,
+              }
+          });
+		}
+	</script>
+</html>

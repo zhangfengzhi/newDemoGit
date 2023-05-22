@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>学生考勤frame页</title>
+    <link rel="stylesheet" type="text/css" href="../../../../../css/aui/aui.css"/>
+    <link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+    <style>
+   		body{margin:0;background:#F1F1F2;}
+  	    .list{width:100%;margin:0 auto;margin-top:20px;padding:0 2%;}
+   	    .list li{width:25%;float:left;text-align:center;margin-top:10px;}
+  		.header-pic{width:65px;height:65px;border-radius:50%;} 
+  		.st-line{width:55px;height:15px;}
+  		.st-line1{width:33%;background:#000000;}
+  		.st-line2{width:34%;background:#FF6699;}
+  		.st-line3{width:33%;background:#EEEEEE;}
+  		.footer-btns{width:100%;height:55px;position:fixed; bottom:0;}
+  		.qingjia{background:#ff0000;}
+  		.stu-name{text-align:center;margin-top:5px;text-overflow:ellipsis;white-space: nowrap;overflow: hidden;}		
+  		.boxs{position:absolute;right:10px;top:15px;}
+		.st-bg{width:66px;height:10px;background:#EF7489;position:relative;top:-5px;}
+		.st-bg1{width:66px;height:10px;}
+		.st-bg2{width:30px;height:10px;background:#EF7489;float:left;margin-right:6px;position:relative;top:-5px;}
+		.st-bg3{width:30px;height:10px;background:#60CBF4;float:left;position:relative;top:-5px;}
+		.st-bg4{width:30px;height:10px;background:#EFBB46;float:left;margin-right:6px;position:relative;top:-5px;}
+		.st-bg5{width:20px;height:10px;background:#60CBF4;float:left;margin-right:3px;position:relative;top:-5px;}
+		.st-bg6{width:20px;height:10px;background:#EFBB46;float:left;margin-right:3px;position:relative;top:-5px;}
+		.st-bg7{width:20px;height:10px;background:#EF7489;float:left;position:relative;top:-5px;}	
+		.mengban{width:65px;height:65px;border-radius:50%;background:rgba(0,0,0,0.5);position:absolute;top:0;z-index:999;color:#FFFFFF;line-height:65px;}
+		.borders{position:relative;display: inline-block;}
+    </style>
+</head>
+<body>
+	<ul class="list" id="div_body_stu"></ul>
+	<script id="div_script" type="text/html">	
+		<%if(list.length == 0){%>
+			<div class="no-data">暂无学生</div>
+		<%}else{%>
+			<%for(var i=0;i< list.length;i++){%>
+				<li>
+					<div id="<%=list[i].person_id%>">														
+						<%if(list[i].status===true){%>															
+							<div class="borders">	
+							<img onerror="this.src='../../../../../
+							image/common/header.png'" src="<%=list[i].avatar_fileid%>" alt="" class="header-pic" id="user" >
+							<div class="mengban" onclick="Opendetail(<%=list[i].person_id%>,'<%=list[i].student_name%>','<%=list[i].avatar_fileid%>')">请假</div>
+							</div>									
+						<%}else{%>
+							<img onerror="this.src='../../../../../
+							image/common/header.png'" src="<%=list[i].avatar_fileid%>" alt="" class="header-pic" id="user" onclick="Opendetail(<%=list[i].person_id%>,'<%=list[i].student_name%>','<%=list[i].avatar_fileid%>')">
+							</div>	
+						<%}%>									    
+					</div>	
+					<div class="stu-name"><%=list[i].student_name%></div>
+				</li>
+			<%}%>
+		<%}%>	
+	</script>
+</body>
+<script type="text/javascript" src="../../../../../script/api.js" ></script>
+<script type="text/javascript" src="../../../../../script/base_config.js" ></script>
+<script type="text/javascript" src="../../../../../script/plug-in/base64.js" ></script>
+<script type="text/javascript" src="../../../../../script/plug-in/template.js" ></script>
+<script type="text/javascript" src="../../../../../script/plug-in/echo.min.js"></script>
+<script type="text/javascript" src="../../../../../script/common/common.js" ></script>
+<script type="text/javascript">
+	//定义区域
+	var bur_ids = [];
+	//定义区域
+	var bur_level_ids = [];
+	//定义区域名称
+	var bur_names = [];
+	//定义区域id
+	var org_id = 0;
+	//定义区域等级
+	var org_level = 0;
+	//定义区域名称
+	var org_name = '';
+	//当前页面为第一页
+	var currentPage;
+	var stu_count = 0;//学生个数
+	var totalData = 0;//定义一个变量存储第一次加载返回来的总记录数
+	var totalPages = 0;//总页数
+	var all_person_ids = '';
+	var class_id = 0;
+	var daily_time="";//考勤所需的时间
+	var tj_class_name = '';//传到统计页面的班级名
+	var all_class_info = [];
+	var class_type = -1;
+	var entrance_year  = 0;
+	apiready = function(){
+		commonSetTheme({"level":5,"type":0});
+		header_h = api.pageParam.header_h;		
+		openNavigationBar();		
+	    getCurrentDate() ; 
+	};
+	
+	/*
+	*author:cui
+	*function:打开导航条
+	*date：20180315
+	*/
+	function openNavigationBar() {
+		commonCloseNavigationBar();	
+		api.ajax({			
+		    url : BASE_URL_ACTION + '/space/daily_time/get_dailytime_class_info_by_school_id?school_id='+$api.getStorage('school_id')+'&person_id='+$api.getStorage("person_id")+'&random_num='+creatRandomNum(),
+            method : 'get',
+            dataType : 'json',
+            timeout : 30,
+            headers : {
+	'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+}
+        }, function(ret, err) {    
+            if (err) {
+              popToast('对不起，获取考勤信息失败');
+            } else {           
+               if(ret.success){
+					bar_items = [];
+					//班级个数
+					c_length = ret.list.length;			
+					//遍历班级存入
+					for (var i = 0; i < c_length; i++) {
+						var arr_class = {
+							title : ret.list[i].class_name,
+							id :ret.list[i].class_id,
+							titleSelected :ret.list[i].class_name,
+							bg : "#ffffff",
+							alpha : 0.8,
+							bgSelected : "#ffffff"
+						};
+						all_class_info.push({'id':ret.list[i].class_id,'type':ret.list[i].class_type,'year':ret.list[i].entrance_year,
+						'stage_id':ret.list[i].stage_id});
+						bar_items.push(arr_class);
+						bur_ids.push(ret.list[i].class_id);
+						bur_names.push(ret.list[i].class_name);
+						bur_level_ids.push(105);						
+					}
+					if(bar_items.length == 0){
+						popAlertAndShowTitle('提示',Base64.encode('您目前没有设置考勤班级，暂不支持查看'),'commonExecScript("xskq_index_window","","back()",0);');
+					}else{
+						var params = {
+						    w : api.winWidth,
+							y : header_h,
+							items : bar_items,
+							winName : api.winName,
+							frameName : api.frameName,
+							file_level : 2
+						};
+						commonMyNavigationBar(params);
+					}
+	                   }
+	                }                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   
+            });
+	}
+	/*
+	*author:cui
+	*function:回调函数
+	*date：20180315
+	*/          
+	function callBackNew(id, index) {
+//		initData(1)
+		for(var i=0;i<all_class_info.length;i++){
+        	if(id == all_class_info[i].id){
+        		class_type = all_class_info[i].type;
+        		entrance_year = all_class_info[i].year;
+        		stage_id = all_class_info[i].stage_id;
+        	}
+        }
+		org_id = bur_ids[index];
+		org_level = bur_level_ids[index];
+		org_name = bar_items[index].title;
+		$api.setStorage('navbar_selected', index);
+		$api.setStorage('org_level_bar', bur_level_ids[index]);
+		current_page = 1;
+		class_id = id;
+		tj_class_name = bar_items[index].title
+		initData(current_page);
+	}
+	/*
+	*author:cui
+	*function:获取学生列表
+	*date：20180315
+	*/
+	function initData(current_page){
+		currentPage = current_page;
+		showSelfProgress('加载中...');
+		api.ajax({
+	            url:BASE_URL_ACTION + '/space/classcard/get_students_by_class_id?random_num=' + creatRandomNum(),
+	            method : 'get',
+	            dataType : 'json',
+	            cache : false,
+	            timeout : 30,
+	            data : {
+	            	values : {	           
+	            		'class_id' :  class_id,
+	            		'class_type' :  class_type,
+	            		'limit':9999
+	            	}
+	            },
+			headers : {
+	'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+}
+            },function(ret,err){     
+            	totalData = ret.totalRow;
+				totalPages = ret.totalPage;				
+            	if(err){            
+            		popToast('获取学生信息失败，请稍候重试');
+            	}else{
+            		if(ret.success){            	
+            			var rett = ret;
+            			stu_count = rett.list.length;                 
+            			for(var i=0;i<rett.list.length;i++){
+            				all_person_ids = all_person_ids + rett.list[i].person_id+',';	           			
+            				if(BASE_APP_TYPE == 1){
+									ret.list[i].avatar_fileid = BASE_IMAGE_PRE + url_path_suffix + rett.list[i].avatar_fileid.substring(0, 2) + "/" +rett.list[i].avatar_fileid + commonReturnPhotoCutSize(1,96,96,rett.list[i].avatar_fileid.substring((rett.list[i].avatar_fileid.length)-3),0);
+								}else{
+									ret.list[i].avatar_fileid = BASE_URL_ACTION + BASE_IMAGE_BEGIN + rett.list[i].avatar_fileid.substring(0, 2) + "/" + rett.list[i].avatar_fileid + commonReturnPhotoCutSize(1,96,96,rett.list[i].avatar_fileid.substring((rett.list[i].avatar_fileid.length)-3),0);
+								}
+            			}  
+            			getStuStatus(ret,daily_time);    
+            			//commonAddManyHtml('div_body_stu','div_script',ret);
+            		}else{
+            			popToast('获取学生信息失败，请稍候重试');
+            		}
+            	}
+            	api.hideProgress();
+            	commonControlRefresh();
+            });
+	}
+	 /*
+    *author:cui
+    *function:获取服务器时间
+    *date：20180327
+    */  
+	var nowMillisecond="";
+	function getCurrentDate() {
+		//clearTimeout(time_ts_jk);//清除定时器
+		api.ajax({
+			url : BASE_URL_ACTION + '/xx/getCurrentDate',
+			method : 'get',
+			timeout : 30,
+			dataType : 'json',
+			returnAll : false,
+			data : {
+				values : {
+					"random_num" : creatRandomNum()
+				}
+			},headers : {
+	'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+}
+		}, function(ret, err) {
+			if (err) {
+				nowTime = new Date();
+				nowMillisecond = Date.parse(nowTime);
+			} else {
+				if (ret.success) {
+					nowTime = new Date(ret.dateStr2.replace(/\-/g, "/"));
+					nowMillisecond = Date.parse(new Date(ret.dateStr2.replace(/\-/g, "/")));
+				} else {
+					nowTime = new Date();
+					nowMillisecond = Date.parse(nowTime);
+				}
+			}
+			setTime();
+			//time_ts_jk = setTimeout(getCurrentDate,1000*60*30); //设定定时器，循环运行 
+		});
+	}
+	/*
+	 *author:zhaoj
+	 *function:设置时间格式
+	 *date：20180327
+	 */
+	function setTime(){
+		year = nowTime.getFullYear(); 
+		month = nowTime.getMonth()+1; 
+		day = nowTime.getDate(); 
+		var Month = month > 9 ? month : '0' + month;
+		day = day > 9 ? day : '0' + day;
+		daily_time = year+'-'+Month+"-"+day;	
+		
+	}
+	/*
+	*author:cui
+	*function:根据考勤状态获取学生，当前课节请假显示请假状态
+	*date：20180316
+	*/	
+	function getStuStatus(stu_data,daily_time){
+	console.log( BASE_URL_ACTION + '/space/daily_time/get_student_list_by_daily_time_status?random_num='+creatRandomNum()+'&class_id='+class_id+'&school_id='+$api.getStorage('school_id')+'&daily_time='+daily_time+'&class_type='+class_type+'&status='+1+'&query_type='+1)
+		api.ajax({
+			url : BASE_URL_ACTION + '/space/daily_time/get_student_list_by_daily_time_status?random_num='+creatRandomNum(),
+			method : 'get',
+			timeout : 30,
+			dataType : 'json',
+			returnAll : false,
+			data : {
+				values : {
+					"class_id" :class_id,
+					"school_id":$api.getStorage('school_id'),
+					"daily_time":daily_time,
+					"class_type":class_type,
+					"status":1,
+					"query_type":1
+				}
+			},
+		}, function(ret, err) {	
+			if (err) {
+				popToast('对不起，获取学生状态失败');
+			} else {
+				if (ret.success) {
+			
+					for(var i = 0; i < stu_data.list.length; i++){		
+						for(var j = 0; j < ret.list.length;j++){						
+							if(stu_data.list[i].person_id == ret.list[j].d_person_id){				
+								stu_data.list[i].status=true;
+							}
+						}
+					}
+					commonAddManyHtml('div_body_stu','div_script',stu_data);
+				} 
+			}
+		});
+	}
+	/*
+	*author:cui
+	*function:打开详情页面
+	*date：20180316
+	*/
+	function Opendetail(d_person_id,d_person_name,header_pic){
+			var param=new Object();
+			var person_list = [];
+            param.d_person_id=d_person_id;
+            param.d_person_name=d_person_name;
+            param.d_identity_id=6;
+            person_list.push(param);
+            
+			var pageParamJson = {
+			'header_h' : api.pageParam.header_h,
+			'person_list' : person_list,
+			'class_id' : class_id,
+			'daily_time':daily_time,
+			'header_pic':header_pic,
+			'stu_name' : d_person_name,
+			"d_person_id":d_person_id,
+			"class_type":class_type,
+			"entrance_year":entrance_year,
+			"stage_id":stage_id
+		};		
+		commonOpenWin("xskq_detail_window", "xskq_detail_window.html", false, false, pageParamJson);
+	}
+	
+	 /*
+    *打开统计win
+    * cui
+    * 2017.12.18
+    */
+	function getTj(){
+	  	var pageParamJson = {
+			'header_h' : api.pageParam.header_h,
+			'class_id' : class_id,
+			'daily_time':daily_time,
+			'title' :tj_class_name,
+			'class_type':class_type
+		};
+		commonOpenWin("xskq_tj_window", "xskq_tj_window.html", false, false, pageParamJson);
+	}	
+</script>
+</html>

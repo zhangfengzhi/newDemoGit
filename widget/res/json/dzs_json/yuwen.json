@@ -1,0 +1,251 @@
+var yuwen = {
+	"list": [{
+		"dzs_id": "AD66DC5A-CDAC-4354-B305-C928B2AC0BBF",
+		"dzs_ext": "dsek",
+		"img_url": "ADB7B725-7818-4F5E-AE03-926BB4460DBD",
+		"img_ext": "png",
+		"dzs_name": "燕子"
+	},
+	{
+		"dzs_id": "ADBBAACB-676B-4552-A539-79DC98009CA4",
+		"dzs_ext": "dsek",
+		"img_url": "AD89AEC9-65C7-4EA3-863F-2A8C7A732298",
+		"img_ext": "png",
+		"dzs_name": "春日"
+	},
+	{
+		"dzs_id": "ADDB306B-1076-427B-9385-0D3537B360D1",
+		"dzs_ext": "dsek",
+		"img_url": "ADF73186-A6EC-4CC7-A853-7238AC2C4EA9",
+		"img_ext": "png",
+		"dzs_name": "咏柳"
+	},
+	{
+		"dzs_id": "AD6828EA-25C1-4020-BCB1-B4F5339058FC",
+		"dzs_ext": "dsek",
+		"img_url": "ADFF63E8-9937-4B51-A673-31CFBEB70687",
+		"img_ext": "png",
+		"dzs_name": "荷花"
+	},
+	{
+		"dzs_id": "ADEBDF45-A0FF-4A2F-AA13-EE426CD9E015",
+		"dzs_ext": "dsek",
+		"img_url": "AD460E4F-915C-4D80-9FB5-22E68B9CDB43",
+		"img_ext": "png",
+		"dzs_name": "珍珠泉"
+	},
+	{
+		"dzs_id": "ADF854BA-143D-41DA-B3E1-C30462503638",
+		"dzs_ext": "dsek",
+		"img_url": "ADB8812A-DEB1-4406-A40B-2699F1BE12D1",
+		"img_ext": "png",
+		"dzs_name": "翠鸟"
+	},
+	{
+		"dzs_id": "AD8920F4-DA24-4398-B759-3FA913806788",
+		"dzs_ext": "dsek",
+		"img_url": "ADC12BCD-2713-43F2-B9BE-91BFDD2AB45D",
+		"img_ext": "png",
+		"dzs_name": "燕子专列"
+	},
+	{
+		"dzs_id": "ADAFF239-C08E-44CE-9548-2406BED27781",
+		"dzs_ext": "dsek",
+		"img_url": "ADB4CF5E-5EBD-4D26-AE1B-E7A581F80F59",
+		"img_ext": "png",
+		"dzs_name": "一个小村庄的故事"
+	},
+	{
+		"dzs_id": "ADF667EE-A168-4845-B29E-1F5108E7997B",
+		"dzs_ext": "dsek",
+		"img_url": "ADAD040E-A334-47CD-8295-61D01C478D43",
+		"img_ext": "png",
+		"dzs_name": "路旁的橡树"
+	},
+	{
+		"dzs_id": "ADDD5DBB-2E5F-4D72-BF04-96F92F4D1245",
+		"dzs_ext": "dsek",
+		"img_url": "AD7C6E3A-F840-47AF-AFB7-AC92953D49E0",
+		"img_ext": "png",
+		"dzs_name": "南辕北辙"
+	},
+	{
+		"dzs_id": "AD62CB03-EE71-4788-A784-F1FBD1F18626",
+		"dzs_ext": "dsek",
+		"img_url": "AD0F0713-AB13-42D5-A672-AFAC10F5AD24",
+		"img_ext": "png",
+		"dzs_name": "亡羊补牢"
+	},
+	{
+		"dzs_id": "ADEF0ACE-5065-4D72-8F3F-ADC1F2E42C4C",
+		"dzs_ext": "dsek",
+		"img_url": "ADE4EA56-0C53-4E35-A04D-5F0AB79099AE",
+		"img_ext": "png",
+		"dzs_name": "惊弓之鸟"
+	},
+	{
+		"dzs_id": "AD1F60C0-5B18-467F-BB95-B59F62E05241",
+		"dzs_ext": "dsek",
+		"img_url": "AD8CAAFE-DAB7-44E0-87E6-CF659C62A678",
+		"img_ext": "png",
+		"dzs_name": "11 画杨桃"
+	},
+	{
+		"dzs_id": "AD12BEAC-6C47-40C5-B178-27DFCCF50A3D",
+		"dzs_ext": "dsek",
+		"img_url": "AD176F1C-F78C-47B1-8313-B2E17A98203B",
+		"img_ext": "png",
+		"dzs_name": "想别人没想到的"
+	},
+	{
+		"dzs_id": "AD7E8D95-4ED1-470C-9B49-4F83040D31AF",
+		"dzs_ext": "dsek",
+		"img_url": "AD88A8CB-3944-4EE1-AC5A-1C8186ECE6AC",
+		"img_ext": "png",
+		"dzs_name": "和时间赛跑"
+	},
+	{
+		"dzs_id": "AD2F90B3-9128-4478-8681-9EA85F7534F1",
+		"dzs_ext": "dsek",
+		"img_url": "AD04A22B-A69F-400E-AFF8-8510EA5AFA1D",
+		"img_ext": "png",
+		"dzs_name": "检阅"
+	},
+	{
+		"dzs_id": "AD35337D-C842-4F61-BBF8-F05566944C56",
+		"dzs_ext": "dsek",
+		"img_url": "AD459C46-FFC8-4425-8AAF-AC0895ADA43B",
+		"img_ext": "png",
+		"dzs_name": "争吵"
+	},
+	{
+		"dzs_id": "AD9BB3C2-5088-4CDA-861E-6B939C152423",
+		"dzs_ext": "dsek",
+		"img_url": "AD8F07CB-3695-4900-9408-880DA3B98A06",
+		"img_ext": "png",
+		"dzs_name": "绝招"
+	},
+	{
+		"dzs_id": "AD922141-FFD1-44C9-A554-9D4D242455E6",
+		"dzs_ext": "dsek",
+		"img_url": "AD6B0820-F4B5-4E33-9813-0883681449B9",
+		"img_ext": "png",
+		"dzs_name": "可贵的沉默"
+	},
+	{
+		"dzs_id": "ADFC9BC5-588F-40FA-AC55-357D2CAEE01D",
+		"dzs_ext": "dsek",
+		"img_url": "AD2C155B-A399-49A0-80F5-BA6F77999BA8",
+		"img_ext": "png",
+		"dzs_name": "她是我的朋友"
+	},
+	{
+		"dzs_id": "AD906E6C-8CFB-444A-94A9-385F26AB8665",
+		"dzs_ext": "dsek",
+		"img_url": "ADB23C7F-6C53-4D18-8F2F-95EB114E65EB",
+		"img_ext": "png",
+		"dzs_name": "七颗钻石"
+	},
+	{
+		"dzs_id": "ADBC37E2-96AC-4CCA-95CC-3F6117A5034F",
+		"dzs_ext": "dsek",
+		"img_url": "AD2CBB50-B3A2-47C7-ABBA-ED8F8E10F4A1",
+		"img_ext": "png",
+		"dzs_name": "妈妈的账单"
+	},
+	{
+		"dzs_id": "AD9300B6-B976-41F1-8F9C-D2F294D4E828",
+		"dzs_ext": "dsek",
+		"img_url": "ADBFCBED-B5AA-4E05-9F0C-35A4047CF93A",
+		"img_ext": "png",
+		"dzs_name": "太阳"
+	},
+	{
+		"dzs_id": "AD42BFEE-A482-4E69-8EF9-D81F1F2B7A03",
+		"dzs_ext": "dsek",
+		"img_url": "AD3A7487-99E3-48A8-B510-E74511B46610",
+		"img_ext": "png",
+		"dzs_name": "月球之谜"
+	},
+	{
+		"dzs_id": "ADB3BF9C-2D65-4261-98D3-E8E7F281A9FF",
+		"dzs_ext": "dsek",
+		"img_url": "AD1753E9-8A8B-49FC-B398-E7F7F965355C",
+		"img_ext": "png",
+		"dzs_name": "我家跨上了“信息高速路”"
+	},
+	{
+		"dzs_id": "AD3F724C-2EA2-40FB-8809-243355F888B5",
+		"dzs_ext": "dsek",
+		"img_url": "ADFC316D-DA6A-4518-8DD8-D2133861E839",
+		"img_ext": "png",
+		"dzs_name": "果园机器人"
+	},
+	{
+		"dzs_id": "AD73C2E2-F6D8-422A-B600-BC1FDF8D5D0B",
+		"dzs_ext": "dsek",
+		"img_url": "AD9D1E5D-C471-44F6-B90A-751DC81F25FD",
+		"img_ext": "png",
+		"dzs_name": "太阳是大家的"
+	},
+	{
+		"dzs_id": "ADD8B3F7-4D61-44DB-B4A1-20AA64161D8D",
+		"dzs_ext": "dsek",
+		"img_url": "ADD7E629-F219-4B0A-95A7-BDBA9CA6BD86",
+		"img_ext": "png",
+		"dzs_name": "一面五星红旗"
+	},
+	{
+		"dzs_id": "AD21E5AF-7FDA-4B6B-A1B4-563B44591384",
+		"dzs_ext": "dsek",
+		"img_url": "AD612310-423F-4474-9A60-57BCAAF98271",
+		"img_ext": "png",
+		"dzs_name": "卖木雕的少年"
+	},
+	{
+		"dzs_id": "ADFBBD15-7CB8-4D6A-BFC4-4B928587C476",
+		"dzs_ext": "dsek",
+		"img_url": "AD104183-8EA9-433E-916B-AA059F578ABA",
+		"img_ext": "png",
+		"dzs_name": "中国国际救援队，真棒"
+	},
+	{
+		"dzs_id": "AD8DB5AE-A9D0-47FF-B4C5-9F23EF210973",
+		"dzs_ext": "dsek",
+		"img_url": "ADD28938-6337-4AD5-A7E1-442C34BE3C66",
+		"img_ext": "png",
+		"dzs_name": "嫦娥"
+	},
+	{
+		"dzs_id": "ADE58FE9-508A-40AE-B103-5B5B95BD4336",
+		"dzs_ext": "dsek",
+		"img_url": "AD116D26-D71F-450C-82AB-F26B371BC695",
+		"img_ext": "png",
+		"dzs_name": "乞巧"
+	},
+	{
+		"dzs_id": "AD30E5CB-42EE-4E8E-8C6E-CEF93E81DA68",
+		"dzs_ext": "dsek",
+		"img_url": "AD9D92A5-58E0-4FCC-8EAD-DA25BFB9DC2B",
+		"img_ext": "png",
+		"dzs_name": "西门豹"
+	},
+	{
+		"dzs_id": "AD07ABDD-DFFC-403B-8DD4-D785A8D66621",
+		"dzs_ext": "dsek",
+		"img_url": "AD6C8786-5915-4534-AE7F-20AB3E28F04B",
+		"img_ext": "png",
+		"dzs_name": "女娲补天"
+	},
+	{
+		"dzs_id": "AD8DBB47-B776-4281-943C-E601890DE2B7",
+		"dzs_ext": "dsek",
+		"img_url": "ADCB0C74-2169-4456-8DE7-486459806EE7",
+		"img_ext": "png",
+		"dzs_name": "夸父追日"
+	}]
+}
+
+
+
+

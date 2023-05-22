@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <title>检测</title>
+    <link rel="stylesheet" type="text/css" href="../../../../../css/aui/aui.css" />
+    <link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+    <style>
+    	body{margin:0;padding-bottom:60px;}
+    	.clearfix:after{content: ' ';display: block;clear: both;visibility: hidden;line-height: 0;height: 0;}
+    	.zuoye-name{line-height:55px;width:100%;}
+    	.plr15{padding:0 15px;}
+    	.plr30{padding:0 30px;}
+    	.title{height:55px;line-height:55px;color:#606060;}
+    	.question-item ul li{float:left;}
+    	.question-item ul li div{margin:0 auto;text-align:center;}
+    	.question-item ul li div.active{color:#ffffff;background-clip:padding-box;}
+    	.footer-div{position:fixed;height:55px;background:#F6F6F6;display: block;bottom: 0px;width:100%;border-top:1px solid #E2E2E2;font-size:14px;}
+		.footer-div .wid50{width:45%;line-height:36px;text-align:center;color:#ffffff;margin-top:9px;border-radius:2px}
+		.footer-div .left{float:left;margin-left:4%;}
+		.footer-div .right{float:right;margin-right:4%;}
+		.footer-div .wid{width:92%;line-height:36px;text-align:center;color:#ffffff;margin-top:9px;border-radius:2px;margin-left:4%;}
+		.content-div{padding-bottom:60px;}
+		.tip{color:#ff0000;line-height:35px;height:35px;padding-top:10px;}
+		.finish-tip{height:180px;border:1px solid #e0e0e0;border-radius:5px;display:table;width: 92%;margin: 15px 4%;}
+		.finish-tip span{color:#666;text-align:center;width:100%; vertical-align:middle;display:table-cell;padding:0 20px;line-height:25px;}
+		.shadow {position: absolute;left: 0;top: 0;width: 100%;height: 100%;z-index: -1;background: #000000;opacity: 0;}
+		.no-active{background:#FFCC33;color:#fff;border:1px solid #FFCC33 !important}
+    </style>
+</head>
+<body id="j_body" class="common-ipad-dcwjIpads">
+	<div id="j_shadow" class="shadow"></div>
+	<div class="content-div clearfix">
+		<div id="j_tip" class="title plr15 tip" style="display:none;">注：只有全部题目作答，才能提交!</div>
+		<!--客观题-->
+		<div id="kg_title" class="title plr15">选择题</div>
+		<div class="question-item plr30">
+			<ul id="objective">
+			</ul>
+		</div>
+		<!--//客观题-->
+		<!--主观题-->
+		<div id="zg_title" class="title plr15">简答题</div>
+		<div class="question-item plr30">
+			<ul id="subjective">
+			</ul>
+		</div>
+	</div>
+	<div class="footer-div">
+	 	<div id="j_continue_btn" class="wid" onclick="continueQuestion();">继续答题</div>
+		<div id="j_submit_btn_100" class="wid" style="display:none;" onclick="saveAnswerSurvey();">提交</div>
+		<div id="j_submit_btn_110" class="wid" style="display:none;" onclick="checkQuestion(1);">返回列表</div>
+	</div>
+</body>
+<script type="text/javascript" src="../../../../../script/api.js"></script>
+<script type="text/javascript" src="../../../../../script/base_config.js" ></script>
+<script type="text/javascript" src="../../../../../script/plug-in/base64.js" ></script>
+<script type="text/javascript" src="../../../../../script/common/common.js" ></script>
+<script type="text/javascript" src="../../../../../script/common/ipad/dcwjIpad_common.js" ></script>
+<script type="text/javascript">
+	var header_h;
+	var BASE_URL_ACTION;
+	var no_answer_sort=0;//没有作答的最小的sort
+	var answered_count=0;
+	var list_length;
+	var answer_json;//作答的json数据
+	var remarks;//提示语
+	var type;//0代表从list页面过来，1代表从扫一扫过来
+	var much_selected = true;
+	apiready = function(){	
+		commonSetTheme({"level":5,"type":0});
+		header_h = api.pageParam.header_h;
+		type = api.pageParam.type;
+		answer_json = api.pageParam.answer_json;
+		remarks = answer_json.remarks;
+		delete answer_json["remarks"];
+		setDtkData();
+		BASE_URL_ACTION = $api.getStorage('BASE_URL_ACTION');
+	};
+	/*
+	*作者:zhaoj
+	*功能:设置答题卡
+	*日期：20161102
+	*/
+	function setDtkData(){
+		var kg_count=0;
+		var zg_count=0;
+		for(var i = 0; i < answer_json.items.length; i++){
+			if(answer_json.items[i].q_typeid == 1 || answer_json.items[i].q_typeid == 2){
+				kg_count++;
+				if(answer_json.items[i].option.length > 0){
+					objective(i+1,1,answer_json.items[i]);
+				}else{
+					objective(i+1,0,answer_json.items[i]);
+				}
+				if(answer_json.items[i].q_typeid == 2){
+                    if(!answer_json.items[i].muchSelected){
+                        much_selected = false;
+                    }
+                }
+			}else{
+				zg_count++;
+				if(answer_json.items[i].content){
+					subjective(i+1,1);
+				}else{
+					subjective(i+1,0);
+				}
+			}
+		}
+		if(answer_json.items.length == answered_count){
+			if(much_selected){
+                $api.css($api.byId('j_continue_btn'),'display:none;');
+                $api.css($api.byId('j_submit_btn_110'),'display:none;');
+                $api.css($api.byId('j_submit_btn_100'),'display:block;');
+            }else{
+              $api.css($api.byId('j_continue_btn'),'display:none;');
+              $api.css($api.byId('j_submit_btn_110'),'display:block;');
+            }
+		}else{
+		    $api.css($api.byId('j_submit_btn_110'),'display:none;');
+			$api.css($api.byId('j_tip'),'display:block;');
+		}
+		if(kg_count==0){
+			$api.css($api.byId('kg_title'),'display:none;');
+		}
+		if(zg_count==0){
+			$api.css($api.byId('zg_title'),'display:none;');
+		}
+	}
+	/*
+	*author:zhaoj
+	*function:客观题选项
+	*date：20160329
+	*/
+	function objective(sort,is_answered,param){
+		if(is_answered){
+			if(param.q_typeid == 2){
+              if(param.muchSelected){
+                 uploadHtml('objective',sort,'active'); 
+              }else{
+                  uploadHtml('objective',sort,'no-active');
+              }
+            }else{
+              uploadHtml('objective',sort,'active');
+            }
+			answered_count++;
+		}else{
+			uploadHtml('objective',sort,'');
+			if(no_answer_sort ==0){
+				no_answer_sort = sort
+			}else{
+				if(sort<no_answer_sort){
+					no_answer_sort = sort;
+				}
+			}
+		}
+	}
+	/*
+	*author:zhaoj
+	*function:主观题选项
+	*date：20160329
+	*/
+	function subjective(sort,is_answered){
+		if(is_answered){
+			uploadHtml('subjective',sort,'active');
+			answered_count++;
+		}else{
+			uploadHtml('subjective',sort,'');
+			if(no_answer_sort ==0){
+				no_answer_sort = sort
+			}else{
+				if(sort<no_answer_sort){
+					no_answer_sort = sort;
+				}
+			}
+		}
+	}
+	/*
+	*author:zhaoj
+	*function:客观题和客观题选项添加到页面中
+	*date：20160329
+	*/
+	function uploadHtml(divID,sort,css){
+		var liWidth = Math.floor((api.frameWidth-60)/5);
+		var liHeight = liWidth;
+		var divWidth= Math.floor(liWidth*0.8);
+		var divHeight = divWidth;
+		var borderRad = Math.floor(divWidth*0.5);
+		var checkHtml='checkQuestion('+sort+')';
+		var liHtml = '<li style="width:'+liWidth+'px;height:'+liHeight+'px;" onclick='+checkHtml+'>';
+			if(api.frameWidth>360){
+				liHtml = liHtml+'<div class="'+css+'" style="max-width:48px;max-height:48px;line-height:47px;border-radius:24px !important;">'+sort+'</div>';
+			}else{
+				liHtml = liHtml+'<div class="'+css+'" style="width:'+divWidth+'px;height:'+divHeight+'px;border-radius:'+borderRad+'px !important;line-height:'+(divHeight-1)+'px;max-width:48px;max-height:48px;">'+sort+'</div>';
+			}
+			liHtml = liHtml+'</li>';
+		$api.append($api.byId(divID), liHtml);
+	}
+	/*
+	*author:zhaoj
+	*function:没有题目时
+	*date：20160405
+	*/
+	function noQuestions(){
+		$api.css($api.byId('kg_title'),'display:none;');
+		$api.css($api.byId('zg_title'),'display:none;');
+		$api.css($api.byId('j_continue_btn'),'display:none;');
+		$api.css($api.byId('j_submit_btn_50'),'display:none;');
+		$api.css($api.byId('j_submit_btn_100'),'display:block;');
+	}
+	/*
+	*作者:zhaoj
+	*功能:点击查看具体某一道题目
+	*日期：20161102
+	*/
+	function checkQuestion(sort){
+		sort=sort-1;
+		var name = "reWriteQuestion("+sort+")";
+		api.execScript({
+			name : 'dcwjIpad_answer_window',
+			frameName : 'dcwjIpad_answer_frame',
+			script : name
+		});
+		setTimeout(function(){
+			api.execScript({
+				name : 'dcwjIpad_dtk_window',
+				script : 'back()'
+			});
+		},150);
+	}
+	/*
+	*作者:zhaoj
+	*功能:点击继续答题按钮
+	*日期：20161102
+	*/
+	function continueQuestion(){
+		if(no_answer_sort != 0){
+			checkQuestion(no_answer_sort);
+		}
+	}
+	/*
+	*author:zhaoj
+	*function:返回页面
+	*date：20160307
+	*/
+	function back() {
+		api.execScript({
+			name : 'dcwjIpad_dtk_window',
+			script : 'back()'
+		});
+	}
+</script>
+</html>

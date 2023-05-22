@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<title>主题活动</title>
+		<link rel="stylesheet" type="text/css" href="../../../../../css/aui/aui.css" />
+		<link rel="stylesheet" type="text/css" href="../../../../../css/module/ipad/popup-body.css"/>
+		<link rel="stylesheet" type="text/css" href="../../../../../css/module/common/table-body.css"/>
+		<link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+		<style>
+			.popup-body-new{text-align:center;}
+			.popup-body-new	.commont-content-new{width: 1000px;height:500px; margin-left:-500px; }
+    		.table-body th, .table-body td{font-size:18px;line-height:45px;}
+    		.table-body td{padding:0;}
+    		.no-data{padding-top:0;}
+    		.name_p{font-size:18px;line-height:45px;color: #000000;text-align:center;text-overflow: ellipsis;white-space: nowrap;overflow: hidden;}
+		</style>
+	</head>
+	<body class="popup-body-new common-ipad-quanziIpad-tea">
+		<div class="commont-content commont-content-new">
+			<div class="top fl">
+				<div class="name"><font id="title"></font></div>
+				<div class="close fr" onclick="closeFrame();"></div>
+			</div>
+			<div class="content" id="content">
+				
+			</div>
+		</div>
+	</body>
+	<script type="text/javascript" src="../../../../../script/api.js"></script>
+	<script type="text/javascript" src="../../../../../script/base_config.js" ></script>
+	<script type="text/javascript" src="../../../../../script/common/common.js" ></script>
+	<script type="text/javascript" src="../../../../../script/assembly/UIAlbumBrowser.js"></script>
+	<script type="text/javascript" src="../../../../../script/assembly/getPicture.js"></script>
+	<script type="text/javascript" src="../../../../../script/assembly/photoBrowser.js"></script>
+	<script type="text/javascript" src="../../../../../script/plug-in/template.js" ></script>
+	<script type="text/javascript" src="../../../../../script/plug-in/base64.js" ></script>
+	<script type="text/javascript">
+		var oparam;
+		var currentPage = 1;//当前分页数
+		var totalPages = 0;//总页数
+		apiready = function() {
+			var offset = $api.offset($api.byId('content'));
+			oparam = api.pageParam;
+			$api.text($api.byId('title'), oparam.person_name + '的作品');
+			var data = {
+				w:offset.w,
+				h:offset.h,
+				x:offset.l,
+				oparam:oparam
+			}
+			
+			commonOpenFrame('zthdIpad_view_worksinfo','zthdIpad_view_worksinfo.html', offset.t, false, false, '#FFFFFF', data);
+		};
+		/*
+		*author:wangdongy
+		*function:关闭页面
+		*date：2017.5.15
+		*/
+		function closeFrame(){
+			commonExecScript(api.winName,"zthdIpad_view_worksinfo",'closeFrame()',1);
+			api.closeFrame();
+		}
+	</script>
+</html>

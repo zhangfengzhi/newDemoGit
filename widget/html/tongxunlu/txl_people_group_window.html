@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+		<title>title</title>
+		<link rel="stylesheet" type="text/css" href="../../css/aui/aui.css" />
+		<link rel="stylesheet" type="text/css" href="../../css/module/common/jszy_new_common.css" />
+		<link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+		<style>
+		</style>
+	</head>
+	<body class="tongxunlu-common">
+		<header class="aui-bar aui-bar-nav aui-bar-primary" id="aui-header">
+			<div id="cloud" class="topbar activebar">
+				<div id="back" class="back" onclick="back();" tapmode="">
+					<i class="aui-iconfont aui-icon-left"></i>返回
+				</div>
+				<div  class="mTitle" id="mTitle">
+					分组管理
+				</div>
+				<div class="aui-pull-right " style = "font-size:14px" onclick="updatePeople()">
+					完成
+				</div>
+			</div>
+		</header>
+	</body>
+	<script type="text/javascript" src="../../script/api.js"></script>
+	<script type="text/javascript" src="../../script/common/common.js" ></script>
+	<script type="text/javascript">
+		//顶部高度
+		var header_h;
+		var group_id;
+		apiready = function() {
+			commonSetTheme({"level":2,"type":0});
+			header_h = api.pageParam.header_h;
+			group_id = api.pageParam.target_id;
+			//定位header位置，留出上面电池等空隙，苹果需要
+			commonIosAuiHeader();
+			openPeopleList();
+		};
+		/*
+		 *author:ws
+		 *function:人员列表frame
+		 *date：20170112
+		 */
+		function openPeopleList() {
+			var pageParamJson = {
+				"header_h" : header_h,
+				"group_id" : group_id
+			};
+			commonOpenFrame('txl_people_group_frame', 'txl_people_group_frame.html', header_h, true, false, "#f0f0f0", pageParamJson);
+		}
+
+		/*
+		 *author:ws
+		 *function:删除或添加人员
+		 *date：20170113
+		 */
+		function updatePeople() {
+			api.execScript({
+			    name:'txl_people_group_window',
+			    frameName:'txl_people_group_frame',
+	            script: 'selectPerson();'
+            });
+		}
+
+		/*
+		 *author:ws
+		 *function:返回
+		 *date：20170113
+		 */
+		function back() {
+			api.closeWin({});
+		}
+	</script>
+</html>

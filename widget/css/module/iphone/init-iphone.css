@@ -1,0 +1,36 @@
+body { background: #efeff4;}
+/*重新定义*/
+.aui-user-view-cell:after {left: 0;}
+/*自定义*/
+.content {font-size: 16px; white-space:nowrap;width:100%;overflow:auto;}
+.otherinfo p { font-size: 12px; margin-bottom: 5px;}
+.no-quanzi{position:absolute;width: 100%;text-align:center;color:#666;padding-top:15px;}
+.aui-ellipsis-1{font-size: 12px;bottom:3px;position:absolute;left: 15px}
+.pinglun-liulan-dianzan-back{position:absolute;bottom:3px;right:15px;width:70%;color:#8f8f94; font-size: 12px;text-align: right}
+.aui-img-body{bottom:3px}
+.aui-user-view-cell:after{border-bottom: 1px solid #ffffff;}
+.quanzi-content-div{padding:0 15px;}
+.quanzi-content{font-size: 16px;display: -webkit-box;-webkit-box-orient: vertical;-webkit-line-clamp:3;overflow: hidden;}
+.content-border{border:5px solid #ffffff}
+.quanzi-title-left{width:5%;display:inline-block;float:left;text-align: center}
+.quanzi-title-middle{max-width:80%;display:inline-block;float:left;}
+.quanzi-title-right{width:5%;display:inline-block;float:left;text-align: center}
+.aui-list-view.aui-grid-view {
+	padding: 0 10px 0 0;
+	margin-bottom:0;
+}
+.mode-tip{padding: 10px 10px 0 10px;}
+.mode-tip ul li{position:relative;padding:0 10px 0 90px;height:90px;background:#fff;border-radius:10px;margin-bottom:10px;}
+.mode-tip ul li .tip{position:absolute;top:10px;left:55px;width:20px;height:20px;background:#f00;color:#fff;line-height:20px;text-align:center;border-radius:50%;font-size:14px;}
+.mode-tip ul li .img{position:absolute;width:90px;height:90px;left:0;top:0;text-align:center;}
+.mode-tip ul li .img div{width:64px;height:64px;border-radius:50%;margin:13px 0 0 13px;}
+.mode-tip ul li .name{color:#585657;padding:10px 0 3px 0;}
+.mode-tip ul li .detail{color:#ABABAB;font-size:14px;padding-top:2px;}
+.mode-tip ul li .czzj{width:33.3%;float: left;color:#ABABAB;padding-top:4px;color:#595758;}
+.mode-tip ul li .first{padding:3px 4px 0 0;}
+.mode-tip ul li .second{padding:3px 2px 0 2px;}
+.mode-tip ul li .three{padding:3px 0 0 4px;}
+.mode-tip ul li .czzj .num{border:1px solid #dfdfdf;text-align:center;border-radius:8px;}
+.mode-tip ul li .czzj .num-name{text-align:center;padding-top:5px;color:#595758;font-size:14px;}
+.aui-content-padded{position:relative;}
+.aui-content-padded .tip{position:absolute;right:20px;top:0;width:50px;height:100px;background:url(../../image/quanzi.png) center 0 no-repeat;background-size:50px auto;z-index:999;}

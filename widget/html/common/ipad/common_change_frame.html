@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>导学</title>
+    <link rel="stylesheet" type="text/css" href="../../../../../css/aui/aui.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../../../css/module/ipad/popup-body.css"/>
+    <link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+    <style>
+        .popup-body-new .commont-content .position{font-size:16px;padding:20px 0 0 30px;}
+        .popup-body-new .commont-content{width:820px;height:210px;margin-top:-105px;margin-left:-410px;}
+        .content{padding: 20px;}
+        .version,.book{width:25%;position:relative;padding-left:55px;}
+        .version span,.book span{position:absolute;display:inline-block;line-height:45px;left:8px;color:#31A8FA;} 
+        select{margin-bottom:0;background:rgba(0,0,0,0);position: relative;z-index: 99;padding-right:20px;}
+        .version select,.book select{height:45px;}
+        .drop-down{position:absolute;width:20px;height:43px;top:1px;right:1px;background:#31a8fa;z-index:9;}
+        .drop-down .triangle-down{position:absolute;top:19px;right:3px;display:inline-block;width: 0; height: 0;border-right: 6px solid transparent;border-top: 6px solid #fff;border-left: 6px solid transparent;z-index:9;}
+    </style>
+</head>
+<body class="popup-body-new common-ipad-change">
+    <div class="commont-content">
+        <div class="top fl">
+            <div class="name">设置教材</div>
+            <div class="close fr" onclick="closeFrame();"></div>
+        </div>
+        <div class="content">
+            <div class="version fl">
+                <span>学段</span>
+                <select id="stage_body" onchange="changeSubject(this.value,1)">
+                </select>
+                <script type="text/html" id="stage_script">
+                    <%for(var i=0; i<xd_subject_list.length; i++) {%>
+                        <%if(xd_subject_list[i].is_select){%>
+                            <option  value = "<%=xd_subject_list[i].xd_id%>" selected = "selected" ><%=xd_subject_list[i].xd_name%></option >
+                        <%}else{%>
+                            <option  value = "<%=xd_subject_list[i].xd_id%>"><%=xd_subject_list[i].xd_name%></option >
+                        <%}%>
+                    <%}%>
+                </script>
+                <div class="drop-down">
+                    <div class="triangle-down">&nbsp;</div>
+                </div>
+            </div>
+            <div class="book fl pl20">
+                <span>学科</span>
+                <select id="subject_body" onchange="getStandardSchemeBySubject(this.value,1)">
+                </select>
+                <script type="text/html" id="subject_script">
+                    <%for(var i=0; i<subject_list.length; i++) {%>
+                        <%if(subject_list[i].is_select){%>
+                            <option  value = "<%=subject_list[i].subject_id%>"  selected = "selected" ><%=subject_list[i].subject_name%></option >
+                        <%}else{%>
+                            <option  value = "<%=subject_list[i].subject_id%>"><%=subject_list[i].subject_name%></option >
+                        <%}%>
+                    <%}%>
+                </script>
+                <div class="drop-down">
+                    <div class="triangle-down">&nbsp;</div>
+                </div>
+            </div>
+            <div class="version fl">
+                <span>版本</span>
+                <select id="version_body" onchange="getVolumeByScheme(this.value,1)">
+                </select>
+                <script type="text/html" id="version_script">
+                    <%for(var i=0; i<version_list.length; i++) {%>
+                        <%if(version_list[i].is_select){%>
+                            <option value=<%=version_list[i].version_id%>" selected = "selected" ><%=version_list[i].version_name%></option >
+                        <%}else{%>
+                            <option value="<%=version_list[i].version_id%>"><%=version_list[i].version_name%></option >
+                        <%}%>
+                    <%}%>
+                </script>
+                <div class="drop-down">
+                    <div class="triangle-down">&nbsp;</div>
+                </div>
+            </div>
+            <div class="book fr pl20">
+                <span>教材</span>
+                <select id="volume_body" onchange="changeVolume(this.value,1)">
+                </select>
+                <script type="text/html" id="volume_script">
+                    <%for(var i=0; i<volume_list.length; i++) {%>
+                        <%if(volume_list[i].is_select){%>
+                            <option  value="<%=volume_list[i].structure_id%>"  selected = "selected" ><%=volume_list[i].structure_name%></option >
+                        <%}else{%>
+                            <option  value="<%=volume_list[i].structure_id%>"><%=volume_list[i].structure_name%></option >
+                        <%}%>
+                    <%}%>
+                </script>
+                <div class="drop-down">
+                    <div class="triangle-down">&nbsp;</div>
+                </div>
+            </div>
+        </div>
+        <div class="btn" onclick="saveSchemeProgress();">保存</div>
+    </div>
+</body>
+<script type="text/javascript" src="../../../../../script/api.js"></script>
+<script type="text/javascript" src="../../../../../script/base_config.js" ></script>
+<script type="text/javascript" src="../../../../../script/common/common.js"></script>
+<script type="text/javascript" src="../../../../../script/plug-in/template.js" ></script>
+<script type="text/javascript" src="../../../../../script/plug-in/base64.js" ></script>
+<script type="text/javascript">
+    var lobal_variable;//全局变量
+    var stage_subject_data;//学段学科的数据
+    var volume_data;//教材的数据
+    var version_data;//版本数据
+    apiready = function(){
+    	console.log('ok');
+    	commonSetTheme({"level":5,"type":0});
+        lobal_variable = $api.strToJson(api.pageParam.lobal_variable);
+        showSelfProgress('加载中...');
+        getCrmStageSubject();
+    };
+    /*
+    *author:zhaoj
+    *function:关闭页面
+    *date：20170912
+    */
+    function closeFrame(){
+        commonExecScript(api.winName,'','back();',0);
+    }
+    /*
+	*author:zhaoj
+	*function:保存教材设置
+	*date：20171013
+	*/
+	function saveSchemeProgress(){
+		if(lobal_variable.stage_id == 0){
+			popToast('学段还未设置');
+			return;
+		}
+		if(lobal_variable.subject_id == 0){
+			popToast('学科还未设置');
+			return;
+		}
+		if(lobal_variable.version_id == 0){
+			popToast('版本还未设置');
+			return;
+		}
+		console.log(lobal_variable.scheme_id);
+		if(lobal_variable.scheme_id == 0){
+			popToast('教材还未设置');
+			return;
+		}
+		showSelfProgress('保存中...');
+		api.ajax({
+			url : BASE_URL_ACTION + '/ypt/space/course_package/save_scheme_progress',
+			method : 'post',
+			timeout : 0,
+			dataType : 'json',
+			data : {
+				values : {
+					"random_num" : creatRandomNum(),
+					"identity_id" : $api.getStorage("identity"),
+					"person_id" : $api.getStorage("person_id"),
+					"scheme_id" : lobal_variable.scheme_id,
+					"stage_id" : lobal_variable.stage_id,
+					"subject_id" : lobal_variable.subject_id,
+					"volume_id" : lobal_variable.volume_id,
+				}
+			},
+			headers : {
+	'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+}
+		}, function(ret, err) {
+			if(err){
+				api.hideProgress();
+				popAlert('保存失败，请稍候重试');
+			}else{
+				api.hideProgress();
+				if(ret.success){
+					api.hideProgress();
+					popToast('保存成功');
+					setTimeout(function(){
+						commonExecScript(api.pageParam.winName,api.pageParam.frameName,'setTextbook("'+Base64.encode(JSON.stringify(lobal_variable))+'",1)',1);
+			        },200);
+				}else{
+					api.hideProgress();
+					popAlert('保存失败，请稍候重试');
+				}
+			}
+		});
+	}
+    /*
+    *author:zhaoj
+    *function:设置教材版本
+    *interface：申建
+    *date：20171013
+    */
+    function getCrmStageSubject(){
+    	var product_id='';
+    	if(BASE_CRM_TYPE){
+    		product_id = 'hjx';
+    	}else{
+    		product_id = 'ythxxpt';
+    	}
+        api.ajax({
+            url : BASE_URL_ACTION + '/ypt/getCrmStageSubject?random_num='+creatRandomNum()+'&&product_id='+product_id,
+            method : 'get',
+            timeout : 0,
+            dataType : 'json',
+            headers : {
+    'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+}
+        }, function(ret, err) {
+            if(err){
+            	api.hideProgress();
+                popToast('获取学段学科失败，请稍候重试');
+            }else{
+                if(ret.success){
+                    stage_subject_data = ret;
+                    if(ret.xd_subject_list.length > 0 && lobal_variable.stage_id == 0){
+                        lobal_variable.stage_id = ret.xd_subject_list[0].xd_id;
+                        for(var i = 0; i < ret.xd_subject_list.length; i ++){
+                            if(i ==0){
+                                ret.xd_subject_list[i].is_select = 1;
+                            }else{
+                                ret.xd_subject_list[i].is_select = 0;
+                            }
+                        }
+                    }else{
+                         for(var i = 0; i < ret.xd_subject_list.length; i ++){
+                            if(ret.xd_subject_list[i].xd_id == lobal_variable.stage_id){
+                                ret.xd_subject_list[i].is_select = 1;
+                            }else{
+                                ret.xd_subject_list[i].is_select = 0;
+                            }
+                        }
+                    }
+                    commonAddOnceHtml('stage_body','stage_script',ret);
+                    changeSubject(lobal_variable.stage_id,0);
+                }else{
+                	api.hideProgress();
+                    popToast('获取学段学科失败，请稍候重试');
+                }
+            }
+        });
+    }
+    /*
+    *author:zhaoj
+    *function:切换学科
+    *param:type:0：初始化进入时；1：学段下拉框数据切换时
+    *date：20171013
+    */
+    function changeSubject(stage_id,type){
+        var index = 0;
+        type == 1 ? set_lobal_variable(0) :"";
+        for(var i = 0; i < stage_subject_data.xd_subject_list.length; i ++){
+            if(stage_subject_data.xd_subject_list[i].xd_id == stage_id){
+                index = i;
+                //设置选中的学段全局变量值
+                lobal_variable.stage_id = stage_id;
+                lobal_variable.stage_name = stage_subject_data.xd_subject_list[i].xd_name;
+                
+                var data = stage_subject_data.xd_subject_list[i].subject_list;
+                if(data.length > 0){
+                    //学科数量不为0
+                    if(lobal_variable.subject_id == 0){
+                        //学段下拉框数据切换时
+                        lobal_variable.subject_id = data[0].subject_id;
+                        lobal_variable.subject_name = data[0].subject_name;
+                    }else{
+                        for(var j = 0; j < data.length; j++){
+                            if(data[j].subject_id == lobal_variable.subject_id){
+                                data[j].is_select = 1;
+                            }else{
+                                data[j].is_select = 0;
+                            }
+                        }
+                    
+                    } 
+			        commonAddOnceHtml('subject_body','subject_script',stage_subject_data.xd_subject_list[index]);
+			        getStandardSchemeBySubject(lobal_variable.subject_id,0);
+                }else{
+                    //学科数量为0情况
+                    api.hideProgress();
+                    commonAddOnceHtml('subject_body','subject_script',{"subject_list":[]});
+                    commonAddOnceHtml('version_body','version_script',{"version_list":[]});
+	                commonAddOnceHtml('volume_body','volume_script',{"volume_list":[]});
+                }
+            }
+        }
+    }
+   	/*
+    *author:zhaoj
+    *function:设置学科的全局变量
+    *date：20171013
+    */
+   function setSubject(subject_id){
+    	for(var i = 0; i < stage_subject_data.xd_subject_list.length; i ++){
+            var data = stage_subject_data.xd_subject_list[i].subject_list;
+            for(var j = 0; j < data.length; j++){
+                if(data[j].subject_id == subject_id){
+                    lobal_variable.subject_id = data[j].subject_id;
+                	lobal_variable.subject_name = data[j].subject_name;
+                }
+            }
+        }
+    }
+    /*
+    *author:zhaoj
+    *function:获取版本数据
+    *param:type:0：初始化进入时；1：学科下拉框数据切换时
+    *date：20171013
+    */
+    function getStandardSchemeBySubject(subject_id,type){
+    	if(type == 1){
+    		set_lobal_variable(1);
+    		setSubject(subject_id);
+    	}
+    	api.ajax({
+            url : BASE_URL_ACTION + '/ypt/schemeCtl/getStandardSchemeBySubject?random_num='+creatRandomNum()+'&&subject_id='+subject_id,
+            method : 'get',
+            timeout : 0,
+            dataType : 'json',
+            headers : {
+    'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+}
+        }, function(ret, err) {
+            if(err){
+            	api.hideProgress();
+                popToast('获取版本失败，请稍候重试');
+            }else{
+                if(ret.success){
+                	version_data = ret;
+                	if(ret.version_list.length > 0){
+                		//有版本的情况下
+                		if(lobal_variable.scheme_id == ''){
+	                        //学科下拉框数据切换时
+	                        lobal_variable.scheme_id = ret.version_list[0].version_id;
+	                        lobal_variable.scheme_name = ret.version_list[0].version_name;
+	                    }else{
+	                        for(var j = 0; j < ret.version_list.length; j++){
+	                            if(ret.version_list[j].version_id == lobal_variable.scheme_id){
+	                                ret.version_list[j].is_select = 1;
+	                            }else{
+	                                ret.version_list[j].is_select = 0;
+	                            }
+	                        }
+	                    
+	                    }
+	                    commonAddOnceHtml('version_body','version_script',ret);
+	                    getVolumeByScheme(lobal_variable.scheme_id,0);
+	                }else{
+	                	//没有版本的情况下
+	                	api.hideProgress();
+	                	commonAddOnceHtml('version_body','version_script',{"version_list":[]});
+	                	commonAddOnceHtml('volume_body','volume_script',{"volume_list":[]});
+	                }
+                }else{
+                	api.hideProgress();
+                    popToast('获取版本学科失败，请稍候重试');
+                }
+            }
+        });
+    }
+     /*
+    *author:zhaoj
+    *function:设置版本的全局变量
+    *date：20171013
+    */
+    function setVersion(scheme_id){
+    	for(var j = 0; j < version_data.version_list.length; j++){
+            if(version_data.version_list[j].version_id == scheme_id){
+                lobal_variable.scheme_id = version_data.version_list[j].version_id;
+	            lobal_variable.scheme_name = version_data.version_list[j].version_name;
+            }
+        }
+    }
+    /*
+    *author:zhaoj
+    *function:获取教材数据
+    *param:type:0：初始化进入时；1：学科下拉框数据切换时
+    *date：20171013
+    */
+    function getVolumeByScheme(scheme_id,type){
+    	if(type == 1){
+    		set_lobal_variable(2)
+    		setVersion(scheme_id);
+    	}
+    	api.ajax({
+            url : BASE_URL_ACTION + '/ypt/bkCtl/getVolumeByScheme?random_num='+creatRandomNum()+'&scheme_id='+scheme_id,
+            method : 'get',
+            timeout : 0,
+            dataType : 'json',
+            headers : {
+    'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+}
+        }, function(ret, err) {
+        	api.hideProgress();
+            if(err){
+                popToast('获取教材失败，请稍候重试');
+            }else{
+                if(ret.success){
+                	volume_data = ret;
+                	if(ret.volume_list.length > 0){
+                		//有教材的情况下
+                		if(lobal_variable.volume_id == ''){
+	                        //学科下拉框数据切换时
+	                        lobal_variable.volume_id = ret.volume_list[0].structure_id;
+	                        lobal_variable.volume_name = ret.volume_list[0].structure_name;
+	                    }else{
+	                        for(var j = 0; j < ret.volume_list.length; j++){
+	                            if(ret.volume_list[j].structure_id == lobal_variable.volume_id){
+	                                ret.volume_list[j].is_select = 1;
+	                            }else{
+	                                ret.volume_list[j].is_select = 0;
+	                            }
+	                        }
+	                    
+	                    }
+	                    commonAddOnceHtml('volume_body','volume_script',ret);
+	                }else{
+	                	//没有教材的情况下
+	                	commonAddOnceHtml('volume_body','volume_script',{"volume_list":[]});
+	                }
+                }else{
+                    popToast('获取教材失败，请稍候重试');
+                }
+            }
+        });
+    }
+    /*
+    *author:zhaoj
+    *function:切换教材数据
+    *date：20171013
+    */
+    function changeVolume(volume_id,type){
+    	for(var j = 0; j < volume_data.volume_list.length; j++){
+            if(volume_data.volume_list[j].structure_id == volume_id){
+                lobal_variable.volume_id = volume_data.volume_list[j].structure_id;
+	            lobal_variable.volume_name = volume_data.volume_list[j].structure_name;
+	            
+            }
+        }
+    }
+    /*
+    *author:zhaoj
+    *function:设置全局变量
+    *param:type=0：学科、版本、教材全部初始化为空，type=1：版本、教材全部初始化为空，type == 2：教材初始化为空
+    *date：20171013
+    */
+    function set_lobal_variable(type){
+        if(type == 0){
+            lobal_variable.subject_id = '';
+            lobal_variable.subject_name = '';
+        }
+        if(type == 0 || type == 1){
+            lobal_variable.scheme_id = '';
+            lobal_variable.scheme_name = '';
+        }
+        if(type == 0 || type == 1 || type == 2){
+            lobal_variable.volume_id = '';
+            lobal_variable.volume_name = '';
+        }
+    }
+</script>
+</html>

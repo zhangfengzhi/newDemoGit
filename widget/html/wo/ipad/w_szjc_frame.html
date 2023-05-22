@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<!-- html5：在创建html时为了防止页面缩放等不兼容效果，要创建个viewport  -->
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<!-- 在IOS设备上，有时会将数字转为手机号，这里也要禁止下 -->
+		<meta name="format-detection" content="telephone=no"/>
+		<title>设置教材frame</title>
+		<link rel="stylesheet" type="text/css" href="../../../css/aui/aui.css" />
+		<link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+		<style>
+			body:before{display:block;content:"";height:10px; visibility:hidden;}
+			.common{position:relative;line-height:45px;margin-top:10px;padding:0 15px;border-top:1px solid #e0e0e0;border-bottom:1px solid #e0e0e0;background:#f6f6f6;color:#333;}
+			.common .title{position:absolute;left:15px;display:inline-block;}
+			.common .name{display:inline-block;width:100%;padding-left:60px;text-align:right;}
+			.common-ul{background:#fff;color:#555;}
+			.common-ul li{line-height:45px;padding:0 15px;border-bottom:1px solid #e0e0e0;}
+			.common-ul li .right{float:right;}
+			.pb60{padding-bottom:65px;}
+			.footer-div{display: block;position:fixed;bottom: 0px;width:100%;height:55px;border-top:1px solid #E2E2E2;background:#F6F6F6;font-size:14px;z-index: 999999;}
+			.footer-div .wid{width:92%;line-height:36px;text-align:center;color:#ffffff;margin-top:10px;border-radius:2px;margin-left:4%;}
+		</style>
+	</head>
+	<body class="w-ipad-common">
+		<div class="common" style="margin-top:0;" onclick="displayDropDownMenu(this,'stage')">
+			<span class="title">学段</span>
+			<span class="stage name"><span id="j_stage_name"></span><i class="aui-iconfont aui-icon-unfold"></i></span>
+		</div>
+		<ul id="j_stage" class="common-ul display-none"></ul>
+		<div class="common" onclick="displayDropDownMenu(this,'subject')">
+			<span class="title">学科</span>
+			<span class="subject name"><span id="j_subject_name"></span><i class="aui-iconfont aui-icon-unfold"></i></span>
+		</div>
+		<ul id="j_subject" class="common-ul display-none"></ul>
+		<div class="common" onclick="displayDropDownMenu(this,'version')">
+			<span class="title">版本</span>
+			<span class="version name"><span id="j_version_name"></span><i class="aui-iconfont aui-icon-unfold"></i></span>
+		</div>
+		<ul id="j_version" class="common-ul display-none"></ul>
+		<div class="common" onclick="displayDropDownMenu(this,'scheme')">
+			<span class="title">教材</span>
+			<span class="scheme name"><span id="j_scheme_name"></span><i class="aui-iconfont aui-icon-unfold"></i></span>
+		</div>
+		<ul id="j_scheme" class="common-ul display-none pb60"></ul>
+		<!--<div class="footer-div">
+			<div class="wid" onclick="saveSchemeProgress();">保存</div>
+		</div>-->
+	</body>
+	<script type="text/javascript" src="../../../script/api.js"></script>
+	<script type="text/javascript" src="../../../script/base_config.js"></script>
+	<script type="text/javascript" src="../../../script/plug-in/base64.js" ></script>
+	<script type="text/javascript" src="../../../script/common/common.js"></script>
+	<script type="text/javascript">
+		var BASE_URL_ACTION;
+		var all_szjc_data={};//设置教材所需所有的变量以及学段、学科、版本以及教材的数据
+		apiready = function() {
+			commonSetTheme({"level":3,"type":0});
+			BASE_URL_ACTION = $api.getStorage('BASE_URL_ACTION');
+			all_szjc_data.stage_id=0;//学段id
+			all_szjc_data.subject_id=0;//学科id
+			all_szjc_data.version_id=0;//版本id
+			all_szjc_data.scheme_id=0;//教材id
+			all_szjc_data.stage_index="";//选择学科所在数组的位置
+			all_szjc_data.stage_list=[];//所有学段
+			all_szjc_data.subject_list=[];//所有学科
+			all_szjc_data.version_list=[];//所有版本
+			all_szjc_data.scheme_list=[];//所有教材
+			getStageSubject('',function(flag){
+				if(flag){
+					getSchemeProgress();
+				}
+			});
+		};
+		/*
+		*author:zhaoj
+		*function:展示或隐藏下拉菜单
+		*date：20170328
+		*/
+		function displayDropDownMenu(self,id){
+			//根据id名称来获取不同的数据
+			switch(id) {
+				case 'stage':
+					getStageSubject(id,function(flag){});
+					break;
+				case 'subject':
+					if(all_szjc_data.stage_id == 0) return;
+					getStageSubject(id,function(flag){});
+					break;
+				case 'version':
+					if(all_szjc_data.subject_id == 0) return;
+					getStandardSchemeBySubject();
+					break;
+				case 'scheme':
+					if(all_szjc_data.version_id == 0) return;
+					getVolumeByScheme();
+					break;
+			}
+			if($api.hasCls($api.byId('j_'+id), 'display-none')){
+				$api.removeCls($api.byId('j_'+id), 'display-none');
+				$api.removeCls($api.dom(self,'i'),'aui-icon-unfold');
+				$api.addCls($api.dom(self,'i'),'aui-icon-fold');
+			}else{
+				$api.addCls($api.byId('j_'+id), 'display-none');
+				$api.removeCls($api.dom(self,'i'),'aui-icon-fold');
+				$api.addCls($api.dom(self,'i'),'aui-icon-unfold');
+			}
+		}
+		/*
+		*author:zhaoj
+		*function:获取当前教师任教的教材信息
+		*date：20170328
+		*/
+		function getSchemeProgress(){
+			api.ajax({
+				url : BASE_URL_ACTION + '/ypt/space/course_package/get_scheme_progress?random_num='+creatRandomNum()+'&person_id='+$api.getStorage("person_id")+'&identity_id='+$api.getStorage('identity'),
+				method : 'get',
+				timeout : 0,
+				dataType : 'json',
+				headers : {
+		'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+	}
+			}, function(ret, err) {
+				if(err){
+					popToast('获取教材信息失败，请稍候重试');
+				}else{
+					if(ret.success){
+						$api.text($api.byId('j_stage_name'),ret.stage_name);
+						$api.text($api.byId('j_subject_name'),ret.subject_name);
+						$api.text($api.byId('j_version_name'),ret.scheme_name);
+						$api.text($api.byId('j_scheme_name'),ret.volume_name);
+						all_szjc_data.stage_id = ret.stage_id;//学段id
+						all_szjc_data.subject_id = ret.subject_id;//学科id
+						all_szjc_data.version_id = ret.scheme_id;//版本id
+						all_szjc_data.scheme_id = ret.volume_id;//教材id
+						for(var i = 0; i < all_szjc_data.stage_list.length; i++){
+							var stage = all_szjc_data.stage_list[i];
+							if(stage.xd_id == all_szjc_data.stage_id){
+								all_szjc_data.stage_index = i;
+							}
+						}
+					}else{
+						$api.text($api.byId('j_stage_name'),'请选择学段');
+						$api.text($api.byId('j_subject_name'),'请先设置学段');
+						$api.text($api.byId('j_version_name'),'请先设置学科');
+						$api.text($api.byId('j_scheme_name'),'请先设置版本');
+					}
+				}
+			});
+		}
+		/*
+		*author:zhaoj
+		*function:获取当前学段学科
+		*date：20170328
+		*/
+		function getStageSubject(type,callback){
+			if(all_szjc_data.stage_list.length == 0 || all_szjc_data.subject_list.length == 0 ){
+				api.ajax({
+					url : BASE_URL_ACTION + '/resource/getStageSubject?random_num='+creatRandomNum(),
+					method : 'get',
+					timeout : 0,
+					dataType : 'json',
+					headers : {
+			'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+		}
+				}, function(ret, err) {
+					if(err){
+						popToast('获取学段学科失败，请稍候重试');
+						callback(false);
+					}else{
+						if(ret.success){
+							all_szjc_data.stage_list = [];
+							all_szjc_data.subject_list =[];
+							for(var i =0; i < ret.xd_subject_list.length; i++){
+								var stage_oparam = new Object();
+								stage_oparam.xd_name = ret.xd_subject_list[i].xd_name;
+								stage_oparam.xd_id = ret.xd_subject_list[i].xd_id;
+								all_szjc_data.stage_list.push(stage_oparam);
+								all_szjc_data.subject_list.push(ret.xd_subject_list[i].subject_list);
+							}
+							if(type == "stage"){
+								setStageLiHtml();
+							}else if(type == "subject"){
+								setSubjectLiHtml();
+							}
+							callback(true);
+						}else{
+							popToast('获取学段学科失败，请稍候重试');
+							callback(false);
+						}
+					}
+				});
+			}else{
+				if(type == "stage"){
+					setStageLiHtml();
+				}else if(type == "subject"){
+					setSubjectLiHtml();
+				}
+			}
+		}
+		/*
+		*author:zhaoj
+		*function:设置学段
+		*date：20170328
+		*/
+		function setStageLiHtml(){
+			var li_html="";
+			for(var i = 0; i < all_szjc_data.stage_list.length; i++){
+				var stage = all_szjc_data.stage_list[i];
+				if(stage.xd_id == all_szjc_data.stage_id){
+					all_szjc_data.stage_index = i;
+					li_html += '<li onclick=selectStage(this,'+i+','+stage.xd_id+',"'+stage.xd_name+'")>'+stage.xd_name+'<i class="aui-iconfont aui-icon-check right"></i></li>';
+				}else{
+					li_html += '<li onclick=selectStage(this,'+i+','+stage.xd_id+',"'+stage.xd_name+'")>'+stage.xd_name+'</li>';
+				}
+			}
+			$api.html($api.byId('j_stage'),li_html);
+		}
+		/*
+		*author:zhaoj
+		*function:选择学段
+		*date：20170328
+		*/
+		function selectStage(self,index,stage_id,stage_name){
+			all_szjc_data.stage_index = index;
+			var li_array= $api.domAll($api.byId('j_stage'),'li');
+			for(var i = 0; i < li_array.length; i++){
+				var el = $api.dom(li_array[i], 'i');
+				if(!isEmptyString(el)){
+					el.parentNode.removeChild(el);
+				}
+			}
+			$api.html(self,stage_name+'<i class="aui-iconfont aui-icon-check right"></i>');
+			commonSet('stage',stage_name)
+			all_szjc_data.stage_id = stage_id;//学科id
+			all_szjc_data.subject_id = 0;//学科id
+			all_szjc_data.version_id = 0;//版本id
+			all_szjc_data.scheme_id = 0;//教材id
+			all_szjc_data.subject_list = [];//学科数组
+			all_szjc_data.version_list = [];//版本数组
+			all_szjc_data.scheme_list = [];//教材数组
+			commonSetDropDownHidden('subject');
+			commonSetDropDownHidden('version');
+			commonSetDropDownHidden('scheme');
+			$api.text($api.byId('j_subject_name'),'请设置学段');
+			$api.text($api.byId('j_version_name'),'请先设置学科');
+			$api.text($api.byId('j_scheme_name'),'请先设置版本');
+		}
+		/*
+		*author:zhaoj
+		*function:设置学段
+		*date：20170328
+		*/
+		function setSubjectLiHtml(){
+			var li_html="";
+			for(var i = 0; i < all_szjc_data.subject_list[all_szjc_data.stage_index].length; i++){
+				var subject = all_szjc_data.subject_list[all_szjc_data.stage_index][i];
+				if(subject.subject_id == all_szjc_data.subject_id){
+					li_html += '<li onclick=selectSubject(this,'+subject.subject_id+',"'+Base64.encode(subject.subject_name)+'")>'+subject.subject_name+'<i class="aui-iconfont aui-icon-check right"></i></li>';
+				}else{
+					li_html += '<li onclick=selectSubject(this,'+subject.subject_id+',"'+Base64.encode(subject.subject_name)+'")>'+subject.subject_name+'</li>';
+				}
+			}
+			$api.html($api.byId('j_subject'),li_html);
+		}
+		/*
+		*author:zhaoj
+		*function:选择学科
+		*date：20170328
+		*/
+		function selectSubject(self,subject_id,subject_name){
+			var li_array= $api.domAll($api.byId('j_subject'),'li');
+			for(var i = 0; i < li_array.length; i++){
+				var el = $api.dom(li_array[i], 'i');
+				if(!isEmptyString(el)){
+					el.parentNode.removeChild(el);
+				}
+			}
+			$api.html(self,Base64.decode(subject_name)+'<i class="aui-iconfont aui-icon-check right"></i>');
+			commonSet('subject',Base64.decode(subject_name));
+			all_szjc_data.subject_id = subject_id;//学科id
+			all_szjc_data.version_id = 0;//版本id
+			all_szjc_data.scheme_id = 0;//教材id
+			all_szjc_data.version_list = [];//版本数组
+			all_szjc_data.scheme_list = [];//教材数组
+			commonSetDropDownHidden('version');
+			commonSetDropDownHidden('scheme');
+			$api.text($api.byId('j_version_name'),'请选择版本');
+			$api.text($api.byId('j_scheme_name'),'请先设置版本');
+		}
+		/*
+		*author:zhaoj
+		*function:获取版本
+		*date：20170328
+		*/
+		function getStandardSchemeBySubject(){
+			if(all_szjc_data.version_list.length == 0){
+				api.ajax({
+					url : BASE_URL_ACTION + '/ypt/schemeCtl/getStandardSchemeBySubject?random_num='+creatRandomNum()+'&subject_id='+all_szjc_data.subject_id,
+					method : 'get',
+					timeout : 0,
+					dataType : 'json',
+					headers : {
+			'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+		}
+				}, function(ret, err) {
+					if(err){
+						popToast('获取版本失败，请稍候重试');
+					}else{
+						if(ret.success){
+							all_szjc_data.version_list = ret.version_list;
+							setVersionLiHtml();
+						}else{
+							popToast('获取版本失败，请稍候重试');
+						}
+					}
+				});
+			}else{
+				setVersionLiHtml();
+			}
+		}
+		/*
+		*author:zhaoj
+		*function:设置学段
+		*date：20170328
+		*/
+		function setVersionLiHtml(){
+			var li_html="";
+			for(var i = 0; i < all_szjc_data.version_list.length; i++){
+				var version = all_szjc_data.version_list[i];
+				if(version.version_id == all_szjc_data.version_id){
+					li_html += '<li onclick=selectVersion(this,'+version.version_id+',"'+Base64.encode(version.version_name)+'")>'+version.version_name+'<i class="aui-iconfont aui-icon-check right"></i></li>';
+				}else{
+					li_html += '<li onclick=selectVersion(this,'+version.version_id+',"'+Base64.encode(version.version_name)+'")>'+version.version_name+'</li>';
+				}
+			}
+			$api.html($api.byId('j_version'),li_html);
+		}
+		/*
+		*author:zhaoj
+		*function:选择版本
+		*date：20170328
+		*/
+		function selectVersion(self,version_id,version_name){
+			var li_array= $api.domAll($api.byId('j_version'),'li');
+			for(var i = 0; i < li_array.length; i++){
+				var el = $api.dom(li_array[i], 'i');
+				if(!isEmptyString(el)){
+					el.parentNode.removeChild(el);
+				}
+			}
+			$api.html(self,Base64.decode(version_name)+'<i class="aui-iconfont aui-icon-check right"></i>');
+			commonSet('version',Base64.decode(version_name));
+			all_szjc_data.version_id = version_id;//版本id
+			all_szjc_data.scheme_id = 0;//教材id
+			all_szjc_data.scheme_list = [];//教材数组
+			commonSetDropDownHidden('scheme');
+			$api.text($api.byId('j_scheme_name'),'请选择教材');
+		}
+		/*
+		*author:zhaoj
+		*function:获取版本
+		*date：20170328
+		*/
+		function getVolumeByScheme(){
+			if(all_szjc_data.scheme_list.length == 0){
+				api.ajax({
+					url : BASE_URL_ACTION + '/ypt/bkCtl/getVolumeByScheme?random_num='+creatRandomNum()+'&scheme_id='+all_szjc_data.version_id,
+					method : 'get',
+					timeout : 0,
+					dataType : 'json',
+					headers : {
+			'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+		}
+				}, function(ret, err) {
+					if(err){
+						popToast('获取版本失败，请稍候重试');
+					}else{
+						if(ret.success){
+							all_szjc_data.scheme_list = ret.volume_list;
+							setSchemeLiHtml();
+						}else{
+							popToast('获取版本失败，请稍候重试');
+						}
+					}
+				});
+			}else{
+				setSchemeLiHtml();
+			}
+		}
+		/*
+		*author:zhaoj
+		*function:设置学段
+		*date：20170328
+		*/
+		function setSchemeLiHtml(){
+			var li_html="";
+			for(var i = 0; i < all_szjc_data.scheme_list.length; i++){
+				var scheme = all_szjc_data.scheme_list[i];
+				if(scheme.structure_id == all_szjc_data.scheme_id){
+					li_html += '<li onclick=selectScheme(this,'+scheme.structure_id+',"'+Base64.encode(scheme.structure_name)+'")>'+scheme.structure_name+'<i class="aui-iconfont aui-icon-check right"></i></li>';
+				}else{
+					li_html += '<li onclick=selectScheme(this,'+scheme.structure_id+',"'+Base64.encode(scheme.structure_name)+'")>'+scheme.structure_name+'</li>';
+				}
+			}
+			$api.html($api.byId('j_scheme'),li_html);
+		}
+		/*
+		*author:zhaoj
+		*function:选择教材
+		*date：20170328
+		*/
+		function selectScheme(self,scheme_id,scheme_name){
+			var li_array= $api.domAll($api.byId('j_scheme'),'li');
+			for(var i = 0; i < li_array.length; i++){
+				var el = $api.dom(li_array[i], 'i');
+				if(!isEmptyString(el)){
+					el.parentNode.removeChild(el);
+				}
+			}
+			$api.html(self,Base64.decode(scheme_name)+'<i class="aui-iconfont aui-icon-check right"></i>');
+			commonSet('scheme',Base64.decode(scheme_name));
+			all_szjc_data.scheme_id = scheme_id;//教材id
+		}
+		/*
+		*author:zhaoj
+		*function:统一设置
+		*date：20170328
+		*/
+		function commonSet(id,name){
+			$api.html($api.byId('j_'+id+'_name'),name);
+			$api.addCls($api.byId('j_'+id), 'display-none');
+			$api.removeCls($api.dom($api.byId('j_'+id+'_name').parentNode,'i'),'aui-icon-fold');
+			$api.addCls($api.dom($api.byId('j_'+id+'_name').parentNode,'i'),'aui-icon-unfold');
+		}
+		/*
+		*author:zhaoj
+		*function:统一设置下拉列表隐藏
+		*date：20170328
+		*/
+		function commonSetDropDownHidden(id){
+			if(!$api.hasCls($api.byId('j_'+id), 'display-none')){
+				$api.addCls($api.byId('j_'+id), 'display-none');
+				$api.removeCls($api.dom(self,'i'),'aui-icon-fold');
+				$api.addCls($api.dom(self,'i'),'aui-icon-unfold');
+			}
+		}
+		/*
+		*author:zhaoj
+		*function:保存教材设置
+		*date：20170328
+		*/
+		function saveSchemeProgress(){
+			if(all_szjc_data.stage_id == 0){
+				popToast('学段还未设置');
+				return;
+			}
+			if(all_szjc_data.subject_id == 0){
+				popToast('学科还未设置');
+				return;
+			}
+			if(all_szjc_data.version_id == 0){
+				popToast('版本还未设置');
+				return;
+			}
+			if(all_szjc_data.scheme_id == 0){
+				popToast('教材还未设置');
+				return;
+			}
+			showSelfProgress('保存中...');
+			api.ajax({
+				url : BASE_URL_ACTION + '/ypt/space/course_package/save_scheme_progress',
+				method : 'post',
+				timeout : 0,
+				dataType : 'json',
+				data : {
+					values : {
+						"random_num" : creatRandomNum(),
+						"identity_id" : $api.getStorage("identity"),
+						"person_id" : $api.getStorage("person_id"),
+						"scheme_id" : all_szjc_data.version_id,
+						"stage_id" : all_szjc_data.stage_id,
+						"subject_id" : all_szjc_data.subject_id,
+						"volume_id" : all_szjc_data.scheme_id,
+					}
+				},
+				headers : {
+		'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+	}
+			}, function(ret, err) {
+				if(err){
+					api.hideProgress();
+					popAlert('保存失败，请稍候重试');
+				}else{
+					api.hideProgress();
+					if(ret.success){
+						api.hideProgress();
+						popToast('保存成功');
+						setTimeout(function(){
+							api.execScript({
+					            name: 'w_szjc_window',
+					            script: 'back();'
+					        });
+				        },200);
+					}else{
+						api.hideProgress();
+						popAlert('保存失败，请稍候重试');
+					}
+				}
+			});
+		}
+	</script>
+</html>

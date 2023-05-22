@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<title>考勤汇总</title>
+		<link rel="stylesheet" type="text/css" href="../../../../../css/aui/aui.css"/>
+		<link rel="stylesheet" type="text/css" href="../../../../../css/module/common/aui-list-swipe.css" />
+		<link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+		<style>
+			.person-name {
+				display: inline-block;
+				max-width: 30%;
+			}
+			.reason {
+				display: inline-block;
+				max-width: 30%;
+			}
+			.bumen {
+				display: inline-block;
+				max-width: 40%;
+				font-size: 12px;
+				color: #8F8F94;
+				float: right;
+			}
+			.ellipsis {
+				white-space: nowrap;
+				overflow: hidden;
+				text-overflow: ellipsis;
+			}
+			.leave-reason {
+				max-width: 100%;
+			}
+			.tip-image {
+				position: absolute;
+				top: -12px;
+				right: -15px;
+				width: 38px;
+			}
+		</style>
+	</head>
+	<body class="common-iphone-kaoqin">
+		<section class="aui-content" id="banner">
+			<ul class="aui-list-view">
+				<li class="aui-list-view-cell aui-img" tapmode onclick="showMsg(this);">
+					<div class="aui-swipe-handle">
+						<img class="aui-img-object aui-pull-left" onerror="this.src='../../../../../image/fun-module/iphone/kaoqin/default.png'"  src="../../../../../image/fun-module/iphone/kaoqin/default.png" />
+						<div class="aui-img-body">
+							<div class="person-name ellipsis">
+								张晓萌
+							</div>
+							<div class="reason">
+								[出差]
+							</div>
+							<div class="bumen ellipsis">
+								平台软件研发部
+							</div>
+							<p>
+								6-20 15:15&nbsp;&nbsp;共3小时
+							</p>
+							<p class="leave-reason ellipsis">
+								去云南楚雄部署程序并调试问题。
+							</p>
+						</div>
+					</div>
+				</li>
+				<li class="aui-list-view-cell aui-img" tapmode onclick="showMsg(this);">
+					<div class="aui-swipe-handle">
+						<img class="aui-img-object aui-pull-left" onerror="this.src='../../../../../image/fun-module/iphone/kaoqin/default.png'"  src="../../../../../image/fun-module/iphone/kaoqin/default.png" />
+						<div class="aui-img-body">
+							<div class="person-name ellipsis">
+								张晓萌
+							</div>
+							<div class="reason">
+								[公出]
+							</div>
+							<div class="bumen ellipsis">
+								平台软件研发部
+							</div>
+							<p>
+								6-20 15:15&nbsp;&nbsp;共1天
+							</p>
+							<p class="leave-reason ellipsis">
+								去外国语学院做理想人人通的技术支持。
+							</p>
+						</div>
+					</div>
+				</li>
+				<li class="aui-list-view-cell aui-img" tapmode onclick="showMsg(this);">
+					<div class="aui-swipe-handle">
+						<img class="aui-img-object aui-pull-left" onerror="this.src='../../../../../image/fun-module/iphone/kaoqin/default.png'"  src="../../../../../image/fun-module/iphone/kaoqin/default.png" />
+						<div class="aui-img-body">
+							<div class="person-name ellipsis">
+								张晓萌
+							</div>
+							<div class="reason">
+								[公出]
+							</div>
+							<div class="bumen ellipsis">
+								平台软件研发部
+							</div>
+							<p>
+								6-20 15:15&nbsp;&nbsp;共1天3小时
+							</p>
+							<p class="leave-reason ellipsis">
+								去外国语学院做理想人人通的技术支持。
+							</p>
+						</div>
+					</div>
+				</li>
+			</ul>
+		</section>
+	</body>
+	<script type="text/javascript" src="../../../../../script/api.js"></script>
+	<script type="text/javascript" src="../../../../../script/common/common.js"></script>
+	<script type="text/javascript">
+		var type = 0;
+		//判读是请假还是公出，默认是请假
+		apiready = function() {
+			commonSetTheme({"level":5,"type":0});
+			changeType(type);
+		};
+		/*
+		 *author:zhaoj
+		 *function:更改是请假还是公出的状态type：0请假，type：1公出
+		 *date：20160620
+		 */
+		function changeType(num) {
+			type = num;
+			if (type) {
+				//$api.text($api.byId('content'), '公出统计');
+			} else {
+				//$api.text($api.byId('content'), '请假统计');
+			}
+		}
+
+	</script>
+</html>

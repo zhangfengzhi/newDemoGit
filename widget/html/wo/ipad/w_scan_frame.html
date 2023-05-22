@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<!-- html5：在创建html时为了防止页面缩放等不兼容效果，要创建个viewport  -->
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<!-- 在IOS设备上，有时会将数字转为手机号，这里也要禁止下 -->
+		<meta name="format-detection" content="telephone=no"/>
+		<title>我的二维码</title>
+		<link rel="stylesheet" type="text/css" href="../../../css/aui/aui.css" />
+		<link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+		<style>
+
+		</style>
+	</head>
+	<body class="w-ipad-common">
+		<div class="aui-content">
+			<ul class="aui-list-view aui-grid-view">
+				<li class="aui-list-view-cell aui-img aui-col-xs-12">
+					<img class="aui-img-object" id="e_img" src="../../../image/yingyong/weike/wk_default.png">
+					<div class="aui-img-body">
+						通过“慧办公”——“扫一扫”，加我为好友
+					</div>
+				</li>
+			</ul>
+		</div>
+	</body>
+	<script type="text/javascript" src="../../../script/api.js" ></script>
+	<script type="text/javascript" src="../../../script/common/common.js" ></script>
+	<script type="text/javascript" src="../../../script/base_config.js" ></script>
+	<script type="text/javascript">
+		apiready = function() {
+			commonSetTheme({"level":3,"type":0});
+			encodeImg();
+		};
+		
+		function isExisScanImg(){
+			
+		}
+		/**
+		 * 生成二维码
+		 * 周枫
+		 * 2016.1.16
+		 */
+		function encodeImg() {
+			var FNScanner = api.require('FNScanner');
+			var person_id = $api.getStorage('person_id');
+			var identity_id = $api.getStorage('identity');
+			var person_name = $api.getStorage('person_name');
+			var login_name = $api.getStorage('login_name');
+			FNScanner.encodeImg({
+				type : 'qr_image',
+				content : 'DsIdeal&&lxjxt-addfriend&&'+person_name+'&='+person_id+'&='+identity_id+'&='+login_name,
+				saveToAlbum : true,
+				saveImg : {
+					path : BASE_FS_ERWEIMA_PATH,
+					w : 200,
+					h : 200
+				}
+			}, function(ret, err) {
+				if (ret.status) {
+					var user = document.getElementById("e_img");
+					user.src = ret.imgPath;
+//					$api.attr($api.byId('e_img'), 'src', ret.imgPath);
+//					alert(JSON.stringify(ret));
+				} else {
+					api.toast({
+	                    msg:'对不起，请重新加载'
+                    });
+				}
+			});
+		}
+	</script>
+</html>

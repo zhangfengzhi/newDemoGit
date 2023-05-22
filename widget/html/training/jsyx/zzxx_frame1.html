@@ -1,0 +1,113 @@
+<!DOCTYPE html>	
+<html>	
+<head>	
+	<meta charset="utf-8">	
+	<title>frame</title>	
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>	
+	<link rel="stylesheet" type="text/css" href="../../../css/training/jsyx/api.css" />	
+<!--	<link rel="stylesheet" type="text/css" href="../css/aui.css" />	
+-->    <link rel="stylesheet" type="text/css" href="../../../css/training/jsyx/common.css" />	
+	
+	<style>	
+		html, body {width: 100%;min-height: 100%;background: #fff;}	
+		.h80 {height: 80px;}	
+		.h40 {height: 40px;}	
+		.h20 {height: 20px;}	
+    	.h10 {height: 10px;background: #f0f0f0;}
+    	.mt10{ margin-top: 10px;}	
+    	.h1 {height: 1px;margin-left: 15px;background: #f0f0f0;}	
+		.fr {float: right;}	
+		.fl {float: left;}	
+		.hightitem {background-color: #fff;}	
+	
+	
+		/* 2X2样式 */	
+		.row {display: -webkit-box;display: -webkit-flex;	
+        display: flex;}	
+		.col {-webkit-box-flex:1; -webkit-flex:1; flex:1;position: relative;}	
+		.col img {position: absolute; right: 0; width: 80px; top: 0;}	
+		.col .matrixcell {display: table-cell;vertical-align: middle; padding-left: 10px;}	
+		.col .matrixcell .title {margin-bottom: 10px;}	
+		.matrix {display: table;height: inherit;}	
+	
+        /* 猜你喜欢 */	
+		.home-tuan-list .item {position: relative; display: block;}	
+		/*列表图片*/
+		.home-tuan-list .cnt {padding: 5px 10px 5px 5px; display: box; display: -webkit-box;display: -webkit-flex;display: flex; height: 78px; 
+		                      background-size: auto 1px;  border-bottom: 1px #cfd9de solid; }	
+		.home-tuan-list .pic {margin-right: 10px; background: center;  width: 80px;	 margin-left:5px;height: 60px;padding: 2px;	border: 1px solid #e7e7e7;	border-radius: 2px;	}	
+		.home-tuan-list img {width: 90px; height: 66px; margin-top: 7px; margin-bottom: 5px; border-radius: 3px; }	
+		.home-tuan-list .wrap {-webkit-box-flex: 1; -webkit-flex: 1;flex: 1;}	
+		
+		.home-tuan-list .wrap2 {display: table; height:80px; width: 100%; }	
+		.home-tuan-list .content {-webkit-box-flex: 1;-webkit-flex: 1;flex: 1; box-flex: 1; display: table-cell; vertical-align: middle; }	
+		/*列表第一行文字*/
+		.home-tuan-list .shopname {color: #333; /*line-height: 16px;*/ font-size: 16px; max-width: 11em; white-space: nowrap; word-wrap: normal; text-overflow: ellipsis; overflow: hidden; min-height: 10px; padding-bottom: 2px; display: inline-block;}	
+		.hide{display:none;}
+		.home-tuan-list .comment {margin-bottom: 6px; position: relative; }	
+		/*列表第二行文字*/
+		.home-tuan-list .comment span {vertical-align: middle; color:#999; font-size: 12px;}	
+	
+	
+	
+		/*列表第三行文字*/	
+		.home-tuan-list .classify {color: #34A8FA; font-size: 13px;}
+				
+			
+		.selectdiv{height: 40px;line-height: 40px;}
+		.selectdiv span{width:80px;}
+		.changDiv{height: 42px;line-height: 42px;vertical-align: middle;}
+		.changDiv span{height: 32px;line-height: 32px;padding-left: 10px;width:80px; font-size: 18px; margin-left:5px;  color: #696969}
+		.input{width:60%;}
+		.changDiv input{border: 1px solid #c1c1c1;width:50%;height: 32px;background-color: #fafafa;border-radius:5px;}
+		.changDiv select{text-align: center;height: 32px;border: 1px solid #c1c1c1; background-color: #fafafa;border-radius:5px;}
+		.changDiv .button{text-align: center; height: 40px; width:90%;background-color: #34A8FA;border-radius:5px; border: 0; color: #fff;  margin:10px 0 10px 15px; }
+		.xian{border-bottom: 1px solid #cccccc;border-top: 1px solid #34A8FA ;height: 40px;line-height: 40px;vertical-align: middle;text-align: center; background-color: #fff;
+		      font-size: 16px; color: #373636; margin-top: 20px;background-color: #f5f6f7;}
+	</style>	
+</head>	
+<body>	
+	<input oninput="commonRemoveExpression(this)" type="hidden" id="kc_name" />
+	<input oninput="commonRemoveExpression(this)" type="hidden" id="type" />
+	<input oninput="commonRemoveExpression(this)" type="hidden" id="lx" />
+	<div class="changDiv mt10">
+		<span>课程名称  </span>
+		<input oninput="commonRemoveExpression(this)" id="name" class="input"/>
+	</div>
+	<div class="changDiv center">	
+		<span>课程分类  </span>
+		<select id="type_select" class="input">
+			<option value="0">全部</option>
+			<option value="1">专家讲座</option>
+			<option value="2">网络课程</option>
+			<option value="3">案例分析</option>
+		</select>	
+	</div>
+	<div class="changDiv center">	
+		<span>课程类型 </span>
+		<select id="lx_select" class="input">
+			<option value="0">全部</option>
+			<option value="1">中小学教师网络培训</option>
+			<option value="2">中小学骨干教师培训</option>
+			<option value="3">中小学教研员网络培训</option>
+			<option value="4">中小学校长网络培训</option>
+			<option value="5">中小学教师信息技术应用培训</option>               
+			<option value="6">专题培训</option>          
+		</select>	
+	</div>
+	<div class="changDiv" align="center">	
+		<input oninput="commonRemoveExpression(this)" type="button" value="搜索" class="button" style="margin-right: 20px;" onclick="queryCourse();">
+	</div>
+	<div class="xian">课程列表</div>
+	<input oninput="commonRemoveExpression(this)" type="hidden" id="clickCourse" value=""/>
+	<!-- 1 列表 -->	
+	<div class="home-tuan-list" id="kcDiv">	
+	</div>
+	<script type="text/javascript" src="../../../script/api.js"></script>	
+	<script type="text/javascript" src="../../../script/base_config.js"></script>
+	<script type="text/javascript" src="../../../script/training/jsyx/constant.js"></script>	
+	<script type="text/javascript" src="../../../script/training/jsyx/delicate-ac-0.1.js"></script>
+	<script type="text/javascript" src="../../../script/training/jsyx/zzxx_frame1.js"></script>
+</body>	
+</body>	
+</html>	

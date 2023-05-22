@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<!-- html5：在创建html时为了防止页面缩放等不兼容效果，要创建个viewport  -->
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<!-- 在IOS设备上，有时会将数字转为手机号，这里也要禁止下 -->
+		<meta name="format-detection" content="telephone=no"/>
+		<title>通知</title>
+		<link rel="stylesheet" type="text/css" href="../../../../../css/aui_css_new/aui.css" />
+		<link rel="stylesheet" type="text/css" href="../../../../../css/aui/aui.css" />
+		<link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+		<style>
+			.history-date {
+				font-size: 12px;
+			}
+			#message-content {
+				overflow-y: auto;
+				display: none;
+			}
+			.win-menu img {
+				width: 20px;
+				height: 20px;
+				margin-top: 13px;
+			}
+			.aui-icon-share{
+				font-size:10px;
+			}
+			.aui-icon-menu{padding-left:15px;}
+			.win-menu img {
+				width: 20px;
+				height: 20px;
+				margin-top: 13px;
+			}
+		</style>
+	</head>
+	<body class="common-iphone-bjtz">
+		<div id="wrap">
+			<header class="aui-bar aui-bar-nav aui-bar-primary" id="aui-header">
+				<div id="cloud" class="topbar activebar">
+					<div id="back" class="back" onclick="back();" tapmode="">
+						<i class="aui-iconfont aui-icon-left"></i>返回
+					</div>
+					<div class="mTitle" id="mTitle">
+						详情
+					</div>
+				</div>
+			</header>
+			<div  class="aui-content aui-content-padded" id="message-content">
+				<p class="aui-text-center history-date"></p>
+			</div>
+		
+		</div>
+	</body>
+	<script type="text/javascript" src="../../../../../script/api.js" ></script>
+	<script type="text/javascript" src="../../../../../script/base_config.js" ></script>
+	<script type="text/javascript" src="../../../../../script/plug-in/template.js" ></script>
+	<script type="text/javascript" src="../../../../../script/plug-in/base64.js" ></script>
+	<script type="text/javascript" src="../../../../../script/common/common.js"></script>
+	<script type="text/javascript" src="../../../../../script/assembly/voicePlayer.js" ></script>
+	<script type="text/javascript">
+		var header_h = 0;
+		var back_type = 'index';
+		apiready = function() {
+		    commonSetTheme({"level":5,"type":0});
+			header_h = api.pageParam.header_h;
+			$api.html($api.byId('person-name'), api.pageParam.name);
+			$api.html($api.byId('create-time'), api.pageParam.time);
+			var pageParamJson = {notice_id : api.pageParam.notice_id};
+			commonOpenFrame('bjtz_content_frame', 'bjtz_content_frame.html',header_h, true, false,"#ffffff", pageParamJson);
+			commonBackForAndroid();//安卓关闭
+			commonIosAuiHeader();//定位header位置，留出上面电池等空隙，苹果需要
+		};
+			/**
+		 * 返回应用页面
+		 * 周枫
+		 * 2015.10.11
+		 */
+		function back() {
+			switch(back_type){
+				case 'index':
+		        	api.closeWin();
+					break;
+				case 'picture':
+					back_type = 'index';
+					
+					break;
+			}
+		}
+		
+		/*
+		 * 功能：重置退出页面
+		 * 作者：张自强
+		 * 时间：20171027
+		 */
+		function reBackType(type){
+			back_type = type; 
+		}
+		
+		
+	/*
+	 * 功能：删除圈子
+	 * 作者：张自强
+	 * 时间：20170915
+	 */
+	function deleteArticle(){
+		showSelfProgress('删除中...');
+		var ids = [{"id":api.pageParam.wz_id,"category_id":api.pageParam.category_id,"expand_id":api.pageParam.expand_id}];
+		api.ajax({
+			url : BASE_URL_ACTION + '/blog/deleteArticle',
+			method : 'post',
+			timeout : 30,
+			dataType : 'json',
+			cache : false,
+			data : {
+				values : {
+					"random_num":creatRandomNum(),
+		            "ids": JSON.stringify(ids)
+				}
+			},
+			headers : {
+				'Cookie' : 'person_id='+$api.getStorage("person_id")+';identity_id='+$api.getStorage("identity")+'; token='+$api.getStorage("token_ypt")+';'
+			}
+		}, function(ret, err) {
+			api.hideProgress();
+			if(err){
+	            popToast('删除失败');
+			} else {
+				if(ret.success) {	
+					back();
+				} else {
+					popToast('删除失败');
+				}
+			}
+		});
+	}
+	</script>
+</html>

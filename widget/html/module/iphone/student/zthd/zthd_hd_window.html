@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<!-- html5：在创建html时为了防止页面缩放等不兼容效果，要创建个viewport  -->
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<!-- 在IOS设备上，有时会将数字转为手机号，这里也要禁止下 -->
+		<meta name="format-detection" content="telephone=no"/>
+		<title>主题活动</title>
+		<link rel="stylesheet" type="text/css" href="../../../../../css/aui/aui.css" />
+		<link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+		<style>
+			.tag-title{height:45px; line-height:43px;background:#ffffff ;border-bottom:2px solid #E6E6E6;width:100%;}
+			.fl{width:33.3%;color: #000000;float:left;text-align:center;color:#686868;}
+			.footer-div{position:fixed;height:55px;background:#FFFFFF;display: block;left:0;bottom: 0px;width:100%;border-top:1px solid #E2E2E2;font-size:14px;}
+			.footer-div .wid{width:92%;line-height:36px;text-align:center;color:#ffffff;margin-top:9px;border-radius:2px;margin-left:4%;}
+			.fl_4{width:25%;}
+		</style>
+	</head>
+	<body class="common-iphone-zthdstu">
+		<div id="wrap">
+			<header class="aui-bar aui-bar-nav aui-bar-primary" id="aui-header">
+				<div id="cloud" class="topbar activebar">
+					<div id="back" class="back" onclick="back();" tapmode="">
+						<i class="aui-iconfont aui-icon-left"></i>返回
+					</div>
+					<div  class="mTitle" id="mTitle"></div>
+					<div id="j_add" class="win-menu">
+						<a class="aui-iconfont aui-icon-add plr5" id="my-zuopin" style="display:none" onclick="openAddZuoPin()"></a>
+					</div>
+				</div>
+				<div id="hd_head_list" class="tag-title">
+					<div id="hdjs" class="fl active" onclick="changeHd(this,1);">活动介绍</div>
+					<div id="hdzp" class="fl" onclick="changeHd(this,2);">活动作品</div>
+					<div id="wdzp" class="fl aui-hide" onclick="changeHd(this,3);">我的作品</div>
+					<div id="hdtj" class="fl" onclick="changeHd(this,4);">活动统计</div>
+				</div>
+			</header>
+			<div  class="aui-content aui-content-padded" id="message-content">
+				<p class="aui-text-center history-date"></p>
+			</div>
+		</div>
+		<div id="j_footer" class="footer-div">
+			<div class="wid" onclick="openComment();">发评论</div>
+		</div>
+	</body>
+	<script type="text/javascript" src="../../../../../script/api.js"></script>
+	<script type="text/javascript" src="../../../../../script/common/common.js"></script>
+	<script type="text/javascript" src="../../../../../script/assembly/tongjiData.js"></script>
+	<script type="text/javascript" src="../../../../../script/base_config.js" ></script>
+	<script type="text/javascript" src="../../../../../script/plug-in/base64.js" ></script>
+	<script type="text/javascript">
+		var mode_type=0;//0代表我的导学案,1代表精品导学案
+		var back_type = 'index';
+		var hdzp_isopen = false;
+		var add_zp = false;//是否显示添加作品按钮
+		var oparam;
+		var cur_type = 1;
+		apiready = function() {
+		    commonSetTheme({"level":5,"type":0});
+			var header_h = api.pageParam.header_h;
+			commonSetWindowName(api.pageParam.title);
+			oparam = JSON.parse(Base64.decode(api.pageParam.oparam_base64));
+			//验证权限 
+			check_topic_release_permission(function(flag){
+				flag ? commonAddOrRemoveHideCss('wdzp',1):commonAddOrRemoveHideCss('wdzp',0);
+				if(oparam.time_text == '火热进行' && flag){
+					add_zp = true;
+				}
+				if(flag){
+					$api.addCls($api.byId('wdzp'), 'fl_4');
+					$api.addCls($api.byId('hdjs'), 'fl_4');
+					$api.addCls($api.byId('hdzp'), 'fl_4');
+					$api.addCls($api.byId('hdtj'), 'fl_4');
+				}
+			});
+			if(api.pageParam.type == 1){
+				changeHd($api.byId('hdjs'),1);
+			}else{
+				changeHd($api.byId('hdtj'),4);
+			}
+			commonBackForAndroid();//安卓关闭
+			commonIosAuiHeader();//定位header位置，留出上面电池等空隙，苹果需要
+			commonOpenTjData($api.getStorage("identity")+'_'+api.winName);//记录统计
+		};
+		
+		   /*
+		    *author:zhaoj
+		    *function:验证是否有上传作品权限，是否显示我的作品
+		    *interface:张海
+		    *date：20171023
+		    */
+		    function check_topic_release_permission(callback){
+		    	api.ajax({
+					url : BASE_URL_ACTION + '/ypt/space/topic/check_topic_release_permission?random_num='+creatRandomNum()+'&person_id='+$api.getStorage("person_id")+'&identity_id='+$api.getStorage("identity")+'&topic_id='+api.pageParam.id,
+					method : 'get',
+					timeout : 0,
+					dataType : 'json',
+					headers : {
+			'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+			}
+					}, function(ret, err) {
+						if(err){
+							callback(false);
+						}else{
+							if(ret.success){
+								callback(ret.permission);
+							}else{	
+								callback(false);
+							}
+						}
+				});
+	    	}
+		
+		/*
+		 * 功能：返回页面
+		 * 作者：张自强
+		 * 时间：20171019
+		 */
+		function back() {
+			api.hideProgress();
+			switch(back_type){
+				case 'index':
+					commonExecScript('zthd_index_window','','back();',0);
+					commonCloseTjData($api.getStorage("identity")+'_'+api.winName);
+					api.closeWin();
+					break;
+				case 'content':
+					reBackType('index');
+					if(add_zp && cur_type == 3){
+						$api.css($api.byId('my-zuopin'),'display:block');
+					}
+					commonExecScript(api.winName,'zthd_hdzp_frame','initData(1);',1);
+					commonCloseFrame('zthd_content_frame');
+					break;
+				case 'add':
+					reBackType('index');
+					$api.css($api.byId('my-zuopin'),'display:block');
+				 	commonCloseFrame('zthd_addZuoPin_frame');
+				 	$api.css($api.byId('hd_head_list'),'display:block');
+				 	break;
+				case 'open_picture':
+					
+				  	reBackType('add');
+				  	break;
+				  	break;
+				case 'picture_content':
+					
+				  	reBackType('content');
+				  	break;
+				case 'picture_edit':
+					
+				  	reBackType('edit');
+				  	break;
+			  	case 'edit':
+			  		commonSetWindowName(api.pageParam.title);
+			  		commonCloseFrame('zthd_edit_frame');
+				  	reBackType('index');
+				  	break;
+				//如果发表音频页面退出
+				case 'audio':
+				  	commonCloseFrame('common_playaudio_frame');
+				  	reBackType('add');
+					break;
+				case 'touxiang_picture':
+					
+				  	reBackType('edit');
+				  	break;
+				case 'voice':
+				  	commonCloseFrame('common_playaudio_frame');
+				  	reBackType('add');
+					break;
+				case 'hdjs_picture':
+				  	
+				  	reBackType('index');
+				  	break;
+				case 'hdzp_picture':
+					
+				  	reBackType('index');
+				  	break;
+				case 'txt':
+					commonExecScript(api.winName,'zthd_hdjs_frame','common_openDocument.closeTxt();',1);
+					commonExecScript(api.winName,'zthd_hdjs_frame','common_openDocument.closeTxt();',1);
+					reBackType('index');
+					break;
+				case 'unplay':
+					commonSetWindowName(api.pageParam.title);
+					commonCloseFrame('zthd_unplay_info');
+					reBackType('index');
+					break;
+				case 'worksinfo':
+					commonSetWindowName(api.pageParam.title);
+					commonCloseFrame('zthd_view_worksinfo');
+					reBackType('index');
+					break;
+				case 'editZuoPin':
+					commonCloseFrame('zthd_editZuoPin_frame');
+					commonSetWindowName(api.pageParam.title);
+					reBackType('content');
+					break;
+			}
+		}
+		
+	    /*
+		 * 功能；重置返回页面
+		 * 作者：张自强
+		 * 时间：20171023
+		 */
+		function reBackType(type){
+			back_type = type;
+			switch(back_type){
+				case 'add':
+					$api.css($api.byId('my-zuopin'),'display:none');
+				 	break;
+				case 'voice':
+					back_type = 'voice';
+					break;
+				case 'picture_edit':
+					back_type = 'picture_edit';
+					break;
+				case 'edit':
+					back_type = 'edit';
+					commonSetWindowName('修改活动');
+					break;
+				case 'unplay':
+					commonSetWindowName('未参与人');
+					break;
+				case 'editZuoPin':
+					back_type = 'editZuoPin';
+					break;
+				case 'content':
+					$api.css($api.byId('my-zuopin'),'display:none');
+					break;
+			}
+		}
+		
+		/*
+		 * 功能：切换活动分类
+		 * 作者：张自强
+		 * 时间：20171020
+		 */
+		function changeHd(e,type){
+			cur_type = type;
+			if(type==1){
+				$api.css($api.byId('j_footer'),'display:block;');
+			}else{
+				$api.css($api.byId('j_footer'),'display:none;');
+			}
+			$api.css($api.byId('my-zuopin'),'display:none');
+			commonCloseFrame('zthd_content_frame');
+			var domArray = document.getElementsByClassName('fl');
+			for(var i=0;i<domArray.length;i++){
+				$api.removeCls(domArray[i], 'active');
+			}
+			$api.addCls(e, 'active');
+			var header_h = api.pageParam.header_h;
+			var pageParamJson={"header_h":header_h,'type':type,'topic_id':api.pageParam.id,'id':api.pageParam.id,'thumb_id':api.pageParam.thumb_id,"oparam_base64":api.pageParam.oparam_base64,"person_id":api.pageParam.person_id};//打开frame页面所需参数
+			if(type == 1){
+				commonCloseFrame('zthd_hdzp_frame');
+				commonCloseFrame('zthd_hdjs_frame');
+				api.openFrame({
+					name : 'zthd_hdjs_frame',
+					scrollToTop : true,
+					allowEdit : false,
+					url : 'zthd_hdjs_frame.html',
+					rect : {
+						x : 0,
+						y : header_h+45,
+						w : 'auto',
+						h : api.winHeight - header_h-90,
+					},
+					pageParam : pageParamJson,
+					bgColor : '#ffffff',
+					vScrollBarEnabled : true,
+					hScrollBarEnabled : false,
+					//页面是否弹动 为了下拉刷新使用
+					bounces : true
+				});
+				hdzp_isopen = false;
+			}else if(type == 4){
+				hdzp_isopen = false;
+				commonCloseFrame('zthd_hdzp_frame');
+				commonCloseFrame('zthd_hdjs_frame');
+				commonOpenFrame('zthd_hdjs_frame', 'zthd_hdjs_frame.html',header_h+45, false, false,"#ffffff",pageParamJson);	//打开index页面
+			}else if(type == 2 || type == 3){
+				if(type == 3){
+					if(add_zp){
+						$api.css($api.byId('my-zuopin'),'display:block');
+					}
+				}
+				commonCloseFrame('zthd_hdjs_frame');
+				if(!hdzp_isopen){
+					commonOpenFrame('zthd_hdzp_frame', 'zthd_hdzp_frame.html',header_h+45, true, false,"#ffffff",pageParamJson);	//打开index页面
+					hdzp_isopen = true;
+				}else{
+					commonExecScript('zthd_hd_window','zthd_hdzp_frame','changeHd('+type+');',1)
+				}
+			}
+			
+			
+		}
+		
+		/*
+		 * 功能：打开评论页面
+		 * 作者：张自强
+		 * 时间：20171024
+		 */
+		function openComment(){
+			var pageParamJson = {'id':api.pageParam.id,"header_h":api.pageParam.header_h,'type':'hd_1','d':0,'topic_id':api.pageParam.id,'parent_id':"","oparam":oparam}
+			commonOpenWin('zthd_comment_window', 'zthd_comment_window.html', false, false, pageParamJson)
+		}
+		
+		  /*
+		 * 功能：打开发布作品页面
+		 * 作者：张自强
+		 * 时间：20171025
+		 */
+		function openAddZuoPin(){
+			$api.css($api.byId('hd_head_list'),'display:none');
+			commonExecScript('zthd_hd_window','zthd_hdzp_frame','openAddZuoPin();',1);
+		}
+		
+		/*
+		 * 刷新标题
+		 */
+		function refreshTitleName(name){
+			title_name = name;
+			commonSetWindowName(title_name);
+		}
+	</script>
+</html>

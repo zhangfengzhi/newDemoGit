@@ -1,0 +1,635 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<title>APP</title>
+		<link rel="stylesheet" type="text/css" href="../../../css/aui/aui.css" />
+	</head>
+	<style>
+		.ellipsis{white-space: nowrap;overflow: hidden;text-overflow: ellipsis;}
+		.shadow{position:absolute;left:0;top:0;width:100%;height:100%;z-index: -1;}
+		.left-content{position:fixed;left:0;top:0;width:22%;float: left;background:#F2F4F5;height:100%;}
+		.left-content ul li{height:49px;line-height:49px;border-right:1px solid #E6E8E9;font-size:13px;text-align:center;color:#B2B3B4;}
+		.left-content ul li.active{background:#ffffff;border-right:0 !important;border:1px solid #E6E8E9;color:#FF9304;}
+		.left-content ul li.first{border-top:0;border-left:0;}
+		.right-content{width:78%;float: right;height:100%;padding:0 15px;}
+		.right-content ul li{height:49px;line-height:49px;border-bottom:1px solid #ececec;color:#717171;font-size:13px;}
+		.right-content ul li.active{color:#FF9304 !important;}
+	</style>
+	<body>
+		<div id="j_shadow" class="shadow" tapmode></div>
+		<div class="left-content">
+			<ul id="j_classification">
+				<li id="j_stage" class="first active" onclick="getStageBtn();">学段</li>
+				<li id="j_subject" onclick="getSubjectBtn();">学科</li>
+				<li id="j_version" onclick="getVersionBtn();">教材版本</li>
+				<li id="j_knowledge" onclick="getKnowledgeBtn();">知识点</li>
+			</ul>
+		</div>
+		<div class="right-content">
+			<!--学段-->
+			<ul id="stage_body"></ul>
+			<script type="text/html" id="stage_script">
+				<% if(xd_subject_list.length == 0){ %>
+					<div style="text-align:center;color:#666;"><span>暂无数据</span></div>
+				<% } else { %>
+					<% for(var i=0; i<xd_subject_list.length; i++){%>
+						<%if(init_xd_name == xd_subject_list[i].xd_name){%>
+							<li class="active ellipsis" onclick="getJsKmList(this,'<%=xd_subject_list[i].xd_name%>',<%=xd_subject_list[i].xd_id%>);"><%=xd_subject_list[i].xd_name%></li>
+						<%} else {%>
+							<li class="ellipsis" onclick="getJsKmList(this,'<%=xd_subject_list[i].xd_name%>',<%=xd_subject_list[i].xd_id%>);"><%=xd_subject_list[i].xd_name%></li>
+						<%}%>
+					<%}%>
+				<% } %>
+			</script>
+			<!--//学段-->
+			<!--学科-->
+			<ul id="subject_body" style="display:none;"></ul>
+			<script type="text/html" id="subject_script">
+				<% if(subject_list.length == 0){ %>
+					<div style="text-align:center;color:#666;"><span>暂无数据</span></div>
+				<% } else { %>
+					<% for(var i=0; i<subject_list.length; i++){%>
+						<%if(init_km_id == subject_list[i].subject_id){%>
+							<li class="active ellipsis" onclick="getVersionData(this,'<%=subject_list[i].subject_name%>',<%=subject_list[i].subject_id%>);"><%=subject_list[i].subject_name%></li>
+						<%} else {%>
+							<li class="ellipsis" onclick="getVersionData(this,'<%=subject_list[i].subject_name%>',<%=subject_list[i].subject_id%>);"><%=subject_list[i].subject_name%></li>
+						<%}%>
+					<%}%>
+				<% } %>
+			</script>
+			<!--//学科-->
+			<!--教材版本-->
+			<ul id="version_body" style="display:none;"></ul>
+			<script type="text/html" id="version_script">
+				<% if(version_list.length == 0){ %>
+					<div style="text-align:center;color:#666;"><span>暂无数据</span></div>
+				<% } else { %>
+					<% for(var i=0; i<version_list.length; i++){%>
+						<%if(init_version_id == version_list[i].version_id){%>
+							<li class="active ellipsis" onclick="getKnowledgeData(this,'<%=version_list[i].version_name%>',<%=version_list[i].version_id%>)"><%=version_list[i].version_name%></li>
+						<%} else {%>
+							<li class="ellipsis" onclick="getKnowledgeData(this,'<%=version_list[i].version_name%>',<%=version_list[i].version_id%>)"><%=version_list[i].version_name%></li>
+						<%}%>
+					<%}%>
+				<% } %>
+			</script>
+			<!--//教材版本-->
+			<!--知识点-->
+			<ul id="knowledge_body" style="display:none;"></ul>
+			<script type="text/html" id="knowledge_script">
+				<% if(knowledge_list.length == 0){ %>
+					<div style="text-align:center;color:#666;"><span>暂无数据</span></div>
+				<% } else { %>
+					<% for(var i=0; i<knowledge_list.length; i++){%>
+						<%if(init_knowledge_id == knowledge_list[i].id){%>
+							<li class="active ellipsis" onclick="setKnowledge(this,'<%=knowledge_list[i].name%>',<%=knowledge_list[i].id%>)"><%=knowledge_list[i].name%></li>
+						<%} else {%>
+							<li class="ellipsis" onclick="setKnowledge(this,'<%=knowledge_list[i].name%>',<%=knowledge_list[i].id%>)"><%=knowledge_list[i].name%></li>
+						<%}%>
+					<%}%>
+				<% } %>
+			</script>
+			<!--//知识点-->
+		</div>
+		<script type="text/javascript" src="../../../script/api.js" ></script>
+		<script type="text/javascript" src="../../../script/base_config.js" ></script>
+		<script type="text/javascript" src="../../../script/plug-in/template.js" ></script>
+	</body>
+	<script type="text/javascript">
+		var BASE_URL_ACTION;
+		var person_flag = false;//判断是否是同一个人
+		apiready = function() {
+			BASE_URL_ACTION = $api.getStorage('BASE_URL_ACTION');
+			isSamePerson(function(flag){
+				person_flag = flag;
+				getStageBtn();
+			});		
+		}
+		/*
+		*author:zhaoj
+		*function:判断是否为同一个人登录
+		*date：20160504
+		*/
+		function isSamePerson(callback){
+			if($api.getStorage('zy_person_id') == $api.getStorage("person_id")){
+				callback(true);
+			}else{
+				callback(false);
+			}
+		}
+		/**
+		 * 获取学段科目
+		 * 周枫
+		 * 2016.1.13
+		 */
+		function getJsXdList(callback) {
+			api.showProgress({
+				title : '加载中...',
+				modal : false
+			});
+			isSamePerson(function(flag){
+				person_flag = flag;
+			});
+			//获取
+			api.ajax({
+				url : BASE_URL_ACTION + '/ypt/resource/getStageSubject?random_num=' + creatRandomNum(),
+				method : 'get',
+				dataType : 'json',
+				cache : false,
+				headers : {
+					'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+				}
+			}, function(ret, err) {
+				if(api.pageParam.showProgress){
+					api.hideProgress();
+				}
+				if (err) {
+					api.alert({
+						msg : '对不起，获取学段科目列表失败'
+					});
+					setStageInvalid();
+					setSubjectInvalid();
+					setVersionInvalid();
+					setKnowledgeInvalid();
+				} else {
+					if (ret.success) {
+						var init_xd_name = $api.getStorage('zy_xd_name');
+						var init_xd_id = $api.getStorage('zy_xd_id');
+						var list_json = ret;
+						$api.setStorage('xd_subject_list',ret.xd_subject_list);
+						if(typeof(init_xd_name) != 'undefined' && person_flag && init_xd_id != -2) {
+							callback(init_xd_name,init_xd_id);
+							list_json["init_xd_name"] = init_xd_name;
+						} else {
+							callback('小学',4);
+							list_json["init_xd_name"] = '小学';
+						}
+						var html_type = template.render('stage_script', list_json);
+						document.getElementById('stage_body').innerHTML = html_type;
+					} else {
+						api.alert({
+							msg : '对不起，获取学段科目列表失败'
+						});
+						setStageInvalid();
+						setSubjectInvalid();
+						setVersionInvalid();
+						setKnowledgeInvalid();
+					}
+				}
+			});
+		}
+		/**
+		 * 获取科目列表
+		 * 周枫
+		 * 2016.1.13 
+		 */
+		function getJsKmList(obj,xd_name,xd_id){
+			$api.setStorage('zy_xd_name',xd_name);
+			$api.setStorage('zy_xd_id',xd_id);
+			removeStageActive(obj,xd_id);
+			setStageHtml(xd_name);
+			if(obj != ''){
+				getSubjectBtn();
+				setSubjectEmpty();
+				setVersionEmpty();
+				setKnowledgeEmpty();
+			}
+		}
+		/*
+		*author:zhaoj
+		*function:渲染科目的html页面
+		*date：20160503
+		*/
+		function setStageHtml(xd_name){
+			var xd_subject_list = $api.getStorage('xd_subject_list');
+			isSamePerson(function(flag){
+				person_flag = flag;
+			});
+			if(xd_subject_list.length != 0) {
+				for(var i=0; i< xd_subject_list.length; i++){
+					if(xd_name == xd_subject_list[i].xd_name) {
+						if(typeof($api.getStorage('zy_km_id')) == 'undefined'|| !person_flag || $api.getStorage('zy_km_id') == -2) {
+							var p = 0;
+							getAllSchemeJudge(xd_subject_list[i].subject_list[p].subject_id,function(flag,id){
+								if(flag){
+									init_km_id = id;
+								}else{
+									p++;
+									return getAllSchemeJudge(xd_subject_list[i].subject_list[p].subject_id, callback);
+								}
+							});
+							$api.setStorage('zy_km_id',xd_subject_list[i].subject_list[p].subject_id);
+							$api.setStorage('zy_km_name',xd_subject_list[i].subject_list[p].subject_name);
+						}
+						var km_list = xd_subject_list[i];
+						km_list["init_km_id"] = $api.getStorage('zy_km_id');
+						var html_type = template.render('subject_script', km_list);
+						document.getElementById('subject_body').innerHTML = html_type;
+					}
+				}
+			}else{
+				setSubjectInvalid();
+				setVersionInvalid();
+				setKnowledgeInvalid();
+			}
+			getAllScheme();
+		}
+		/*
+		*author:zhaoj
+		*function:点击具体学科，获取教材版本
+		*date：20160503
+		*/
+		function getVersionData(obj,subject_name,subject_id){
+			getAllSchemeJudge(subject_id,function(flag,id){
+				if(flag){
+					$api.setStorage('zy_km_id',subject_id);
+					$api.setStorage('zy_km_name',subject_name);
+					var subjectArray = $api.domAll($api.byId('subject_body'), 'li');
+					for (var i = 0; i < subjectArray.length; i++) {
+						$api.removeCls(subjectArray[i], 'active');
+					}
+					$api.addCls(obj, 'active');
+					getVersionBtn();
+					setVersionEmpty();
+					setKnowledgeEmpty();
+				}else{
+					api.alert({
+						msg : '当前学科下暂无教材版本，请更换学科。'
+					}, function(ret, err) {
+						
+					});
+				}
+			});
+		}
+		/*
+		*author:zhaoj
+		*function:点击具体教材版本，获取知识点
+		*date：20160503
+		*/
+		function getKnowledgeData(obj,version_name,version_id){
+			$api.setStorage('zy_version_id',version_id);
+			$api.setStorage('zy_version_name',version_name);
+			var versionArray = $api.domAll($api.byId('version_body'), 'li');
+			for (var i = 0; i < versionArray.length; i++) {
+				$api.removeCls(versionArray[i], 'active');
+			}
+			$api.addCls(obj, 'active');
+			getKnowledgeBtn();
+			setKnowledgeEmpty();
+		}
+		/*
+		*author:zhaoj
+		*function:点击具体知识点
+		*date：20160503
+		*/
+		function setKnowledge(obj,name,id){
+			$api.setStorage('zy_knowledge_id',id);
+			$api.setStorage('zy_knowledge_name',name);
+			var knowledgeArray = $api.domAll($api.byId('knowledge_body'), 'li');
+			for (var i = 0; i < knowledgeArray.length; i++) {
+				$api.removeCls(knowledgeArray[i], 'active');
+			}
+			$api.addCls(obj, 'active');
+			$api.css($api.byId('j_shadow'),'z-index:2');
+			setTimeout(function(){
+				api.execScript({
+					name : 'zy_index_window',
+					script : 'openZyMenuFrame(2);'
+				});
+			},500);
+		}
+		/*
+		*author:zhaoj
+		*function:去除学段的active样式
+		*date：20160503
+		*/
+		function removeStageActive(obj,xd_id) {	
+			//选中处理
+			var stageArray = $api.domAll($api.byId('stage_body'), 'li');
+			for (var i = 0; i < stageArray.length; i++) {
+				$api.removeCls(stageArray[i], 'active');
+			}
+			$api.addCls(obj, 'active');
+		}
+		/*
+		*author:zhaoj
+		*function:点击学段左侧按钮
+		*date：20160503
+		*/
+		function getSubjectBtn(){
+			var xd_name = $api.getStorage('zy_xd_name');
+			var xd_id = $api.getStorage('zy_xd_id');
+			removeClassificationActive();
+			$api.addCls($api.byId('j_subject'), 'active');
+			getJsKmList('',xd_name,xd_id);
+			$api.css($api.byId('stage_body'),'display:none;');
+			$api.css($api.byId('subject_body'),'display:block;');
+			$api.css($api.byId('version_body'),'display:none;');
+			$api.css($api.byId('knowledge_body'),'display:none;');
+		}
+		/*
+		*author:zhaoj
+		*function:去除左侧分类的active样式
+		*date：20160503
+		*/
+		function removeClassificationActive(){
+			var classificationArray = $api.domAll($api.byId('j_classification'), 'li');
+			for(var i = 0; i < classificationArray.length; i++){
+				$api.removeCls(classificationArray[i], 'active');
+			}
+		}
+		/*
+		*author:zhaoj
+		*function:点击学段左侧按钮
+		*date：20160503
+		*/
+		function getStageBtn(){
+			removeClassificationActive();
+			getJsXdList(function(xd_name,xd_id){
+				getJsKmList('',xd_name,xd_id);
+			});
+			$api.addCls($api.byId('j_stage'), 'active');
+			$api.css($api.byId('stage_body'),'display:block;');
+			$api.css($api.byId('subject_body'),'display:none;');
+			$api.css($api.byId('version_body'),'display:none;');
+			$api.css($api.byId('knowledge_body'),'display:none;');
+		}
+		/*
+		*author:zhaoj
+		*function:点击教材版本左侧按钮
+		*date：20160503
+		*/
+		function getVersionBtn(){
+			removeClassificationActive();
+			getAllScheme();
+			$api.addCls($api.byId('j_version'), 'active');
+			$api.css($api.byId('stage_body'),'display:none;');
+			$api.css($api.byId('subject_body'),'display:none;');
+			$api.css($api.byId('version_body'),'display:block;');
+			$api.css($api.byId('knowledge_body'),'display:none;');
+		}
+		/*
+		*author:zhaoj
+		*function:点击知识点左侧按钮
+		*date：20160503
+		*/
+		function getKnowledgeBtn(){
+			removeClassificationActive();
+			getKnowledge();
+			$api.addCls($api.byId('j_knowledge'), 'active');
+			$api.css($api.byId('stage_body'),'display:none;');
+			$api.css($api.byId('subject_body'),'display:none;');
+			$api.css($api.byId('version_body'),'display:none;');
+			$api.css($api.byId('knowledge_body'),'display:block;');
+		}
+		/*
+		*author:zhaoj
+		*function:获取教材版本
+		*date：20160503
+		*/
+		function getAllScheme(){
+			isSamePerson(function(flag){
+				person_flag = flag;
+			});
+			var subject_id = $api.getStorage('zy_km_id');
+			api.ajax({
+				url : BASE_URL_ACTION + '/ypt/resource/getAllScheme?subject_id='+subject_id+'&type_id=1&plat_id=1&version_id=1&zj_zs=1&random_num=' + creatRandomNum(),
+				method : 'get',
+				dataType : 'json',
+				cache : false,
+				headers : {
+					'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+				}
+			}, function(ret, err) {
+				var list_json = {'version_list':[]};
+				if(api.pageParam.showProgress){
+					api.hideProgress();
+				}
+				if (err) {
+					setVersionInvalid();
+					setKnowledgeInvalid();
+				} else {
+					if (ret.success) {
+						var init_version_name = $api.getStorage('zy_version_name');
+						var init_version_id = $api.getStorage('zy_version_id');
+						var list_json = ret;
+						if(typeof(init_version_id) != 'undefined' && person_flag && init_version_id != -2) {
+							list_json["init_version_name"] = init_version_name;
+							list_json["init_version_id"] = init_version_id;
+						}else{
+							if(ret.version_list.length > 0){
+								list_json["init_version_name"] = ret.version_list[0].version_name;
+								list_json["init_version_id"] = ret.version_list[0].version_id;
+								$api.setStorage('zy_version_name',ret.version_list[0].version_name);
+								$api.setStorage('zy_version_id',ret.version_list[0].version_id);
+							}else{
+								setVersionInvalid();
+								setKnowledgeInvalid();
+							}	
+						}
+					}else{
+						setVersionInvalid();
+						setKnowledgeInvalid();
+					}
+				}
+				var html_type = template.render('version_script', list_json);
+				document.getElementById('version_body').innerHTML = html_type;
+				getKnowledge();
+			});
+		}
+		/*
+		*author:zhaoj
+		*function:获取教材版本
+		*date：20160503
+		*/
+		function getAllSchemeJudge(subject_id,callback){
+			api.ajax({
+				url : BASE_URL_ACTION + '/ypt/resource/getAllScheme?subject_id='+subject_id+'&type_id=1&plat_id=1&version_id=1&zj_zs=1&random_num=' + creatRandomNum(),
+				method : 'get',
+				dataType : 'json',
+				cache : false,
+				headers : {
+					'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+				}
+			}, function(ret, err) {
+				if (err) {
+					callback(false,subject_id);
+				} else {
+					if (ret.success) {
+						if(ret.version_list.length > 0){
+							callback(true,subject_id);
+						}else{
+							callback(false,subject_id);
+						}	
+					}else{
+						callback(false,subject_id);
+					}
+				}
+			});
+		}
+		/*
+		*author:zhaoj
+		*function:获取知识点
+		*date：20160503
+		*/
+		function getKnowledge(){
+			isSamePerson(function(flag){
+				person_flag = flag;
+			});
+			var version_id = $api.getStorage('zy_version_id');
+			api.ajax({
+				url : BASE_URL_ACTION + '/ypt/resource/getStructureAsyncInfo?scheme_id='+version_id+'&random_num=' + creatRandomNum(),
+				method : 'get',
+				dataType : 'json',
+				cache : false,
+				headers : {
+					'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+				}
+			}, function(ret, err) {
+				if(api.pageParam.showProgress){
+					api.hideProgress();
+				}
+				if (err) {
+					getKnowledgeHtml('','');
+				} else {
+					if (ret) {
+						getKnowledgeHtml(ret[0].name,ret[0].structure_code);
+					}else{
+						getKnowledgeHtml('','');
+					}
+				}
+			});
+		}
+		/*
+		*author:zhaoj
+		*function:获取知识点
+		*date：20160503
+		*/
+		function getKnowledgeHtml(name,id){
+			var version_id = $api.getStorage('zy_version_id');
+			var list_json = {'knowledge_list':[{"id": id,"isParent": true,"structure_code": id+"_"+id,"name": name
+}]};
+			if(id == ''){
+				var html_type = template.render('knowledge_script', list_json);
+				document.getElementById('knowledge_body').innerHTML = html_type;
+			}else{
+				api.ajax({
+					url : BASE_URL_ACTION + '/ypt/resource/getStructureAsyncInfo?scheme_id='+version_id+'&id='+id+'&random_num=' + creatRandomNum(),
+					method : 'get',
+					dataType : 'json',
+					cache : false,
+					headers : {
+						'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+					}
+				}, function(ret, err) {
+					if(api.pageParam.showProgress){
+						api.hideProgress();
+					}
+					if (err) {
+						setKnowledgeInvalid();
+					} else {
+						if (ret) {
+							var init_knowledge_name = $api.getStorage('zy_knowledge_name');
+							var init_knowledge_id = $api.getStorage('zy_knowledge_id');
+							for(var i = 0; i < ret.length; i++){
+								var oparam = new Object();
+								oparam.id = ret[i].id;
+								oparam.isParent = ret[i].isParent;
+								oparam.structure_code = ret[i].structure_code;
+								oparam.name = ret[i].name;
+								list_json.knowledge_list.push(oparam);
+							}
+							if(typeof(init_knowledge_id) != 'undefined' && person_flag && init_knowledge_id != -2) {
+								list_json["init_knowledge_name"] = init_knowledge_name;
+								list_json["init_knowledge_id"] = init_knowledge_id;
+							}else{
+								list_json["init_knowledge_name"] = list_json.knowledge_list[0].name;
+								list_json["init_knowledge_id"] = list_json.knowledge_list[0].id;
+								$api.setStorage('zy_knowledge_name',list_json.knowledge_list[0].name);
+								$api.setStorage('zy_knowledge_id',list_json.knowledge_list[0].id);
+							}
+						}else{
+							setKnowledgeInvalid();
+						}
+					}
+					$api.setStorage('zy_person_id',$api.getStorage("person_id"));
+					var html_type = template.render('knowledge_script', list_json);
+					document.getElementById('knowledge_body').innerHTML = html_type;
+					//如果是初次进入资源
+					if(!api.pageParam.showProgress){
+						api.execScript({
+							name : 'zy_index_window',
+							frameName : 'zy_index_frame',
+							script : 'openNavigationBar();'
+						});
+					}
+				});
+			}
+		}
+		/*
+		*author:zhaoj
+		*function:置空学科
+		*date：20160503
+		*/
+		function setSubjectEmpty(){
+			$api.setStorage('zy_km_id','');
+			$api.setStorage('zy_km_name','');
+		}
+		/*
+		*author:zhaoj
+		*function:置空教材版本
+		*date：20160503
+		*/
+		function setVersionEmpty(){
+			$api.setStorage('zy_version_name','');
+			$api.setStorage('zy_version_id','');
+		}
+		/*
+		*author:zhaoj
+		*function:置空知识点
+		*date：20160503
+		*/
+		function setKnowledgeEmpty(){
+			$api.setStorage('zy_knowledge_name','');
+			$api.setStorage('zy_knowledge_id','');
+		}
+		/*
+		*author:zhaoj
+		*function:学段数目为0
+		*date：20160503
+		*/
+		function setStageInvalid(){
+			$api.setStorage('zy_xd_id',-2);
+			$api.setStorage('zy_xd_name',-2);
+		}
+		/*
+		*author:zhaoj
+		*function:学科数目无效
+		*date：20160503
+		*/
+		function setSubjectInvalid(){
+			$api.setStorage('zy_km_id',-2);
+			$api.setStorage('zy_km_name',-2);
+		}
+		/*
+		*author:zhaoj
+		*function:教材版本数目无效
+		*date：20160503
+		*/
+		function setVersionInvalid(){
+			$api.setStorage('zy_version_name',-2);
+			$api.setStorage('zy_version_id',-2);
+		}
+		/*
+		*author:zhaoj
+		*function:知识点数目无效
+		*date：20160503
+		*/
+		function setKnowledgeInvalid(){
+			$api.setStorage('zy_knowledge_name',-2);
+			$api.setStorage('zy_knowledge_id',-2);
+		}
+	</script>
+</html>

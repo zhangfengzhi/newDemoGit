@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>名师云课</title>
+    <link rel="stylesheet" type="text/css" href="../../../css/aui/aui.css"/>
+    <style>
+    	body{background:url(../../../image/fun-module/common/more/msyk-bg.png) center center no-repeat;background-size:100% 100%;}
+    	.yun-l-t,.yun-l-b,.yun-r-t,.yun-r-b,.bottom,.sun{position: absolute;}
+    	.sun{background:url(../../../image/fun-module/common/more/sun.png) center center no-repeat;background-size:100% 100%;width:110px;height:110px;left:50%;top:50%;margin-top:-80px;margin-left:-55px;}
+    	.yun-l-t{left:6%;}
+    	.yun-l-b{left:0;}
+    	.yun-r-t{right:6%;}
+    	.yun-r-b{right:0;}
+    	.yun-l-t,.yun-r-t{top:17%;width:80px;}
+    	.yun-l-b,.yun-r-b{top:45%;width:120px;}
+    	.bottom{bottom:0;width:100%;height:auto;}
+    	.content li{list-style:none;display:inline-block;float:left;}
+    	.content li div.yk-MSYK_GYW{background:url(../../../image/fun-module/common/more/gywk.png) 0 0 no-repeat;}
+    	.content li div.yk-MSYK_GEW{background:url(../../../image/fun-module/common/more/gewk.png) 0 0 no-repeat;}
+    	.content li div.yk-MSYK_GYL{background:url(../../../image/fun-module/common/more/gylk.png) 0 0 no-repeat;}
+    	.content li div.yk-MSYK_GEL{background:url(../../../image/fun-module/common/more/gelk.png) 0 0 no-repeat;}
+    	.content li .mode{position:absolute;display:inline-block;}
+    	.content li .mode .yk{background-size:100% auto;width:100%;}
+	</style>
+</head>
+<body id="j_body" class="aui-hide">
+	<div class="sun">&nbsp;</div>
+	<ul id="div_body" class="content">
+		<li onclick="goYyIndex('yunkeIpad_index_window',1,'',1);">
+			<div class="j-mode mode">
+				<div class="j_yk yk yk-MSYK_GYW">&nbsp;名师云课</div>
+			</div>
+		</li>
+		<li onclick="goYyIndex('gameIpad_index_window',1,'',1);">
+			<div class="j-mode mode">
+				<div class="j_yk yk yk-MSYK_GEW">&nbsp;启智游戏</div>
+			</div>
+		</li>
+		<li onclick="goYyIndex('zhuantiIpad_index_window',1,'',1);">
+			<div class="j-mode mode">
+				<div class="j_yk yk yk-MSYK_GYL">&nbsp;专题学习</div>
+			</div>
+		</li>
+		<li onclick="goYyIndex('jsyx_index_window',1,'',0);">
+			<div class="j-mode mode">
+				<div class="j_yk yk yk-MSYK_GEL">&nbsp;网络研修</div>
+			</div>
+		</li>
+	</ul>
+	
+	<img class="yun-l-t" src="../../../image/fun-module/common/more/yun-l-t.png" />
+	<img class="yun-l-b" src="../../../image/fun-module/common/more/yun-l-b.png" />
+	<img class="yun-r-t" src="../../../image/fun-module/common/more/yun-r-t.png" />
+	<img class="yun-r-b" src="../../../image/fun-module/common/more/yun-r-b.png" />
+	<img class="bottom" src="../../../image/fun-module/common/more/ysyk-bottom.png" />
+</body>
+<script type="text/javascript" src="../../../script/api.js"></script>
+<script type="text/javascript" src="../../../script/base_config.js" ></script>
+<script type="text/javascript" src="../../../script/plug-in/template.js" ></script>
+<script type="text/javascript" src="../../../script/common/common.js"></script>
+<script type="text/javascript" src="../../../script/init/init_config.js"></script>
+<script type="text/javascript">
+	var header_h;
+	apiready = function(){
+	    header_h = api.pageParam.header_h+50;
+		var frame_height = api.frameHeight-30;
+		var mode_width = Math.floor(frame_height*0.4);
+		var mode_height =Math.floor(mode_width/401*412);
+		var margin_top = Math.floor((frame_height-mode_height*2)/3);
+		var leftOrRight = Math.floor((api.frameWidth-mode_width*2)*0.4);
+		var mode_array = $api.domAll($api.byId('div_body'),'.j-mode');
+		for(var i = 0; i < mode_array.length; i++){
+			if(i < 2){
+				var top = margin_top;
+			}else{
+				var top = margin_top*2+mode_height;
+			}
+			if(i%2 == 0){
+				$api.css(mode_array[i],'width:'+mode_width+'px;height:'+mode_height+'px;top:'+top+'px;left:'+leftOrRight+'px;');
+			}else{
+				$api.css(mode_array[i],'width:'+mode_width+'px;height:'+mode_height+'px;top:'+top+'px;right:'+leftOrRight+'px;');
+			}
+			var yk_mode = $api.dom(mode_array[i],'.j_yk');
+			$api.css(yk_mode,'height:'+mode_height+'px;');
+		}
+		$api.removeCls($api.byId('j_body'), 'aui-hide');
+			
+	};
+</script>
+</html>

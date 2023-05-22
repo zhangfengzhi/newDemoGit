@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <!-- html5：在创建html时为了防止页面缩放等不兼容效果，要创建个viewport  -->
+        <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+        <!-- 在IOS设备上，有时会将数字转为手机号，这里也要禁止下 -->
+        <meta name="format-detection" content="telephone=no"/>
+        <title>微课数据页面</title>
+        <link rel="stylesheet" type="text/css" href="../../css/aui/aui.css" />
+        <link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+        <style>
+            .h1 {
+                height: 1px;
+                background: #f0f0f0;
+            }
+            .p10{padding:0 10px;}
+            .title{height:45px;line-height:45px;font-size:16px;}
+            .content .note-black{line-height:25px;font-size:14px;text-indent:2em;color:#444444;}
+            .otherinfo p{padding:0 10px;}
+            .file p{padding-left:28px;}
+            .content{word-wrap: break-word;word-break: normal; }
+        </style>
+    </head>
+    <body>
+        <div id="weike_con" class="aui-content">
+            <form class="aui-input-group" >
+                <div id="wkinfo_div"></div>
+                <script type="text/html" id="wkinfo_script">
+                    <!-- 设计说明  begin -->
+                    <div class="title p10">
+                        <label>设计说明</label>
+                    </div>
+                    <!-- 设计内容 -->
+                    <div class="content p10">
+                        <%if(design_instr.length==0) {%>
+                            <label style="width:100%;"><p class="note-black">老师什么都没有留~</p></label>
+                        <% } else { %>
+                            <label style="width:100%;"><p class="note-black"><%=#design_instr %></p></label>
+                        <% } %>
+                    </div>
+                    <% if(design_list.length != 0){ %>
+                        <!-- 附件列表 -->
+                        <div id="sjsm_con" class="aui-col-xs-12 aui-padded-10 otherinfo file" style="display: none;">
+                            <%for(var i=0; i<design_list.length; i++) {%>
+                                 <p style="color: blue;" onclick="openFjCon('<%=design_list[i].extension%>','<%=design_list[i].title%>','<%=design_list[i].file_id %>');">
+                                 	<span class="aui-iconfont aui-icon-link"></span><%=design_list[i].title%>.<%=design_list[i].extension%>
+                                  </p>
+                            <% } %>
+                        </div>
+                        <!-- 附件操作 -->
+                        <div id="sjsm_display" class="aui-col-xs-12 aui-padded-10 otherinfo" onclick="isShowLink('sjsm_');">
+                            <p>
+                                <span id="sjsm_span" class="aui-iconfont aui-icon-display aui-pull-right" >
+                                    <font id="sjsm_font" class="note-gray aui-pull-right">展开</font>
+                                </span>
+                            </p>
+                        </div>
+                    <% } %>
+                    <div class="h1"></div>
+                    <!-- 设计说明  end -->
+                    <!-- 学习指导 begin -->
+                    <div class="title p10">
+                        <label>学习指导</label>
+                    </div>
+                    <div class="content p10">
+                        <%if(study_instr.length==0) {%>
+                            <label style="width:100%;"><p class="note-black">老师什么都没有留~</p></label>
+                        <% } else { %>
+                            <label style="width:100%;"><p class="note-black"><%=#study_instr %></p></label>
+                        <% } %>
+                    </div>
+                    <% if(study_list.length != 0){ %>
+                    <!-- 附件列表 -->
+                        <div id="xxzd_con" class="aui-col-xs-12 aui-padded-10 otherinfo file" style="display: none;">
+                            <%for(var i=0; i<study_list.length; i++) {%>
+                                <p style="color: blue;" onclick="openFjCon('<%=study_list[i].extension%>','<%=study_list[i].title%>','<%=study_list[i].file_id %>');">
+                                    <span class="aui-iconfont aui-icon-link"></span><%=study_list[i].title%>.<%=study_list[i].extension%>
+                                </p>
+                            <% } %>
+                        </div>
+                    <!-- 附件操作 -->
+                        <div id="xxzd_display" class="aui-col-xs-12 aui-padded-10 otherinfo" onclick="isShowLink('xxzd_');">
+                            <p>
+                                <span id="xxzd_span" class="aui-iconfont aui-icon-display aui-pull-right" >
+                                    <font id="xxzd_font" class="note-gray aui-pull-right">展开</font></span>
+                            </p>
+                        </div>
+                    <% } %>
+                    <div class="h1"></div>
+                    <!-- 学习指导 end -->
+                    <!-- 练习 begin -->
+                    <div class="title p10">
+                        <label>练习</label>
+                    </div>
+                    <div class="content p10">
+                        <%if(practice_instr.length==0) {%>
+                            <label style="width:100%;"><p class="note-black">老师什么都没有留~</p></label>
+                        <% } else { %>
+                            <label style="width:100%;"><p class="note-black"><%=#practice_instr %></p></label>
+                        <% } %>
+                    </div>
+                    <% if(practice_list.length != 0){ %>
+                    <!-- 附件列表 -->
+                    <div id="lx_con" class="aui-col-xs-12 aui-padded-10 otherinfo file" style="display: none;">
+                        <%for(var i=0; i<practice_list.length; i++) {%>
+                            <p style="color: blue;" onclick="openFjCon('<%=practice_list[i].extension%>','<%=practice_list[i].title%>','<%=practice_list[i].file_id %>');">
+                                <span class="aui-iconfont aui-icon-link"></span><%=practice_list[i].title%>.<%=practice_list[i].extension%>
+                            </p>
+                        <% } %>
+                    </div>
+                    <!-- 附件操作 -->
+                    <div id="lx_display" class="aui-col-xs-12 aui-padded-10 otherinfo" onclick="isShowLink('lx_');">
+                        <p>
+                            <span id="lx_span" class="aui-iconfont aui-icon-display aui-pull-right" ><font id="lx_font" class="note-gray aui-pull-right">展开</font></span>
+                        </p>
+                    </div>
+                    <% } %>
+                    <div class="h1"></div>
+                    <!-- 练习 end -->
+                    <!-- 素材 begin -->
+                    <div class="title p10">
+                        <label>素材</label>
+                    </div>
+                    <% if(sc_list.length != 0){ %>
+                    <!-- 附件列表 -->
+                        <div id="sc_con" class="aui-col-xs-12 aui-padded-10 otherinfo file" style="display: none;">
+                            <%for(var i=0; i<sc_list.length; i++) {%>
+                                <p style="color: blue;" onclick="openFjCon('<%=sc_list[i].extension%>','<%=sc_list[i].title%>','<%=sc_list[i].file_id %>');">
+                                    <span class="aui-iconfont aui-icon-link"></span><%=sc_list[i].title%>.<%=sc_list[i].extension%>
+                                </p>
+                            <% } %>
+                        </div>
+                    <!-- 附件操作 -->
+                    <div id="sc_display" class="aui-col-xs-12 aui-padded-10 otherinfo" onclick="isShowLink('sc_');">
+                        <p>
+                            <span id="sc_span" class="aui-iconfont aui-icon-display aui-pull-right" >
+                                <font id="sc_font" class="note-gray aui-pull-right">展开</font></span>
+                        </p>
+                    </div>
+                    <% } %>
+                    <!-- 素材 end -->
+                </script>
+                <!--<div class="aui-input-row">
+                <label>设计说明</label>
+                </div>
+                <div class="aui-input-row">
+                <label style="width:100%;"><font class="note-black">请在下面文本区输入通知内容请在下面文本区输入通知内容请在下面文本区输入通知内容请在下面文本区输入通知内容请在下面文本区输入通知内容请在下面文本区输入通知内容请在下面文本区输入通知内容</font></label>
+                </div>
+                <div id="sjsm_con" class="aui-col-xs-12 aui-padded-10 otherinfo" style="display: none;">
+                <p>
+                <span class="aui-iconfont aui-icon-link"></span> 附件名称
+                </p>
+                <p>
+                <span class="aui-iconfont aui-icon-link"></span> 附件名称
+                </p>
+                </div>
+                <div id="sjsm_display" class="aui-col-xs-12 aui-padded-10 otherinfo" onclick="isShowLink();">
+                <p>
+                <span id="sjsm_span" class="aui-iconfont aui-icon-display aui-pull-right" ><font id="sjsm_font" class="note-gray aui-pull-right">展开</font></span>
+                </p>
+                </div>
+                <div class="aui-input-row">
+                <label>学习指导</label>
+                </div>
+                <div class="aui-input-row">
+                <label style="width:100%;"><font class="note-black">请在下面文本区输入通知内容请在下面文本区输入通知内容请在下面文本区输入通知内容请在下面文本区输入通知内容请在下面文本区输入通知内容请在下面文本区输入通知内容请在下面文本区输入通知内容</font></label>
+                </div>
+                <div class="aui-input-row">
+                <label>练习</label>
+                </div>
+                <div class="aui-input-row">
+                <label style="width:100%;"><font class="note-black">请在下面文本区输入通知内容请在下面文本区输入通知内容请在下面文本区输入通知内容请在下面文本区输入通知内容请在下面文本区输入通知内容请在下面文本区输入通知内容请在下面文本区输入通知内容</font></label>
+                </div>-->
+            </form>
+        </div>
+        <script type="text/javascript" src="../../script/api.js" ></script>
+        <script type="text/javascript" src="../../script/base_config.js" ></script>
+        <script type="text/javascript" src="../../script/plug-in/template.js" ></script>
+        <script type="text/javascript" src="../../script/plug-in/base64.js" ></script>
+        <script type="text/javascript" src="../../script/common/common.js" ></script>
+		<script type="text/javascript" src="../../script/assembly/executeApp.js" ></script>
+        <script type="text/javascript" src="../../script/assembly/openResource.js" ></script>
+        <script type="text/javascript" src="../../script/assembly/photoBrowser.js"></script>
+    </body>
+    <script type="text/javascript">
+        //加载轮播组件
+        var scrollPicture;
+        var pic_h;
+        var videoPlayer;
+        //打开本地文档
+        var docReader;
+        //是否是手机录制的微课
+        var is_phone_wk;
+        //手机录制微课的相关内容id
+        var phone_wk_file_id;
+        //下载手机录制微课前缀
+        var pwk_url_begin;
+        var header_h;
+        var m3u8_status;
+        apiready = function() {
+        	commonSetTheme({"level":2,"type":0});
+            var wk_id = api.pageParam.wk_id;
+            is_phone_wk = api.pageParam.is_phone_wk;
+            phone_wk_file_id = api.pageParam.phone_wk_file_id;
+            header_h = api.pageParam.header_h;
+            
+            pwk_url_begin = BASE_URL_ACTION + BASE_PHONEWK_PATH + phone_wk_file_id.substring(0, 2) + '\/' + phone_wk_file_id; 
+            
+            pic_h = parseInt(api.winHeight / 10 * 4);
+            $api.css($api.byId('weike_con'), 'margin-top:' + pic_h + 'px;');
+            //轮播组件
+            scrollPicture = api.require('UIScrollPicture');
+            videoPlayer = api.require('videoPlayer');
+            docReader = api.require('docReader');
+            //打开轮播组件
+            //          openScrollPicture(wk_id);
+            //加载微课内容数据
+            loadData(wk_id);
+        };
+        /**
+         * 加载微课内容数据
+         * 周枫
+         * 2016.5.3
+         */
+        function loadData(wk_id) {
+            api.showProgress({
+                title : '加载中...',
+                text : '请稍候...',
+                modal : false
+            });
+            //加载微课内容
+            loadWkContent(wk_id, function(wk_info) {
+                //微课缩略图地址
+                var paths_arr = [];
+                //微课标题
+                var captions_arr = [];
+                //m3u8地址
+                //var m3u8_arr = [];
+                var m3u8_data = {"list":[]};
+                var list = wk_info.sp_list;
+                var list_l = getJsonObjLength(list);
+                //如果是手机录制的微课
+                if (is_phone_wk == 1) {
+                    paths_arr[0] = 'widget://res/yy/weike/wk_default.png';
+                    captions_arr[0] = wk_info.wkds_name;
+                    //m3u8_arr[0] = '';
+                } else {
+                    if (list_l > 0) {
+                        for (var i = 0; i < list_l; i++) {
+                            var wk_thumb_id = list[i].thumb_id;
+                            var wk_thumb_url = '';
+                            if (BASE_APP_TYPE == 1) {
+                                wk_thumb_url = url_path + BASE_THUMB_BEGIN + wk_thumb_id.substring(0, 2) + '\/' + wk_thumb_id + BASE_THUMB_END;
+                            } else {
+                                wk_thumb_url = BASE_URL_ACTION + BASE_THUMB_BEGIN + wk_thumb_id.substring(0, 2) + '/' + wk_thumb_id + BASE_THUMB_END;
+                            }
+                            paths_arr[i] = wk_thumb_url;
+                            captions_arr[i] = list[i].title;
+                            var oparam = new Object();
+                            oparam.file_id = list[i].file_id;
+                            oparam.m3u8_status = list[i].m3u8_status;
+                            oparam.extension = list[i].extension;
+                            m3u8_data.list.push(oparam);
+                        }
+                    } else {
+                        paths_arr[0] = 'widget://res/yy/weike/wk_default.png';
+                        captions_arr[0] = '老师什么都没有留~';
+                        m3u8_data.list=[];
+                    }
+                }
+                //打开轮播组件
+                openScrollPicture(paths_arr, captions_arr, m3u8_data);
+                loadWkHtml(wk_info);
+                api.hideProgress();
+            });
+        }
+
+        function loadWkHtml(wk_info) {
+            var html_type = template.render('wkinfo_script', wk_info);
+            document.getElementById('wkinfo_div').innerHTML = html_type;
+        }
+
+        /**
+         * 打开轮播组件
+         * 周枫
+         * 2015.12.17
+         */
+        function openScrollPicture(paths_arr, captions_arr, m3u8_data) {
+            scrollPicture.open({
+                rect : {
+                    x : 0,
+                    y : 0,
+                    w : 'auto',
+                    h : pic_h
+                },
+                data : {
+                    //数组类型；图片路径数组，支持http://，https://，widget://，fs://协议
+                    paths : paths_arr,
+                    //（可选项）数组类型；说明文字数组，与 paths 数组长度一致；不传则不显示说明文字区域
+                    captions : captions_arr
+                },
+                styles : {
+                    //（可选项）JSON对象；说明文字区域样式
+                    caption : {
+                        //（可选项）数字类型；说明文字区域高度；默认：35.0
+                        height : 35,
+                        //（可选项）字符串类型；说明文字字体颜色，支持rgb、rgba、#；默认：'#E0FFFF'
+                        color : '#E0FFFF',
+                        //（可选项）数字类型；说明文字字体大小；默认：13.0
+                        size : 13,
+                        bgColor : '#696969',
+                        //（可选项）字符串类型；说明文字区域的显示位置；默认：'bottom' ,overlay 上方,
+                        position : 'bottom',
+                        //说明文字在水平线上的位置；默认：left
+                        alignment : 'center'
+                    },
+                    //（可选项）JSON对象；指示器样式；不传则不显示指示器
+                    indicator : {
+                        //（可选项）字符串类型；指示器位置；默认：center
+                        align : 'center',
+                        //（可选项）指示器颜色
+                        color : '#FFFFFF',
+                        //（可选项）当前指示器颜色
+                        activeColor : '#DA70D6'
+                    }
+                },
+                //网络图片未加载完毕时，模块显示的占位图片,要求本地路径（fs://，widget://）
+                placeholderImg : 'widget://res/yy/weike/wk_default.png',
+                //（可选项）图片填充模式,scaleToFill（填充）,scaleAspectFit（适应）
+                contentMode : 'scaleToFill',
+                //（可选项）图片轮换时间间隔，单位是秒（s）
+                interval : 5,
+                //（可选项）图片是否自动播放
+                auto : true,
+                //（可选项）图片是否循环播放
+                loop : true,
+                //（可选项）模块所属 Frame 的名字
+                fixedOn : 'common_weike_frame',
+                //（可选项）模块是否随所属 Window 或 Frame 滚动,默认值：true（不随之滚动）
+                fixed : true
+            }, function(ret, err) {
+                if (ret.status) {
+                    if (ret.eventType == 'click') {
+                    	var wk_index = ret.index;	
+                		if (is_phone_wk == 1) {
+                        	openPhoneWk();
+                        } else {
+                            var m3u8_title = captions_arr[wk_index];
+                            if(m3u8_data.list.length == 0) {
+                                popAlert('对不起，当前微课没有视频文件。');
+                                return;
+                            }else{
+                            	if(m3u8_data.list[wk_index].m3u8_status == 0){
+		                    		popAlert('对不起，正在生成预览中，请稍候查看。');
+		            				return;
+		                    	}else{
+									common_openResource.open(m3u8_data.list[wk_index].extension,m3u8_data.list[wk_index].file_id,m3u8_title,m3u8_data.list[wk_index].m3u8_status,api.winName,'reBackType("voice")','back();','');
+								}
+                            } 
+                            
+                        }
+                    }
+                }
+            });
+        }
+
+        /**
+         * 附件是否显示
+         * 周枫
+         * 2015.12.17
+         */
+        function isShowLink(fj_type) {
+            var dis_value = $api.cssVal($api.byId(fj_type + 'con'), 'display');
+            if (dis_value == 'block') {
+                //附件列表
+                $api.css($api.byId(fj_type + 'con'), 'display:none');
+                //附件图片
+                $api.removeCls($api.byId(fj_type + 'span'), 'aui-icon-hide');
+                $api.addCls($api.byId(fj_type + 'span'), 'aui-icon-display');
+                //附件提示
+                $api.text($api.byId(fj_type + 'font'), '展开');
+            } else {
+                $api.css($api.byId(fj_type + 'con'), 'display:block');
+                $api.removeCls($api.byId(fj_type + 'span'), 'aui-icon-display');
+                $api.addCls($api.byId(fj_type + 'span'), 'aui-icon-hide');
+                $api.text($api.byId(fj_type + 'font'), '收起');
+            }
+        }
+
+        /**
+         * 获取微课内容
+         * 周枫
+         * 2015.12.18
+         */
+        function loadWkContent(wk_id, callback) {
+            api.ajax({
+                url : BASE_URL_ACTION + '/wkds/getwkdsInfo?id=' + wk_id + '&random_num=' + creatRandomNum(),
+                method : 'get',
+                dataType : 'json',
+                timeout : 30,
+                cache : false
+            }, function(ret, err) {
+                if (ret.success) {
+                    //转义学习指导内容
+                    var study_instr = '';
+                    study_instr = Base64.decode(ret.study_instr);
+                    ret.study_instr = study_instr;
+                    //转义设计说明内容
+                    var design_instr = '';
+                    design_instr = Base64.decode(ret.design_instr);
+                    ret.design_instr = design_instr;
+                    //转义练习内容
+                    var practice_instr = '';
+                    practice_instr = Base64.decode(ret.practice_instr);
+                    ret.practice_instr = practice_instr;
+                    //如果是手机录制的微课
+                    if (is_phone_wk == 1) {
+                        callback(ret);
+                    } else {
+                        callback(ret);
+                    }
+                    //已学习+1
+                    setPlayCount(wk_id);
+                } else {
+                    api.hideProgress();
+                    api.alert({
+                        msg : '对不起，获取微课内容失败'
+                    });
+                }
+            });
+        }
+
+        /**
+         * 根据附件类型打开
+         * 周枫
+         * 2015.12.19
+         */
+        function openFjCon(format, file_name, file_id) {
+            format = format.toLowerCase();
+            common_openResource.open(format,file_id,file_name,"",api.winName,'reBackType("voice")','back();','');   
+        }
+
+        /**
+         * m3u8播放
+         * 周枫
+         * 2015.12.19
+         */
+        function videoPlay(m3u8_url, m3u8_title) {
+            videoPlayer.play({
+                texts : {
+                    head : {//（可选项）JSON 类型；设置顶部文字
+                        title : m3u8_title //（可选项）字符串类型；顶部标题文字；默认：''
+                    }
+                },
+                styles : {
+                    head : {//（可选项）JSON对象；播放器顶部导航条样式
+                        bg : 'rgba(0.5,0.5,0.5,0.7)', //（可选项）字符串类型；顶部导航条背景，支持#、rgb、rgba、img；默认：rgba(0.5,0.5,0.5,0.7)
+                        height : 44, //（可选项）数字类型；顶部导航条的高；默认：44
+                        titleSize : 20, //（可选项）数字类型；顶部标题字体大小；默认：20
+                        titleColor : '#fff', //（可选项）字符串类型；顶部标题字体颜色；默认：#fff
+                        backSize : 44, //（可选项）数字类型；顶部返回按钮大小；默认：44
+                        backImg : 'fs://img/back.png', //（可选项）字符串类型；顶部返回按钮的背景图片，要求本地路径（widget://、fs://）；默认：返回小箭头图标
+                        setSize : 44, //（可选项）数字类型；顶部右边设置按钮大小；默认：44
+                        setImg : 'fs://img/set.png' //（可选项）字符串类型；顶部右边设置按钮背景图片，要求本地路径（widget://、fs://）；默认：设置小图标
+                    },
+                    foot : {//（可选项）JSON对象；播放器底部导航条样式
+                        bg : 'rgba(0.5,0.5,0.5,0.7)', //（可选项）字符串类型；底部导航条背景，支持#、rgb、rgba、img；默认：rgba(0.5,0.5,0.5,0.7)
+                        height : 44, //（可选项）数字类型；底部导航条的高；默认：44
+                        playSize : 44, //（可选项）数字类型；底部播放/暂停按钮大小；默认：44
+                        playImg : 'fs://img/back.png', //（可选项）字符串类型；底部播放按钮的背景图片，要求本地路径（widget://、fs://）；默认：播放按钮图标
+                        pauseImg : 'fs://img/back.png', //（可选项）字符串类型；底部暂停按钮的背景图片，要求本地路径（widget://、fs://）；默认：暂停按钮图标
+                        nextSize : 44, //（可选项）数字类型；底部下一集按钮大小；默认：44
+                        nextImg : 'fs://img/back.png', //（可选项）字符串类型；底部下一集按钮的背景图片，要求本地路径（widget://、fs://）；默认：下一集按钮图标
+                        timeSize : 14, //（可选项）数字类型；底部时间标签大小；默认：14
+                        timeColor : '#fff', //（可选项）字符串类型；底部时间标签颜色，支持#、rgba、rgb；默认：#fff
+                        sliderImg : 'fs://img/slder.png', //（可选项）字符串类型；底部进度条滑块背景图片，要求本地路径（widget://、fs://）；默认：滑块小图标
+                        progressColor : '#696969', //（可选项）字符串类型；进度条背景色，支持#、rgba、rgb；默认：#696969
+                        progressSelected : '#76EE00' //（可选项）字符串类型；滑动后的进度条背景色，支持#、rgb、rgba；默认：#76EE00
+                    }
+                },
+                path : m3u8_url, //（可选项）字符串类型；文档的路径，支持网络和本地（fs://）路径；默认：未传值时不播放
+                //在 android 平台上不支持 widget://
+                autoPlay : true //（可选项）布尔类型；打开时是否自动播放；默认：true（自动播放）
+            }, function(ret, err) {
+            });
+        }
+
+        /**
+         * 打开本地文档文件
+         * 周枫
+         * 2015.12.19
+         */
+        function downAndOpenDoc(fj_url, save_url) {
+            api.showProgress({
+                title : '加载中...',
+                text : '请稍候...',
+                modal : false
+            });
+            api.download({
+                url : fj_url,
+                savePath : save_url,
+                //下载过程是否上报
+                report : true,
+                //是否使用本地缓存
+                cache : true,
+                //是否允许断点续传
+                allowResume : true
+            }, function(ret, err) {
+                if (ret.state == 1) {
+                    api.hideProgress();
+                    docReader.open({
+                        path : save_url
+                    }, function(ret, err) {
+                        //alert(JSON.stringify(ret));
+                        if (ret.status == false) {
+                            if (api.systemType == 'android') {
+                                //popAlert('对不起，本软件不支持查看文档类文件，请您先安装一款全面的办公软件，在查看此文件。');
+                                api.alert({
+                                    msg : '对不起，本软件不支持查看文档类文件，请您先安装一款全面的办公软件，在查看此文件。'
+                                }, function(ret, err) {
+                                    //coding...
+                                });
+                            }
+                        }
+                    });
+                }
+                if (ret.state == 2) {
+                    api.hideProgress();
+                    api.alert({
+                        msg : '正在生成预览中，请稍候查看'
+                    }, function(ret, err) {
+                        //coding...
+                    });
+                }
+                //                  if (ret) {
+                //                      var value = ('文件大小：' + ret.fileSize + '；下载进度：' + ret.percent + '；下载状态' + ret.state + '存储路径: ' + ret.savePath);
+                //                  } else {
+                //                      var value = err.msg;
+                //                  }
+            });
+        }
+
+        /**
+         * 已学习+1
+         * 周枫
+         * 2015.12.22
+         */
+        function setPlayCount(wk_id) {
+            //http://www.edusoa.com/dsideal_yy/wkds/setPlayCount?id=10590&random_num=494824
+            api.ajax({
+                url : BASE_URL_ACTION + '/wkds/setPlayCount?id=' + wk_id + '&random_num=' + creatRandomNum(),
+                method : 'get',
+                dataType : 'json',
+                timeout : 30,
+                cache : false
+            }, function(ret, err) {
+                if (ret.success) {
+                } else {
+                }
+            });
+        }
+
+        /**
+         * 打开手机录制微课播放页面
+         * 周枫
+         * 2016.5.3
+         */
+        function openPhoneWk() {
+            api.openWin({
+                name : 'weike_show_pwk_window',
+                url : 'weike_show_pwk_window.html',
+                pageParam : {
+                    header_h : header_h,
+                    pwk_url_begin : pwk_url_begin
+                },
+                bounces : false,
+                opaque : false,
+                showProgress : false,
+                vScrollBarEnabled : false,
+                hScrollBarEnabled : false,
+                slidBackEnabled : false,
+                delay : 0,
+                animation : {
+                    type : "reveal", //动画类型（详见动画类型常量）
+                    subType : "from_right", //动画子类型（详见动画子类型常量）
+                    duration : 300
+                },
+            });
+        }
+        
+        
+    </script>
+</html>

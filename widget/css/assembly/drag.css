@@ -1,0 +1,59 @@
+#dragList {
+    list-style-type: none;
+
+    margin: 16px;
+
+    width: 400px;
+    height: 100px;
+}
+
+.dragNormal {
+    width: 300px;
+    height: 500px;
+    padding: 0px;
+    margin: 8px;
+    border-style: inset;
+    border-color: #6fa1b9;
+    border-width: 10px;
+    width: 80px;
+    height: 80px;
+
+    float: left;
+
+    background-color: #2a5b67;
+}
+
+.dragingNode {
+    position: absolute;
+
+    padding: 0px;
+    margin: 8px;
+
+    left: -200px;
+    top: -200px;
+
+    border-style: inset;
+    border-color: #6fa1b9;
+    border-width: 12px;
+    width: 120px;
+    height: 120px;
+
+    background-color: #2a5b67;
+}
+
+.gargetBG {
+
+}
+
+.targetName {
+    color: #a4baba;
+    font-size: 32px;
+    /*text-align: center;*/
+}
+
+.dragTarget2 {
+    margin: 8px;
+    width: 220px;
+    height: 50px;
+    background-color: #99afa7;
+}

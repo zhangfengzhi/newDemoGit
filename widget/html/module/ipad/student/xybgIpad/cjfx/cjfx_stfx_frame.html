@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <!-- 在IOS设备上，有时会将数字转为手机号，这里也要禁止下 -->
+    <meta name="format-detection" content="telephone=no"/>
+    <title>考试成绩详情页面</title>
+    <link rel="stylesheet" type="text/css" href="../../../../../../css/aui/aui.css" />
+    <link rel="stylesheet" type="text/css" href="../../../../../../css/module/common/cjfxXs.css" />
+    <link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+</head>
+<body class="stfx-body common-ipad-cjfx">
+	<div id="j_stfx">
+	</div>
+	<script type="text/html" id="stfx_script">
+		<div class="top bgf <%if(data[q_cur].score*1 == data[q_cur].totalScore){%>mf<%}else if(data[q_cur].score*1 == 0){%>lf<%}else{%>bd<%}%>">
+			<span>第<%=data[q_cur].questionName%>题</span>
+			<span><%=data[q_cur].score*1%>分/<%=data[q_cur].totalScore*1%>分</span>
+		</div>
+		<div class="stem bgf">
+			<div class="no-data">暂无题干</div>
+		</div>
+		<div class="stfx-detail stfx-bdt bgf">
+			<span>正确答案</span>
+			<span><%=data[q_cur].questionAnswer%></span>
+		</div>
+		<div class="stfx-detail mb8 bgf">
+			<span>我的答案</span>
+			<span><%=data[q_cur].myAnswer%></span>
+		</div>
+		<div class="stfx-scoring-rate stfx-bdt mb8">
+			我的得分率 <font><%=data[q_cur].scoreRate%>%</font>，全班得分率 <font><%=data[q_cur].classScoreRate%>%</font>，全校得分率 <font><%=data[q_cur].schoolScoreRate%>%</font>
+		</div>
+		<div class="stfx-detail stfx-bdt bgf">
+			<span>考察知识点</span>
+			<span><%=data[q_cur].knowledgePoint%></span>
+		</div>
+		<div class="stfx-detail bgf">
+			<span>试题难度</span>
+			<span><%=data[q_cur].difficulty%></span>
+		</div>
+		<div class="stfx-detail bgf">
+			<span>考察能力</span>
+			<span><%=data[q_cur].ability%></span>
+		</div>
+		
+		<div class="stfx-detail bgf">
+			<span>试题解析</span>
+			<span><%=data[q_cur].questionAnalysis%></span>
+		</div>
+		<div class="stfx-kb">&nbsp;</div>
+		<div class="stfx-footer">
+			<div onclick="enterPreQuestion();">上一题</div>
+			<div><%=q_cur+1%>/<%=data.length%></div>
+			<div onclick="enterNextQuestion();">下一题</div>
+		</div>
+	</script>
+</body>
+<script type="text/javascript" src="../../../../../../script/api.js"></script>
+<script type="text/javascript" src="../../../../../../script/base_config.js" ></script>  
+<script type="text/javascript" src="../../../../../../script/plug-in/template.js" ></script>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                
+<script type="text/javascript" src="../../../../../../script/common/common.js" ></script>
+<script type="text/javascript" src="../../../../../../script/module/common/cjfxXs.js"></script>
+<script type="text/javascript">
+	var subjectId;//学科id
+	var questionName;//题号
+	var questionLength;//一共有多少道题目
+	var questionJsonData;//所有试题的json数据
+	var testId;//考试id
+	var student_id;//学生id
+    apiready = function(){
+    	commonSetTheme({"level":6,"type":0});
+    	subjectId = api.pageParam.subjectId;
+    	questionName = api.pageParam.questionName;
+    	testId = api.pageParam.testId;
+    	student_id = student_id_mr;
+    	showSelfProgress('加载中...');
+    	getQuestionBaseInfo(function(data){
+    		api.hideProgress();
+    		questionLength = data.data.length;
+    		for(var i = 0; i < data.data.length; i++){
+	    		data.data[i].scoreRate = data.data[i].scoreRate*100;
+	    		data.data[i].scoreRate = data.data[i].scoreRate.toFixed(2);
+	    		
+	    		data.data[i].classScoreRate = data.data[i].classScoreRate*100;
+	    		data.data[i].classScoreRate = data.data[i].classScoreRate.toFixed(2);
+	    		
+	    		data.data[i].schoolScoreRate = data.data[i].schoolScoreRate*100;
+	    		data.data[i].schoolScoreRate = data.data[i].schoolScoreRate.toFixed(2);
+	    		if(data.data[i].difficulty == "中"){
+	    			data.data[i].difficulty = "中等题";
+	    		}
+	    		if(data.data[i].difficulty == "易"){
+	    			data.data[i].difficulty = "简单题";
+	    		}
+	    		if(data.data[i].difficulty == "难"){
+	    			data.data[i].difficulty = "难题";
+	    		}
+    		}
+    		questionJsonData = data;
+     		reWriteQuestion(questionName);
+     	});
+		nextQuestion();//下一题
+		preQuestion();//上一题
+    }
+    /*
+    *author:zhaoj
+    *function:下一题
+    *date：20170424
+    */
+    function nextQuestion() {
+		api.addEventListener({
+			name : 'swipeleft'
+		}, function(ret, err) {
+			enterNextQuestion();
+		});
+	}
+	/*
+    *author:zhaoj
+    *function:进入下一题
+    *date：20170424
+    */
+    function enterNextQuestion() {
+		if (questionName < questionLength-1) {
+			questionName++;
+			reWriteQuestion(questionName);
+		} else {
+			questionName = questionName;
+			popToast('已经到最后一题');
+		}
+	}
+	/*
+    *author:zhaoj
+    *function:上一题
+    *date：20170424
+    */
+	function preQuestion() {
+		api.addEventListener({
+			name : 'swiperight'
+		}, function(ret, err) {
+			enterPreQuestion();
+		});
+	}
+	/*
+    *author:zhaoj
+    *function:进入上一题
+    *date：20170424
+    */
+	function enterPreQuestion() {
+		if (questionName > 0) {
+			questionName--;
+			reWriteQuestion(questionName);
+		} else {
+			popToast('已经到第一题');
+			questionName = 0;
+		}
+	}
+	/*
+    *author:zhaoj
+    *function:渲染试题页面
+    *date：20170424
+    */
+	function reWriteQuestion(q_cur) {
+		questionJsonData.q_cur = q_cur;
+		commonAddOnceHtml('j_stfx','stfx_script',questionJsonData);
+	}
+</script>
+</html>

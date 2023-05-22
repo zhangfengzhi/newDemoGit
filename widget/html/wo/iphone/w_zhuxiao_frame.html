@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<!-- html5：在创建html时为了防止页面缩放等不兼容效果，要创建个viewport  -->
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<!-- 在IOS设备上，有时会将数字转为手机号，这里也要禁止下 -->
+		<meta name="format-detection" content="telephone=no"/>
+		<title>注销账号与修改个人信息frame</title>
+		<link rel="stylesheet" type="text/css" href="../../../css/aui/aui.css" />
+		<link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+		<style>
+			body, html {
+			}
+			.content p{
+			 line-height:24px;
+			 padding: 10px;
+			}
+			.titleh3a{
+			 background:#34A8FB;
+			 font-size:16px;
+			 padding:10px 20px;
+			 display:inline-block;
+			 color:#fff;
+			}
+			.titleh4a{
+			 padding: 0 10px;
+			 font-size:14px;
+			 color:#333;
+			}
+		</style>
+	</head>
+	<body class="w-iphone-common">
+		<div class="content"> 
+		  <h3 class="titleh3a">注销风险</h3>
+		  <h4 class="titleh4a">1.注销后无法登录</h4>
+		  <p>
+		      本APP和PC端平台共用一套账号体系,账号被注销后，你将无法使用该账号继续登录本APP与PC端平台。
+		  </p>
+		  <h4 class="titleh4a">2.注销后信息删除</h4>
+          <p>
+              注销账号后，我们将停止为你提供依赖账户登录的所有产品和服务，并删除您使用本账号产生的用户数据。
+          </p>
+	    </div>
+	    <div class="content">
+	    <h3 class="titleh3a">注销方式</h3>
+          <p>
+              您可以拨打客服电话400-0400-662，在客服的帮助下完成账号注销流程。完成账号注销后，账号所有数据将彻底删除，且不能恢复。
+          </p>
+	    </div>
+	    <div class="content">
+	       <h3 class="titleh3a">修改用户信息方式</h3>
+	       <p>
+              您可以拨打客服电话400-0400-662，在客服的帮助下完成修改用户信息流程。
+          </p>
+	    </div>
+		  
+		
+		<script type="text/javascript" src="../../../script/api.js" ></script>
+		<script type="text/javascript" src="../../../script/common/common.js" ></script>
+		<script type="text/javascript" src="../../../script/base_config.js" ></script>
+	</body>
+	<script type="text/javascript">
+		//头像图片上传服务器路径
+		var person_img_path;
+		var header_h;
+		var BASE_URL_ACTION;
+		apiready = function() {
+			commonSetTheme({"level":3,"type":0});
+			header_h = api.pageParam.header_h;
+			BASE_URL_ACTION = $api.getStorage('BASE_URL_ACTION');
+		};
+		
+	</script>
+</html>

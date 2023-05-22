@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <title>考勤详情</title>
+    <link rel="stylesheet" type="text/css" href="../../../../../css/aui_css_new/aui.css"/>
+    <link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+    <style>
+    	body{background:#F8F7F3;color:#141414;}
+    	.content{height:40px;line-height:40px;padding:0 15px;}
+    	.content div{display:inline-block;float:right;color:#666666;}
+    	.bb{border-bottom:1px solid #efefef;}
+    	.bt{border-top:1px solid #efefef;}
+    	.hr{height:10px;}
+    	.bgf{background:#ffffff;}
+    	.list-group-item {
+				border: 0px;
+			}
+			.list-group-item li .box {
+				height: 45px;
+			}
+			.list-group-item .dropdown-menu {
+				padding: 10px 8px 10px 13px;
+				position: absolute;
+				top: 35px;
+				width: 230px;
+			}
+			.list-group-item ul {
+				margin: 0px;
+				padding: 0px;
+			}
+			.list-group-item div.checkbox {
+				margin: 0px;
+			}
+			.list-group-item li {
+				margin: 0px;
+				float: left;
+				border: 0px;
+			}
+			.cz_table {
+				background-color: #dcdcdc;
+				border-collapse: collapse;
+				margin: 0 auto;
+				table-layout: fixed;
+				width: 100%;
+			}
+			.cz_table th, .cz_table td {
+				background-color: #dcdcdc;
+				border: 1px solid #dcdcdc;
+				font-family: Microsoft YaHei;
+				font-size: 12px;
+				font-weight: 500;
+				line-height: 30px;
+				text-align: center;
+			}
+			.cz_table td {
+				background-color: #fff;
+				color: #333;
+				line-height: 22px;
+				overflow: hidden;
+				padding: 4px 0;
+				text-overflow: ellipsis;
+				white-space: nowrap;
+			}
+			.cz_table th {
+				background: none repeat scroll 0 0 #ededed;
+				color: rgb(51, 51, 51);
+			}
+			.cz_out {
+				border-left: 53px solid #7e7e7e;
+				border-top: 37px solid #909090;
+				color: #e3e3e3;
+				height: 0;
+				position: relative;
+				width: 0;
+			}
+			.cz_b {
+				display: block;
+				font-style: normal;
+				left: -35px;
+				position: absolute;
+				top: -42px;
+				width: 35px;
+			}
+			.cz_em {
+				display: block;
+				font-style: normal;
+				left: -50px;
+				position: absolute;
+				top: -26px;
+			}
+			.timetableinput {
+				width: 100%;
+				height: 100%;
+				border: none;
+			}
+			.kcb_div {
+				width: 100%;
+				margin: 0 auto;
+				
+			}
+			.no-data{text-align:center;color:#666;padding-top:15px;}
+			.red{color:#FF8683 !important;}
+			.yellow{color:#DEDE00 !important;}
+			.blue{color:#1354B9 !important;}
+			.aui-icon-close{color:#A52A2A;}
+			.ts{padding:0 0 20px 15px;line-height:30px;}
+			.ts div{text-indent:2em;}
+    </style>
+</head>
+<body class="common-iphone-dk">
+	<div class="hr bb"></div>
+	<div class="content bb bgf" onclick="selectTime();">
+		选择年月
+		<div id="start_time"></div>
+	</div>
+	<div class="hr"></div>
+	<div id="j_zc_title" class="content bb bgf" style="display:none;">
+		正常次数
+		<div id="j_zc"></div>
+	</div>
+	<div id="j_wj_title" class="content bb bgf" style="display:none;">
+		未签次数
+		<div id="j_wj"></div>
+	</div>
+	<div id="j_cd_title" class="content bb bgf" style="display:none;">
+		迟到次数
+		<div id="j_cd"></div>
+	</div>
+	<div id="j_zt_title" class="content bb bgf" style="display:none;">
+		早退次数
+		<div id="j_zt"></div>
+	</div>
+	<div id="j_hr" class="hr" style="display:none;"></div>
+	<div class="kcb_div" id="detail_body"></div>
+	<script type="text/html" id="detail_script">
+		<table class="cz_table" style="table-layout: fixed; width: 100%;">
+			<tbody>
+				<tr>
+					<th width="55px;" height="40px;">
+						<div class="cz_out">
+							<b class="cz_b">班次</b>
+							<em class="cz_em">日期</em>
+						</div>
+					</th>
+					<%if(dc_count == 4){%>
+						<%if(is_special){%>
+							<th>上午签到</th>
+							<th>下午签到</th>
+						<%}else{%>
+							<th>上午签到</th>
+							<th>上午签退</th>
+							<th>下午签到</th>
+							<th>下午签退</th>
+						<%}%>
+					<%}else{%>
+						<th>上午签到</th>
+						<th>下午签退</th>
+					<%}%>
+				</tr>
+				<%for(var i = 0; i < list.length; i++){%>
+					<%if(dc_count == 4){%>
+						<tr class="timetabletr">
+							<%if(is_special){%>
+								<td onclick="openDetailFrame(1,'','',<%=list[i].worktime%>);"><%=list[i].worktime%></td>
+								<td class="timetabletd <%=list[i].ban1_class%>" onclick="openDetailFrame(2,1,<%=list[i].ban1%>,<%=list[i].worktime%>);"><%=#list[i].ban1_name%></td>
+								<td class="timetabletd <%=list[i].ban3_class%>" onclick="openDetailFrame(2,3,<%=list[i].ban3%>,<%=list[i].worktime%>);"><%=#list[i].ban3_name%></td>
+							<%}else{%>
+								<td onclick="openDetailFrame(1,'','',<%=list[i].worktime%>);"><%=list[i].worktime%></td>
+								<td class="timetabletd <%=list[i].ban1_class%>" onclick="openDetailFrame(2,1,<%=list[i].ban1%>,<%=list[i].worktime%>);"><%=#list[i].ban1_name%></td>
+								<td class="timetabletd <%=list[i].ban2_class%>" onclick="openDetailFrame(4,2,<%=list[i].ban2%>,<%=list[i].worktime%>);"><%=#list[i].ban2_name%></td>
+								<td class="timetabletd <%=list[i].ban3_class%>" onclick="openDetailFrame(2,3,<%=list[i].ban3%>,<%=list[i].worktime%>);"><%=#list[i].ban3_name%></td>
+								<td class="timetabletd <%=list[i].ban4_class%>" onclick="openDetailFrame(4,4,<%=list[i].ban4%>,<%=list[i].worktime%>);"><%=#list[i].ban4_name%></td>
+							<%}%>
+						</tr>
+					<%}else{%>
+						<tr class="timetabletr">
+							<td onclick="openDetailFrame(3,'','',<%=list[i].worktime%>);"><%=list[i].worktime%></td>
+							<td class="timetabletd <%=list[i].ban1_class%>" onclick="openDetailFrame(2,1,<%=list[i].ban1%>,<%=list[i].worktime%>);"><%=#list[i].ban1_name%></td>
+							<td class="timetabletd <%=list[i].ban2_class%>" onclick="openDetailFrame(4,2,<%=list[i].ban2%>,<%=list[i].worktime%>);"><%=#list[i].ban2_name%></td>
+						</tr>
+					<%}%>
+				<%}%>
+			</tbody>
+		</table>
+	</script>
+	<div class="hr"></div>
+	<div class="ts">
+		提示：
+		<div>
+			1.<i class="aui-iconfont aui-icon-check"></i>表示正常打卡，
+			<i class="aui-iconfont aui-icon-close"></i>表示未打卡
+		</div>
+		<div>
+			2.点击日期可以查看一天的打卡记录
+		</div>
+		<div>
+			3.正常、早退以及迟到点击可以查看具体的打卡时间
+		</div>
+	</div>
+</body>
+<script type="text/javascript" src="../../../../../script/api.js"></script>
+<script type="text/javascript" src="../../../../../script/plug-in/template.js" ></script>
+<script type="text/javascript" src="../../../../../script/base_config.js" ></script>
+<script type="text/javascript" src="../../../../../script/common/common.js"></script>
+<script type="text/javascript">
+	var BASE_URL_ACTION;
+	var yearValue;
+	var monthValue;
+	apiready = function(){
+		commonSetTheme({"level":5,"type":0});
+		BASE_URL_ACTION = $api.getStorage('BASE_URL_ACTION');
+		setTime(0,getNowTime(0));//开始时间
+	};
+	/*
+	*author:zhaoj
+	*function:选择时间type=0开始时间，type=1结束时间
+	*date：20160622
+	*/
+	function selectTime() {
+		commonExecScript('dk_index_window','', 'reBackType("time")',0);
+		var pageParamJson = {year : yearValue,month:monthValue};
+		commonOpenFrame('dk_time_frame', 'dk_time_frame.html', 0, false, false, "rgba(0,0,0,0)", pageParamJson);
+	}
+	/*
+	*author:zhaoj
+	*function:获取当前时间,返回年月日
+	*date：20160622
+	*/
+	function getNowTime(type){
+		time = new Date();
+		var year = time.getFullYear();
+		var month = time.getMonth() + 1;
+		var month_string = month > 9 ? month : '0'+month;
+		yearValue = year;
+		monthValue = month;
+		switch(type){
+			case 0:
+				getPersonDetailedClockInInfo(1,year,month);
+				return year+'年'+month_string+'月';
+				break;
+			case 1:
+				return year+'-'+month_string+'-'+day_string;
+				break;
+			case 2:
+				return year+'-'+month+'-'+day;
+				break;
+			default:
+				break;
+		}
+	}
+	/*
+	*author:zhaoj
+	*function:设置时间type=0开始时间，type=1结束时间
+	*date：20160622
+	*/
+	function setTime(type,time){
+		if(type){
+			$api.html($api.byId('end_time'), time+'<i class="aui-iconfont aui-icon-right"></i>');
+		}else{
+			$api.html($api.byId('start_time'), time+'<i class="aui-iconfont aui-icon-right"></i>');
+		}
+	}
+	/*
+	*author:zhaoj
+	*function:获取时间
+	*date：20160803
+	*/
+	function setTimeValue(year,month){
+		yearValue = year;
+		monthValue = month;
+		getPersonDetailedClockInInfo(1,year,month);
+		month = month > 9 ? month : '0'+month;
+		setTime(0,year+'年'+month+'月');
+	}
+	/*
+	*author:zhaoj
+	*function:选择时间type=0开始时间，type=1结束时间
+	*date：20160622
+	*/
+	function openDetailFrame(type,ban,dk_type,day) {
+		if(dk_type == 1 || dk_type == 2 || dk_type == 3|| dk_type == ''){
+			commonExecScript('dk_index_window','', 'reBackType("detail")',0);
+			var pageParamJson = {
+				type : type,
+				ban : ban,
+				year : yearValue,
+				month:monthValue,
+				day : day
+			};
+			commonOpenFrame('dk_detail_frame', 'dk_detail_frame.html', 0, false, false, "rgba(0,0,0,0)", pageParamJson);
+		}
+	}
+	/*
+	*author:zhaoj
+	*function:获取打卡记录的详细信息
+	*date：20160812
+	*/
+	function getPersonDetailedClockInInfo(is_show,year,month){
+		if(is_show){
+			commonShowProgress('加载中...',false);
+		}
+		api.ajax({
+			url : BASE_URL_ACTION + '/clockin/getPersonDetailedClockInInfo?bureau_id='+$api.getStorage("bureau_id")+'&person_id='+$api.getStorage("person_id")+ '&year='+year+'&month='+month,
+			method : 'get',
+			dataType : 'json',
+			timeout : 30,
+			headers : {
+				'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+			}
+		}, function(ret, err) {
+			api.hideProgress();
+			if(ret){
+				if (ret.success){
+					$api.text($api.byId('j_zc'), ret.zc);
+					$api.text($api.byId('j_wj'), ret.wdk);
+					$api.text($api.byId('j_cd'), ret.cd);
+					$api.text($api.byId('j_zt'), ret.zt);
+					for(var i = 0 ; i < ret.list.length; i++){
+						ret.list[i].ban1_class = dealData(2,ret.list[i].ban1);
+						ret.list[i].ban1_name = dealData(1,ret.list[i].ban1);
+						ret.list[i].ban2_class = dealData(2,ret.list[i].ban2);
+						ret.list[i].ban2_name = dealData(1,ret.list[i].ban2);
+						ret.list[i].ban3_class = dealData(2,ret.list[i].ban3);
+						ret.list[i].ban3_name = dealData(1,ret.list[i].ban3);
+						ret.list[i].ban4_class = dealData(2,ret.list[i].ban4);
+						ret.list[i].ban4_name = dealData(1,ret.list[i].ban4);
+					}
+					if($api.getStorage('bureau_id') == '300372'){
+						ret.is_special = 1;
+					}else{
+						$api.css($api.byId('j_zc_title'), 'display:block;');
+						$api.css($api.byId('j_wj_title'), 'display:block;');
+						$api.css($api.byId('j_cd_title'), 'display:block;');
+						$api.css($api.byId('j_zt_title'), 'display:block;');
+						$api.css($api.byId('j_hr'), 'display:block;');
+						ret.is_special = 0;
+					}
+					commonAddOnceHtml('detail_body','detail_script',ret);
+				}else{
+					popToast(ret.info);
+				}
+			}else{
+				popToast('获取打卡信息失败');
+			}
+		});
+	}
+	/*
+	*author:zhaoj
+	*function:处理数据
+	*date：20160812
+	*/
+	function dealData(type,ban){
+		var className;
+		var textName;
+		switch(ban*1){
+			case 1:
+				textName = '<i class="aui-iconfont aui-icon-check"></i>';
+				className = '';
+				break;
+			case 2:
+				textName = '迟到';
+				className = 'red';
+				break;
+			case 3:
+				textName = '早退';
+				className = 'yellow';
+				break;
+			case 4:
+				textName = '<i class="aui-iconfont aui-icon-close"></i>';
+				className = '';
+				break;
+			case 5:
+				textName = '请假';
+				className = 'blue';
+				break;
+			case 6:
+				textName = '公出';
+				className = 'green';
+				break;
+			case 7:
+				textName = '休息';
+				className = '';
+				break;
+			case 8:
+				textName = '--';
+				className = '';
+				break;
+			default:
+				textName = '';
+				className = '';
+				break;
+		}
+		var result;
+		if(type == 1){
+			result = textName;
+		}else{
+			result = className;
+		}
+		return result;
+	}
+</script>
+</html>

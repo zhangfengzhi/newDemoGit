@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<!-- html5：在创建html时为了防止页面缩放等不兼容效果，要创建个viewport  -->
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<!-- 在IOS设备上，有时会将数字转为手机号，这里也要禁止下 -->
+		<meta name="format-detection" content="telephone=no"/>
+		<title>新闻资讯数据页面</title>
+		<link rel="stylesheet" type="text/css" href="../../../../../css/aui/aui.css" />
+		<link rel="stylesheet" type="text/css" href="../../../../../css/module/common/list_frame.css" />
+		<link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+		<style>
+			.h1 {
+				height: 1px;
+				background: #f0f0f0;
+			}
+			.presshover {
+				background-color: #FAFAFA;
+			}
+			.span_name {
+				width: 80%;
+				display: inline-block;
+				white-space: nowrap;
+				overflow: hidden;
+				text-overflow: ellipsis;
+			}
+			.aui-content-padded{margin:0;padding:0px 0 10px 0;}
+		</style>
+	</head>
+	<body class="common-iphone-cp">
+		<!--新闻资讯列表-->
+		<div class="aui-content-padded">
+			<div id="cp_body"></div>
+			<script type="text/html" id="cp_script">
+				<% if(list.length == 0){ %>
+					<div class="no-data"><span>暂无食谱</span></div>
+				<% }else{ %>
+					<%for(var i=0; i<list.length; i++) {%>
+						<div class="section3"  onclick="openContentCommonFrame('cp','cp_content_frame','<%=list[i].transfer_data%>')">
+							<div class="item style1" tapmode="itemhover">
+								<%if(list[i].thumb_id != "") {%>
+									<div class="itemlogo userlogo"><img onerror="this.src='../../../../../image/fun-module/common/xysp-bg.png'"  src="../../../../../image/fun-module/common/xysp-bg.png" alt="" data-echo="<%=list[i].thumb_id%>" />
+									</div>
+									<div class="itemshelf">
+										<div class="shelfinfo01">
+											<%=list[i].title %>
+										</div>
+										<div class="shelfinfo04">
+											创建人：<%=list[i].person_name %>
+										</div>
+										<div  class="shelfinfo06">
+											创建时间：<%=list[i].create_time%>
+										</div>
+									</div>
+								<% } else { %>
+									<div class="itemlogo userlogo">
+										<img onerror="this.src='../../../../../image/fun-module/common/xysp-bg.png'"  src="../../../../../image/fun-module/common/xysp-bg.png" alt="" data-echo="<%=list[i].thumb_id%>" />
+									</div>
+									<div class="itemshelf">
+										<div class="shelfinfo01">
+											<%=list[i].title %>
+										</div>
+										<div class="shelfinfo04">
+											创建人：<%=list[i].person_name %>
+										</div>
+										<div  class="shelfinfo06">
+											创建时间：<%=list[i].create_time%>
+										</div>
+									</div>
+								<% } %>
+							</div>
+						</div>
+					<% } %>
+				<% } %>
+			</script> 
+		</div>
+	</body>
+	<script type="text/javascript" src="../../../../../script/api.js" ></script>
+	<script type="text/javascript" src="../../../../../script/base_config.js" ></script>
+	<script type="text/javascript" src="../../../../../script/plug-in/base64.js" ></script>
+	<script type="text/javascript" src="../../../../../script/plug-in/template.js" ></script>
+	<script type="text/javascript" src="../../../../../script/plug-in/echo.min.js"></script>
+	<script type="text/javascript" src="../../../../../script/common/common.js" ></script>
+	<script type="text/javascript" src="../../../../../script/common/six_common.js" ></script>
+	<script type="text/javascript">
+		var header_h;//定义头高度
+		var totalPages = 0;// 定义一个变量存储第一次加载返回来的总页数
+		var keyword = '';//菜单关键字
+		var currentPage;//当前页面为第一页
+		var register_id=0;//注册号
+		var school_id;//学校id
+		apiready = function() {
+			commonSetTheme({"level":5,"type":0});
+			header_h = api.pageParam.header_h;
+			school_id = api.pageParam.school_id;
+			currentPage = 1;
+			showSelfProgress('加载中...');
+			getNewsRegisterId('cp',104,function(flag,id){
+				if(flag){
+					register_id = id;
+					//给window页面中register_id公共变量赋值
+					api.execScript({
+						name : 'cp_index_window',
+						script : 'setRegisterId('+id+');'
+					});
+					if(id != 0){
+						//获取数据
+						initData(currentPage);
+					}else{
+						//暂时没有发布相关的数据
+						api.hideProgress();
+						var data={"list":[]};
+						addTemplateHtml('cp_body', 'cp_script', data);
+					}
+				}else{
+					api.hideProgress();
+					popToast('获取食谱失败，请稍候再试！');
+				}
+			});
+			//加载上拉加载数据方法
+			scrollBottomReload();
+			//下拉刷新
+			refreshDataInfo();
+		};
+		/*
+		*作者:zhaoj
+		*功能:获取列表数据
+		*日期：20161008
+		*/
+		function initData(current_page){
+			currentPage = current_page;
+			//获取列表数据
+			if(register_id != 0){
+				loadData(current_page,function(flag,ret){
+					api.hideProgress();
+					if(flag){
+						totalPages = ret.total_page;
+						for(var i=0; i < ret.list.length; i++){
+							if(isEmptyString(ret.list[i].thumb_id)){
+								ret.list[i].thumb_id='../../../../../image/fun-module/common/xysp-bg.png';
+							}else{
+							    var str = commonReturnPhotoCutSize(0)
+								ret.list[i].thumb_id = commonCheckIsSpaceImg(ret.list[i].thumb_id, str);
+							}
+						}
+						addTemplateHtml('cp_body', 'cp_script', ret);
+						//延迟加载图片
+						setTimeout(function() {
+							echoInit();
+						}, 300);
+					}else{
+						popToast('获取食谱失败，请稍候再试！');
+					}
+				});
+			}else{
+				//暂时没有发布相关的数据
+				api.hideProgress();
+				var data={"list":[]};
+				addTemplateHtml('cp_body', 'cp_script', data);
+				//通知顶部下拉刷新数据加载完毕，组件会恢复到默认状态
+				commonControlRefresh();
+			}
+		}
+	</script>
+</html>

@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <title>打开画板页面</title>
+    <link rel="stylesheet" type="text/css" href="../../../../../css/aui/aui.css" />
+    <link id="j_theme_base" rel="stylesheet" type="text/css" href="" /><style>
+    	body{
+    		background:#f6f6f6;
+    	}
+    	.tip{
+    		height:30px;
+    		padding:8px 0 0 15px;
+    		border-bottom:1px solid #e0e0e0;
+    		font-size:14px;
+    		color:#f00;
+    	}
+    	.footer-btn {
+			display: block;
+			bottom: 0px;
+			width: 100%;
+			height:45px;
+			text-align: right;
+			color: #fff;
+			padding-top: 5px;
+			border-top: 1px solid #e0e0e0;
+			position: fixed;
+		}
+		.footer-btn button{
+			float:right;
+			margin-right:15px;
+		}
+    </style>
+</head>
+<body class="common-iphone-zuoye-tea">
+	<div class="tip common-iphone-zuoye-tea">注：请在以下有效区域批阅</div>
+	<div class="footer-btn">
+		<button class="aui-btn aui-btn-info" onclick="save();">
+			保存
+		</button>
+		<button class="aui-btn aui-btn-info" onclick="revokeOrRestore(0);">
+			恢复
+		</button>
+		<button class="aui-btn aui-btn-success" onclick="revokeOrRestore(1);">
+			撤销
+		</button>
+		<button class="aui-btn aui-btn-success" onclick="clearanceMark();">
+			清空
+		</button>
+	</div>
+</body>
+<script type="text/javascript" src="../../../../../script/api.js"></script>
+<script type="text/javascript" src="../../../../../script/base_config.js" ></script>
+<script type="text/javascript" src="../../../../../script/common/common.js" ></script>
+<script type="text/javascript" src="../../../../../script/assembly/jsdrawingBorad.js" ></script>
+<script type="text/javascript">
+	var params_json = {};
+	apiready = function(){
+		commonSetTheme({"level":5,"type":0});
+		openZj();
+	};
+	/*
+	*author:zhaoj
+	*function:清除所有痕迹
+	*date：20170531
+	*/
+	function clearanceMark(){
+		drawingBoard.close();
+		if(api.pageParam.img_h >= api.winHeight-75-45){
+			params_json = {
+					x : (api.winWidth-(api.winHeight*0.75/api.pageParam.img_h) * api.pageParam.img_w)*0.5,
+					y : api.pageParam.header_h+30,
+					h : api.winHeight*0.70,
+					w : (api.winHeight*0.70/api.pageParam.img_h) * api.pageParam.img_w,
+					"file_id":'fs://img/js/'+api.pageParam.file_id+'.'+api.pageParam.ext,
+					"ext":api.pageParam.ext
+				};
+			}else if(api.pageParam.img_w > api.winWidth){
+				params_json = {
+					x : (api.winWidth-(api.winHeight*0.75/api.pageParam.img_h) * api.pageParam.img_w)*0.5,
+					y : api.pageParam.header_h+30,
+					h : (api.winWidth/api.pageParam.img_w)*api.pageParam.img_h,
+					w : api.winWidth, 
+					"file_id":'fs://img/js/'+api.pageParam.file_id+'.'+api.pageParam.ext,
+					"ext":api.pageParam.ext
+				};
+			}else{
+				params_json = {
+					x :  (api.winWidth - api.pageParam.img_w)*0.5,
+					y : api.pageParam.header_h+30,
+					h : api.pageParam.img_h,
+					w : api.pageParam.img_w,
+					"file_id":'fs://img/js/'+api.pageParam.file_id+'.'+api.pageParam.ext,
+					"ext":api.pageParam.ext
+				};	
+			}
+			drawingBoard.open(params_json);	
+	}
+	/*
+	*author:zhaoj
+	*function:撤销或者恢复
+	*date：20170531
+	*/
+	function revokeOrRestore(type){
+		if(type){
+			drawingBoard.revoke();
+		}else{
+			drawingBoard.restore();
+		}
+	}
+	/*
+	*author:zhaoj
+	*function:保存
+	*date：20170531
+	*/
+	function save(){
+		showSelfProgress('保存中...');
+		drawingBoard.save('',function(ret){
+			ret = $api.strToJson(ret);
+			commonExecScript('zuoyeJsJy_piyue_window','zuoyeJsJy_piyue_frame','WatchPiyuePath("'+ret.absolutePath+'");',1);
+		});
+	}
+	
+    /*
+	 * 功能：打开画图组件
+	 * 作者：张自强
+	 * 时间：20171109
+	 */
+	function openZj(){
+		if(api.pageParam.img_h >= api.winHeight-75-45){
+			params_json = {
+				x : (api.winWidth-(api.winHeight*0.75/api.pageParam.img_h) * api.pageParam.img_w)*0.5,
+				y : api.pageParam.header_h+30,
+				h : api.winHeight*0.70,
+				w : (api.winHeight*0.70/api.pageParam.img_h) * api.pageParam.img_w,
+				"file_id":'fs://img/'+api.pageParam.file_id+'.'+api.pageParam.ext,
+				"ext":api.pageParam.ext
+			};	
+		}else if(api.pageParam.img_w > api.winWidth){
+			params_json = {
+				x : (api.winWidth-(api.winHeight*0.75/api.pageParam.img_h) * api.pageParam.img_w)*0.5,
+				y : api.pageParam.header_h+30,
+				h : (api.winWidth/api.pageParam.img_w)*api.pageParam.img_h,
+				w : api.winWidth, 
+				"file_id":'fs://img/'+api.pageParam.file_id+'.'+api.pageParam.ext,
+				"ext":api.pageParam.ext
+			};
+		}else{
+			params_json = {
+				x : (api.winWidth - api.pageParam.img_w)*0.5,
+				y : api.pageParam.header_h+30,
+				h : api.pageParam.img_h,
+				w : api.pageParam.img_w,
+				"file_id":'fs://img/'+api.pageParam.file_id+'.'+api.pageParam.ext,
+				"ext":api.pageParam.ext
+			};	
+		}
+		drawingBoard.open(params_json);
+		if(api.systemType == 'ios' && api.pageParam.no_piyue){
+			api.download({
+			    url:api.pageParam.url,
+			    savePath:  'fs://img/js/'+api.pageParam.file_id+'.'+api.pageParam.ext,
+			    report: false,
+			    cache: false,
+			    allowResume: true
+			},function( ret, err ){
+			});	
+		}
+	}
+
+</script>
+</html>

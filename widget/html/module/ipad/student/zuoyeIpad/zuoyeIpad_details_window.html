@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<!-- html5：在创建html时为了防止页面缩放等不兼容效果，要创建个viewport  -->
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<!-- 在IOS设备上，有时会将数字转为手机号，这里也要禁止下 -->
+		<meta name="format-detection" content="telephone=no"/>
+		<title>学生检测</title>
+		<link rel="stylesheet" type="text/css" href="../../../../../css/aui/aui.css" />
+		<link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+		<style>
+			.history-date {
+				font-size: 12px;
+			}
+			#message-content {
+				overflow-y: auto;
+				display: none;
+			}
+			
+			
+			.t_display_n {
+				display: none;
+			}
+			.t_display_b {
+				display: block;
+			}
+			.win-menu{font-size:15px;line-height:48px}
+		</style>
+	</head>
+	<body class="common-ipad-zuoyeIpadstu">
+		<div id="wrap">
+			<header class="aui-bar aui-bar-nav aui-bar-primary" id="aui-header">
+				<div id="cloud" class="topbar activebar">
+					<div id="back" class="back" onclick="back();" tapmode="">
+						<i class="aui-iconfont aui-icon-left"></i>返回
+					</div>
+					<div  class="mTitle" id="mTitle">
+						检测说明
+					</div>
+				</div>
+			</header>
+			<div  class="aui-content aui-content-padded" id="message-content">
+				<p class="aui-text-center history-date"></p>
+			</div>
+		</div>
+	</body>
+	<script type="text/javascript" src="../../../../../script/api.js"></script>
+	<script type="text/javascript" src="../../../../../script/common/common.js"></script>
+	<script type="text/javascript" src="../../../../../script/module/common/fileUpload.js" ></script>
+	<script type="text/javascript" src="../../../../../script/assembly/openResource.js" ></script>
+	<script type="text/javascript" src="../../../../../script/assembly/executeApp.js" ></script>
+	<script type="text/javascript">
+		apiready = function() {
+			commonSetTheme({"level":5,"type":0});
+			openDetailsFrame();
+			commonBackForAndroid();//安卓关闭
+			commonIosAuiHeader();//定位header位置，留出上面电池等空隙，苹果需要
+		};
+
+		/*
+		*author:zhaoj
+		*function:打开检测详情页面
+		*date：20160324
+		*/
+		function openDetailsFrame(){
+			var header_h = api.pageParam.header_h;
+			var pageParamJson={"header_h":api.pageParam.header_h,"zy_desc":api.pageParam.zy_desc,"zy_name":api.pageParam.zy_name,"zy_id":api.pageParam.zy_id,"is_stop":api.pageParam.is_stop,"subject_id":api.pageParam.subject_id,"zy_statu":api.pageParam.zy_statu,"type":api.pageParam.type,"is_read":api.pageParam.is_read};//打开frame页面所需参数
+		commonOpenFrame('zuoyeIpad_details_frame', 'zuoyeIpad_details_frame.html',header_h, false, false,"#ffffff",pageParamJson);	//打开index页面
+		}
+		/*
+		*author:zhaoj
+		*function:返回页面
+		*date：20160307
+		*/
+		function back() {
+			if (backType == "win"){
+				api.closeWin();
+			}else{
+				resourceBack();
+			}
+		}
+		
+		function showRes(param){
+	    	param = JSON.parse(param);
+	    	openresource(param.res_type,param.res_path,param.res_title,param.m3u8_status,param.res_id);
+	    }
+	</script>
+</html>

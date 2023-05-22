@@ -1,0 +1,195 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<title>APP</title>
+		<link rel="stylesheet" type="text/css" href="../../css/aui/aui.css" />
+		<link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+		<style>
+			.ellipsis{white-space: nowrap;overflow: hidden;text-overflow: ellipsis;}
+			.shadow{position:absolute;left:0;top:0;width:100%;height:100%;z-index: -1;}
+			.left-content{position:fixed;left:0;top:0;width:22%;float: left;background:#F2F4F5;height:100%;}
+			.left-content ul li{height:49px;line-height:49px;border-right:1px solid #E6E8E9;font-size:13px;text-align:center;color:#B2B3B4;list-style: none;}
+			.left-content ul li.active{background:#ffffff;border-right:0 !important;border:1px solid #E6E8E9;color:#FF9304;}
+			.left-content ul li.first{border-top:0;border-left:0;}
+			.right-content{width:78%;float: right;height:100%;padding:0 15px;}
+			.right-content ul li{height:49px;line-height:49px;border-bottom:1px solid #ececec;color:#717171;font-size:13px;list-style: none;}
+			.right-content ul li.active{color:#FF9304 !important;}
+			.time-body div{display:inline-block;}
+			.group-body{padding-top:15px;}
+			.top-group{width:100%;color:#ffffff;background:#C10100;line-height:33px;text-align:center;}
+			.second-group{padding-top:15px;}
+			.second-group div{display:inline-block;padding:6px 12px;color:#ffffff;}
+			.third-group{padding-top:15px;}
+			.third-group div{width:49%;line-height:33px;border:1px solid #CCCCCC;text-align:center;color:#666666;margin-bottom:15px;}
+			.third-group div:nth-last-child(1),.third-group div:nth-last-child(2){margin-bottom:0;}
+			.fl{float:left;}
+			.fr{float:right;}
+			.clearfix:after {
+					content: ' ';
+					display: block;
+					clear: both;
+					visibility: hidden;
+					line-height: 0;
+					height: 0;
+				}
+		</style>
+	</head>
+	<body class="common-ipad-kaoqinIpad-tea">
+		<div id="j_shadow" class="shadow" tapmode></div>
+		<div class="left-content">
+			<ul id="j_classification">
+				<li id="j_time" class="first active" onclick="getTimeBtn();">时间</li>
+				<li id="j_group" onclick="getGroupBtn();">部门</li>
+			</ul>
+		</div>
+		<div class="right-content">
+			<!--时间-->
+			<ul id="time_body" class="time-body" style="display:none;">
+				<li class="ellipsis" onclick="openPickerTime(0);">
+					<div class="fl">开始时间</div>
+					<div id="start_time" class="fr">2016-06-01</div>
+				</li>
+				<li class="ellipsis"  onclick="openPickerTime(1);">
+					<div class="fl">结束时间</div>
+					<div id="end_time" class="fr">2016-06-21</div>
+				</li>
+			</ul>
+			<!--//时间-->
+			<!--部门-->
+			<div id="group_body" class="group-body">
+				<div class="top-group">东北师大理想软件股份有限公司</div>
+				<div class="second-group clearfix">
+					<div>基础教育</div>
+				</div>
+				<div class="third-group clearfix">
+					<div class="fl ellipsis">平台软件开发部</div>
+					<div class="fr ellipsis">管理软件</div>
+					<div class="fl ellipsis">测试部</div>
+					<div class="fr ellipsis">幼儿</div>
+				</div>
+				<div class="second-group clearfix">
+					<div>职业教育</div>
+				</div>
+				<div class="third-group clearfix">
+					<div class="fl ellipsis">职教</div>
+				</div>
+				<div class="second-group clearfix">
+					<div>商务部</div>
+				</div>
+				<div class="second-group clearfix">
+					<div>创意设计部</div>
+				</div>
+			</div>
+			<!--//部门-->
+		</div>
+		<script type="text/javascript" src="../../../../../script/api.js" ></script>
+		<script type="text/javascript" src="../../../../../script/base_config.js" ></script>
+		<script type="text/javascript" src="../../../../../script/plug-in/template.js" ></script>
+		<script type="text/javascript" src="../../../../../script/common/common.js" ></script>
+	</body>
+	<script type="text/javascript">
+		var BASE_URL_ACTION;
+		apiready = function() {
+			commonSetTheme({"level":5,"type":0});
+			getTimeBtn();	
+			setTime(0,getNowTime(0));//开始时间
+			setTime(1,getNowTime(1));//结束时间
+		}
+		/*
+		*author:zhaoj
+		*function:点击时间按钮
+		*date：20160621
+		*/
+		function getTimeBtn(){
+			$api.removeCls($api.byId('j_group'), 'active');
+			$api.addCls($api.byId('j_time'), 'active');
+			$api.css($api.byId('time_body'),'display:block;');
+			$api.css($api.byId('group_body'),'display:none;');
+		}
+		/*
+		*author:zhaoj
+		*function:点击部门按钮
+		*date：20160621
+		*/
+		function getGroupBtn(){
+			$api.removeCls($api.byId('j_time'), 'active');
+			$api.addCls($api.byId('j_group'), 'active');
+			$api.css($api.byId('group_body'),'display:block;');
+			$api.css($api.byId('time_body'),'display:none;');
+		}
+		/*
+	*author:zhaoj
+	*function:选择时间type=0开始时间，type=1结束时间
+	*date：20160622
+	*/
+	function openPickerTime(type){
+		var nowTime;
+		if(type){
+			nowTime = $api.text($api.byId('end_time'));
+		}else{
+			nowTime = $api.text($api.byId('start_time'));
+		}
+		api.openPicker({
+		    type: 'date',
+		    date: nowTime,
+		    title: '选择时间'
+		}, function(ret, err){
+		    if( ret ){
+		        var month = ret.month > 9 ? ret.month : '0'+ret.month;
+		    	var day = ret.day > 9 ? ret.day : '0'+ret.day;
+		    	var time = ret.year+'-'+month+'-'+day;
+		    	if(type == 0){
+		    		//开始时间
+		    		setTime(0,time);
+		    	}else{
+		    		if(Date.parse($api.text($api.byId('start_time')).replace(/-/g,'\/'))<Date.parse(time.replace(/-/g,'\/'))){
+		    			setTime(1,time);
+		    		}else{
+		    			popToast('结束时间不能小于开始时间，请重新选择时间');
+		    		}
+		    	}
+		    }
+		});
+	}
+	/*
+	*author:zhaoj
+	*function:获取当前时间,返回年月日
+	*date：20160622
+	*/
+	function getNowTime(type){
+		time = new Date();
+		var year = time.getFullYear();
+		var month = time.getMonth() + 1;
+		var month_string = month > 9 ? month : '0'+month;;
+		var day = time.getDate();
+		var day_string = day = day > 9 ? day : '0'+day;
+		switch(type){
+			case 0:
+				return year+'-'+month_string+'-01';
+				break;
+			case 1:
+				return year+'-'+month_string+'-'+day_string;
+				break;
+			case 2:
+				return year+'-'+month+'-'+day;
+				break;
+			default:
+				break;
+		}
+	}
+	/*
+	*author:zhaoj
+	*function:设置时间type=0开始时间，type=1结束时间
+	*date：20160622
+	*/
+	function setTime(type,time){
+		if(type){
+			$api.text($api.byId('end_time'), time);
+		}else{
+			$api.text($api.byId('start_time'), time);
+		}
+	}
+	</script>
+</html>

@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>班级通知</title>
+    <link rel="stylesheet" type="text/css" href="../../../../../css/aui/aui.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../../../css/module/ipad/popup-body.css"/>
+    <link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+    <style>
+    	.popup-body-new	.commont-content{padding:52px 0 50px 0;}
+    	.content-name{height:60px;}
+    	input[type='text'],textarea{border:none;margin-bottom:0;}
+    	input[type='text']{height:59px;border-bottom:1px dashed #aaaaaa;padding:10px 0;}
+    	textarea{height:165px;padding:20px;max-height:165px;overflow-y: auto;}
+    	.popup-body-new .commont-content .position{font-size:16px;padding:20px 0 0 30px;}
+    </style>
+</head>
+<body class="popup-body-new common-ipad-bjtzIpad-tea">
+	<div id="j_select_picture" class="select-picture-bg aui-hide">
+		<div class="select-picture">
+			<div class="option" onclick="getAlbum();">图片</div>
+			<div class="option" onclick="openPicture();">拍照</div>
+			<div class="option" onclick="commonExecScript('bjtzIpad_index_window','','back();',0);">取消</div>
+		</div>
+	</div>
+	<div class="commont-content">
+		<div class="top fl">
+			<div class="name">发表班级通知</div>
+			<div class="close fr" onclick="closeFrame();"></div>
+		</div>
+		<div class="content">
+			<div class="content-name plr20 clearfix ">
+				<input oninput="commonRemoveExpression(this)" id="j_title" type="text" placeholder="标题，最多支持40字符（必填）" maxlength ='40' />
+			</div>
+			<div class="content-text plr120 clearfix ">
+				<textarea id="j_content" placeholder="请输入内容" rows="4"></textarea>
+			</div>
+			<div class="add-img-file">
+				<ul id="j_files">
+					<li id="j_add_btn" class="add-btn fl" onclick="selectPicture();">
+						<a class="aui-iconfont aui-icon-add fl"></a>
+					</li>
+				</ul>
+			</div>
+		</div>
+		<div class="btn" onclick="addNotice();">保存</div>
+	</div>
+</body>
+<script type="text/javascript" src="../../../../../script/api.js"></script>
+<script type="text/javascript" src="../../../../../script/base_config.js" ></script>
+<script type="text/javascript" src="../../../../../script/common/common.js"></script>
+<script type="text/javascript" src="../../../../../script/assembly/UIAlbumBrowser.js"></script>
+<script type="text/javascript" src="../../../../../script/assembly/getPicture.js"></script>
+<script type="text/javascript" src="../../../../../script/assembly/photoBrowser.js"></script>
+<script type="text/javascript">
+	apiready = function(){
+		commonSetTheme({"level":5,"type":0});
+	};
+	/*
+	*author:zhaoj
+	*function:关闭页面
+	*date：20170912
+	*/
+	function closeFrame(){
+		commonExecScript('bjtzIpad_index_window','','back();',0);
+	}
+	/*
+	*author:zhaoj
+	*function:选择图片
+	*date：20170914
+	*/
+	function selectPicture(){
+		commonExecScript('bjtzIpad_index_window','','reBackType("picture");',0);
+		commonAddOrRemoveHideCss('j_select_picture',1);
+	}
+	/*
+	*author:zhaoj
+	*function:关闭选择图片
+	*date：20170914
+	*/
+	function closePicture(){
+		commonAddOrRemoveHideCss('j_select_picture',0);
+	}
+	/*
+     *author:zhaoj
+     *function:选择图片
+     *date：20170914
+     */
+    function getAlbum() {
+		var num = 9 - judgeImgCount();
+		if(num != 0){
+			UIAlbumBrowser.open(num,function(data){
+				//递归上传图片
+				commonUiUploadFiles({"data":data,"is_trans":1}, function(ret_data) {
+					for(var i = 0; i < ret_data.length; i++){
+						var json_data = JSON.parse(ret_data[i]);
+	            		var file_id = json_data.file_id;
+						var ext = json_data.ext;
+						var param_json = {"file_id" : file_id,"ext" : ext};
+                        showPicture(param_json);
+					}
+					commonExecScript('bjtzIpad_index_window','','back();',0);
+				})
+			})
+		}else{
+			popToast('最多上传9张图片');
+		}
+    }
+    /*
+     *author:zhaoj
+     *function:打开拍照
+     *date：20170914
+     */
+    function openPicture(){
+    	getPicture.open({"type":1},function(data){
+    		//递归上传图片
+        	commonUiUploadFiles({"data":data,"is_trans":0}, function(ret_data) {
+        		for(var i = 0; i < ret_data.length; i++){
+					var json_data = JSON.parse(ret_data[i]);
+            		var file_id = json_data.file_id;
+					var ext = json_data.ext;
+					var param_json = {"file_id" : file_id,"ext" : ext};
+                    showPicture(param_json);
+				}
+				commonExecScript('bjtzIpad_index_window','','back();',0);
+        	})
+    	});
+    }
+    /*
+ 	*author:zhaoj
+ 	*function:显示图片
+ 	*date：20170914
+ 	*/
+    function showPicture(param_json){
+    	var img_url='';//图片路径
+    	var img_url_original="";//原图
+    	if (BASE_APP_TYPE == 1) {
+			img_url = BASE_IMAGE_PRE+"down/Material/" + param_json.file_id.substring(0, 2) + "/" + param_json.file_id + '.' + param_json.ext + commonReturnPhotoCutSize(0);	
+			img_url_original = 	BASE_IMAGE_PRE+"down/Material/" + param_json.file_id.substring(0, 2) + "/" + param_json.file_id + '.' + param_json.ext;		
+		} else {
+			img_url = BASE_URL_ACTION + "/html/thumb/Material/" + param_json.file_id.substring(0, 2) + "/" + param_json.file_id + '.' + param_json.ext + commonReturnPhotoCutSize(0);
+			img_url_original = BASE_URL_ACTION + "/html/thumb/Material/" + param_json.file_id.substring(0, 2) + "/" + param_json.file_id + '.' + param_json.ext;
+		}
+		var error_html ="this.src='../../../../../image/fun-module/common/wk_default.png'";
+    	var li_html = '<li class="fl">';
+			li_html += '<img class="j_img" onclick="openImg(this);" openSrc="'+img_url_original+'" onerror="'+error_html+'" src="'+img_url+'" />';
+			li_html += '<div class="delete" onclick="deleteImg(event,this);"></div>';
+			li_html += '</li>';
+    	$api.before($api.byId('j_add_btn'), li_html);
+    	judgeImgCount();
+    }
+    /*
+ 	*author:zhaoj
+ 	*function:删除图片
+ 	*date：20170915
+ 	*/
+    function deleteImg(e,self){
+    	var parent = self.parentNode;
+    	var grandpa = parent.parentNode;
+    	grandpa.removeChild(parent);
+    	judgeImgCount();
+    	e.stopPropagation();
+    }
+    /*
+ 	*author:zhaoj
+ 	*function:打开图片
+ 	*date：20170915
+ 	*/
+    function openImg(self){
+    	var parent = self.parentNode;
+    	var grandpa = parent.parentNode;
+    	//获取当前文件的位置
+    	var index;
+		if (parent) {
+			index = 0;
+			while ( parent = parent.previousSibling) {
+				if (parent.nodeType == 1)
+					index++;
+			}
+		}
+		//获取图片路径
+		var openImgArray = [];
+		var imgArray = $api.domAll($api.byId('j_files'), '.j_img');
+		for (var i = 0; i < imgArray.length; i++) {
+			openImgArray.push($api.attr(imgArray[i], 'openSrc'));
+		}
+		//打开图片
+		photoBrowser.open(openImgArray, index);
+    }
+    /*
+ 	*author:zhaoj
+ 	*function:判断图片的数量
+ 	*date：20170915
+ 	*/
+    function judgeImgCount(){
+    	var imgArray = $api.domAll($api.byId('j_files'), '.j_img');
+    	if(imgArray.length == 9){
+    		$api.addCls($api.byId('j_add_btn'), 'aui-hide');
+    	}else{
+    		$api.removeCls($api.byId('j_add_btn'), 'aui-hide');
+    	}
+    	return imgArray.length;
+	}
+    /*
+	*作者:zhaoj
+	*功能:发布数据
+	*日期：20161008
+	*/
+	function addNotice(){
+		var title = $api.val($api.byId('j_title'));
+		title = $api.trimAll(title);
+		if (title.length == 0) {
+			popAlert("标题不能为空！");
+			return false;
+		}
+		var content = $api.val($api.byId('j_content'));
+		content = $api.trimAll(content);
+		if (content.length == 0) {
+			popAlert("内容不能为空！");
+			return false;
+		}
+		var overview = content.substring(0,100);
+		content = '<p>' + content + '</p><br/>';
+		var thumbnail = '';//缩略图路径
+		//验证是否有附件
+		var dlArray = $api.domAll($api.byId('j_files'), '.j_img');
+		if (dlArray.length != 0) {
+			var img_suffix = commonReturnPhotoCutSize(0);
+			if (BASE_APP_TYPE == 2) {
+				for (var i = 0; i < dlArray.length; i++) {
+					if (i == 0) {
+						thumbnail = $api.attr(dlArray[i], 'src');
+						var startIndex = thumbnail.indexOf('/dsideal_yy/');
+						thumbnail = thumbnail.substring(startIndex,thumbnail.length);
+						thumbnail = thumbnail.replaceAll(img_suffix, '');
+					}
+					var img_url = $api.attr(dlArray[i], 'src');
+					var startIndex = img_url.indexOf('/dsideal_yy/');
+					img_url = img_url.substring(startIndex,img_url.length);
+					img_url = img_url.replaceAll(img_suffix, '');
+					var img_html = '<img src="' + img_url + '" alt="" />'
+					content = content+ img_html;
+				}
+			} else {
+				for (var i = 0; i < dlArray.length; i++) {
+					if (i == 0) {
+						thumbnail = $api.attr(dlArray[i], 'src');
+						thumbnail = thumbnail.replaceAll(img_suffix, '');
+					}
+					var img_url = $api.attr(dlArray[i], 'src');
+					img_url = img_url.replaceAll(img_suffix, '');
+					var img_html = '<img src="' + img_url + '" alt="" />'
+					content = content+ img_html;
+				}
+			}
+		}
+		
+		showSelfProgress('发表中...');
+		api.ajax({
+			url :BASE_URL_ACTION + '/ypt/notice/addNotice',
+			method : 'post',
+			timeout : 30,
+			dataType : 'json',
+			data : {
+				values : {
+					"content":content,
+					"identity_id":$api.getStorage("identity"),
+					"notice_type":1,
+					"org_id":api.pageParam.id,
+					"org_type":105,
+					"overview":overview,
+					"person_id":$api.getStorage("person_id"),
+					"register_id":api.pageParam.regist_id,
+					"thumbnail":thumbnail,
+					"title":title,
+					"random_num":creatRandomNum()
+				}
+			},
+			headers : {
+	'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+		}
+		}, function(ret, err) {
+			if (err) {
+				api.hideProgress();
+				popToast('发表失败，请稍候再试！');
+			} else {
+				if(ret.success){
+
+					setTimeout(function(){
+                    	api.hideProgress();
+                    	popToast('发表成功');
+                    	//刷新index数据列表
+                    	commonExecScript('bjtzIpad_index_window','bjtzIpad_index_frame','initData(1);',1);
+                    },2900);  
+                    setTimeout(function(){
+                    	//关闭添加页面
+                    	commonExecScript('bjtzIpad_index_window','','back();',0);
+                    },3000);
+				}else{
+					api.hideProgress();
+					popToast('发表失败，请稍候再试！');
+				}
+			}
+		});
+	}
+</script>
+</html>

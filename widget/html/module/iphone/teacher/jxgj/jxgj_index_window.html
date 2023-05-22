@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<!-- html5：在创建html时为了防止页面缩放等不兼容效果，要创建个viewport  -->
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<!-- 在IOS设备上，有时会将数字转为手机号，这里也要禁止下 -->
+		<meta name="format-detection" content="telephone=no"/>
+		<title>教学轨迹</title>
+		<link rel="stylesheet" type="text/css" href="../../../../../css/aui/aui.css" />
+		<link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+		<style>
+			.menu{padding-right:30px;background:url(../../../../../image/fun-module/common/down-menu.png) right center no-repeat;background-size:15px auto;}
+		</style>
+	</head>
+	<body class="common-iphone-jxbg-tea">
+		<div id="wrap">
+			<header class="aui-bar aui-bar-nav aui-bar-primary" id="aui-header">
+				<div id="cloud" class="topbar activebar">
+					<div id="back" class="back" onclick="back();" tapmode="">
+						<i class="aui-iconfont aui-icon-left"></i>返回
+					</div>
+					<div  class="mTitle" id="mTitle">
+						教学报告
+<!--						<div id="btn_title" class="btn-title">
+							<div id="index_title">
+								<div class="btn-l btn-top-active btn-top" onclick="changeBtnTitle(this,1);">教学轨迹</div>
+								<div id="cjfx" class="btn-r btn-top" onclick="changeBtnTitle(this,0);">成绩分析</div>
+							</div>
+						</div>-->
+					</div>
+					<div class="win-menu">
+						<div id="j_term" class="aui-iconfont aui-icon-menu back" onclick="openTermFrame(1);">&nbsp;</div>
+					</div>
+				</div>
+			</header>
+			<div  class="aui-content aui-content-padded" id="message-content">
+				<p class="aui-text-center history-date"></p>
+			</div>
+		</div>
+	</body>
+	<script type="text/javascript" src="../../../../../script/api.js"></script>
+	<script type="text/javascript" src="../../../../../script/base_config.js" ></script>
+	<script type="text/javascript" src="../../../../../script/common/common.js"></script>
+	<script type="text/javascript" src="../../../../../script/assembly/tongjiData.js"></script>
+	<script type="text/javascript">
+		var back_type = 'window';//定义从哪个页面退出
+		var type = 1;
+		var header_h = 0;
+		apiready = function() {
+			commonSetTheme({"level":5,"type":0});
+			header_h = api.pageParam.header_h;
+			var pageParamJson={"header_h":header_h};//打开frame页面所需参数
+			commonOpenFrame('jxgj_index_frame', 'jxgj_index_frame.html',header_h, true, false,"#ffffff",pageParamJson);//打开index页面
+			commonBackForAndroid();//安卓关闭
+			commonIosAuiHeader();//定位header位置，留出上面电池等空隙，苹果需要
+			commonOpenTjData($api.getStorage("identity")+'_'+api.winName);//记录统计
+		};
+		
+		/*
+		 * 重置从哪个页面退出
+		 * 张自强
+		 * 20170510
+		 */
+		function reBackType(type) {
+			switch (type) {
+				//如果通知学业报告首页页面退出
+				case 'window':
+					back_type = 'window';
+					break;
+			}
+		}
+		
+		/*
+		 * 返回页面
+		 * 张自强
+		 * 20170510
+		 */
+		function back() {
+			switch (back_type) {
+				//课程资源页面退出
+				case 'window':
+				    commonCloseTjData($api.getStorage("identity")+'_'+api.winName);
+					api.closeWin();
+					break;
+			}
+		}
+		
+		/*
+		 * 功能：打开切换学期按钮
+		 * 作者：张自强
+		 * 时间：20171018
+		 */
+		function openTermFrame(type){
+			$api.attr($api.byId('j_term'),'onclick',  'openTermFrame('+((type+1)%2)+');');
+			api.execScript({
+	            frameName : 'jxgj_index_frame',
+	            script: 'showOrhideXq('+type+');'
+            });
+           
+		}
+		
+		
+	    /*
+		 * 功能：切换成绩分析和学习轨迹
+		 * 作者：张自强
+		 * 时间：20171023
+		 */
+		function changeBtnTitle(btn_obj, btn_type) {
+			hideOrShowCjMenu(btn_type);
+			//如果当前资源，不需要更新
+			if (type != btn_type) {
+				type = btn_type;
+				var $btn_title = $api.byId('btn_title');
+				var $btn_title_all = $api.domAll($btn_title, 'div');
+				for (var j = 0; j < $btn_title_all.length; j++) {
+					$api.removeCls($btn_title_all[j], 'btn-top-active');
+				}
+				if (btn_type == 1) {
+					$api.addCls(btn_obj, 'btn-top-active');
+					$api.addCls($api.byId('btn_title'), 't_display_b');
+					$api.removeCls($api.byId('back'), 't_display_n');
+					commonCloseFrame('cjfx_index_frame');
+					var pageParamJson={"header_h":header_h};//打开frame页面所需参数
+					commonOpenFrame('jxgj_index_frame', 'jxgj_index_frame.html',header_h, true, false,"#ffffff",pageParamJson);//打开index页面
+				} else {
+					$api.addCls(btn_obj, 'btn-top-active');
+					$api.removeCls($api.byId('btn_title'), 't_display_b');
+					$api.removeCls($api.byId('back'), 't_display_n');
+					commonCloseFrame('jxgj_index_frame');
+					var pageParamJson={"header_h":header_h,'winName':api.winName};//打开frame页面所需参数
+					commonOpenFrame('cjfx_index_frame', 'cjfx_index_frame.html',header_h, true, false,"#ffffff",pageParamJson);	//打开index页面
+				}
+			}
+		}
+		
+				
+		/*
+		 * 功能：隐藏或显示成绩分析认领等功能
+		 * 作者：张自强
+		 * 时间：20171028
+		 */
+		function hideOrShowCjMenu(type){
+			open_type = type;
+			if(type==1){
+				$api.removeCls($api.byId('j_term'), 'display-none');
+			}else{
+				$api.addCls($api.byId('j_term'), 'display-none');
+			}
+		}
+	</script>
+</html>

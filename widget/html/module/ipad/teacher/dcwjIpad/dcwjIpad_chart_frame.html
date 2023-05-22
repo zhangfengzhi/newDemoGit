@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<title>答题页面</title>
+		<link rel="stylesheet" type="text/css" href="../../../../../css/aui/aui.css" />
+		<link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+		<style>
+			body {margin: 0;background: rgba(0,0,0,0);}
+			.zuoye-name {line-height: 55px;width: 100%;}
+			.answer-title {border-top: 1px solid #f1f1f1;height: 50px;width: 100%;margin-bottom: 20px;}
+			.bdn{border-top:none;padding-top:10px;}
+			.title {width: 50%;float: left;border-left:0 !important;}
+			.answer-title div {height: 35px;display: inline-block;line-height: 35px;margin-top: 13px;padding: 0 15px;color: #ffffff;}
+			.seleted {width: 20%;float: right;text-align: right;}
+			.seleted .num {font-size: 22px;}
+			.stem {padding: 20px 5%;max-width:100%;word-wrap: break-word;word-break:break-all;}
+			.next {line-height: 55px;text-align: right;}
+			.plr15 {padding: 0 15px;}
+			.footer-div{position:fixed;height:55px;background:#ffffff;display: block;bottom: 0px;width:100%;box-shadow:3px 0 4px #aaaaaa;z-index: 9999;}
+			.footer-div .prevQ,.footer-div .nextQ{display: inline-block;width:50%;float: left;}
+			.footer-div .prevQ{text-align: left;}
+			.footer-div .nextQ{text-align: right;}
+			.footer_div{height:70px;}
+			.s-yellow{background:#A27600;}
+	    	.q-yellow{background:#FCF227;}
+	    	.yellow{background:#FAFA24;}
+	    	.s-blue{background:#0543FA;}
+	    	.q-blue{background:#5A6CA0;}
+	    	.blue{background:#4369DB;}
+	    	.s-pink{background:#fe66ff;}
+	    	.q-pink{background:#ff6699;}
+	    	.pink{background:#ed66a1;}
+	    	.s-green{background:#04AE8C;}
+	    	.q-green{background:#7FEC8B;}
+	    	.green{background:#87C720;}
+	    	.s-orange{background:#FCA500;}
+	    	.q-orange{background:#FAC96A;}
+	    	.orange{background:#FDB225;}
+	    	.s-red{background:#FF0000;}
+	    	.q-red{background:#ED5D5D;}
+	    	.red{background:#FA4848;}
+	    	.s-gray{background:#767676;}
+	    	.q-gray{background:#D1D1D1;}
+	    	.gray{background:#B9B9B9;}
+	    	.color22{background:#FE5842;}
+	    	.color23{background:#F23621;}
+	    	.color24{background:#21F23E;}
+	    	.color25{background:#989D98;}
+	    	.color26{background:#B2B42C;}
+	    	.color27{background:#B42CB2;}
+	    	.color28{background:#7E0815;}
+	    	.color29{background:#12E5E0;}
+	    	.color30{background:#F0340D;}
+	    	.color31{background:#640F4D;}
+	    	.color32{background:#0D21C4;}
+	    	.color33{background:#C40DAA;}
+	    	.color34{background:#34348B;}
+	    	.color35{background:#6CF2F2;}
+	    	.color36{background:#43ED52;}
+	    	.color37{background:#C1C452;}
+	    	.color38{background:#C16721;}
+	    	.color39{background:#621A0D;}
+	    	.color40{background:#ED395A;}
+	    	.color41{background:#EA08AF;}
+	    	.color42{background:#8115C9;}
+	    	.color43{background:#3B48F2;}
+	    	.color44{background:#0F6AC6;}
+	    	.color45{background:#0AF2C9;}
+	    	.color46{background:#15CB76;}
+	    	.color47{background:#15791F;}
+	    	.color48{background:#83E329;}
+	    	.color49{background:#B4CE15;}
+	    	.color50{background:#FA7E74;}
+	    	.chart{position:relative;width:50%;float:right;}
+	    	.chart ul:after{height:70px;content:'';display: block;clear: both;visibility: hidden;}
+	    	.chart ul{position:absolute;top:50%;right:5%;width:95%;}
+	    	.chart ul li{list-style:none;font-size:12px;line-height:28px}
+	    	.chart ul li .yuan{display:inline-block;width:12px;height:12px;border-radius:50%;float:left;margin-top:8px;}
+	    	.chart ul li .option-name{display:inline-block;float:left;padding-left:5px;max-width:47%;}
+	    	.chart ul li .bfb{display:inline-block;float:right;}
+	    	.chart ul li .person-num{display:inline-block;float:right;}
+	    	.chart ul li .person-num font{font-size:16px;padding:0 5px;}
+	    	.answer-text ul li{list-style:none;padding:8px 15px 0 15px;}
+	    	.answer-text ul li .num{line-height:25px;color:#111111;}
+	    	.answer-text ul li .content{display:inline-block;width:100%;padding-bottom:8px;float:right;line-height:25px;border-bottom:1px solid #e0e0e0;word-wrap: break-word;word-break:break-all;color:#333333;}
+	    	
+	    	.fl{float:left;}
+	    	.person{width:100%;padding-bottom:65px;color:#333333;}
+	    	.person .option-name{height:40px;line-height:37px;padding:0 15px;color:#000000;}
+	    	.person ul{padding-left:15px;border-top:1px solid #e0e0e0;border-bottom:1px solid #e0e0e0;}
+	    	.person ul li{height:45px;line-height:45px;border-bottom:1px solid #e0e0e0;}
+	    	.person ul li:last-child{border-bottom:none;}
+	    	.zhushi{font-size:14px;color:#f00;}
+		</style>
+	</head>
+	<body class="common-ipad-dcwjIpad-tea">
+		<div class="q_div" id="q_div">
+			<!--<div class="zuoye-name plr15 clearfix">
+				<div class="title">单选题</div>              
+				<div class="seleted"><font class="num">1</font>/3</div>
+			</div>
+			<div id="j_title" class="stem clearfix">
+				单选题
+			</div>
+			<div class="answer-title clearfix">
+				<div>
+					统计图
+				</div>
+			</div>
+			<div id="j_chart" class="chart clearfix">
+				<ul id="j_chart_content">
+					<li>答题人数<span class="person-num"><font>4</font>人</span></li>
+					<li>
+						<span class="yuan s-yellow">&nbsp;</span>
+						<span class="option-name">选项一</span>
+						<span class="bfb">2(67%)</span>
+					</li>
+					<li>
+						<span class="yuan s-gray">&nbsp;</span>
+						<span class="option-name ellipsis">选项一选项一选项一选项一选项一选项一</span>
+						<sp an class="bfb">1(33%)</span>
+					</li>
+				</ul>
+			</div>
+			<div id="j_person_title" class="answer-title clearfix fl">
+				<div>
+					选项详情
+				</div>
+			</div>
+			<div id="j_person" class="person"></div>-->
+			<!--多选题-->
+			<!--<div class="zuoye-name plr15 clearfix">
+				<div class="title">多选题</div>
+				<div class="seleted"><font class="num">2</font>/3</div>
+			</div>
+			<div class="stem clearfix">
+				多选题
+			</div>
+			<div class="answer-title clearfix">
+				<div>
+					统计图
+				</div>
+			</div>-->
+			<!--主观题-->
+			<!--<div class="zuoye-name plr15 clearfix" style="display:none;">
+				<div class="title">主观题</div>
+				<div class="seleted"><font class="num">3</font>/3</div>
+			</div>
+			<div class="stem clearfix" style="display:none;">
+				主观题
+			</div>
+			<div class="answer-title clearfix" style="display:none;">
+				<div>
+					作答答案
+				</div>
+			</div>
+			<div class="no-data">暂无相关的人员提交答案</div>
+			<div class="answer-text" style="display:none;">
+				<ul>
+					<li>
+						<span class="num">1.</span><span class="content">世界上的人我最漂亮世界上的人我最漂亮世界上的人我最漂亮世界上的人我最漂亮世界上的人我最漂亮</span>
+					</li>
+					<li>
+						<span class="num">2.</span><span class="content">世界上的人我最漂亮</span>
+					</li>
+				</ul>
+			</div>-->
+			<!--下一题-->
+			<!--<div id="j_footer" class="footer-div next clearfix">
+				<div class="prevQ" onclick="enterPreQuestion();"><span class="aui-iconfont aui-icon-left"></span>上一题</div>
+				<div class="nextQ" onclick="goNextQuestion();">下一题<span class="aui-iconfont aui-icon-right"></span></div>
+			</div>-->
+		</div>
+		<script type="text/html" id="q_script">
+			<%if(q_typeid == 1){%>
+				<!--单选题-->
+				<div class="zuoye-name plr15 clearfix">
+					<div class="title">单选题</div>              
+					<div class="seleted"><font class="num"><%=sort%></font>/<%=length%></div>
+				</div>
+				<div id="j_title" class="stem clearfix">
+					<%if(http_action == 0){%>
+						<%=title%>
+					<%}else{%>
+						<a href="javascript:openHref('<%=href%>');"><%=description%>(点击查看)</a>
+					<%}%>
+				</div>
+				<div id="j_answer_title" class="answer-title clearfix">
+					<div>
+						统计图
+					</div>
+					<span class="zhushi" id="zhushi" style="display:none;">注：点击饼状图查看选项详情</span>
+				</div>
+				<div id="j_no_data" class="no-data" style="display:none;">
+					暂无人员提交问卷
+				</div>
+				<div id="j_chart" class="chart clearfix" style="display:none;">
+					<ul id="j_chart_content">
+						
+					</ul>
+				</div>
+				<div id="j_person_title" class="answer-title fl bdn clearfix" style="display:none;">
+					<div>
+						选项详情
+					</div>
+				</div>
+				<div id="j_person" class="person fl" style="display:none;"></div>
+			<%}else if(q_typeid == 2){%>
+				<!--多选题-->
+				<div class="zuoye-name plr15 clearfix">
+					<div class="title">多选题</div>              
+					<div class="seleted"><font class="num"><%=sort%></font>/<%=length%></div>
+				</div>
+				<div id="j_title" class="stem clearfix">
+					<%if(http_action == 0){%>
+						<%=title%>
+					<%}else{%>
+						<a href="javascript:openHref('<%=href%>');"><%=description%>(点击查看)</a>
+					<%}%>
+				</div>
+				<div id="j_answer_title" class="answer-title clearfix">
+					<div>
+						统计图
+					</div>
+					<span class="zhushi" id="zhushi" style="display:none;">注：点击饼状图查看选项详情</span>
+				</div>
+				<div id="j_no_data" class="no-data" style="display:none;">
+					暂无人员提交问卷
+				</div>
+				<div id="j_chart" class="chart clearfix" style="display:none;">
+					<ul id="j_chart_content">
+						<!--<li>答题人数<span class="person-num"><font>4</font>人</span></li>
+						<li>
+							<span class="yuan s-yellow">&nbsp;</span>
+							<span class="option-name">选项一</span>
+							<span class="bfb">2(67%)</span>
+						</li>
+						<li>
+							<span class="yuan s-gray">&nbsp;</span>
+							<span class="option-name ellipsis">选项一选项一选项一选项一选项一选项一</span>
+							<sp an class="bfb">1(33%)</span>
+						</li>-->
+					</ul>
+				</div>
+				<div id="j_person_title" class="answer-title bdn fl clearfix" style="display:none;">
+					<div>
+						选项详情
+					</div>
+				</div>
+				<div id="j_person" class="person fl" style="display:none;"></div>
+			<%}else{%>
+				<!--简答题-->
+				<div class="zuoye-name plr15 clearfix">
+					<div class="title">简答题</div>              
+					<div class="seleted"><font class="num"><%=sort%></font>/<%=length%></div>
+				</div>
+				<div id="j_title" class="stem clearfix">
+					<%=title%>
+				</div>
+				<div class="answer-title clearfix">
+					<div>
+						简答题答案
+					</div>
+				</div>
+				<div id="j_no_data" class="no-data" style="display:none;">
+					暂无人员提交问卷
+				</div>
+				<div id="answer_div" class="answer-text" style="display:none;">
+				</div>
+			<%}%>
+			<!--下一题-->
+			<div id="j_footer" class="footer-div next clearfix">
+				<div class="prevQ" onclick="enterPreQuestion();"><span class="aui-iconfont aui-icon-left"></span>上一题</div>
+				<div class="nextQ" onclick="goNextQuestion();">下一题<span class="aui-iconfont aui-icon-right"></span></div>
+			</div>
+		</script>
+		<div id="footer_div" class="footer_div">
+			&nbsp;
+		</div>
+	</body>
+	<script type="text/javascript" src="../../../../../script/api.js"></script>
+	<script type="text/javascript" src="../../../../../script/base_config.js" ></script>
+	<script type="text/javascript" src="../../../../../script/plug-in/template.js" ></script>
+	<script type="text/javascript" src="../../../../../script/plug-in/base64.js" ></script>
+	<script type="text/javascript" src="../../../../../script/common/common.js" ></script>
+	<script type="text/javascript" src="../../../../../script/common/ipad/dcwjIpad_common.js" ></script>
+	<script type="text/javascript">
+		var header_h;
+		var BASE_URL_ACTION;
+		var pieChart;//饼状图初始化变量
+		var pieID =0;//饼状图id
+		var id;//调查问卷id
+		var q_cur_num = 0;//当前试题
+		var q_sum = 0;//试题总数
+		var q_json;//试题json
+		var q_id;//问题的id
+		var q_type;//问题的类型
+		var currentPage  = 1;//简答题当前页面
+		var totalPages;//主观题回答的总页数
+		var pieChart_flag=0;//是否调用关闭饼状图
+		var is_show_person;//是否具有权限查看某个选项的详细
+		var person_name_array = new Array();//选项选择人详情数组
+		var classArray = ['green','orange','pink','blue','red','yellow','gray','s-green','s-orange','s-pink','s-blue','s-red','s-yellow','s-gray','q-green','q-orange','q-pink','q-blue','q-red','q-yellow','q-gray','color22','color23','color24','color25','color26','color27','color28','color29','color30','color31','color32','color33','color34','color35','color36','color37','color38','color39','color40','color41','color42','color43','color44','color45','color46','color47','color48','color49','color50'];
+		var colorArray = ['#87C720','#FDB225','#ed66a1','#4369DB','#FA4848','#FAFA24','#B9B9B9','#04AE8C','#FCA500','#fe66ff','#0543FA','#FF0000','#A27600','#767676','#7FEC8B','#FAC96A','#ff6699','#5A6CA0','#ED5D5D','#FCF227','#D1D1D','#FE5842','#F23621','#21F23E','#989D98','#B2B42C','#B42CB2','#7E0815','#12E5E0','#F0340D','#640F4D','#0D21C4','#C40DAA','#34348B','#6CF2F2','#43ED52','#C1C452','#C16721','#621A0D','#ED395A','#EA08AF','#8115C9','#3B48F2','#0F6AC6','#0AF2C9','#15CB76','#15791F','#83E329','#B4CE15','#FA7E74'];
+		apiready = function() {
+			commonSetTheme({"level":5,"type":0});
+			header_h = api.pageParam.header_h;
+			id = api.pageParam.id;
+			BASE_URL_ACTION = $api.getStorage('BASE_URL_ACTION');
+			is_show_person = api.pageParam.is_show_person;
+			showSelfProgress('加载中...');
+			getSurveyById(id,function(flag,ret){
+				if(flag){
+					q_sum = ret.item.length-1;
+					q_json = ret;
+					var answer_json={"items":[]};
+					for(var i = 0; i < ret.item.length; i++){
+						var oparam = new Object();
+						oparam.item_id=ret.item[i].id;
+						oparam.q_type=ret.item[i].q_type;
+						oparam.q_typeid=ret.item[i].q_typeid;
+						answer_json.items.push(oparam);
+					}
+					var answer_str = Base64.encode(JSON.stringify(answer_json));
+					api.execScript({
+						name : 'dcwjIpad_chart_window',
+						script : 'setDktValue("'+answer_str+'")'
+					});
+					reWriteQuestion(0);
+				}else{
+					api.hideProgress();
+					popToast('获取统计信息失败，请稍候再试！');
+				}
+			});
+			//下一题
+			nextQuestion();
+			//上一题
+			preQuestion();
+		};
+		/*
+		*作者:zhaoj
+		*功能:进入下一道题
+		*日期：20161101
+		*/
+		function goNextQuestion(){
+			if (q_cur_num < q_sum) {
+				q_cur_num++;
+				reWriteQuestion(q_cur_num);
+			} else {
+				q_cur_num = q_cur_num;
+				popToast('已经到最后一题');
+			}
+		}
+		/*
+		*作者:zhaoj
+		*功能:进入上一道题
+		*日期：20161101
+		*/
+		function enterPreQuestion(){
+			if (q_cur_num > 0) {
+				q_cur_num--;
+			} else {
+				popToast('已经到第一题');
+				q_cur_num = 0;
+			}
+			reWriteQuestion(q_cur_num);
+		}
+		/*
+		*作者:zhaoj
+		*功能:重写问题题目信息
+		*日期：20161101
+		*/
+		function reWriteQuestion(q_cur) {
+			api.hideProgress();
+			q_cur_num = q_cur;
+			var length = q_json.item.length;
+			if(length>0){
+				q_json.item[q_cur].sort=q_cur+1;
+				q_json.item[q_cur].length = length;
+				var q_type = q_json.item[q_cur].q_typeid;
+				//如果是单选和多选题，需要判断是否有外部链接页面，需要跳转
+				if(q_type == 1 || q_type == 2) {
+					var q_item = q_json.item[q_cur];
+					var q_title = q_item.title;
+					//http打开
+					var option = q_title;//选项内容
+					var flagE = option.charAt(option.length-1)==")";
+					var flagC = option.charAt(option.length-1)=="）";
+					var pECenter = option.lastIndexOf('](');
+					var pCCenter = option.lastIndexOf('】（');
+					var pELeft = option.lastIndexOf('[');
+					var pCLeft = option.lastIndexOf('【');
+					//是否存在http链接
+					var http_action = 0;
+					//教师名
+					var description='';
+					//http地址
+					var href =''
+					//没有http的内容
+					var title =''
+					if(flagE && pECenter>=0 && pELeft>=0){
+						title = option.substring(0,pELeft);   //去除超链接后显示的选项内容
+						description = title + "[" + option.substring(pELeft+1,pECenter) + "]";  //超链接内容
+						href = option.substring(pECenter+2,option.length-1);  //超链接路径
+						http_action = 1;
+					}else if(flagC && pCCenter>=0 && pCLeft>=0){
+						title = option.substring(0,pCLeft);
+						description = title + "【" + option.substring(pCLeft+1,pCCenter)+ "】";
+						href = option.substring(pCCenter+2,option.length-1);
+						http_action = 1;
+					}else{
+						title = q_title;
+						http_action = 0;
+					}
+					
+//					q_title = changeAnswerForKaiping(q_title);
+					q_item["title"] = q_title;
+					q_item["http_action"] = http_action;
+					q_item["description"] = description;
+					q_item["href"] = href;
+				}
+				
+				
+				
+				addSingleTemplateHtml('q_div', 'q_script', q_json.item[q_cur])
+				api.execScript({
+					name : 'dcwjIpad_chart_window',
+					script : 'setSortValue('+q_json.item[q_cur].sort+')'
+				});
+				//判断是最后一题还是第一题
+				judgeLastOrFirst(q_cur+1,length);
+				getTjData(q_json.item[q_cur].q_typeid,q_json.item[q_cur].id,q_json.item[q_cur].q_type);
+			}else{
+				$api.html($api.byId('q_div'), '<div class="no-data">暂无题目</div>');
+			}
+		}
+		/*
+		*作者:zhaoj
+		*功能:获取统计数据
+		*日期：20161101
+		*/
+		function getTjData(q_typeid,q_id,q_type){
+			q_id=q_id;
+			q_type = q_type;
+			var data_url;
+			if(q_typeid == 1 || q_typeid == 2){
+				//选择题
+				data_url = BASE_URL_ACTION + '/space/survey/get_surveystat_byitemid?random_num='+creatRandomNum()+'&id='+q_id+'&q_type='+q_type;
+			}else{
+				//简答题
+				data_url = BASE_URL_ACTION + '/space/survey/get_surveystat_byitemid?random_num='+creatRandomNum()+'&id='+q_id+'&q_type='+q_type+'&page_num='+currentPage+'&page_size='+BASE_PAGE_SIZE;
+			}
+			getSurveystatByItemId(data_url,function(flag,ret){
+				if(flag){
+					if(q_typeid == 1 || q_typeid == 2){
+						//选择题
+						removeScrollBottomReload();
+						person_name_array=[];
+						getPieChartData(ret);
+					}else{
+						//简答题
+						showDisplay();
+						totalPages = ret.total_page;
+						scrollBottomReload();
+						shortAnswerQuestions(ret);
+					}
+				}else{
+					popToast('获取统计信息失败，请稍候再试！');
+				}
+			});
+		}
+		/*
+		*作者:zhaoj
+		*功能:简答题赋值
+		*日期：20161101
+		*/
+		function shortAnswerQuestions(ret){
+			if(ret.list.length > 0){
+				var liHtml='<ul>';
+				for(var i = 0; i < ret.list.length; i++){
+					if(!isEmptyString(ret.list[i].content)){
+					var content = commonTransferBrStr(ret.list[i].content);
+					var liHtml=liHtml+'<li>';
+						if(is_show_person){
+							liHtml=liHtml+'<span class="content"><span>['+ret.list[i].person_name+']</span>&nbsp;'+content+'</span>';
+						}else{
+							liHtml=liHtml+'<span class="content">'+content+'</span>';
+						}
+						liHtml=liHtml+'</li>';
+					}
+				}
+				liHtml=liHtml+'</ul>';
+				$api.html($api.byId('answer_div'), liHtml);
+				$api.css($api.byId('answer_div'),'display:block;');
+			}else{
+				$api.css($api.byId('j_no_data'),'display:block;');
+			}
+		}
+		/*
+		*作者:zhaoj
+		*功能:判断是第一题还是最后一题
+		*日期：20161101
+		*/
+		function judgeLastOrFirst(q_cur,length){
+			if(q_cur == 1 && length != 1){
+				$api.css($api.dom('.prevQ'),'display:none;');
+				$api.css($api.dom('.nextQ'),'float:right;');
+			}else if(q_cur == length && length != 1){
+				$api.css($api.dom('.prevQ'),'float:left;');
+				$api.css($api.dom('.nextQ'),'display:none;');
+			}else if(q_cur == 1 && length == 1){
+				$api.css($api.dom('.footer-div'),'display:none;');
+				$api.css($api.byId('footer_div'),'display:none;');
+			}
+		}
+		/*
+		*作者:zhaoj
+		*功能:get饼状图的数据和饼状图的位置
+		*日期：20161101
+		*/
+		function getPieChartData(ret){
+			var picArray=[];
+			var picData={"list":[]};
+			var person_total_num=0;
+			for(var i = 0; i < ret.list.length; i++){
+				person_total_num= person_total_num+ret.list[i].total*1;
+			}
+			for(var i = 0; i < ret.list.length; i++){
+				var oparam = new Object();
+				var oparam1 = new Object();
+				var value = (ret.list[i].total /person_total_num*100).toString().substring(0,5);
+				var index = value.indexOf('.');
+				if(index != -1){
+					var second_num = value.substring(index+2,index+3);
+					value = value.substring(0, index+2);
+					if(second_num*1>=5){
+						value=value*1;
+						value= (value+0.1).toFixed(1);
+					}
+					
+				}
+				person_name_array.push(ret.list[i].person_names);
+				oparam.value=value*1;
+				oparam.color=colorArray[i];
+				oparam1.name = ret.list[i].option_title;
+				oparam1.total = ret.list[i].total;
+				oparam1.value = value*1;
+				oparam1.color=classArray[i];
+				picArray.push(oparam);
+				picData.list.push(oparam1);
+			}
+			//获取题干高度
+			var title_height = $api.cssVal($api.byId('j_title'), 'height');
+			title_height = title_height.substring(0,title_height.length-2)*1;
+			//如果有人答题，打开饼状图
+			if(ret.list.length > 0){
+				openPieChart(title_height,picArray,picData);
+				$api.css($api.byId('j_chart'),'display:block;');
+				//右侧选项以及百分比显示
+				rightPartDataShow(person_total_num,picData);
+			}else{
+				$api.css($api.byId('j_no_data'),'display:block;');
+			}
+		} 
+		/*
+		*作者:zhaoj
+		*功能:右侧选项数据显示
+		*日期：20161101
+		*/
+		function rightPartDataShow(person_total_num,picData){
+			var li_html= '<li>当前已收集问卷<span class="person-num"><font>'+api.pageParam.answer_num+'</font>份</span></li>';
+			for(var i = 0; i < picData.list.length; i++){
+				li_html = li_html+'<li>';
+				li_html = li_html+'<span class="yuan '+picData.list[i].color+'">&nbsp;</span>';
+				li_html = li_html+'<span class="option-name ellipsis">'+picData.list[i].name+'</span>';
+				li_html = li_html+'<span class="bfb">'+picData.list[i].total+'人</span>';
+			//	li_html = li_html+'<span class="bfb">'+picData.list[i].total+'('+picData.list[i].value+'%)</span>';
+				li_html = li_html+'</li>';
+			}
+			$api.html($api.byId('j_chart_content'), li_html);
+			//设置右边部分显示样式
+			$api.css($api.byId('j_chart'),'min-height:'+(api.winWidth * 0.30)+'px;height:'+((picData.list.length+1)*16)+'px;');
+			$api.css($api.byId('j_chart_content'),'margin-top:-'+((picData.list.length+1)*28/2)+'px;');
+			//选项详情显示
+			if(is_show_person){
+				$api.css($api.byId('j_person_title'),'display:block;');
+				$api.css($api.byId('j_person'),'display:block;');
+				$api.css($api.byId('zhushi'),'display:inline;');
+			}
+		}
+		/*
+		*author:zhaoj
+		*function:打开饼状图
+		*date：20160523
+		*/
+		function openPieChart(title_height,picArray,picData){
+			pieChart = api.require('pieChart');
+			pieChart.close({
+			    id: pieID
+			});
+			pieID++;
+			pieChart_flag=1;
+			var uiMode = api.uiMode;
+			if(uiMode=='phone'){
+				var x_num = 10+api.winWidth * 0.22;
+				var y_num = 15+title_height+60+50+api.winWidth * 0.22;
+				var radius_num = api.winWidth * 0.22;
+			}else{
+				var x_num = 10+api.winWidth * 0.15;
+				var y_num = 15+title_height+60+50+api.winWidth * 0.15;
+				var radius_num = api.winWidth * 0.15;
+			}
+			pieChart.open({
+			      x: x_num,
+			      y: y_num,
+			      radius: radius_num,
+			      id: pieID,
+			      center:{
+			      	  title: '选项',
+			      	  subTitle: '统计',
+			      	  titleColor:'#484848',
+			      	  titleSize :11,
+			      	  subTitleColor:'#484848',
+			      	  subTitleSize:11
+			      },
+			      elements:picArray,
+			    fixedOn: 'dcwjIpad_chart_frame',
+			    fixed: false
+			}, function(ret, err) {
+				if(ret){
+					showPerson(ret.index,picData);
+				}
+			});
+		}
+		/*
+		*作者:zhaoj
+		*功能:显示人员列表
+		*日期：20161128
+		*/
+		function showPerson(index,picData){
+			var peronArray = person_name_array[index].split(",");
+			var li_html="<div class='option-name ellipsis'>"+picData.list[index].name+"</div><ul>";
+			for(var i = 0; i < peronArray.length; i++){
+				li_html = li_html+"<li class='ellipsis'>"+peronArray[i]+"</li>";
+			}
+			li_html = li_html+"</ul>";
+			$api.html($api.byId('j_person'), li_html);
+		}
+		/*
+		*作者:zhaoj
+		*功能:获取列表数据
+		*日期：20161008
+		*/
+		function initData(current_page){
+			currentPage = current_page;
+			var data_url = BASE_URL_ACTION + '/space/survey/get_surveystat_byitemid?random_num='+creatRandomNum()+'&id='+q_id+'&q_type='+q_type+'&page_num='+currentPage+'&page_size='+BASE_PAGE_SIZE;
+			getSurveystatByItemId(data_url,function(flag,ret){
+				if(flag){
+					//简答题
+					shortAnswerQuestions(ret);
+				}else{
+					popToast('获取统计信息失败，请稍候再试！');
+				}
+			});
+		}
+		/*
+		 *author:zhaoj
+		 *function:隐藏或显示模块
+		 *date：20160623
+		 */
+		function showDisplay(){
+			if(pieChart_flag){
+				if(pieChart){
+					for(var i =0 ; i <= pieID; i++){
+						pieChart.close({
+							id: i
+						});
+					}
+				}
+				pieChart_flag = 0;
+			}
+		}
+	</script>
+</html>

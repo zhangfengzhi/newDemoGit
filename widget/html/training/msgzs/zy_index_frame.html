@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<!-- html5：在创建html时为了防止页面缩放等不兼容效果，要创建个viewport  -->
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<!-- 在IOS设备上，有时会将数字转为手机号，这里也要禁止下 -->
+		<meta name="format-detection" content="telephone=no"/>
+		<title>资源数据页面</title>
+		<link rel="stylesheet" type="text/css" href="../../../css/aui/aui.css" />
+		<link rel="stylesheet" type="text/css" href="../../../css/list_frame.css" />
+		<style>
+			
+		</style>
+	</head>
+	<body >
+		<div class="aui-content-padded">
+			<!--微课列表-->
+			<div id="zylist_div"></div>
+			<script type="text/html" id="zylist_script">
+				<% if(list.length == 0){ %>
+					<div style="text-align:center;color:#666;"><span>没有找到相关资源</span></div>
+				<% }else{ %>
+					<%for(var i=0; i<list.length; i++) {%>
+				<!--资源列表-->
+						<div class="section3">
+							<div class="item style1" tapmode="itemhover" onclick="openZyContent('<%=list[i].file_id %>','<%=list[i].resource_title_base64%>','<%=list[i].resource_format%>','<%=list[i].zy_thumb_url %>','<%=list[i].person_name_base64 %>','<%=list[i].org_name_base64 %>','<%=list[i].pub_time%>','<%=list[i].resource_id_int%>','<%=list[i].preview_status%>','<%=list[i].iid%>','<%=list[i].resource_type_name_base64%>','<%=list[i].app_type_name_base64%>',<%=list[i].down_count %>,'<%=list[i].m3u8_status%>',<%=bType%>,<%=list[i].id%>,<%=list[i].pub_target%>);">
+								<div class="itemlogo userlogo"><img onerror="this.src='../../../image/yingyong/weike/wk_default.png'" src="../../../image/yingyong/weike/wk_default.png" alt="" data-echo="<%=list[i].zy_thumb_url %>">
+								</div>
+								<div class="itemshelf">
+									<div class="shelfinfo01">
+										<%=list[i].resource_title %>
+									</div>
+									<div class="shelfinfo04">
+										上传教师：<%=list[i].person_name %>&nbsp;&nbsp;&nbsp;&nbsp;
+										<% if(list[i].pub_target == "1") {%>
+												状态&nbsp;<font color="green">已审核</font>&nbsp;
+											<% } else { %>
+												状态&nbsp;<font color="red">未审核</font>&nbsp;
+											<% } %>
+									</div>
+									<%if(bType== '1'){%>
+										<div  class="shelfinfo06">
+											收藏时间 ：<%=list[i].pub_time.substring(0,10) %><!--&nbsp;&nbsp;下载次数：<%=list[i].down_count %>-->
+										</div>
+									<%}else if(bType== '7'){%>
+										<div  class="shelfinfo06">
+											共享时间 ：<%=list[i].pub_time.substring(0,10) %><!--&nbsp;&nbsp;下载次数：<%=list[i].down_count %>-->
+										</div>
+									<%}else if(bType== '4'){%>
+										<div  class="shelfinfo06">
+											评论时间 ：<%=list[i].pub_time.substring(0,10) %><!--&nbsp;&nbsp;下载次数：<%=list[i].down_count %>-->
+										</div>
+									<%}else if(bType== '5'){%>
+										<div  class="shelfinfo06">
+											反馈时间 ：<%=list[i].pub_time.substring(0,10) %><!--&nbsp;&nbsp;下载次数：<%=list[i].down_count %>-->
+										</div>
+									<%}else if(bType== '2'||bType== '3'){%>
+										<div  class="shelfinfo06">
+											推荐时间 ：<%=list[i].pub_time.substring(0,10) %><!--&nbsp;&nbsp;下载次数：<%=list[i].down_count %>-->
+										</div>
+									<%}else{%>
+										<div  class="shelfinfo06">
+										上传时间 ：<%=list[i].pub_time.substring(0,10) %><!--&nbsp;&nbsp;下载次数：<%=list[i].down_count %>-->
+									</div>
+									<%}%>
+									
+											
+								</div>
+							</div>
+						</div>
+					<% } %>
+				<% } %>
+			</script>
+		</div>
+	</body>
+	<script type="text/javascript" src="../../../script/api.js" ></script>
+	<script type="text/javascript" src="../../../script/base_config.js" ></script>
+	<script type="text/javascript" src="../../../script/plug-in/base64.js" ></script>
+	<script type="text/javascript" src="../../../script/plug-in/template.js" ></script>
+	<script type="text/javascript" src="../../../script/plug-in/echo.min.js"></script>
+	<script type="text/javascript">
+		//定义搜索框
+		var uiInput;
+		//定义搜索框高度
+		var bar_h;
+		//定义滑动条
+		var navigationBar;
+		//定义头高度
+		var header_h;
+		//总记录数
+		var totalCount = 0;
+		//总页数
+		var totalPages = 0;
+		//定义一个变量存储第一次加载返回来的总记录数
+		var totalData = 0;
+		// 定义一个变量存储第一次加载返回来的总页数
+		var totalPages = 0;
+		//通知关键字
+		var keyword;
+		//当前页面为第一页
+		var currentPage;
+		//定义学科id
+		var bar_ids = [];
+		//定义区域id
+		var sbj_id = 0;
+		//当前人员身份id
+		var identity;
+		//云微课还是我的微课，云微课为1，我的微课为2,学生和家长微课为0
+		var zy_from_type;
+		var BASE_URL_ACTION;
+		var BASE_APP_TYPE;
+		var isadmin;
+		//定义滑动条id
+		var n_id = 0;
+		apiready = function() {
+			api.showProgress({
+				title : '加载中...',
+				modal : false
+			});
+			isadmin=api.pageParam.isadmin;
+			BASE_URL_ACTION = $api.getStorage('BASE_URL_ACTION');
+			BASE_APP_TYPE = $api.getStorage('BASE_APP_TYPE');			
+			header_h = api.pageParam.header_h;
+			identity = $api.getStorage('identity');
+			zy_from_type = api.pageParam.zy_from_type;
+			if(typeof(keyword) == 'undefined') {
+				keyword = '';
+			} 
+			bar_h = 40;
+			currentPage = 1;
+			//实例化滑动条
+			navigationBar = api.require("navigationBar");
+			identity = $api.getStorage('identity');
+			//打开滑动条
+			if(api.pageParam.showProgress){
+				openNavigationBar();
+			}
+			//openNavigationBar(identity);
+			//关闭键盘
+			setTimeout(function() {
+				uiInput.closeKeyboard();
+			}, 100);
+			//实例化搜索框
+			uiInput = api.require('UIInput');
+			//加载搜索框
+			loadSearchBar();
+			//下拉刷新
+			refreshDataInfo();
+			//上拉加载数据
+			scrollBottomReload();
+		};
+		/**
+		 * 打开微课学科滑动
+		 * 周枫
+		 * 2015.11.21
+		 */
+		function openNavigationBar() {
+			getJsQueryRange(function(is_true, data) {
+				if (is_true) {
+					openNavigationBarToHtml(data.list);
+				} else {
+					api.hideProgress();
+					api.toast({
+						msg : data
+					});
+				}
+			});
+		}
+
+		/**
+		 * 打开menu列表
+		 * 周枫
+		 * 2016.1.13
+		 */
+		function openNavigationBarToHtml(bar_list) {
+			var bar_items = [];
+			for (var i = 0; i < bar_list.length; i++) {
+				
+				var arr = {
+					title : bar_list[i].subject_name,
+					titleSelected : bar_list[i].subject_name,
+					bg : "#ffffff",
+					alpha : 0.8,
+					bgSelected : "#ffffff"
+				}
+				bar_ids.push(bar_list[i].subject_id);
+				bar_items.push(arr);
+			}
+			var params = {
+				x : 0,
+				y : header_h,
+				w : api.frameWidth,
+				h : bar_h,
+				//导航条风格，默认值："left_to_right"
+				style : "left_to_right",
+				itemSize : {
+					w : 100,
+					h : 100
+				},
+				//按钮项
+				items : bar_items,
+				//被选中的导航项的下标.可为空.不传表示不选中任何item，默认值：无
+				selectedIndex : 0,
+				//导航项字体的大小和颜色.可为空
+				font : {
+					//导航项字体大小.数字.默认系统字号，可为空
+					size : 16,
+					// 选中时,导航项字体大小.默认size大小，可为空
+					sizeSelected : 16,
+					// 导航条字体颜色.字符串.默认#FFFFFF,可为空
+					color : "#000000",
+					// 导航条字体颜色.字符串.默认与 color 相同.可为空
+					colorSelected : "#ff0000"
+					// 背景透明度. 数字.取值范围0-1，默认1，可为空
+					//alpha
+				},
+				//导航条背景,支持rgb,rgba,# , img.可为空，默认值：#6b6b6b
+				bg : "#ffffff",
+				//背景透明度.取值范围0-1，默认1，可为空，默认值：1.0.
+				alpha : 1.0,
+				//					popItem : {
+				//						position : "tail",
+				//						title : "打开",
+				//						titleSelected : "关闭",
+				//						bg : "#ffff00",
+				//						bgSelected : "#ffffff"
+				//					},
+				//（可选项）模块所属 Frame 的名字，若不传则模块归属于当前 Window
+				fixedOn : '',
+				//（可选项）模块是否随所属 Window 或 Frame 滚动,默认值：true（不随之滚动）
+				fixed : true
+			};
+			navigationBar.open(params, callBackNew);
+		}
+
+		function callBackNew(ret, err) {
+			var bar_index = 0;
+			bar_index = ret.index;
+			n_id = ret.id;
+			uiInput.closeKeyboard();
+			currentPage = 1;
+			sbj_id = bar_ids[bar_index];
+			loadData(sbj_id, currentPage, true);
+		}
+		/**
+		 * 打开资源标题搜索
+		 * 周枫
+		 * 2015.12.07
+		 */
+		function loadSearchBar() {
+			uiInput.close();
+			uiInput.open({
+				//（可选项）模块的位置及尺寸
+				rect : {
+					x : 0,
+					y : header_h + bar_h + 1,
+					w : api.winWidth,
+					h : bar_h
+				},
+				//（可选项）模块各部分的样式
+				styles : {
+					bgColor : '#fff',
+					size : 16,
+					color : '#000',
+					placeholder : {
+						color : '#ccc'
+					}
+				},
+				autoFocus : false,
+				//（可选项）输入框显示的最大行数，注意：取值大于1（多行显示时），不触发 search 事件回调
+				maxRows : 1,
+				//（可选项）输入框的占位提示文本
+				placeholder : '按资源标题搜索,最多输入20个汉字',
+				//（可选项）输入框获取焦点时，弹出的键盘类型；取值范围：default（默认键盘）,number（数字键盘）,search（搜索键盘）
+				keyboardType : 'search',
+				//（可选项）模块所属 Frame 的名字，若不传则模块归属于当前 Window
+				fixedOn : '',
+				//（可选项）模块是否随所属 Window 或 Frame 滚动,默认值：true（不随之滚动）
+				fixed : true
+			}, function(ret) {
+				/*
+				 *  status: true,                  //布尔型；true||false
+				 eventType: 'show'              //字符串类型；交互事件类型，
+				 //取值范围：
+				 //show（模块打开成功）
+				 //change（输入框内容改变）
+				 //search（点击键盘的搜索按钮）
+				 */
+				if (ret) {
+					if (ret.eventType == 'search') {
+						uiInput.value(function(ret) {
+							if (ret) {
+								keyword = ret.msg;
+								$api.setStorage('zy_keyword', keyword);
+								currentPage = 1;
+								loadData(sbj_id, currentPage, true);
+								uiInput.closeKeyboard();
+							}
+						});
+					}
+					if (ret.eventType == 'change') {
+						uiInput.value(function(ret) {
+							if (ret) {
+								keyword = ret.msg;
+								$api.setStorage('zy_keyword', keyword);
+								if (keyword == '') {
+									currentPage = 1;
+									loadData(sbj_id, currentPage, true);
+								}
+								if (keyword.length >= 21) {
+									var keywordValue =$api.trimAll(keyword);
+									if(keywordValue.length==0){
+										api.alert({
+											msg : '对不起，最多输入20个汉字'
+										}, function(ret, err) {
+											uiInputValue();
+										});
+									}else{
+										api.alert({
+											msg : '对不起，最多输入20个汉字'
+										}, function(ret, err) {
+											uiInput.value({
+												msg : keyword.substring(0,20)
+											});
+										});
+									}
+									
+								}
+							}
+						});
+					}
+				}
+			});
+		}
+		/**
+		 * 加载数据
+		 */
+		function loadData(sbj_id, current_page, isReload) {
+			var class_id = $api.getStorage("class_id");
+			var person_id = $api.getStorage('person_id');
+			currentPage = isReload ? 1 : current_page;
+			var list_url = BASE_URL_ACTION + '/yx/resource/getServiceResourceList';
+			/*if (zy_from_type == 1) {
+				list_url = BASE_URL_ACTION + '/ypt/resource/getResourceList';
+			} else {
+				list_url = BASE_URL_ACTION + '/ypt/personal/getResourceMyList';
+			}*/
+			
+			//第几页
+			list_url = list_url + '?page_number=' + currentPage;
+			//每页多少条
+			list_url = list_url + '&page_size=' + BASE_PAGE_SIZE;
+			//类型
+			list_url = list_url + '&type_id='+sbj_id;
+			list_url = list_url + '&sort_num=2';
+			list_url = list_url + '&service_type=6';
+			//list_url = list_url + '&is_tuijian=1';
+			list_url = list_url + '&service_id='+api.pageParam.gzs_id;
+			list_url = list_url + '&stage_id='+$api.getStorage('zy_xd_id');
+			list_url = list_url + '&subject_id='+$api.getStorage('zy_km_id');
+			list_url = list_url + '&scheme_id='+$api.getStorage('zy_version_id');
+			list_url = list_url + '&structure_id='+$api.getStorage('zy_knowledge_id');
+			if(isadmin!=1){
+				list_url = list_url + '&is_tuijian=1';
+			}
+			keyword = $api.trimAll(keyword);      
+			var keyword_encode=keyword;
+			if (keyword != '') {
+				keyword_encode = Base64.encode(keyword);
+				if(api.systemType == 'ios') {
+					keyword_encode = keyword_encode.replace(/\+/g, "%2B");
+				} 
+			}
+			list_url = list_url + '&business_name=' + keyword_encode;
+			list_url = list_url + '&random_num=' + creatRandomNum();
+			//alert(list_url);
+			api.ajax({
+				url : list_url,
+				method : 'get',
+				dataType : 'json',
+				cache : false,
+				headers : {
+					'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+				}
+			}, function(ret, err) {
+			//alert(JSON.stringify(ret));
+				if (ret.success) {
+					totalData = ret.totalRow;
+					totalPages = ret.totalPage;
+					if (isReload) {
+						// 重新设置为1
+						currentPage = 1;
+					}
+					var zy_list = ret.list;
+					var zy_list_l = getJsonObjLength(zy_list);
+					if (zy_list_l > 0) {
+						for (var i = 0; i < zy_list_l; i++) {
+							var zy_thumb_id = zy_list[i].thumb_id;
+							var zy_thumb_url = '';
+							//if (BASE_APP_TYPE == 1) {
+								//https://dsideal.obs.cn-north-1.myhuaweicloud.com/down/Thumbs/8E/8E75B87E-68AC-4ACA-87EE-988207BE549C.thumb
+								zy_thumb_url = url_path + BASE_THUMB_BEGIN + zy_thumb_id.substring(0, 2) + '\/' + zy_thumb_id + BASE_THUMB_END;
+							//} else {
+								//zy_thumb_url = BASE_URL_ACTION + BASE_THUMB_BEGIN + zy_thumb_id.substring(0, 2) + '/' + zy_thumb_id + BASE_THUMB_END;
+							//}
+							zy_list[i]["zy_thumb_url"] = zy_thumb_url;
+							zy_list[i]["resource_title_base64"] = Base64.encode(zy_list[i].resource_title);
+							zy_list[i]["org_name_base64"] = Base64.encode(zy_list[i].org_name);
+							zy_list[i]["person_name_base64"] = Base64.encode(zy_list[i].person_name);
+							zy_list[i]["resource_type_name_base64"] = Base64.encode(zy_list[i].resource_type_name);
+							zy_list[i]["app_type_name_base64"] = Base64.encode(zy_list[i].app_type_name);
+						}
+					}
+					if (zy_from_type == 1) {
+						ret.bType = '-1';
+					} else {
+						ret.bType = sbj_id;
+					}
+					var html_type = template.render('zylist_script', ret);
+					
+					if (currentPage == 1) {
+						document.getElementById('zylist_div').innerHTML = html_type;
+					} else {
+						$api.append($api.byId('zylist_div'), html_type);
+					}
+					//延迟加载图片
+					setTimeout(function() {
+						echoInit();
+					}, 300);
+				} else {
+					api.alert({
+						msg : '对不起，获取资源列表失败'
+					});
+				}
+				//通知顶部下拉刷新数据加载完毕，组件会恢复到默认状态
+				api.refreshHeaderLoadDone();
+				api.hideProgress();
+				//关闭menu页面
+				api.closeFrame({
+					name : 'zy_menu_frame'
+				});
+			});
+		}
+
+		/**
+		 * 打开内容页面
+		 * 周枫
+		 * 2015.12.17
+		 */
+		function openZyContent(file_id, file_name,resource_format,thumb_url,person_name,org_name,create_time,resource_id_int,preview_status,iid,resource_type_name,app_type_name,down_count,m3u8_status,bType,sp_id,is_tuijian) {
+			//重置微课window标题
+			api.execScript({
+				name : 'zy_index_window',
+				script : 'reWindowName("' + file_name + '");'
+			});
+			//先重置通知window返回哪个页面
+			api.execScript({
+				name : 'zy_index_window',
+				script : 'reBackType("content","","");'
+			});
+			//打开通知内容frame
+			api.openFrame({
+				name : 'zy_content_frame',
+				url : 'zy_content_frame.html',
+				rect : {
+					x : 0,
+					y : header_h,
+					w : api.winWidth,
+					h : api.winHeight - header_h,
+				},
+				pageParam : {
+					file_id : file_id,
+					file_name : file_name,
+					resource_format : resource_format,
+					thumb_url : thumb_url,
+					person_name : person_name,
+					org_name : org_name,
+					create_time : create_time,
+					resource_id_int : resource_id_int,
+					preview_status : preview_status,
+					iid : iid,
+					zy_from_type : api.pageParam.zy_from_type,
+					resource_type_name:resource_type_name,
+					app_type_name:app_type_name,
+					down_count:down_count,
+					m3u8_status : m3u8_status,
+					bType : bType,
+					header_h : header_h,
+					isadmin : isadmin,
+					sp_id : sp_id,
+					is_tuijian:is_tuijian
+				},
+				bounces : false,
+				allowEdit : true,
+				scrollToTop : true,
+				bgColor : 'rgba(0,0,0,0)',
+				vScrollBarEnabled : true,
+				hScrollBarEnabled : false,
+				bgColor : '#fff'
+			});
+		}
+
+		/**
+		 * 获取群组
+		 * 周枫
+		 * 2016.1.13
+		 */
+		function getJsQueryRange(callback) {
+			//云资源
+			if (zy_from_type == 1) {
+				api.ajax({
+					url : BASE_URL_ACTION + '/yx/resource/resourceTypeList',
+					method : 'get',
+					dataType : 'json',
+					headers : {
+						'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+					}
+				}, function(ret, err) {
+					if (ret) {
+						if (ret.success == false) {
+							callback(false, '获取人员群组失败');
+						} else {//alert(JSON.stringify(ret));
+							//最终渲染数组
+							var bar_items = [];
+							var bar_items_json = {};
+							//范围数组
+							var org_list_attr = [];
+							var org_list_attr = ret.list;
+							var org_list_attr_l = org_list_attr.length;
+							var org_start_json={};
+								org_start_json["subject_id"]=0;
+								org_start_json["subject_name"]="全部";
+								bar_items[0]=org_start_json;
+							if (org_list_attr_l != 0) {
+								
+								for (var i = 0; i < org_list_attr_l; i++) {
+									var org_item_json = {};
+									
+									
+									org_item_json["subject_id"] = org_list_attr[i].lx_id;
+									org_item_json["subject_name"] = org_list_attr[i].lx_name;
+									bar_items[i+1] = org_item_json;
+								}
+							}
+							
+							bar_items_json["success"] = true;
+							bar_items_json["list"] = bar_items;
+							callback(true, bar_items_json);
+						}
+					} else {
+						callback(false, '获取人员群组失败');
+					}
+				});
+			} else {
+				//最终渲染数组
+				var bar_items_json = '{"list": [{"subject_id": 6,"subject_name": "我的上传"},{"subject_id": 7,"subject_name": "我的共享"},{"subject_id": 1,"subject_name": "我的收藏"},{"subject_id": 2,"subject_name": "我的推荐"},{"subject_id": 3,"subject_name": "推荐给我"},{"subject_id": 4,"subject_name": "我的评论"},{"subject_id": 5,"subject_name":"我的反馈"}],"success": true}';
+				callback(true, $api.strToJson(bar_items_json));
+			}
+		}
+
+		function refreshDataInfo() {
+			//绑定下拉刷新历史会话事件
+			api.setRefreshHeaderInfo({
+				visible : true,
+				loadingImg : 'widget://image/local_icon_refresh.png',
+				bgColor : '#F5F5F5',
+				textColor : '#8E8E8E',
+				textDown : '下拉加载更多...',
+				textUp : '松开加载...',
+				showTime : true
+			}, function(ret, err) {
+				//从服务器加载数据，完成后调用api.refreshHeaderLoadDone()方法恢复组件到默认状态
+				//调用获取历史会话监听
+				//打开滑动条
+				loadData(sbj_id, 1, true);
+				//				openNavigationBar(identity);
+			});
+		}
+
+		/**
+		 * 上拉刷新页面数据
+		 * 周枫
+		 * 2015.11.24
+		 */
+		function scrollBottomReload() {
+			//下移到底部：
+			api.addEventListener({
+				name : 'scrolltobottom',
+				extra : {
+					threshold : 100 //设置距离底部多少距离时触发，默认值为0，数字类型
+				}
+			}, function(ret, err) {
+				if ((currentPage + 1) <= totalPages) {
+					loadData(sbj_id, currentPage + 1, false);
+					currentPage = currentPage + 1;
+					// 页码+1
+				} else {
+					api.toast({
+						msg : '已加载全部数据',
+						location : 'bottom'
+					});
+				}
+			});
+		}
+		
+		function closeNav(){
+            navigationBar.close({
+                id : n_id
+            });
+        }
+        
+        function hideNav() {
+            navigationBar.hide({
+                id : n_id
+            });
+        }
+
+        function showNav() {
+            navigationBar.show({
+                id : n_id
+            });
+        }
+	</script>
+</html>

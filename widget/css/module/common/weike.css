@@ -1,0 +1,178 @@
+/*
+@Filename: kejianJs.css
+@Description: 教师端微课模块样式
+@Version: 2017-05-12
+@author: zhaoj
+*/
+/**
+* 功能：课件index列表页面样式
+* 日期：2016-05-12
+* 作者：zhaoj
+* *****************************************************
+*/
+.plr5{
+	padding:0 5px;
+}
+.pl5{
+	padding-left:5px;
+}
+.index-body{
+	background:#f6f6f6;
+}
+.list-no-data{
+	background:#f6f6f6 !important;
+}
+.index-zsd{
+	line-height:40px;
+	padding-left:15px;
+	color:#333;
+	font-size:14px;
+}
+.index-list{
+	border-top:1px solid #e0e0e0;
+}
+.index-list li{
+	position:relative;
+	border-bottom:1px solid #e0e0e0;
+	border-radius:2px;
+	background:#fff;
+}
+.index-list li .bg{
+	position:absolute;
+	left:0;
+	top:0;
+	width:70px;
+	height:100%;
+	background:url(../../../image/fun-module/iphone/ppt.png) center 8px no-repeat;
+	background-size:45px;
+}
+.index-list li .desk{
+	position:absolute;
+	left:0;
+	top:8px;
+	width:70px;
+	height:100%;
+	background:url(../../../image/fun-module/iphone/desk.png) center 8px no-repeat;
+	background-size:45px;
+}
+.index-list li .info{
+	position:relative;
+	padding-left:70px;
+	color:#888;
+	font-size:12px;
+}
+.index-list li .info div{
+	padding-top:4px;
+}
+.index-list li .info .time{
+	position:absolute;
+	display:inline-block;
+	padding-right:15px;
+	right:0;
+}
+.index-list li .info .name{
+	padding-top:10px;
+	color:#333;
+	font-size:16px;
+}
+.index-list li .info .class{
+	padding:4px 70px 10px 0;
+}
+.index-list li .tip{
+	position:absolute;
+	top:0;
+	right:0;
+	width:32px;
+	height:100%;
+	background:url(../../../image/fun-module/iphone/daoxueJy/jp-king.png) 0 0 no-repeat;
+	background-size:32px;
+}
+.index-list li .wfb{
+	position:absolute;
+	top:0;
+	right:0;
+	width:35px;
+	height:100%;
+	background:url(../../../image/fun-module/iphone/zuoye/no-xiafa.png) 0 0 no-repeat;
+	background-size:35px;
+}
+.footer-div{
+	position:fixed;
+	display: block;
+	left:0;
+	bottom: 0px;
+	width:100%;
+	height:55px;
+	border-top:1px solid #E2E2E2;
+	background:#FFFFFF;
+	font-size:14px;
+}
+.footer-div .wid{
+	width:92%;
+	line-height:36px;
+	margin-top:9px;
+	margin-left:4%;
+	border-radius:2px;
+	color:#ffffff;
+	text-align:center;
+}
+.p-none{
+	display:none;
+}
+/**
+* 功能：课件知识点页面样式
+* 日期：2016-05-12
+* 作者：zhaoj
+* *****************************************************
+*/
+.all-zsd .first-child div{
+	position:relative;
+	line-height:45px;
+	padding:0 15px 0 45px;
+	border-bottom:1px solid #e0e0e0;
+	background:#f6f6f6;
+	color:#333;
+}
+.all-zsd .first-child div .display-child{
+	position:absolute;
+	left:0;
+	top:0;
+	display:inline-block;
+	float:left;
+	width:45px;
+	height:100%;
+}
+
+.all-zsd .first-child div .hidden{
+	background:url(../../../image/fun-module/common/zsd.png) 15px 16px no-repeat;
+	background-size:15px 147px;
+}
+.all-zsd .first-child div .show{
+	background:url(../../../image/fun-module/common/zsd.png) 15px -17px no-repeat;
+	background-size:15px 147px;
+}
+.all-zsd .first-child div .jiedian{
+	background:url(../../../image/fun-module/common/zsd.png) 15px -52px no-repeat;
+	background-size:15px 147px;
+}
+.all-zsd .first-child div .right{
+	float:right;
+	height:45px;
+}
+.all-zsd .second-child li{
+	line-height:45px;
+	padding:0 15px 0 45px;
+	border-bottom:1px dashed #e0e0e0;
+	color:#555;
+}
+.all-zsd .second-child li .num{
+	float:right;
+}
+.all-zsd .first-child div.active,
+.all-zsd .second-child li.active{
+	color:#ff6600;
+    border-left:none;
+    border-top:none;
+    border-bottom:none;
+    border-bottom:1px dashed #e0e0e0;
+}

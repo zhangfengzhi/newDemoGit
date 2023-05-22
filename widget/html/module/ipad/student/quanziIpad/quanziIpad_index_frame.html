@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>圈子</title>
+    <link rel="stylesheet" type="text/css" href="../../../../../css/aui/aui.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../../../css/module/ipad/left-right-layout.css"/>
+    <link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+</head>
+<body class="left-layout-body common-ipad-quanziIpadstu">
+	<div id="j_top" style="height:0px; overflow:hidden"></div>
+	<div id="j_box_shadow" class="box-shadow aui-hide"></div>
+	<!--右侧内容-->
+	<div class="right-content">
+		<ul id="ul_body">
+		</ul>
+		<script id="ul_script" type="text/html">
+			<%if(list.length == 0){%>
+				<div class="no-data">暂无圈子</div>
+			<%}else{%>
+				<%for(var i=0;i<list.length;i++){%>
+					<%if(!list[i].is_del){%>
+						<li id="j_li_<%=list[i].id%>" onclick="openDetailFrame('<%=list[i].oparam%>',<%=list[i].id%>);">
+							<div class="left">
+								<img class="mt20" onerror="this.src='../../../../../image/common/header.png'" src="<%=list[i].avatar_fileid%>" />
+							</div>
+							<div class="right fl">
+								<div class="person-name pt5 ellipsis"><%=list[i].person_name%></div>
+								<div class="infor clearfix">
+									<div class="time"><%=list[i].create_time.substring(0,16)%></div>
+									<div class="praise fr"><%=list[i].praise_count%></div>
+									<div class="comment fr"><%=list[i].comment_num%></div>
+								</div>
+								<div class="title">
+									<span class="ellipsis">
+										
+										<%=list[i].title%>
+										
+									</span>
+								</div>
+								<div class="content"><%=list[i].overview%></div>
+							</div>
+						</li>
+					<%}%>
+				<%}%>
+			<%}%>	
+		</script>	
+	</div>
+	<!--//右侧内容-->
+</body>
+<script type="text/javascript" src="../../../../../script/api.js"></script>
+<script type="text/javascript" src="../../../../../script/base_config.js" ></script>
+<script type="text/javascript" src="../../../../../script/plug-in/template.js" ></script>
+<script type="text/javascript" src="../../../../../script/common/common.js"></script>
+<script type="text/javascript" src="../../../../../script/plug-in/base64.js" ></script>
+<script type="text/javascript">
+	var class_json = [];//获取班级数据
+	var storage_json;//缓存中的数据
+	var currentPage = 1;//当前分页数
+	var totalPages = 0;//总页数
+	var del_param = {'flag':false,"total_del_count":0};//删除的参数，flag：判断当前页是否有没删除是我，total_del_count，删除的总数
+	apiready = function(){
+		commonSetTheme({"level":5,"type":0});
+		initData(currentPage);
+		commonScrollBottomReload();
+		commonRefreshHeaderInfo();
+	};
+	/*
+	*author:zhaoj
+	*function:初始化列表数据
+	*date：20170913
+	*/
+	function initData(current_page){
+		showSelfProgress('加载中...');
+		if(currentPage == 1){
+			del_param = {'flag':false,"total_del_count":0};
+			$api.html($api.byId('ul_body'),'');
+		}	
+		storage_json = $api.strToJson($api.getStorage('quanziIpad_infor_'+$api.getStorage('identity')+'_'+$api.getStorage('person_id')));//从缓存中取出当前人记录的
+		currentPage = current_page;
+		listArticleExpand(currentPage);
+	}
+	/*
+	*author:zhaoj
+	*function:获取圈子列表数据
+	*date：20170914
+	*/
+	function listArticleExpand(current_page){
+		del_param.flag = false;//圈子分页删除的数量
+		if(storage_json.org_type == 104){   
+			//校园圈			
+ 			list_url=BASE_URL_ACTION+'/blog/orgArticleList?random_num='+creatRandomNum()+'&search_type=title&search_key=&pagenum='+current_page+'&pagesize='+BASE_PAGE_SIZE+'&business_type=7&org_id='+$api.getStorage('school_id')+'&org_type=104';
+    	}else if(storage_json.org_type == 105){
+    		//班级圈
+			list_url = BASE_URL_ACTION + '/blog_expand/list_article_expand?random_num='+creatRandomNum()+'&search_type=title&search_key=&pagenum='+current_page+'&pagesize='+BASE_PAGE_SIZE+'&business_type=3&business_id='+storage_json.org_id+'&business_iid=105&category_id=&l_person_id='+$api.getStorage('person_id')+'&l_identity_id='+$api.getStorage('identity');		
+    	}
+    	api.ajax({
+	    	url : list_url,
+			method : 'get',
+			timeout : 30,
+			dataType : 'json',
+			headers : {
+				'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+			}
+        },function(ret,err){
+        	api.hideProgress();
+			//通知顶部下拉刷新数据加载完毕，组件会恢复到默认状态
+			commonControlRefresh();
+        	if(err){
+        		popToast('获取圈子失败，请稍候重试');
+        	}else{
+        		if(ret.success){
+        			totalPages = ret.total_page;
+        			for(var i=0;i<ret.list.length;i++){
+						if(ret.list[i].is_del*1){//判断消息是否删除，不显示已删除的消息
+							ret.list[i].is_del = true;
+							del_param.total_del_count++;
+						}else{
+							ret.list[i].is_del = false;
+							del_param.flag = true;
+						}
+						//获取头像
+						if(BASE_APP_TYPE == 1){
+							ret.list[i].avatar_fileid = BASE_IMAGE_PRE + url_path_suffix + ret.list[i].avatar_fileid.substring(0, 2) + "/" +ret.list[i].avatar_fileid + commonReturnPhotoCutSize(0);
+						}else{
+							ret.list[i].avatar_fileid = BASE_URL_ACTION + BASE_IMAGE_BEGIN + ret.list[i].avatar_fileid.substring(0, 2) + "/" + ret.list[i].avatar_fileid + commonReturnPhotoCutSize(0);
+						}
+						//需要传给详情页的参数
+						var oparam = new Object();
+        				oparam.avatar_fileid = ret.list[i].avatar_fileid;
+        				oparam.id = ret.list[i].id;
+        				oparam.expand_id = ret.list[i].expand_id;
+        				oparam.category_id = ret.list[i].category_id;
+        				ret.list[i].oparam = JSON.stringify(oparam);
+        			}
+        			//判断当前加载的页面是否全都删除，如果全都删除，调用下一页面的数据
+        			if(del_param.flag || ret.list.length == 0){
+        				commonAddManyHtml('ul_body','ul_script',ret);
+        			}else{
+        				if((currentPage + 1) < totalPages){
+        					//当前页数据全都删除，调用下一页数据
+	        				currentPage++;
+	        				initData(currentPage);
+	        			}else{
+	        				//如果该机构下全部删除的情况下
+	        				if(del_param.total_del_count == ret.total_row){
+	        					commonAddManyHtml('ul_body','ul_script',{"list":[]});
+	        				}
+	        			}
+        			}
+        		}else{
+        			popToast('获取圈子失败，请稍候重试');
+        		}
+        	}
+        });
+	}
+	/*
+	*author:zhaoj
+	*function:打开详情页面
+	*date：20170912
+	*/
+	function openDetailFrame(oparam,id){
+		setLiCss(id);
+		commonCloseFrame('quanziIpad_detail_frame');
+		oparam = JSON.parse(oparam);
+		//获取评论数和点赞数
+		var praise_count = $api.text($api.dom($api.byId('j_li_'+id), '.praise'));
+		var comment_count = $api.text($api.dom($api.byId('j_li_'+id), '.comment'));
+		oparam.praise = praise_count*1;
+		oparam.comment = comment_count*1;
+		oparam = Base64.encode(JSON.stringify(oparam));
+		commonExecScript('quanziIpad_index_window','','openDetailFrame("'+oparam+'");',0);
+	}
+	/*
+	*author:zhaoj
+	*function:是否显示虚线
+	*date：20170919
+	*/
+	function isShowBoxShow(type){
+		type ? $api.removeCls($api.byId('j_box_shadow'), 'aui-hide') : $api.addCls($api.byId('j_box_shadow'), 'aui-hide');
+	}
+	/*
+	*author:zhaoj
+	*function:设置选中样式
+	*date：20170919
+	*/
+	function setLiCss(id){
+		var li_array = $api.domAll($api.byId('ul_body'), 'li');
+		for(var i = 0; i < li_array.length; i++){
+			$api.removeCls(li_array[i], 'active');
+		}
+		$api.addCls($api.byId('j_li_'+id), 'active');
+	}
+	/*
+	*author:zhaoj
+	*function:设置列表数据点赞数量显示
+	*date：20170914
+	*/
+	function setIndexFramePraiseOrCommentNum(type,num,id){
+		if(type == 0){
+			//点赞
+			$api.text($api.dom($api.byId('j_li_'+id), '.praise'),num);
+		}else if(type == 1){
+			//评论
+			$api.text($api.dom($api.byId('j_li_'+id), '.comment'),num);
+		}else{
+			//删除圈子
+			var li_object = $api.byId('j_li_'+id);
+			var li_parent = li_object.parentNode;
+			li_parent.removeChild(li_object);
+		}
+	}
+</script>
+</html>

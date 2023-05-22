@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<!-- html5：在创建html时为了防止页面缩放等不兼容效果，要创建个viewport  -->
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<!-- 在IOS设备上，有时会将数字转为手机号，这里也要禁止下 -->
+		<meta name="format-detection" content="telephone=no"/>
+		<title>答题卡</title>
+		<link rel="stylesheet" type="text/css" href="../../../../../css/aui/aui.css" />
+		<link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+		<style>
+			.history-date {
+				font-size: 12px;
+			}
+			#message-content {
+				overflow-y: auto;
+				display: none;
+			}
+			
+			
+			.t_display_n {
+				display: none;
+			}
+			.t_display_b {
+				display: block;
+			}
+			.win-menu{font-size:15px;line-height:48px}
+		</style>
+	</head>
+	<body class="common-ipad-dcwjIpad-tea">
+		<div id="wrap">
+			<header class="aui-bar aui-bar-nav aui-bar-primary" id="aui-header">
+				<div id="cloud" class="topbar activebar">
+					<div id="back" class="back" onclick="back();" tapmode="">
+						<i class="aui-iconfont aui-icon-left"></i>返回
+					</div>
+					<div  class="mTitle" id="mTitle">
+						答题卡
+					</div>
+					<div class="win-menu">
+					</div>
+				</div>
+			</header>
+			<div  class="aui-content aui-content-padded" id="message-content">
+				<p class="aui-text-center history-date"></p>
+			</div>
+		</div>
+	</body>
+	<script type="text/javascript" src="../../../../../script/api.js"></script>
+	<script type="text/javascript" src="../../../../../script/common/common.js"></script>
+	<script type="text/javascript" src="../../../../../script/common/ipad/dcwjIpad_common.js"></script>
+	<script type="text/javascript">
+		var header_h;//定位header位置，留出上面电池等空隙，苹果需要
+		var back_type = 'index';//返回参数
+		apiready = function() {
+			commonSetTheme({"level":5,"type":0});
+			header_h = api.pageParam.header_h;
+			var pageParamJson={"header_h" : api.pageParam.header_h,"id":api.pageParam.id,"answer_json":api.pageParam.answer_json,"type":api.pageParam.type};
+			openCommonFrame('dcwjIpad_dtk_frame',0,false,pageParamJson);
+			//安卓关闭
+			commonBackForAndroid();
+			//定位header位置，留出上面电池等空隙，苹果需要
+			var header = $api.byId('aui-header');
+			$api.fixStatusBar(header);
+		};
+		/*
+		*author:zhaoj
+		*function:返回页面
+		*date：20160307
+		*/
+		function back() {
+			switch(back_type) {
+				case 'index':
+					api.closeWin();
+					break;
+				case 'list':
+					api.execScript({
+						name : 'dcwjIpad_index_window',
+						frameName : 'dcwjIpad_index_frame',
+						script : 'openMyNavigationBar(2)'
+					});
+					setTimeout(function(){
+						api.closeToWin({
+						    name: 'dcwjIpad_index_window'
+						});
+					},100);
+					break;
+			}
+		}
+		/**
+		 * 重置从哪个页面退出
+		 * 周枫
+		 * 2015.12.17
+		 */
+		function reBackType(type) {
+			switch(type) {
+				//返回到答题页面
+				case 'index':
+					back_type = 'index';
+					break;
+				//返回到列表页面
+				case 'list':
+					back_type = 'list';
+					break;
+			}
+		}
+	</script>
+</html>

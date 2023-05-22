@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>教学轨迹</title>
+    <link rel="stylesheet" type="text/css" href="../../../../../../css/aui/aui.css"/>
+    <link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+    <style>
+    	body{padding-top:50px;color:#595758;}
+    	.bkjl,.ktjl{width:1024px;height:600px;margin:0 auto;}
+    	.title{height:50px;}
+    	.title div{display:inline-block;height:38px;line-height:38px;}
+    	.title .name{position:relative;color:#fff;padding:0 25px;font-size:20px;}
+    	.title .sanjiao{position:absolute;right:0;bottom:-6px;width:6px;height:6px;background:url(../../../../../../image/fun-module/ipad/jxbg/sanjiao.png) 0 0 no-repeat;background-size:100% auto;}
+    	.title .class-num{position:relative;border:1px dashed #2283C7;border-left:none;padding:0 30px 0 45px;margin-top:6px;}
+    	.title .class-num .bg{display:inline-block;height:38px;width:35px;position: absolute;top:-1px;left:-1px;background:url(../../../../../../image/fun-module/ipad/jxbg/title-bg.png) 0 0 no-repeat;background-size:auto 100%;}
+    	.title .class-num font{font-size:21px;padding:0 3px;color:#2283C7;}
+    	.bkjl .content{position:relative;width:100%;height:500px;margin-top:20px;}
+    	.bkjl .content ul{position:relative;width:550px;height:300px;background:url(../../../../../../image/fun-module/ipad/jxbg/bkjl-bg.png) center 0 no-repeat;background-size:100% auto;margin:0 auto;margin-top:120px;overflow:visible;}
+    	.bkjl .content ul li{position:absolute;display:inline-block;height:70px;overflow:visible;}
+    	.bkjl .content ul li .tip-text font{padding:0 3px;font-size:23px;color:#F96A38;}
+    	.bkjl .content ul li .mode-name{width:70px;height:75px;text-align:center;line-height:75px;border-radius:50%;color:#fff;font-size:20px;}
+    	.bkjl .content ul li:nth-child(1){right:520px;width:200px;top: 250px;}
+    	.bkjl .content ul li:nth-child(1) .tip-text{display:inline-block;line-height:60px;padding-right:10px;float: right;}
+    	.bkjl .content ul li:nth-child(1) .mode-name{background:#EF758A;float:right;}
+    	.bkjl .content ul li:nth-child(2){width:350px;right:459px;top: 67px;}
+    	.bkjl .content ul li:nth-child(2) .tip-text{width:280px;display:inline-block;line-height:30px;padding-right:10px;float: right;text-align:right;}
+    	.bkjl .content ul li:nth-child(2) .mode-name{background:#61CBF3;float:right;}
+    	.bkjl .content ul li:nth-child(3){width:260px;right:145px;top: -102px;height:140px;}
+    	.bkjl .content ul li:nth-child(3) .tip-text{display:inline-block;width:100%;line-height:30px;text-align:center;padding-bottom:5px;}
+    	.bkjl .content ul li:nth-child(3) .mode-name{background:#A5C94B;margin:0 auto;}
+    	.bkjl .content ul li:nth-child(4){width:330px;right:-236px;top: 67px;}
+    	.bkjl .content ul li:nth-child(4) .tip-text{width:260px;display:inline-block;line-height:30px;padding-left:10px;float:left;}
+    	.bkjl .content ul li:nth-child(4) .mode-name{background:#C08DC5;float:left;}
+    	.bkjl .content ul li:nth-child(5){right:-173px;width:200px;top: 250px;}
+    	.bkjl .content ul li:nth-child(5) .tip-text{display:inline-block;line-height:55px;padding-left:10px;float: left;}
+    	.bkjl .content ul li:nth-child(5) .mode-name{background:#E7AE00;float:left;}
+    	.bkjl .chart{position:absolute;left:50%;margin-left:-155px;bottom:100px;width:310px;height:310px;border-radius:50%;}
+    	.ktjl .title{margin:10px 0 30px 0;}
+    	.ktjl .content .left{width:300px;padding-left:30px;}
+    	.ktjl .content .left li{position:relative;padding-left:80px;height:70px;margin-top:20px;}
+    	.ktjl .content .left li .mode-pic{position:absolute;top:0;left:0;width:70px;height:70px;border-radius:50%;line-height:70px;}
+    	.ktjl .content .left li .text .name{font-size:20px;font-weight:500;padding-top:10px;color:#000;}
+    	.ktjl .content .left li .text .count{padding-top:7px;}
+    	.ktjl .content .left li .text .count font{padding:0 3px;font-size:21px;color:#F86D3D;}
+    	.ktjl .content .left li:nth-child(1) .mode-pic{background:#FBC191 url(../../../../../../image/fun-module/ipad/jxbg/gxpm.png) center center no-repeat;background-size:40px auto;}
+    	.ktjl .content .left li:nth-child(2) .mode-pic{background:#61CBF3 url(../../../../../../image/fun-module/ipad/jxbg/tiwen.png) center center no-repeat;background-size:40px auto;}
+    	.ktjl .content .left li:nth-child(3) .mode-pic{background:#C08DC5 url(../../../../../../image/fun-module/ipad/jxbg/fxtp.png) center center no-repeat;background-size:38px auto;}
+    	.ktjl .content .left li:nth-child(4) .mode-pic{background:#A5C94B url(../../../../../../image/fun-module/ipad/jxbg/toupiao.png) center center no-repeat;background-size:32px auto;}
+    	.ktjl .content .left li:nth-child(5) .mode-pic{background:#548FD5 url(../../../../../../image/fun-module/ipad/jxbg/jushou.png) center center no-repeat;background-size:28px auto;}
+    	.ktjl .content .right{width:724px;height:450px;}
+    </style>
+</head>
+<body class="common-ipad-jxbg-tea">
+	<!--备课记录-->
+	<div class="bkjl">
+		<div class="title">
+			<div class="name fl">
+				备课记录
+				<div class="sanjiao">&nbsp;</div>
+			</div>
+			<div class="class-num fl">
+				<span class="bg">&nbsp;</span>
+				共计<font id="j_c_package_num"></font>备课资源
+			</div>
+		</div>
+		<div class="content">
+			<ul>
+				<li>
+					<div class="mode-name">教案</div>
+					<div class="tip-text">累计创建<font id="j_tea_plan_num"></font>个</div>
+				</li>
+				<li>
+					<div class="mode-name">课件</div>
+					<div class="tip-text">累计创建<font id="j_courseware_num"></font>个，发布<font  id="j_p_courseware_num"></font>次，<br/>学生平均完成率<font id="j_c_rate"></font>%</div>
+				</li>
+				<li>
+					<div class="tip-text">累计创建<font id="j_lead_num"></font>个，发布<font id="j_p_lead_num"></font>次，<br/>学生平均完成率<font id="j_lead_rate"></font>%</div>
+					<div class="mode-name">导学</div>
+				</li>
+				<li>
+					<div class="mode-name">检测</div>
+					<div class="tip-text">累计创建<font id="j_home_work_num"></font>个，发布<font  id="j_p_home_work_num"></font>次，<br/>学生平均完成率<font id="j_zy_rate"></font>%</div>
+				</li>
+				<li>
+					<div class="mode-name">素材</div>
+					<div class="tip-text">累计创建<font id="j_material_num"></font>个</div>
+				</li>
+			</ul>
+			<div id="dailyRecordEchart" class="chart"></div>
+		</div>
+	</div>
+	<!--//备课记录-->
+	<!--课堂记录-->
+	<div class="ktjl">
+		<div class="title">
+			<div class="name fl">
+				课堂记录
+				<div class="sanjiao">&nbsp;</div>
+			</div>
+			<div class="class-num fl">
+				<span class="bg">&nbsp;</span>
+				共计使用<font id="j_total_num"></font>课堂互动
+			</div>
+		</div>
+		<div class="content">
+			<div class="left fl">
+				<ul>
+					<li>
+						<div class="mode-pic">&nbsp;</div>
+						<div class="text">
+							<div class="name">共享屏幕</div>
+							<div class="count">累计使用了<font id="j_screenshared_num"></font>次</div>
+						</div>
+					</li>
+					<li>
+						<div class="mode-pic">&nbsp;</div>
+						<div class="text">
+							<div class="name">提问</div>
+							<div class="count">累计使用了<font id="j_asked_num"></font>次</div>
+						</div>
+					</li>
+					<li>
+						<div class="mode-pic">&nbsp;</div>
+						<div class="text">
+							<div class="name">分享图片</div>
+							<div class="count">累计使用了<font id="j_picshared_num"></font>次</div>
+						</div>
+					</li>
+					<li>
+						<div class="mode-pic">&nbsp;</div>
+						<div class="text">
+							<div class="name">投票</div>
+							<div class="count">累计使用了<font id="j_vote_num"></font>次</div>
+						</div>
+					</li>
+					<li>
+						<div class="mode-pic">&nbsp;</div>
+						<div class="text">
+							<div class="name">举手</div>
+							<div class="count">累计使用了<font id="j_handup_num"></font>次</div>
+						</div>
+					</li>
+				</ul>
+			</div>
+			<div class="right fr" id="classRecordEchart"></div>
+		</div>
+	</div>
+	<!--//课堂记录-->
+</body>
+<script type="text/javascript" src="../../../../../../script/api.js"></script>
+<script type="text/javascript" src="../../../../../../script/base_config.js" ></script>
+<script type="text/javascript" src="../../../../../../script/common/common.js"></script>
+<script type="text/javascript" src="../../../../../../script/plug-in/echarts.min.js"></script>
+<script type="text/javascript">
+	var total_json = {};//全局参数
+	apiready = function(){
+		commonSetTheme({"level":6,"type":0});
+		loadData();
+	};
+	/*
+	*author:zhaoj
+	*function:加载数据
+	*date：20171014
+	*/
+	function loadData(){
+		showSelfProgress("加载中...");
+		commonGetListSemester(function(flag,ret){
+			if(flag){
+				for(var i = 0; i < ret.xqlist.length; i++){
+					if(ret.xqlist[i].SFDQXQ == 1){
+						commonExecScript(api.winName,'','setTerm("'+ret.xqlist[i].XQMC+'",'+ret.xqlist[i].XQ_ID+',"'+ret.xqlist[i].KSRQ+'","'+ret.xqlist[i].JSRQ+'");',0);
+					}
+				}
+			}else{
+				api.hideProgress();
+				popToast(ret);
+			}
+		});
+	}
+	/*
+	*author:zhaoj
+	*function:切换学期
+	*date：20171014
+	*/
+	function setTerm(term_id,start_date,end_date){
+		total_json.xq_id = term_id;
+		total_json.start_date=start_date.replaceAll('-',"").substring(0,6);
+		total_json.end_date=end_date.replaceAll('-',"").substring(0,6);
+		get_tea_stat_by_personid();
+		get_tea_stat();
+	}
+	/*
+	*author:zhaoj
+	*function:获取备课记录
+	*interface:张海
+	*date：20171017
+	*/
+	function get_tea_stat_by_personid(){
+		api.ajax({
+			url : BASE_URL_ACTION + '/ypt/space/lean_stat/get_tea_stat_by_personid?person_id=' +  $api.getStorage("person_id")+ '&start_date=' + total_json.start_date+ '&end_date='+total_json.end_date+'&identity_id='+$api.getStorage("identity")+'&random_num=' + creatRandomNum(),
+			method : 'get',
+			timeout : 30,
+			dataType : 'json',
+			headers : {
+	'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+}
+		}, function(ret, err) {
+			api.hideProgress();
+			if (err) {
+				popToast('获取备课记录失败，请稍候重试');
+			} else {
+				if(ret.success){
+					dealBkjlData(ret);
+					showDailyRecordEchart(ret);
+				}else{
+					popToast(ret.info);
+				}
+			}
+		});
+	}
+	/*
+	*author:zhaoj
+	*function:获取课堂记录
+	*interface:张海
+	*date：20171017
+	*/
+	function get_tea_stat(){
+		api.ajax({
+			url : BASE_URL_ACTION + '/space/class_record/get_tea_stat?person_id=' +  $api.getStorage("person_id")+ '&start_date=' + total_json.start_date+ '&end_date='+total_json.end_date+'&identity_id='+$api.getStorage("identity")+'&random_num=' + creatRandomNum(),
+			method : 'get',
+			timeout : 30,
+			dataType : 'json',
+			headers : {
+	'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+}
+		}, function(ret, err) {
+			api.hideProgress();
+			if (err) {
+				popToast('获取课堂记录失败，请稍候重试');
+			} else {
+				if(ret.success){
+					dealktjlData(ret);
+					showClassRecordEchart(ret);
+				}else{
+					popToast(ret.info);
+				}
+			}
+		});
+	}
+	/*
+	*author:zhaoj
+	*function:处理备课记录数据
+	*date：20171017
+	*/
+	function dealktjlData(ret){
+		 $api.text($api.byId('j_vote_num'), ret.vote_num);
+		 $api.text($api.byId('j_asked_num'), ret.asked_num);
+		 $api.text($api.byId('j_screenshared_num'), ret.screenshared_num );
+		 $api.text($api.byId('j_handup_num'), ret.handup_num);
+		 $api.text($api.byId('j_picshared_num'), ret.picshared_num );
+		 ret.total_num = parseInt(ret.handup_num)+parseInt(ret.screenshared_num)+parseInt(ret.picshared_num)+parseInt(ret.vote_num)+parseInt(ret.asked_num);
+		  $api.text($api.byId('j_total_num'), ret.total_num+'次' );
+	}
+	/*
+	*author:zhaoj
+	*function:处理课堂记录数据
+	*date：20171017
+	*/
+	function dealBkjlData(ret){
+		var count = 0;
+		 $api.text($api.byId('j_material_num'), ret.material_num);
+		 $api.text($api.byId('j_p_courseware_num'), ret.p_courseware_num);
+		 
+		 $api.text($api.byId('j_c_rate'), round(ret.c_rate*100,0));
+		 $api.text($api.byId('j_p_home_work_num'), ret.p_home_work_num);
+		 $api.text($api.byId('j_tea_plan_num'), ret.tea_plan_num );
+		 
+		 $api.text($api.byId('j_home_work_num'), ret.home_work_num);
+		 $api.text($api.byId('j_lead_num'), ret.lead_num);
+		 $api.text($api.byId('j_courseware_num'), ret.courseware_num );
+		 
+		  $api.text($api.byId('j_zy_rate'), round(ret.zy_rate*100,0));
+		 $api.text($api.byId('j_p_lead_num'), ret.p_lead_num);
+		 $api.text($api.byId('j_lead_rate'),  round(ret.lead_rate*100,0));
+		 count=ret.tea_plan_num*1+ret.courseware_num*1+ret.lead_num*1+ret.home_work_num*1+ret.material_num*1;
+		 $api.text($api.byId('j_c_package_num'), count+'个' );
+	}
+	/*
+    *author:zhaoj
+    *function:保留小数
+    *date：20171115
+    */
+    function round(number,fractionDigits) {
+        return Math.round(number*Math.pow(10,fractionDigits))/Math.pow(10,fractionDigits)
+    };
+	/*
+	*author:zhaoj
+	*function:处理备课记录饼状图图表数据
+	*date：20171017
+	*/
+	 var showDailyRecordEchart = function (data) {
+            var edata = {},
+                legend = [],
+                category = [],
+                series = [];
+                if(data.material_num*1 ==0 &&
+                data.home_work_num*1 == 0&&data.lead_num*1 == 0&&data.courseware_num*1==0&&data.tea_plan_num*1==0 ){
+                    series=[{name:"素材",value:data.material_num},{name:"检测",value:data.home_work_num},
+                {name:"导学",value:data.lead_num},{name:"课件",value:data.courseware_num},
+                {name:"教案",value:data.tea_plan_num}];
+                }else{
+                	if(data.courseware_num*1 > 0){
+                        series.push({name:"课件",value:data.courseware_num});
+                    }
+                    if(data.lead_num*1 > 0){
+                        series.push({name:"导学",value:data.lead_num});
+                    }
+                    if(data.home_work_num*1 > 0){
+                        series.push({name:"检测",value:data.home_work_num});
+                    }
+                    if(data.material_num*1 > 0){
+                        series.push({name:"素材",value:data.material_num});
+                    }
+                    if(data.tea_plan_num*1 > 0){
+                        series.push({name:"教案",value:data.tea_plan_num});
+                    }
+                }
+            edata.itemStyle = {
+                normal : {
+                    borderWidth:1,
+                    label: {
+                        show: true,
+                        position: 'inner',
+                        formatter:  "{d}%"
+                    },
+                    labelLine: {
+                        show: true,
+                        length: 5,
+                        lineStyle: {
+                            width: 1,
+                            type: 'solid'
+                        }
+                    }
+                }
+            };
+            edata.legend = legend;
+            edata.category = category;
+            edata.series = series;
+            edata.legendXPosition = "center";
+            edata.legendYPosition = "bottom";
+            edata.color = ["#E7AE00","#C08DC5","#A5C94B","#61CBF3","#EF758A"];
+            showChart(edata, "pie", "dailyRecordEchart", "center", "10%");
+        };
+        /*
+		*author:zhaoj
+		*function:处理课堂记录饼状图图表数据
+		*date：20171017
+		*/
+        var showClassRecordEchart = function (data) {
+            var edata = {},
+                legend = [],
+                category = ['共享屏幕','提问','分享图片','投票','举手'],
+                series = [];
+            var sery1 = {
+                "name": '课堂互动分布统计',
+                "type": "bar",
+                "value": 0,
+                "max": 0,
+                "data": [data.screenshared_num,data.asked_num,data.picshared_num,data.vote_num,data.handup_num]
+            };
+            sery1.itemStyle = {
+                normal: {
+                    color: function(params) {
+                        var colorList = ["#F4BB8E","#90C8D9","#AF9EC2","#BED297","#548AD0"];
+                        return colorList[params.dataIndex]
+                    },
+                    barBorderRadius: 0,           // 柱条边线圆角，单位px，默认为0
+                    barBorderWidth: 1,            // 柱条边线线宽，单位px，默认为1
+                    label: {
+                        show: true,
+                        position: "top"
+                    }
+                }
+            };
+            series.push(sery1);
+
+            edata.legend = legend;
+            edata.category = category;
+            edata.series = series;
+            edata.legendXPosition = "right";
+            edata.title = "课堂互动分布统计";
+            edata.subTitle = "单位（次）";
+            edata.orient = "horizontal";
+            showChart(edata, "bar", "classRecordEchart", "left", "10%");
+        };
+        /*
+		*author:zhaoj
+		*function:展示图表
+		*date：20171017
+		*/
+        var showChart = function(data, type,domain,titlePs,boundaryGap) {
+            var myChart = echarts.init(document.getElementById(domain));
+            var option = null;
+            /*定制化标题位置*/
+            if(typeof(titlePs) == "undefined" || titlePs=="" ){
+                data.position="center";
+            }else{
+                data.position=titlePs;
+            }
+            if(data.legendXPosition=="center" && data.orient==undefined){
+                data.orient="horizontal";//水平显示
+            }
+            if(boundaryGap!=undefined && boundaryGap!=null && boundaryGap!= "undefined"){
+                data.boundaryGap = boundaryGap;
+            }else{
+                data.boundaryGap = true;
+            }
+            /*图表类型选择*/
+            if(type == 'pie'){
+                option = setOptionPie(data);
+            }else if(type == 'bar'){
+                option = setOptionBar(data);
+            }
+            myChart.setOption(option);
+            myChart.hideLoading();
+            window.onresize = function () {
+                myChart.resize();
+            };
+        };
+        //封装饼状图参数
+        var setOptionPie = function(data){
+            var array = new Array();
+            for(var i=0; i<data.series.length; i++){
+                array.push({value:data.series[i].value,name:data.series[i].name});
+            }
+            var option = {
+                title : {
+                    text: data.title || '',
+                    subtext: data.subTitle || '',
+                    x:data.position
+                },
+                tooltip : {
+                    trigger: 'item',
+                    formatter: "{b} : {c} ({d}%)"
+                },
+                legend: {
+                    orient : data.orient || '',
+                    x : data.legendXPosition?data.legendXPosition:"center",
+                    y : data.legendYPosition?data.legendYPosition:"top",
+                    data:data.legend
+                },
+                toolbox: {
+                    show : false,
+                    feature : {
+                        mark : {show: false},
+                        dataView : {show: false, readOnly: false},
+                        restore : {show: true},
+                        saveAsImage : {show: true}
+                    }
+                },
+                calculable : true,
+                series : [
+                    {
+                        name:data.title,
+                        itemStyle:data.itemStyle,
+                        type:'pie',
+                        radius : '90%',
+                        center: ['50%', '50%'],
+                        data:array
+                    }
+                ],
+                color:data.color
+            };
+            return option;
+        };
+        var setOptionBar = function(data){
+            var titles = data.title || '';
+            var max = 0;
+             for( var i=0;i<data.series.length;i++){
+                for(var j = 0; j < data.series[i].data.length; j++){
+                    if(data.series[i].data[j]*1 > max*1){
+                        max=data.series[i].data[j];
+                    }
+                }
+            }
+            max = max > 5?max:5;
+            var titles = data.title || '';
+            var option = {
+                title : {
+                    text: titles,
+                    subtext: data.subTitle || '',
+                    x:data.position
+                },
+                tooltip : {
+                    trigger: 'axis',
+                    axisPointer : {            // 坐标轴指示器，坐标轴触发有效
+                        type : 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+                    }
+                },
+                toolbox: {
+                    show : false,
+                    orient: 'vertical',
+                    x: 'right',
+                    y: 'center',
+                    feature : {
+                        mark : {show: true},
+                        dataView : {show: false, readOnly: false},
+                        magicType : {show: true, type: ['line', 'bar']},
+                        restore : {show: true},
+                        saveAsImage : {show: true}
+                    }
+                },
+                legend: {
+                    orient : data.orient || '',
+                    x : data.legendXPosition,
+                    data:data.legend
+                },
+                calculable : true,
+                xAxis : [
+                    {
+                        type : 'category',
+                        data :data.category,
+                        boundaryGap:data.boundaryGap,
+                        axisLabel : {
+                            interval:0 ,
+                            rotate: 60
+                        }
+                    }
+                ],
+                grid: {
+                    left: '3%',
+                    right: '4%',
+                    bottom: '10%',
+                    containLabel: true
+                },
+                yAxis : [
+                    {
+                        minInterval: 1,
+                        type : 'value',
+                        min:0,
+                        max:max
+                    }
+                ],
+                series:function(){
+                    var serie=[];
+                    for( var i=0;i<data.series.length;i++){
+                        var item={
+                            name:data.series[i].name,
+                            type:data.series[i].type,
+                            barCategoryGap:data.series[i].barCategoryGap,
+                            itemStyle:data.series[i].itemStyle,
+                            smooth:data.series[i].smooth,
+                            data:data.series[i].data
+                        };
+                        serie.push(item);
+                    }
+
+                    return serie;
+                }()
+            };
+            if(data.color){
+                option.color = data.color;
+            }
+            return option;
+        };
+</script>
+</html>

@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+		<title>主题活动</title>
+		<link rel="stylesheet" type="text/css" href="../../../../../css/aui/aui.css"/>
+		<link rel="stylesheet" type="text/css" href="../../../../../css/module/ipad/left-right-layout.css"/>
+		<link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+		<style>
+			.left-layout-body .left-tag .tag-item{height:80px;}
+			.left-layout-body .left-tag .tag-item .name{padding-top:15px;font-size:18px;}
+			.left-layout-body .left-tag .active .name{color:#fff;}
+		</style>
+	</head>
+	<body id="j_body" class="left-layout-body common-ipad-zthdIpadstu">
+		<div id="wrap">
+			<header class="aui-bar aui-bar-nav aui-bar-primary" id="aui-header">
+				<div id="cloud" class="topbar activebar">
+					<div id="back" class="back" onclick="back();" tapmode="">
+						<i class="aui-iconfont aui-icon-left"></i>返回
+					</div>
+					<div  class="mTitle" id="mTitle"></div>
+					<div class="win-menu"></div>
+				</div>
+			</header>
+		</div>
+		<!--左侧导航-->
+		<div id="j_left_tag" class="left-tag">
+			<div id="j_1" class="tag-item active" onclick="changeTagItem(1);">
+				<div id="j_class_name" class="name">活动介绍</div>
+				<div class="parting-line">
+					<div class="left-rectangle fl"></div>
+					<div class="right-rectangle fr"></div>
+					<hr />
+				</div>
+			</div>
+			<div id="j_2" class="tag-item" onclick="changeTagItem(2);">
+				<div class="name">活动作品</div>
+				<div class="parting-line">
+					<div class="left-rectangle fl"></div>
+					<div class="right-rectangle fr"></div>
+					<hr />
+				</div>
+			</div>
+			<div id="j_3" class="tag-item aui-hide" onclick="changeTagItem(3);">
+				<div class="name">我的作品</div>
+				<div class="parting-line">
+					<div class="left-rectangle fl"></div>
+					<div class="right-rectangle fr"></div>
+					<hr />
+				</div>
+			</div>
+			<div id="j_4" class="tag-item" onclick="changeTagItem(4);">
+				<div class="name">活动统计</div>
+				<div class="parting-line">
+					<div class="left-rectangle fl"></div>
+					<div class="right-rectangle fr"></div>
+					<hr />
+				</div>
+			</div>
+		</div>
+		<!--//左侧导航-->
+		<div id="j-right" class="win-right zthd-right fr"></div>
+	</body>
+	<script type="text/javascript" src="../../../../../script/api.js"></script>
+	<script type="text/javascript" src="../../../../../script/base_config.js" ></script>
+	<script type="text/javascript" src="../../../../../script/common/common.js"></script>
+	<script type="text/javascript" src="../../../../../script/plug-in/base64.js" ></script>
+	<script type="text/javascript">
+		var back_type ="detail";//返回参数
+		var oparam='';//列表页面传递过来的数据
+		apiready = function(){
+			commonSetTheme({"level":5,"type":0});
+			oparam = JSON.parse(Base64.decode(api.pageParam.oparam_base64));
+			//验证权限
+			check_topic_release_permission(function(flag){
+				flag ? commonAddOrRemoveHideCss('j_3',1):commonAddOrRemoveHideCss('j_3',0);
+			});
+			commonIosAuiHeader();//定位header位置，留出上面电池等空隙，苹果需要
+			$api.css($api.byId('j_left_tag'),'top:'+api.pageParam.header_h+'px;max-height:'+(api.winHeight*1-api.pageParam.header_h*1)+'px;height:'+(api.winHeight*1-api.pageParam.header_h*1)+'px;');//设置左侧导航的样式
+			reBackType('detail');
+			oparam.type == 1 ?changeTagItem(1):changeTagItem(4);
+			commonBackForAndroid();//安卓关闭
+		};
+		/*
+		*author:zhaoj
+		*function:返回页面
+		*date：20161220
+		*/
+		function back() {
+			api.hideProgress();
+			switch(back_type) {
+				case 'detail':
+					api.closeWin();
+					break;
+				case 'comment':
+				  	commonCloseFrame('zthdIpad_comment_frame');
+				  	reBackType('works_detail');
+					break;
+				case 'zthd_comment':
+				  	commonCloseFrame('zthdIpad_comment_frame');
+				  	reBackType('detail');
+					break;
+				case 'works_detail':
+				  	commonCloseFrame('zthdIpad_works_detail_frame');
+				  	commonCloseFrame('zthdIpad_works_detailContent_frame');
+				  	reBackType('detail');
+					break;
+				case 'open_picture':
+				  	reBackType('detail');
+					break;
+				case 'picture_activity_works':
+				  	reBackType('detail');
+					break;
+				case 'picture_my_works':
+				  	reBackType('detail');
+					break;
+				case 'picture_edit':
+				  	reBackType('edit');
+					break;
+				case 'picture_works_detail':
+				  	reBackType('works_detail');
+					break;
+				case 'picture_add_works':
+				  	reBackType('add_works');
+					break;
+				case 'edit':
+				  	commonCloseFrame('zthdIpad_edit_frame');
+				  	reBackType('detail');
+					break;
+				case 'add_works':
+				  	commonCloseFrame('zthdIpad_add_works_frame');
+				  	reBackType('detail');
+					break;
+				case 'audio':
+				  	commonCloseFrame('common_playaudio_frame');
+				  	reBackType('add_works');
+					break;
+				case 'voice':
+                    commonCloseFrame('common_playaudio_frame');
+                    reBackType('add_works');
+                    break;
+				case 'txt':
+				    if(oparam.m_type ==1){
+				        commonExecScript(api.winName,'zthdIpad_detail_frame','common_openDocument.closeTxt();',1);
+				        reBackType('detail');
+				    }else if(oparam.m_type ==2){
+				        commonExecScript(api.winName,'zthdIpad_activity_works_frame','common_openDocument.closeTxt();',1);
+				        reBackType('detail');
+				    }else if(oparam.m_type ==3){
+				        commonExecScript(api.winName,'zthdIpad_my_works_frame','common_openDocument.closeTxt();',1);
+				        reBackType('detail');
+				    }else if(oparam.m_type ==5){
+				        commonExecScript(api.winName,'zthdIpad_works_detail_frame','common_openDocument.closeTxt();',1);
+				        reBackType('works_detail');
+				    }
+                    break;
+                case 'unplay':
+					commonCloseFrame('zthdIpad_unplay_info');
+					reBackType('detail');
+					break;
+				case 'worksinfo':
+					commonCloseFrame('zthdIpad_view_worksinfo');
+					reBackType('detail');
+					break;
+				case 'editZuoPin':
+					commonCloseFrame('zthdIpad_editZuoPin_frame');
+					reBackType('works_detail');
+					break;
+			}
+		}
+		/**
+		 * 重置从哪个页面退出
+		 * 周枫
+		 * 2015.12.17
+		 */
+		function reBackType(type) {
+			switch(type) {
+				//如果活动介绍页面退出
+				case 'detail':
+					commonSetWindowName(oparam.name);
+					back_type = 'detail';
+					break;
+				//如果评论页面退出
+				case 'comment':
+					back_type = 'comment';
+					break;
+				//作品详情
+				case 'works_detail':
+				    oparam.m_type = 5;
+					back_type = 'works_detail';
+					break;
+				//如果图片页面退出
+				case 'open_picture':
+					back_type = 'open_picture';
+					break;
+				//如果图片页面退出
+				case 'picture_edit':
+					back_type = 'picture_edit';
+					break;
+				//如果图片页面退出
+				case 'picture_activity_works':
+					back_type = 'picture_activity_works';
+					break;
+				//如果图片页面退出
+				case 'picture_my_works':
+					back_type = 'picture_my_works';
+					break;
+				//如果图片页面退出
+				case 'zthd_comment':
+					back_type = 'zthd_comment';
+					break;
+				//如果编辑页面退出
+				case 'edit':
+				    commonSetWindowName('修改活动');
+					back_type = 'edit';
+					break;
+				//如果图片页面退出
+				case 'picture_works_detail':
+					back_type = 'picture_works_detail';
+					break;
+				//如果图片页面退出
+				case 'picture_add_works':
+					back_type = 'picture_add_works';
+					break;
+				//如果发表作品页面退出
+				case 'add_works':
+					back_type = 'add_works';
+					break;
+				//如果发表音频页面退出
+				case 'audio':
+					back_type = 'audio';
+					break;
+				case 'voice':
+                    back_type = 'voice';
+                    break;
+				case 'txt':
+                    back_type = 'txt';
+                    break;
+                case 'unplay':
+					back_type = 'unplay';
+					break;
+				case 'worksinfo':
+					back_type = 'worksinfo';
+					break;
+				case 'editZuoPin':
+					back_type = 'editZuoPin';
+					break;
+			}
+		}
+		/*
+		*author:zhaoj
+		*function:打开活动介绍页面
+		*date：20171018
+		*/
+		function openFrame(type){
+			var header_h = api.pageParam.header_h;//顶部高度
+			//打开frame页面
+			var mode_name='';
+			var frame_w = "";
+			var width_oparam = 0;
+			if(type == 1){
+				frame_w = Math.floor(api.winWidth);
+				width_oparam = 1024;
+				mode_name = "zthdIpad_detail_frame";
+			}else if(type == 2){
+				frame_w = Math.floor(api.winWidth*0.6);
+				width_oparam = 614;
+				mode_name = "zthdIpad_activity_works_frame";
+			}else if(type == 3){
+				frame_w = Math.floor(api.winWidth*0.6);
+				width_oparam = 614;
+				mode_name = "zthdIpad_my_works_frame";
+			}else{
+				frame_w = Math.floor(api.winWidth);
+				width_oparam = 1024;
+				mode_name = "zthdIpad_works_census_frame";
+			}
+			var frame_x = 0;
+			if(frame_w <= width_oparam){
+				frame_w=frame_w-150;
+				frame_x = 150;
+			}else{
+				frame_w=frame_w-180;
+				frame_x = 180;
+			}
+			pageParamJson={"header_h":header_h,'w':frame_w,"x":frame_x,"oparam_base64":api.pageParam.oparam_base64};//打开frame页面json数据
+			commonOpenFrame(mode_name,mode_name+".html",header_h,false,false,"rgba(0,0,0,0)",pageParamJson);
+		}
+		/*
+		*author:zhaoj
+		*function:左侧导航切换
+		*date：20171018
+		*/
+		function changeTagItem(type){
+		    oparam.m_type =type;
+		    commonCloseFrame('zthdIpad_works_detail_frame');
+		    commonCloseFrame('zthdIpad_works_detailContent_frame');
+			//左侧导航添加选中样式
+			$api.removeCls($api.dom($api.byId('j_left_tag'), '.active'), 'active');
+			$api.addCls($api.byId('j_'+type), 'active');
+			switch(type){
+				case 1:
+					//活动介绍
+					commonCloseFrame('zthdIpad_activity_works_frame');
+					commonCloseFrame('zthdIpad_my_works_frame');
+					commonCloseFrame('zthdIpad_works_census_frame');
+					break;
+				case 2:
+					commonCloseFrame('zthdIpad_detail_frame');
+					commonCloseFrame('zthdIpad_my_works_frame');
+					commonCloseFrame('zthdIpad_works_census_frame');
+					//活动作品
+					break;
+				case 3:
+					//我的作品
+					commonCloseFrame('zthdIpad_detail_frame');
+					commonCloseFrame('zthdIpad_activity_works_frame');
+					commonCloseFrame('zthdIpad_works_census_frame');
+					break;
+				case 4:
+					//活动统计
+					commonCloseFrame('zthdIpad_detail_frame');
+					commonCloseFrame('zthdIpad_activity_works_frame');
+					commonCloseFrame('zthdIpad_my_works_frame');
+					break;
+			}
+			openFrame(type);//打开frame页面
+		}
+		/*
+		*author:zhaoj
+		*function:打开评论页面
+		*param:type=0:代表作品增加评论，type=1：代表作品回复评论；type=2：代表主题活动回复评论
+		*date：20170912
+		*/
+		function openCommentFrame( id,parent_id,type){
+			type == 2?reBackType('zthd_comment'):reBackType('comment');
+			var header_h = api.pageParam.header_h;//顶部高度
+			pageParamJson={"header_h":header_h,"id":id,"parent_id":parent_id,"type":type,"person_id":oparam.person_id,"identity_id":oparam.identity_id,"person_name":oparam.person_name};//打开frame页面json数据
+			//打开frame页面
+			commonOpenFrame("zthdIpad_comment_frame","zthdIpad_comment_frame.html",0,false,false,"rgba(0,0,0,0)",pageParamJson);
+		}
+		/*
+		*author:zhaoj
+		*function:打开发表作品页面
+		*date：20170912
+		*/
+		function openAddWorksFrame(){
+			reBackType('add_works');
+			var header_h = api.pageParam.header_h;//顶部高度
+			pageParamJson={"header_h":header_h,"oparam_base64":api.pageParam.oparam_base64};//打开frame页面json数据
+			//打开frame页面
+			commonOpenFrame("zthdIpad_add_works_frame","zthdIpad_add_works_frame.html",0,false,false,"rgba(0,0,0,0)",pageParamJson);
+		}
+		/*
+		*author:zhaoj
+		*function:打开详情页面
+		*date：20171019
+		*/
+		function openWorksDetailFrame(oparam,type){
+			reBackType('works_detail');
+			var header_h = api.pageParam.header_h;//顶部高度
+			var frame_w = Math.floor(api.winWidth*0.4);
+			var frame_x = Math.floor(api.winWidth*0.6);
+			pageParamJson={"header_h":header_h,'x':frame_x,'w':frame_w,"oparam":oparam,"oparam_base64":api.pageParam.oparam_base64};//打开frame页面json数据
+			//打开frame页面
+			commonOpenFrame("zthdIpad_works_detail_frame","zthdIpad_works_detail_frame.html",header_h,false,false,"rgba(0,0,0,0)",pageParamJson);
+			type? commonExecScript(api.winName,'zthdIpad_my_works_frame','isShowBoxShow(1);',1):commonExecScript(api.winName,'zthdIpad_activity_works_frame','isShowBoxShow(1);',1);//显示虚线
+		}
+		 /*
+	    *author:zhaoj
+	    *function:验证是否有上传作品权限，是否显示我的作品
+	    *interface:张海
+	    *date：20171023
+	    */
+	    function check_topic_release_permission(callback){
+	    	api.ajax({
+				url : BASE_URL_ACTION + '/ypt/space/topic/check_topic_release_permission?random_num='+creatRandomNum()+'&person_id='+$api.getStorage("person_id")+'&identity_id='+$api.getStorage("identity")+'&topic_id='+oparam.id,
+				method : 'get',
+				timeout : 0,
+				dataType : 'json',
+				headers : {
+		'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+		}
+				}, function(ret, err) {
+					if(err){
+						callback(false);
+					}else{
+						if(ret.success){
+							callback(ret.permission);
+						}else{	
+							callback(false);
+						}
+					}
+			});
+    	}
+	</script>
+</html>

@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>班级通知</title>
+    <link rel="stylesheet" type="text/css" href="../../../../../css/aui/aui.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../../../css/module/ipad/left-right-layout.css"/>
+     <link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+    <style>
+    	.right-layout-body .person-info .headset{width:55px;}
+    	.right-layout-body .person-info .headset div{background-size:30px auto;height:30px;margin-top:0;}
+    	.right-layout-body .person-info{padding:20px 145px 10px 30px;}
+    	/*.right-layout-body .person-info .header-img{width:58px;height:58px;border-radius: 5px;}*/
+    	@media screen and (max-width: 464px) {
+    		.right-layout-body .person-info{padding:20px 75px 10px 100px;}
+    	}
+    </style>
+</head>
+<body class="right-layout-body common-ipad-bjtzIpadstu">
+	<div class="top">
+		<div class="name">详情</div>
+		<div class="close" onclick="closeFrame();">关闭</div>
+	</div>
+	<div class="person-info">
+		<!--<img id="j_header_img" class="header-img" onerror="this.src='../../../../../image/common/header.png'" src="../../../../../image/fun-module/ipad/xwzx-person.png" />-->
+		<div id="j_person_name" class="person-name ellipsis"></div>
+		<div id="j_time" class="time"></div>
+	</div>
+	<div id="j_title" class="detail-title word-wrap"></div>
+	<div id="j_content" class="detail-content word-wrap"></div>
+</body>
+<script type="text/javascript" src="../../../../../script/api.js"></script>
+<script type="text/javascript" src="../../../../../script/base_config.js" ></script>
+<script type="text/javascript" src="../../../../../script/plug-in/template.js" ></script>
+<script type="text/javascript" src="../../../../../script/common/common.js"></script>
+<script type="text/javascript" src="../../../../../script/plug-in/base64.js" ></script>
+<script type="text/javascript" src="../../../../../script/assembly/photoBrowser.js"></script>
+<script type="text/javascript">
+	var data;//从list页面传递过来的参数
+	var currentPage = 1;//当前分页数
+	var totalPages = 0;//总页数
+	var article_person_id;//发表文章的人的id
+	var image_array=[];//所有图片路径
+	apiready = function(){
+		commonSetTheme({"level":5,"type":0});
+		data =JSON.parse(Base64.decode(api.pageParam.oparam));
+		var notice_title = Base64.decode(data.title_base64);
+        var notice_person_name = Base64.decode(data.person_name_base64);
+        var notice_create_time = Base64.decode(data.create_time_base64).substring(0,16);
+        var notice = Base64.decode(data.content_base64);
+		notice = commonTransferBrStr(notice);
+		notice.replace(/<img [^>]*src=['"]([^'"]+)[^>]*>/gi, function (match, capture) {
+		  image_array.push(capture);
+		});
+		$api.html($api.byId('j_person_name'), notice_person_name);
+		$api.html($api.byId('j_time'), notice_create_time);
+        $api.html($api.byId('j_title'), notice_title);
+        $api.html($api.byId('j_content'), notice);
+	};
+	/*
+	*author:zhaoj
+	*function:关闭页面
+	*date：20170912
+	*/
+	function closeFrame(){
+		commonExecScript('bjtzIpad_index_window','','back();',0);
+	}
+	/*
+	*author:zhaoj
+	*function:打开图片预览
+	*date：20171026
+	*/
+	function openImage(self){
+		//图片
+		var res_url=$api.attr(self, 'src');
+		//打开图片
+		var index = 0;
+		for(var i = 0; i <image_array.length;i++){
+			if(image_array[i] == res_url){
+				index = i;
+			}
+		}
+		photoBrowser.open(image_array, index);
+	}
+</script>
+</html>

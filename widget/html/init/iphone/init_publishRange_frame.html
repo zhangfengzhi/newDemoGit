@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>title</title>
+    <link rel="stylesheet" type="text/css" href="../../../css/aui/aui.css" />
+    <link rel="stylesheet" type="text/css" href="../../../css/module/iphone/init-screen.css" />
+	<link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+    <style>
+    	body{
+    		width: 100%;
+    		height: 100%;
+    		font-size: 16px;
+    		background-color: #f2f3f7;
+    	}
+    	
+		.aui-tab {
+			width: 80%;
+			margin: 0px auto;
+			/*height: 3rem;*/
+			display: -webkit-box;
+			display: -webkit-flex;
+			display: flex;
+			-webkit-flex-wrap: nowrap;
+			flex-wrap: nowrap;
+			-webkit-align-self: center;
+			align-self: center;
+			-webkit-align-items: flex-end;
+			align-items: flex-end;
+		}
+		.aui-tab-item {
+			width: 100%;
+			height: 2.2 rem;
+			line-height: 2.2 rem;
+			position: relative;
+			font-size: 0.7 rem;
+			text-align: center;
+			color: #212121;
+			margin-left: -1px;
+			-webkit-box-flex: 1;
+			box-flex: 1;
+		}
+		#zhanwei{
+			width: 80%;
+			margin-top: 25px;
+		}
+		.publishRange_option_div{
+			width: 90%;
+			margin: 10px auto;
+		}
+		
+		.part_div{
+			margin: 15px auto;
+			padding: 10px;
+			background-color: #FFFFFF;
+			border-radius: 10px;
+		}
+		.group_select{
+			color:#555;
+		}
+		
+		.drop_down_li{
+			padding: 10px 5px 10px 15px;line-height:20px;border:1px solid #e0e0e0;border-top: none;margin: 0 auto;
+		}
+		
+		.common, .drop_down_li{
+			display: -webkit-box;
+			display: -webkit-flex;
+			display: flex;
+			-webkit-flex-wrap: nowrap;
+			flex-wrap: nowrap;
+			-webkit-align-items: center ;
+			align-items: center ;
+			-webkit-justify-content: space-between ;
+			justify-content: space-between;
+		}
+		
+		.common .title, .drop_down_li span{
+			-webkit-box-flex: 1;
+			box-flex: 1;
+		}
+		
+		.common i, .drop_down_li i{
+			margin-right: 5px;
+			-webkit-box-flex: 1;
+			box-flex: 1;
+    		-webkit-flex-shrink: 0 ;
+    		flex-shrink:0;
+		}
+		
+		.common{
+			border:1px solid #e0e0e0;
+			/*color:#333;*/
+			background-color: #F6F6F6;
+			padding: 10px 5px 10px 15px;
+			line-height:20px;
+		}
+		
+		.select_option{
+			position: relative;float: right;padding-right: 20px;
+		}
+		.drop_down_title{
+			width: 100%;
+    		margin: 10px auto;
+    		/*margin-top: 20px;*/
+    		line-height: 25px;
+    		font-size:18px;
+			font-family: "Microsoft YaHei";
+		}
+		.aui-checkbox{
+			pointer-events: none;
+		}
+		.no_data_div{
+			margin: 0 auto;
+			text-align: center;
+		}
+		.jigou-img{
+			width: 65px;
+			height: 65px;
+			background:#f2f3f7 url(../../../image/quanzi/publish/jigou-unselect.png) center center no-repeat;background-size:100% auto;
+			margin: 25px auto 10px auto;
+		}
+		.class-img{
+			width: 65px;
+			height: 65px;
+			background:#f2f3f7 url(../../../image/quanzi/publish/class-unselect.png) center center no-repeat;background-size:100% auto;
+			margin: 25px auto 10px auto;
+		}
+		.group-img{
+			width: 65px;
+			height: 65px;
+			background:#f2f3f7 url(../../../image/quanzi/publish/group-unselect.png) center center no-repeat;background-size:100% auto;
+			margin: 25px auto 10px auto;
+		}   		
+		.title-img{
+			width: 25px;
+			height: 25px;
+			background:#FFFFFF url(../../../image/quanzi/publish/title-unselect.png) center center no-repeat;background-size:100% auto;
+			margin-right: 5px;
+		}
+		.drop_down_title .aui-checkbox{
+			margin-top: 3px;
+		}
+		.title_name_div{
+			display:inline-block;
+			overflow: hidden;
+			text-overflow: ellipsis;
+			white-space: nowrap;
+			word-break: keep-all;
+			width: calc(100% - 55px);
+		}
+    </style>
+</head>
+<body>
+	<div class="aui-tab" id="tab">
+		<div class="aui-tab-item" onclick="btnClick(0)">
+			<div class="jigou-img"></div>
+			<div>机构</div>
+		</div>
+		<div id="class-tab" class="aui-tab-item aui-hide" onclick="btnClick(1)">
+			<div class="class-img"></div>
+			<div>班级</div>
+		</div>
+		<div class="aui-tab-item" onclick="btnClick(2)">
+			<div class="group-img"></div>
+			<div>群组</div>
+		</div>
+    </div>
+    <div id="zhanwei"></div>
+    <div id="jigou_div" class="publishRange_option_div">
+    	<script id="jigou_script" type="text/html">
+    		<%if (areaList.length > 0){%>
+    			<%for (var i = 0; i < areaList.length; i++){%>
+	    			<div class="part_div">
+		    			<div class="drop_down_title" onclick="areaSelectChange(this,<%=i%>,'jigou')">
+		    				<div class="title-img aui-pull-left"></div>
+		    				<div class="title_name_div"><%=areaList[i].areaName%></div>
+		    				<input class="aui-checkbox aui-pull-right" type="checkbox">
+		    			</div>
+			    		<div class="common" onclick="showOrHideDropdown(this,'<%=areaList[i].org_id%>')">
+							<span id="<%=areaList[i].org_type%>" class="title"><%=areaList[i].select_name%></span>
+							<i  id="area_icon<%=i%>" class="aui-iconfont aui-pull-right aui-icon-unfold"></i>
+						</div>
+				    	<ul class="school_select display-none" id="<%=areaList[i].org_id%>">
+							<%for (var j = 0; j < areaList[i].list.length; j++){%>
+								<li class="drop_down_li" value="<%=areaList[i].list[j].name%>" onclick="onClickList(this,'jigou',<%=i%>,<%=j%>,'area_icon<%=i%>','<%=areaList[i].org_id%>','<%=areaList[i].org_type%>','<%=areaList[i].list[j].name%>')">
+									<span><%=areaList[i].list[j].name%></span>
+									<%if (areaList[i].list[j].select){%>
+										<i class="aui-iconfont aui-icon-check aui-pull-right right"></i>
+									<%}%>
+								</li>
+							<%}%>
+						</ul>
+				    </div>
+	    		<%}%>
+    		<%}else{%>
+    			<div class="no_data_div">暂无机构信息</div>
+    		<%}%>
+    	</script>
+    </div>
+    
+    <div id="class_div" class="publishRange_option_div">
+    	<script id="class_script" type="text/html">
+    		<%if (list.length > 0){%>
+    			<%for(var i = 0; i < list.length; i++){%>
+		    		<div class="part_div">
+		    			<div class="drop_down_title" onclick="areaSelectChange(this,<%=i%>,'class')">
+		    				<div class="title-img aui-pull-left"></div>
+		    				<div class="title_name_div"><%=list[i].org_name%></div>
+		    				<input class="aui-checkbox aui-pull-right" type="checkbox">
+		    			</div>
+			    		<div class="common" onclick="showOrHideDropdown(this,'class_select<%=i%>')">
+							<span id="class_value_sleect<%=i%>" class="title"><%=list[i].select_name%></span>
+							<i id="class_icon<%=i%>" class="aui-iconfont aui-pull-right aui-icon-unfold"></i>
+						</div>
+				    	<ul class="class_select display-none" id="class_select<%=i%>">
+							<%for(var j = 0; j < list[i].category_s[0].length; j++){%>
+								<li class="drop_down_li flex-div" value="<%=list[i].category_s[0][j].name%>" onclick="onClickList(this,'class',<%=i%>,<%=j%>,'class_icon<%=i%>','class_select<%=i%>','class_value_sleect<%=i%>','<%=list[i].category_s[0][j].name%>')">
+									<span><%=list[i].category_s[0][j].name%></span>
+									<%if (list[i].category_s[0][j].select){%>
+										<i class="aui-iconfont aui-icon-check aui-pull-right right"></i>
+									<%}%>
+								</li>
+							<%}%>
+						</ul>
+		    		</div>
+				<%}%>
+    		<%}else{%>
+    			<div class="no_data_div">暂无班级信息</div>
+    		<%}%>
+    		
+    	</script>
+    </div>
+    
+	<div id="group_div" class="publishRange_option_div">
+    	<script id="group_script" type="text/html">
+    		<%if (list.length > 0){%>
+    			<%for(var i = 0; i < list.length; i++){%>
+		    		<div class="part_div">
+		    			<div class="drop_down_title" onclick="areaSelectChange(this,<%=i%>,'group')">
+		    				<div class="title-img aui-pull-left"></div>
+		    				<div class="title_name_div"><%=list[i].group_name%></div>
+		    				<input class="aui-checkbox aui-pull-right" type="checkbox">
+		    			</div>
+			    		<div class="common" onclick="showOrHideDropdown(this,'group_select<%=i%>')">
+							<span id="group_value_sleect<%=i%>" class="title"><%=list[i].select_name%></span>
+							<i id="group_icon<%=i%>" class="aui-iconfont aui-pull-right aui-icon-unfold"></i>
+						</div>
+				    	<ul class="group_select display-none" id="group_select<%=i%>">
+							<%for(var j = 0; j < list[i].category_s[0].length; j++){%>
+								<li class="drop_down_li" value="<%=list[i].category_s[0][j].name%>" onclick="onClickList(this,'group',<%=i%>,<%=j%>,'group_icon<%=i%>','group_select<%=i%>','group_value_sleect<%=i%>','<%=list[i].category_s[0][j].name%>')">
+									<span><%=list[i].category_s[0][j].name%></span>
+									<%if (list[i].category_s[0][j].select){%>
+										<i class="aui-iconfont aui-icon-check aui-pull-right right"></i>
+									<%}%>
+								</li>
+							<%}%>
+						</ul>
+		    		</div>
+				<%}%>
+    		<%}else{%>
+    			<div class="no_data_div">暂无群组信息</div>
+    		<%}%>
+    		
+    	</script>
+    </div>
+</body>
+<script type="text/javascript" src="../../../script/api.js"></script>
+<script type="text/javascript" src="../../../script/base_config.js" ></script>
+<script type="text/javascript" src="../../../script/plug-in/template.js" ></script>
+<script type="text/javascript" src="../../../script/common/common.js" ></script>
+<script type="text/javascript">
+	var btnList;//按钮数组
+	var showDivList;//div切换数组
+	var select_icon = '<i class="aui-iconfont aui-icon-check aui-pull-right right"></i>';//选中的标签
+	var jigouList;//机构分类数据
+	var classList;//班级分类数据
+	var groupList;//群组分类数据
+	var allSelectData = {'org_list':[],'class_list':[],'group_list':[]};//存储分类选中数据
+	var areaList = ['jigou','class','group'];
+	var publishRangeContent = '';
+	apiready = function(){
+		btnList = $api.byId('tab').getElementsByClassName('aui-tab-item');
+		showDivList = document.getElementsByClassName('publishRange_option_div');
+		var showIndex = -1;
+		var i = 0;
+		jigouList = $api.getStorage('allClassifyData').jigouList;
+		commonAddOnceHtml('jigou_div', "jigou_script",jigouList);
+		for (i = 0; i < jigouList.areaList.length; i++){
+			if (jigouList.areaList[i].select){
+				if (showIndex == -1){
+					showIndex = 0;
+				}
+				var jigou_div = $api.byId('jigou_div');
+				var jigou_input_list = $api.domAll(jigou_div, 'input');
+				jigou_input_list[i].checked = true;
+				var title_img = $api.domAll(jigou_div,'.title-img');
+				$api.css(title_img[i],'background-image: url(../../../image/quanzi/publish/title-select.png)');
+				var title = $api.domAll(jigou_div,'.drop_down_title');
+				$api.css(title[i],'color: #31a8fa');
+			}
+		}
+		
+		if ($api.getStorage('idy_type') != 'work'){
+			$api.removeCls($api.byId('class-tab'), 'aui-hide');
+			classList = $api.getStorage('allClassifyData').classList;
+			commonAddOnceHtml('class_div', "class_script",classList);
+			for (i = 0; i < classList.list.length; i++){
+				if (classList.list[i].select){
+					if (showIndex == -1){
+						showIndex = 1;
+					}
+					var class_div = $api.byId('class_div');
+					var class_input_list = $api.domAll(class_div, 'input');
+					class_input_list[i].checked = true;
+					var title_img = $api.domAll(class_div,'.title-img');
+					$api.css(title_img[i],'background-image: url(../../../image/quanzi/publish/title-select.png)');
+					var title = $api.domAll(class_div,'.drop_down_title');
+					$api.css(title[i],'color: #31a8fa');
+				}
+			}
+		}
+		
+		groupList = $api.getStorage('allClassifyData').groupList;
+		commonAddOnceHtml('group_div', "group_script",groupList);
+		for (i = 0; i < groupList.list.length; i++){
+			if (groupList.list[i].select){
+				if (showIndex == -1){
+					showIndex = 2;
+				}
+				var group_div = $api.byId('group_div');
+				var group_input_list = $api.domAll(group_div, 'input');
+				group_input_list[i].checked = true;
+				var title_img = $api.domAll(group_div,'.title-img');
+				$api.css(title_img[i],'background-image: url(../../../image/quanzi/publish/title-select.png)');
+				var title = $api.domAll(group_div,'.drop_down_title');
+				$api.css(title[i],'color: #31a8fa');
+			}
+		}
+		
+		if (showIndex == -1){
+			showIndex = 0;
+		}
+		
+		btnClick(showIndex);
+    }
+    
+    /**
+     * 点击按钮 
+     */
+    function btnClick(index){
+    	for (var i = 0; i < btnList.length; i++){
+    		if (i == index){
+    			showDivList[i].style.display = 'block';
+    			$api.css($api.first(btnList[i]),'background-image: url(../../../image/quanzi/publish/' + areaList[i] + '-select.png)');
+    		}else{
+    			showDivList[i].style.display = 'none';
+    			$api.css($api.first(btnList[i]),'background-image: url(../../../image/quanzi/publish/' + areaList[i] + '-unselect.png)');
+    		}
+    	}
+    }
+    
+    
+    function areaSelectChange(self,index,type){
+    	var checkBox = $api.dom(self,".aui-checkbox")
+    	checkBox.checked = !checkBox.checked;
+    	
+    	if (checkBox.checked){
+    		$api.css(self,'color:#31a8fa');
+    		$api.css($api.first(self),'background-image: url(../../../image/quanzi/publish/title-select.png)');
+    	}else{
+    		$api.css(self,'color: #000000');
+    		$api.css($api.first(self),'background-image: url(../../../image/quanzi/publish/title-unselect.png)');
+    	}
+    	
+    	if (type == 'jigou'){
+    		jigouList.areaList[index].select = checkBox.checked;
+    	}else if (type == 'class'){
+    		classList.list[index].select = checkBox.checked;
+    	}else if(type == 'group'){
+    		groupList.list[index].select = checkBox.checked;
+    	}
+    }
+    
+    /**
+     * 显示或隐藏下拉列表
+     * 王俭
+     * 2018.4.26 
+     */
+    function showOrHideDropdown(self,type){
+    	if ($api.hasCls($api.byId(type), 'display-none')){
+    		$api.removeCls($api.byId(type), 'display-none');
+			$api.removeCls($api.dom(self,'.aui-icon-unfold'),'aui-icon-unfold');
+    		$api.addCls($api.dom(self,'i'),'aui-icon-fold');
+		}else{
+			$api.addCls($api.byId(type), 'display-none');
+			$api.removeCls($api.dom(self,'.aui-icon-fold'),'aui-icon-fold');
+    		$api.addCls($api.dom(self,'i'),'aui-icon-unfold');
+		}
+    }
+    
+    /**
+     * 列表选中 
+     * 王俭
+     * 2018.4.26
+     */
+    function onClickList(self,type,index1,index2,icon_dom,dropDownID,value_dom,value){
+    	$api.remove($api.dom($api.byId(dropDownID),'.right'));//删除之前选中节点的标示
+    	$api.append(self,select_icon);//本次节点添加选中标示
+    	$api.addCls($api.byId(dropDownID), 'display-none');//关闭当前下拉列表
+    	$api.removeCls($api.byId(icon_dom),'aui-icon-fold');//修改箭头
+    	$api.addCls($api.byId(icon_dom), 'aui-icon-unfold');
+    	$api.text($api.byId(value_dom), value);
+    	if (type == 'jigou'){
+    		for (var i = 0; i < jigouList.areaList[index1].list.length; i++){
+	    		if (i == index2){
+	    			jigouList.areaList[index1].list[i].select = true;
+	    			jigouList.areaList[index1].select_name = jigouList.areaList[index1].list[i].name;
+	    		}else{
+	    			jigouList.areaList[index1].list[i].select = false;
+	    		}
+	    	}
+    	}
+    	else if (type == 'class'){
+    		for (var i = 0; i < classList.list[index1].category_s[0].length; i++){
+	    		if (i == index2){
+	    			classList.list[index1].category_s[0][i].select = true;
+	    			classList.list[index1].select_name = classList.list[index1].category_s[0][i].name;
+	    		}else{
+	    			classList.list[index1].category_s[0][i].select = false;
+	    		}
+	    	}
+    	}else if (type == 'group'){
+    		for (var i = 0; i < groupList.list[index1].category_s[0].length; i++){
+	    		if (i == index2){
+	    			groupList.list[index1].category_s[0][i].select = true;
+	    			groupList.list[index1].select_name = groupList.list[index1].category_s[0][i].name;
+	    		}else{
+	    			groupList.list[index1].category_s[0][i].select = false;
+	    		}
+	    	}
+    	}
+    }
+    
+    function saveData(){
+    	var i = 0;
+    	var j = 0;
+    	for (i = 0; i < jigouList.areaList.length; i++){
+    		if (jigouList.areaList[i].select){
+    			publishRangeContent = publishRangeContent + jigouList.areaList[i].areaName + '、';
+    			for (j = 0; j < jigouList.areaList[i].list.length; j++){
+    				if (jigouList.areaList[i].list[j].select){
+    					allSelectData.org_list.push({
+    						"org_id":jigouList.areaList[i].org_id,
+							"org_type":jigouList.areaList[i].org_type,
+							"category_id":jigouList.areaList[i].list[j].id
+    					});
+    					break;
+    				}
+    			}
+    		}
+    	}
+    	if (classList && classList.list){
+    		for (i = 0; i < classList.list.length; i++){
+	    		if (classList.list[i].select){
+	    			publishRangeContent = publishRangeContent + classList.list[i].org_name + '、';
+	    			for (j = 0; j < classList.list[i].category_s[0].length; j++){
+	    				if (classList.list[i].category_s[0][j].select){
+	    					allSelectData.class_list.push({
+	    						"org_id":classList.list[i].org_id,
+								"category_id":classList.list[i].category_s[0][j].id
+	    					});
+	    					break;
+	    				}
+	    			}
+	    		}
+	    	}
+    	}
+    	
+    	for (i = 0; i < groupList.list.length; i++){
+    		if (groupList.list[i].select){
+    			publishRangeContent = publishRangeContent + groupList.list[i].group_name + '、';
+    			for (j = 0; j < groupList.list[i].category_s[0].length; j++){
+    				if (groupList.list[i].category_s[0][j].select){
+    					allSelectData.group_list.push({
+    						"org_id":groupList.list[i].group_id,
+							"category_id":groupList.list[i].category_s[0][j].id
+    					});
+    					break;
+    				}
+    			}
+    		}
+    	}
+    	
+//  	if (allSelectData.org_list.length == 0 && allSelectData.class_list.length == 0 && allSelectData.group_list.length == 0){
+//  		popAlert("请选择发布范围！");
+//  	}
+//  	else{
+    		var allClassifyData = {'jigouList':jigouList,'classList':classList,'groupList':groupList,'personalList':$api.getStorage('allClassifyData').personalList};//存储分类选中数据
+			$api.setStorage('allClassifyData',allClassifyData);
+			$api.setStorage('areaRange',allSelectData);
+			publishRangeContent = publishRangeContent.slice(0,publishRangeContent.length - 1);
+			$api.setStorage('publishRangeContent',publishRangeContent);//发布范围选中内容；
+			commonExecScript("init_add_window","init_xxadd_frame","setPublishRangeContent()",1);
+			commonExecScript("publisRange_window","","back()",0);
+//  	}
+    }
+</script>
+</html>

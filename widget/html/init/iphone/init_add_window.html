@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<!-- html5：在创建html时为了防止页面缩放等不兼容效果，要创建个viewport  -->
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<!-- 在IOS设备上，有时会将数字转为手机号，这里也要禁止下 -->
+		<meta name="format-detection" content="telephone=no"/>
+		<title>通知</title>
+		<link rel="stylesheet" type="text/css" href="../../../css/aui/aui.css" />
+		<link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+		<style>
+			#publishQuanzi{
+				font-size: 15px;
+				margin-top: 3px;
+				margin-right: 5px;
+			}
+		</style>
+	</head>
+	<body class="init-iphone-body">
+		<div id="wrap">
+			<header class="aui-bar aui-bar-nav aui-bar-primary" id="aui-header">
+				<div id="cloud" class="topbar activebar">
+					<div id="back" class="back" onclick="back();" tapmode="">
+						<i class="aui-iconfont aui-icon-left"></i>返回
+					</div>
+					
+					<div class="aui-title" id="mTitle">
+						
+					</div>
+					
+					<div id="publishQuanzi" class="aui-iconfont  aui-pull-right" onclick="publishQuanzi()">发表</div>
+				</div>
+			</header>
+	</body>
+	<script type="text/javascript" src="../../../script/api.js" ></script>
+	<script type="text/javascript" src="../../../script/base_config.js" ></script>
+	<script type="text/javascript" src="../../../script/common/common.js"></script>
+	<script type="text/javascript">
+		apiready = function() {
+			commonSetTheme({"level":3,"type":0});
+			commonSetWindowName('发表圈子');
+			openAddFrame();
+			commonBackForAndroid();//安卓关闭
+			commonIosAuiHeader();//定位header位置，留出上面电池等空隙，苹果需要
+		};
+		
+		/**
+		 * 返回应用页面
+		 * 周枫
+		 * 2015.10.11
+		 */
+		function back() {
+		    api.closeWin();
+		}
+		/*
+        *作者:zhaoj
+        *功能:打开添加圈子页面
+        *日期：20180130
+        */
+		function openAddFrame(){
+			var header_h = api.pageParam.header_h;
+			var pageParamJson={"header_h":header_h,"menu_type":api.pageParam.menu_type,"org_id":api.pageParam.org_id,"org_name":api.pageParam.org_name,"lx_id":0};
+//			if(api.pageParam.menu_type == 104 && $api.getStorage('identity') == 5){
+				commonOpenFrame('init_xxadd_frame','init_xxadd_frame.html', header_h, false, true, '#ffffff', pageParamJson);
+//			}else{
+//				commonOpenFrame('init_add_frame', 'init_add_frame.html',header_h, true, true,"#ffffff",pageParamJson);
+//			}
+		}
+		
+		/**
+		 * 发表圈子 
+		 */
+		function publishQuanzi(){
+			commonExecScript('init_add_window','init_xxadd_frame','getArticleValue()',1);
+		}
+		
+	</script>
+</html>

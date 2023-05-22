@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<!-- html5：在创建html时为了防止页面缩放等不兼容效果，要创建个viewport  -->
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<!-- 在IOS设备上，有时会将数字转为手机号，这里也要禁止下 -->
+		<meta name="format-detection" content="telephone=no"/>
+		<title>录音</title>
+		<!--<link rel="stylesheet" type="text/css" href="../../../../../css/aui/aui.css" />-->
+		<link id="j_theme_base" rel="stylesheet" type="text/css" href="" />	
+		<style>
+			  html, body {
+            	background-color: transparent;
+       		 }
+        	.shadow{position:absolute;left:0;top:0;width:100%;height:100%;z-index: 1;background:#000000;opacity:0.5;}
+        	.main{position:absolute;z-index:2;width:60%;height:200px;left:50%;top:50%;margin-left:-30%;margin-top:-100px;z-index: 2;background:#ffffff;box-shadow: 0 2px 5px 3px #666666;}   
+	    	.title{ height:63px; border-bottom: 2px solid #74caea; line-height:63px; color:#74caea;padding-left:16px;font-weight:bold;font-size:20px;}	
+	    	.button{height:47px;border-top:1px solid #e6e6e6;}
+	    	.smt-btn,.cnl-btn{width:50%;height:47px;border:0;background:#ffffff;float: left;}
+	    	.smt-btn{border-right:1px solid #e6e6e6 !important;}
+	    	.content{height:87px;}
+	    	.content div{width:35%;float:left;height:100%;}
+	    	.content .num{width:30%;text-align:center;}
+	    	.content .reduce img{float:right;}
+	    	.content div img{display:inline-block;width:40px;height:40px;margin-top:23px;border-radius:5px;}
+	    	.content .num span{display:inline-block;width:36px;height:36px;margin-top:23px;border:2px solid #d8d8d8;border-radius:5px;text-align:center;line-height:36px;}
+	    	.bdr-rdu{border-radius:2px;}
+	    	.bdr-rdu-top{border-radius:2px 2px 0 0;}
+	    	.bdr-rdu-bottom{border-radius:0 0 2px 2px;}
+	    	.bdr-rdu-bottom-left{border-radius:0 0 0 2px;}
+	    	.bdr-rdu-bottom-right{border-radius:0 0 2px 0;}
+	    	.btn-click{background : #50b350;}
+	    	.bg{height:152px;text-align:center;}
+	    	.bg .bgimg{margin-top:25px;}
+	    	.voice_path{margin-top:5px;}
+		</style>
+	</head>
+	<body class="common-ipad-zuoyeIpadstu">
+		<div class="shadow"></div>
+		<div class="main bdr-rdu">
+<!--			<div class="title bdr-rdu-top">设置人数</div>-->
+			<div class="bg" id="bg">
+				<img src="../../../../../image/chatBox/dialogImg4.gif" class="bgimg" id="bgimg"/>
+				<div class="bgtext" id="bgtext">
+					正在录音
+				</div>
+			</div>
+			<div class="button bdr-rdu-bottom">
+				<button class="smt-btn bdr-rdu-bottom-left" tapmode="btn-click" onclick="commonFunction(1)">保存</button>
+				<button class="cnl-btn bdr-rdu-bottom-right" tapmode="btn-click" onclick="closeFrame()">取消</button>
+			<div>
+		</div>
+		<script type="text/javascript" src="../../../../../script/api.js" ></script>
+		<script type="text/javascript" src="../../../../../script/base_config.js" ></script>
+	</body>
+	
+	<script type="text/javascript">
+		apiready = function() {
+			commonSetTheme({"level":5,"type":0});
+		};
+		function moveShort() {
+			document.getElementById('bgimg').src = '../../../../../image/chatBox/dialogImg3.png';
+			document.getElementById('bgtext').innerHTML = '录音时间太短';
+			setTimeout('closeFrame();',1000);
+		}
+		
+		function moveLong() {
+			document.getElementById('bgimg').src = '../../../../../image/chatBox/dialogImg3.png';
+			document.getElementById('bgtext').innerHTML = '语音太长了，最多1分钟';
+			setTimeout('closeFrame();',1000);
+		}
+		/*
+		*author:zhaoj
+		*function:随机提问,随机抽取,配置座位表共同的调用方法
+		*date：20160222
+		*/
+		function commonFunction(type){
+			var function_name = 'stopRecord();'
+			api.execScript({
+				name : 'zuoyeIpad_write_window',
+				frameName : 'zuoyeIpad_write_frame',
+				script :function_name
+			});
+		}
+		/*
+		*author:zhaoj
+		*function:关闭当前frame
+		*date：20160222
+		*/
+		function closeFrame(){
+			api.execScript({
+				name : 'zuoyeIpad_write_window',
+				script :'back()'
+			})
+		}
+	</script>
+</html>

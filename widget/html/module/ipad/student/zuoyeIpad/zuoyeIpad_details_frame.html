@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>检测</title>
+    <link rel="stylesheet" type="text/css" href="../../../../../css/aui/aui.css" />
+    <link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+    <style>
+    	body{margin:0;color:#777;font-size:18px;}
+    	.clearfix:after{content: ' ';display: block;clear: both;visibility: hidden;line-height: 0;height: 0;}
+    	.zuoye-name{line-height:18px;width:100%;}
+    	.title{width:60%;float:left;padding-left:10px;margin:10px 0;}
+    	.plrt15{padding:15px 0 15px 15px;}
+    	.plr15{padding:0 15px;}
+    	.detail-content{text-indent:2em;line-height:35px;margin:5px 0;word-wrap: break-word;word-break: normal; }
+    	.bb{border-bottom:1px solid #EEF0F2;margin:15px 15px 0px 15px;}
+    	.img{text-align:center;padding:35px 0 20px 0;}
+    	.img div{padding-top:15px;}
+    	.footer-div{
+			position:fixed;
+			height:60px;
+			background:#ffffff;
+			display: block;
+			bottom: 0px;
+			width:100%;
+			box-shadow:3px 0 4px #aaaaaa;
+		}
+		.footer-div .wid100{width:100%;line-height:60px;float:left;text-align:center;color:#666666;}
+		.footer_div{height:70px;}
+		#zy_res {
+			display: -webkit-box;
+			display: -webkit-flex;
+			display: flex;
+		    -webkit-flex-wrap: wrap;
+		    -webkit-align-items: center;
+		    padding: 0 2%;
+		}
+		
+		#zy_res .res-div{
+			width: 100px;
+    		margin: 10px;
+		}
+		#zy_res img{
+			width: 100%
+		}
+		#zy_res .res-title{
+			text-align: center;
+		    text-overflow: ellipsis;
+		    white-space: nowrap;
+		    overflow: hidden;
+		    width: 100%
+		}
+    </style>
+</head>
+<body id="body" class="common-ipad-zuoyeIpads">
+	<div id="j_img" class="img" style="display:none;">
+		<img id="j_keai" src="../../../../../image/fun-module/iphone/zuoye/keai.png" style="display:none;" alt="提示" />
+		<img id="j_wunai" src="../../../../../image/fun-module/iphone/zuoye/wunai.png" style="display:none;" alt="提示" />
+		<div id="j_tip"></div>
+	</div>
+	<div class="zuoye-name plrt15 clearfix">
+		<div class="title">检测名称</div>
+	</div>
+	<div id="j_title" class="detail-content plr15">	
+	</div>
+	<div class="zuoye-name plrt15 clearfix">
+		<div class="title">详细说明</div>
+	</div>
+	<div id="zy_desc" class="detail-content plr15">	
+	</div>
+	<div class="zuoye-name plrt15 clearfix">
+		<div class="title">检测资源</div>
+	</div>
+	<div id="zy_res" class="plr15">	
+	</div>
+	<script type="text/html" id="zy_res_script">
+		<%for (var i = 0; i < list.length; i++){%>
+			<div class="res-div">
+				<img src='<%=list[i].imgUrl%>' onclick="showRes('<%=list[i].param%>')"/>
+				<div class="res-title"><%=list[i].res_title%></div>
+			</div>
+		<%}%>
+	</script>
+	<div id="footer_div" class="footer_div" style="display:none;">
+		&nbsp;
+	</div>
+	<div id="j_footer" class="footer-div" style="display:none;">
+	 	<div id="j_submit_btn" class="wid100" onclick="openWriteWin();"></div>
+	</div>
+</body>
+<script type="text/javascript" src="../../../../../script/api.js"></script>
+<script type="text/javascript" src="../../../../../script/plug-in/base64.js" ></script>
+<script type="text/javascript" src="../../../../../script/base_config.js" ></script>
+<script type="text/javascript" src="../../../../../script/common/common.js"></script>
+<script type="text/javascript" src="../../../../../script/plug-in/template.js" ></script>
+<script type="text/javascript">
+	var header_h;
+	apiready = function(){	
+		commonSetTheme({"level":5,"type":0});
+		header_h = api.pageParam.header_h;
+		if(api.pageParam.zy_desc){
+			$api.html($api.byId('zy_desc'),Base64.decode(api.pageParam.zy_desc));
+		}else{
+			$api.text($api.byId('zy_desc'),'老师对检测没有说明');
+		}
+		$api.text($api.byId('j_title'),Base64.decode(api.pageParam.zy_name));
+		if(api.pageParam.type){
+			$api.css($api.byId('j_img'),'display:block;');
+			$api.css($api.byId('j_footer'),'display:inline-block;');
+			$api.css($api.byId('footer_div'),'display:block;');
+		}
+		if($api.getStorage('identity') == 6){
+			if(api.pageParam.is_stop){
+				$api.css($api.byId('j_wunai'),'display:inline-block;');
+				$api.text($api.byId('j_tip'),'检测已截止，不能提交检测啦！');
+				$api.text($api.byId('j_submit_btn'),'查看检测');
+			}else{
+				$api.css($api.byId('j_keai'),'display:inline-block;');
+				$api.text($api.byId('j_tip'),'还没有提交检测，快去做检测吧！');
+				$api.text($api.byId('j_submit_btn'),'开始检测');
+			}
+		}else{
+			if(api.pageParam.is_stop){
+				$api.css($api.byId('j_wunai'),'display:inline-block;');
+				$api.text($api.byId('j_tip'),'检测已截止，只能查看检测啦！');
+				$api.text($api.byId('j_submit_btn'),'查看检测');
+			}else{
+				$api.css($api.byId('j_keai'),'display:inline-block;');
+				$api.text($api.byId('j_tip'),'还没有提交检测，快去查看检测吧！');
+				$api.text($api.byId('j_submit_btn'),'查看检测');
+			}
+		}
+		
+		getZyInfoById();
+	};
+	/*
+	*author:zhaoj
+	*function:打开写检测页面
+	*date：20160325
+	*/
+	function openWriteWin(){
+	    if($api.getStorage('identity') == 6 && !api.pageParam.is_stop && api.pageParam.is_read*1 == 0){
+           updateZyReadStatu();
+        }
+		commonOpenWin('zuoyeIpad_write_window', 'zuoyeIpad_write_window.html', false, false, {"header_h":api.pageParam.header_h,"zy_desc":api.pageParam.zy_desc,"zy_name":api.pageParam.zy_name,"zy_id":api.pageParam.zy_id,"is_stop":api.pageParam.is_stop,"subject_id":api.pageParam.subject_id,"zy_statu":api.pageParam.zy_statu});
+	}
+	
+	/*
+    *author:zhaoj
+    *function:修改检测的状态，标记学生已经看过
+    *date：20160405
+    */
+    function updateZyReadStatu(){
+        commonGetStudentInfoByParentId($api.getStorage('person_id'), $api.getStorage('identity'), function(is_true, stu_info_json){
+            if(is_true) {
+                if($api.getStorage('identity') != 7){
+                    api.ajax({
+                        url : BASE_URL_ACTION + '/xx/updateZyReadStatu',
+                         method : 'post',
+                         dataType : 'json',
+                         timeout : 30,
+                         data : {
+                            values : {
+                                "random_num" : creatRandomNum(),
+                                "student_id" : stu_info_json.student_id,
+                                "zy_id" : api.pageParam.zy_id
+                            }
+                         },
+                         headers : {
+                             'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+                         },
+                    }, function(ret, err) {
+                        commonExecScript('zuoyeIpad_index_window','zuoyeIpad_index_frame','initData(1);',1);
+                    });
+                }
+            } else {
+                api.toast({
+                    msg:stu_info_json
+                });
+            }   
+        });
+    }
+    
+    
+    
+    function getZyInfoById(){
+    	showSelfProgress('加载中...');
+    	api.ajax({
+            url : BASE_URL_ACTION + '/xx/getZyInfoById',
+            method : 'post',
+            timeout : 30,
+            dataType : 'json',
+            returnAll : false,
+            data : {
+                values : {
+                    "random_num" : creatRandomNum(),
+                    "person_id" : $api.getStorage("person_id"),
+                    "identity_id": $api.getStorage("identity"),
+                    "zy_id" : api.pageParam.zy_id,
+                    "zy_type" :1,
+                }
+            }
+        }, function(ret, err) {
+        	api.hideProgress();
+        	if (ret && ret.success && ret.zy_info){
+        		var tempAry = ret.zy_info.ress;
+        		if (tempAry && tempAry.length > 0){
+        			var resourceAry = [];
+        			for (var i = 0;  i< tempAry.length; i++){
+        				var param = {
+        					thumb_id: tempAry[i].thumb_id,
+        					res_type: tempAry[i].resource_format,
+        					res_path: tempAry[i].file_id,
+        					res_title: tempAry[i].resource_title,
+        					m3u8_status: tempAry[i].m3u8_status,
+        					res_id: tempAry[i].resource_id_int,
+        					
+        				}
+        				resourceAry.push({
+        					imgUrl: $api.getStorage("BASE_URL_ACTION") + "/html/down/Thumbs/" + tempAry[i].thumb_id.substring(0,2)
+        					+"/"+tempAry[i].thumb_id+".thumb",
+        					param: JSON.stringify(param),
+        					res_title: tempAry[i].resource_title,
+        				});
+        			}
+        			
+        			commonAddOnceHtml("zy_res","zy_res_script",{list:resourceAry});
+        			setTimeout(function(){console.log($api.html($api.byId("zy_res")))},1000)
+        		}
+        	}else{
+        		popToast("获取检测资源失败")
+        	}
+        });
+    }
+    function showRes(param){
+    	api.execScript({
+    		name: api.winName,
+	        script: "showRes('"+param+"');"
+        });
+    }
+</script>
+</html>

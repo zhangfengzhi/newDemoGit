@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+        <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+        <title>绑定页面</title>
+        <link rel="stylesheet" type="text/css" href="../../../css/aui/aui.css"/>
+        <link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+        <style>
+            body {
+                background: #efeff4;
+                color: #333;
+            }
+            .fa-div {
+                border-bottom: 1px solid #efefef
+            }
+            .bd-title {
+                height: 45px;
+                line-height: 45px;
+                font-size: 14px;
+                color: #696969;
+                padding-left:7px;
+            }
+            .name {
+                height: 60px;
+                line-height: 60px;
+                font-size: 16px;
+                padding: 0 15px;
+                width: 100%
+            }
+            .fl {
+                float: left;
+            }
+            .fr {
+                float: right;
+            }
+            .fl-width{
+                max-width: 40%;
+            }
+            .fr-width{
+                max-width: 80%;
+            }
+            .content{
+                height: 100%;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                display: -webkit-box;
+                -webkit-line-clamp: 1;
+                -webkit-box-orient: vertical;
+                word-break: break-all;
+                text-align: left;
+            }
+            .bd-type-div{
+                width:50%;
+                float:left;
+                padding-top:40px;
+                text-align: center;
+            }
+            .bd-type-div div{
+                width:80px;
+                height:110px;
+                padding-top:100px;
+                text-align: center;
+            }
+            .bd-type-div .sys{
+                background:url(../../../image/wo/sxb_sys.png) left top no-repeat;
+                background-size:80px 80px;
+                margin:0 auto;
+            }
+            .bd-type-div .input{
+                background:url(../../../image/wo/sxb_sdsr.png) left top no-repeat;
+                background-size:80px 80px;
+                margin:0 auto;
+            }
+        </style>
+    </head>
+    <body class="w-iphone-common">
+        <div id="bd_title" class="bd-title fa-div">
+                                    
+        </div>
+        <div class="name fa-div" style="background:#f6f6f6">
+            <div class="fl">
+                                            学生姓名
+            </div>
+            <div id="stu_name" class="fr fl-width content clearfix">
+                                              张三
+            </div>
+        </div>
+        <div class="name fa-div" style="background:#f6f6f6">
+            <div class="fl">
+                                            设备码
+            </div>
+            <div id="sxb_mac" class="fr fr-width content clearfix">
+                
+            </div>
+        </div>
+        <div class="bd-title">
+                                您可以选择以下方式进行绑定
+        </div>
+        <div class="bd-type fa-div">
+            <div class="fl bd-type-div">
+                <div class="sys" tapmode onclick="openScanner('sxb')">
+                                                        扫一扫
+                </div>
+            </div>
+            <div class="fr bd-type-div">
+                <div class="input" id="sdsr" onclick="openBdFrame(2)">
+                                                       手动输入
+                </div>
+            </div>
+        </div>
+    </body>
+    <script type="text/javascript" src="../../../script/api.js"></script>
+    <script type="text/javascript" src="../../../script/base_config.js" ></script>
+    <script type="text/javascript" src="../../../script/plug-in/template.js" ></script>
+    <script type="text/javascript" src="../../../script/common/common.js" ></script>
+    <script type="text/javascript" src="../../../script/init/init_config.js" ></script>
+    <script type="text/javascript" src="../../../script/assembly/tongjiData.js"></script>
+    <script type="text/javascript">
+        var header_h = 45;
+        apiready = function() {
+            commonSetTheme({"level" : 3,"type" : 0});
+            header_h = api.pageParam.header_h;
+            $api.html($api.byId('bd_title'),api.pageParam.type == 1?"手写板已绑定":"请绑定学生本人的手写板");
+            api.pageParam.type == 1?$api.attr($api.byId('sdsr'), 'onclick', 'openBdFrame(2,"'+api.pageParam.sxbMac+'")'):"";
+            $api.html($api.byId('sxb_mac'),api.pageParam.sxbMac);
+            $api.html($api.byId('stu_name'),api.pageParam.name);
+        };
+        
+        /*
+         * 功能：打开绑定页面
+         * 作者：张自强
+         * 时间：20190219
+         */
+         function openBdFrame(type,num){ 
+commonExecScript(api.winName,'','openBdContentFrame('+type+',"'+num+'","'+api.pageParam.id+'","'+api.pageParam.name+'",'+api.pageParam.class_type+',"'+api.pageParam.class_id+'");',0);
+         }
+         
+         /*
+          * 功能：改变学生绑定状态
+          * 作者：张自强
+          * 时间：20190220
+          */
+         function changeBdState(type,sxbMac){
+            $api.html($api.byId('bd_title'),type == 1?"手写板已绑定":"请绑定学生本人的手写板");
+            type == 1?$api.attr($api.byId('sdsr'), 'onclick', 'openBdFrame(2,"'+sxbMac+'")'):""
+            $api.html($api.byId('sxb_mac'),sxbMac);
+         }
+    </script>
+</html>

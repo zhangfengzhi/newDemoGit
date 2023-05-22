@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<!-- html5：在创建html时为了防止页面缩放等不兼容效果，要创建个viewport  -->
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<!-- 在IOS设备上，有时会将数字转为手机号，这里也要禁止下 -->
+		<meta name="format-detection" content="telephone=no"/>
+		<title>添加新闻资讯</title>
+		<link rel="stylesheet" type="text/css" href="../../../../../css/aui/aui.css" />
+		<link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+		<style>
+			.save {
+				position: absolute;
+				right: 3px;
+				top: 0;
+				font-size: 16px !important;
+				height: 50px;
+				line-height: 50px;
+			}
+		</style>
+	</head>
+	<body class="common-iphone-xwzx">
+		<div id="wrap">
+			<header class="aui-bar aui-bar-nav aui-bar-primary" id="aui-header">
+				<div id="cloud" class="topbar activebar">
+					<div id="back" class="back" onclick="back();" tapmode="">
+						<i class="aui-iconfont aui-icon-left"></i>返回
+					</div>
+					<div class="mTitle" id="mTitle">
+						添加新闻资讯
+					</div>
+					<div class="win-menu">
+						<a id='save' class="aui-iconfont aui-icon-check aui-hide"  onclick="save();"></a>
+					</div>
+				</div>
+			</header>
+			<div  class="aui-content aui-content-padded" id="message-content">
+				<p class="aui-text-center history-date"></p>
+			</div>
+		</div>
+	</body>
+	<script type="text/javascript" src="../../../../../script/api.js"></script>
+	<script type="text/javascript" src="../../../../../script/plug-in/base64.js" ></script>
+	<script type="text/javascript" src="../../../../../script/common/common.js" ></script>
+	<script type="text/javascript">
+		var header_h;//顶部header高度
+		var back_type = 'add';//返回参数
+		apiready = function() {
+			commonSetTheme({"level":5,"type":0});
+			header_h = api.pageParam.header_h;
+			//打开添加新闻资讯页面
+			openAddFrame();
+			//安卓关闭
+			commonIosAuiHeader();//定位header位置，留出上面电池等空隙，苹果需要
+			commonBackForAndroid();
+		};
+		/**
+		 * 打开新闻资讯列表frame
+		 * 周枫
+		 * 2015.11.20
+		 */
+		function openAddFrame() {
+			reBackType('add');
+			//打开新闻资讯frame页面
+			var pageParamJson={"header_h":header_h,"winName":api.pageParam.winName};
+			commonOpenFrame('xwzx_add_frame', 'xwzx_add_frame.html',header_h, true, true,"#ffffff",pageParamJson);
+		}
+
+		/**
+		 * 返回应用页面
+		 * 周枫
+		 * 2015.10.11
+		 */
+		function back() {
+			switch(back_type) {
+				case 'add':
+					api.closeWin();
+					break;
+				case 'record':
+//					api.execScript({
+//						name : 'xwzx_index_window',
+//						script : 'openTongzhiAddFrame() ;'
+//					});
+    				commonCloseFrame('xwzx_record_frame');
+    				reBackType('add');
+					break;
+			}
+		}
+		/**
+		 * 重置从哪个页面退出，是新闻资讯内容页面还是新闻资讯列表页面
+		 * 周枫
+		 * 2015.10.14
+		 */
+		function reBackType(type) {
+			switch(type) {
+				//如果新闻资讯列表页面退出
+				case 'add':
+					back_type = 'add';
+					commonAddOrRemoveHideCss("save",0);
+					commonSetWindowName('添加新闻资讯');
+					break;
+				case 'record':
+					commonSetWindowName('语音录入');
+					commonAddOrRemoveHideCss("save",1);
+					back_type = 'record';
+					break;
+			}
+		}
+		/*
+		 *author:zhaoj
+		 *function:点击保存按钮的点击事件
+		 *date：20160111
+		 */
+		function save() {
+			api.execScript({
+				name : api.winName,
+				frameName : 'xwzx_record_frame',
+				script : 'save()'
+			});
+		}
+	</script>
+</html>

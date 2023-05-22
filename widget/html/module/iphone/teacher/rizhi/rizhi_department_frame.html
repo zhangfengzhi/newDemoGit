@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+		<title>部门信息</title>
+		<link rel="stylesheet" type="text/css" href="../../../../../css/aui/aui.css"/>
+		<link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+		<style>
+			body {
+				background: #f7f9f8;
+			}
+			.count {
+				height: 70px;
+				background: #ffffff;
+				margin-bottom: 1px;
+				margin-bottom: 4px
+			}
+			.left-div {
+				width: 33%;
+				float: left;
+				text-align: center;
+				padding: 12px 0 0 0;
+			}
+			.middle-div {
+				width: 34%;
+				float: left;
+				text-align: center;
+				padding: 12px 0 0 0;
+			}
+			.right-div {
+				width: 33%;
+				float: right;
+				text-align: center;
+				padding: 12px 0 0 0;
+			}
+			.list-left-div {
+				width: 32%;
+				float: left;
+				text-align: center;
+				padding: 11px 0 0 0;
+			}
+			.list-middle-div {
+				width: 32%;
+				float: left;
+				text-align: center;
+				padding: 11px 0 0 0;
+			}
+			.list-right-div {
+				width: 32%;
+				float: left;
+				text-align: center;
+				padding: 11px 0 0 0;
+			}
+			.left-div span, .left-div div, .middle-div span, .middle-div div, .right-div span, .right-div div {
+				font-size: 14px;
+				color: #555555;
+			}
+			.list-left-div span, .list-left-div div, .list-middle-div span, .list-middle-div div, .list-right-div span, .list-right-div div, .dep-name {
+				font-size: 12px;
+				color: #555555;
+			}
+			.left-div font {
+				font-size: 16px;
+				color: #A020F0;
+			}
+			.middle-div font {
+				font-size: 16px;
+				color: #1abc9c;
+			}
+			.right-div font {
+				font-size: 16px;
+				color: #FF9900;
+			}
+			.list-left-div font {
+				font-size: 14px;
+				color: #A020F0;
+			}
+			.list-middle-div font {
+				font-size: 14px;
+				color: #1abc9c;
+			}
+			.list-right-div font {
+				font-size: 14px;
+				color: #FF9900;
+			}
+			.head-img-box {
+				float: left;
+				width: 28%;
+				height: 62px;
+				background: #ffffff;
+				text-align: center;
+			}
+			.head-icon {
+				margin-top: 5px;
+				height: 30px;
+				width: 30px;
+				border-radius: 10px 10px 10px 10px;
+			}
+			.list-count {
+				width: 67%;
+				float: left;
+				height: 62px;
+				background: #ffffff;
+			}
+			.jianju {
+				margin-bottom: 1px;
+				height: 62px;
+				background: #ffffff;
+			}
+			.class-name {
+				padding: 20px 10px 10px 83px;
+			}
+			.class-name.class {
+				background: url(../../../../../image/fun-module/iphone/czda_icon.png) 47px -52px no-repeat;
+				background-size: 31px 120px;
+			}
+			.class-name.person {
+				background: url(../../../../../image/fun-module/iphone/czda_icon.png) 47px 17px no-repeat;
+				background-size: 31px 120px;
+			}
+			.main-content li {
+				height: 120px;
+			}
+			.main-content .left {
+				width: 75px;
+				height: 100%;
+				float: left;
+				padding-left: 5px;
+			}
+			.main-content .left span {
+				display: inline-block;
+				width: 45px;
+				text-align: center;
+			}
+			.main-content .left .year {
+				font-size: 8px;
+				padding-top: 43px;
+			}
+			.main-content .left.one {
+				background: url(../../../../../image/fun-module/iphone/czda_bg.png) 53px -10px no-repeat;
+				background-size: 18px 451px;
+			}
+			.main-content .left.first {
+				background: url(../../../../../image/fun-module/iphone/czda_bg.png) 53px -90px no-repeat;
+				background-size: 18px 451px;
+			}
+			.main-content .left.center {
+				background: url(../../../../../image/fun-module/iphone/czda_bg.png) 53px -168px no-repeat;
+				background-size: 19px 451px;
+			}
+			.main-content .left.last {
+				background: url(../../../../../image/fun-module/iphone/czda_bg.png) 53px -247px no-repeat;
+				background-size: 18px 451px;
+			}
+			.main-content .right {
+				float: left;
+				padding: 10px 0 10px 8px;
+				background: url(../../../../../image/fun-module/iphone/czda_bg.png) 0 -377px no-repeat;
+				background-size: 10px 451px;
+			}
+			.main-content .right .detail {
+				border: 1px solid #1abc9c;
+				height: auto;
+				border-radius: 4px;
+				color: #000000;
+			}
+			.main-content .right .detail .img {
+				width: 90px;
+				height: 100%;
+				float: right;
+				padding-top: 10px;
+			}
+			.main-content .right .detail .img img {
+				width: 80px;
+				height: 80px;
+				border-radius: 5px;
+			}
+			.main-content .right .detail .title, .main-content .right .detail .person-name, .main-content .right .detail .textview {
+				float: left;
+			}
+			.title {
+				padding: 10px 7px 0;
+			}
+			.person-name {
+				font-size: 13px;
+				padding: 9px 7px 0;
+			}
+			.textview {
+				font-size: 13px;
+				padding: 9px 7px 0;
+			}
+			.line {
+				width: 1px;
+				background: #1abc9c;
+				margin-left: 57px;
+			}
+			.h10 {
+				height: 10px;
+				background: #f7f9f8;
+			}
+			.h20 {
+				height: 10px;
+				background: #f7f9f8;
+			}
+			.h1 {
+				height: 1px;
+				background: #CCCCCC;
+			}
+			.item_right {
+				color: #696969;
+				font-size: 14px;
+				padding-right: 15px;
+			}
+			.ztys {
+				padding: 7px;
+			}
+			.right-btn {
+				float: right;
+				height: 62px;
+				padding: 20px 0;
+				width: 4%;
+			}
+		</style>
+	</head>
+	<body class="common-iphone-rizhi">
+		<div class="count">
+			<div class = "left-div">
+				<font id = "noSubmitId"></font><span id = "noSubmitNum">人</span>
+				<div >
+					未提交
+				</div>
+			</div>
+			<div class = "middle-div">
+				<font id = "sumOnTimeId"></font><span id = "sumOnTimeNum">人</span>
+				<div >
+					按时提交
+				</div>
+			</div>
+			<div class = "right-div">
+				<font id = "sumDelayTimeId"></font><span id = "sumDelayTimeNum">人</span>
+				<div>
+					延时提交
+				</div>
+			</div>
+		</div>
+		<div class="h20"></div>
+		<div id = "log_dep_body" class = "clearfix"></div>
+		<script type="text/html" id="log_dep_script">
+			<%for(var i=0; i< list.length; i++){%>
+			<div class="h1"></div>
+			<div class = "jianju" tapmode onclick = "openDepDetailWin(<%=list[i].manage_org_id%>,<%=list[i].noSubmit%>,<%=list[i].onTime%>,<%=list[i].delayTime%>,<%=i%>,<%=list[i].judgeMonth%>,<%=list[i].checkLeader%>)">
+			<div class = "head-img-box">
+			<img id = "user" class = "head-icon" data-echo="" onerror="this.src='../../../../../image/tongxunlu/defaultgroup.png'" src="../../../../../image/tongxunlu/defaultgroup.png" alt="缩略图"/>
+			<div class = "dep-name">
+			<%=list[i].org_name%>
+			</div>
+			<input oninput="commonRemoveExpression(this)" type="hidden" id="log_name_hid_<%=i%>" value="<%=list[i].org_name%>"/>
+			</div>
+			<div class="list-count">
+			<div class = "list-left-div">
+			<font><%=list[i].noSubmit%></font><span><%if(list[i].judgeMonth == "1"){%>人<%}else{%>次<%}%></span>
+			<div class = "ztys">
+			未提交
+			</div>
+			</div>
+			<div class = "list-middle-div">
+			<font><%=list[i].onTime%></font><span><%if(list[i].judgeMonth == "1"){%>人<%}else{%>次<%}%></span>
+			<div class = "ztys">
+			按时提交
+			</div>
+			</div>
+			<div class = "list-right-div">
+			<font><%=list[i].delayTime%></font><span><%if(list[i].judgeMonth == "1"){%>人<%}else{%>次<%}%></span>
+			<div class = "ztys">
+			延时提交
+			</div>
+			</div>
+			<div class = "right-btn">
+			<i class="aui-iconfont aui-icon-right item_right"></i>
+			</div>
+			</div>
+			</div>
+			<div class="h1"></div>
+			<%}%>
+		</script>
+	</body>
+	<script type="text/javascript" src="../../../../../script/api.js"></script>
+	<script type="text/javascript" src="../../../../../script/common/common.js"></script>
+	<script type="text/javascript" src="../../../../../script/plug-in/template.js" ></script>
+	<script type="text/javascript" src="../../../../../script/assembly/log-current-time.js"></script>
+	<script type="text/javascript" src="../../../../../script/plug-in/base64.js" ></script>
+	<script type="text/javascript" src="../../../../../script/base_config.js" ></script>
+	<script type="text/javascript">
+		//顶部高度
+		var header_h;
+		//本月有多少天数
+		var monthNum;
+		//1按天查询2按照月查询
+		var judgeMonth;
+		//查询日报的时间
+		var timeParam;
+		var yearDay;
+		//每个月天数
+		var dayNum;
+		var currentPage;
+		//总页数
+		var totalPages;
+		//区分是否是领导1普通员工2领导
+		var checkLeader;
+		apiready = function() {
+			commonSetTheme({"level":5,"type":0});
+			header_h = api.pageParam.header_h;
+			judgeMonth = api.pageParam.judgeMonth;
+			timeParam = api.pageParam.timeParam;
+			checkLeader = api.pageParam.checkLeader;
+			yearDay = api.pageParam.yearDay;
+			currentPage = 1;
+			//本月有多少天
+			dayNum = currentMonthDayNum(judgeMonth, yearDay, timeParam);
+			//下拉刷新
+			commonRefreshHeaderInfo();
+			//加载数据
+			getDepData(1, currentPage, true, judgeMonth, timeParam);
+		};
+		/*
+		 *author:ws
+		 *function:上啦加载、下拉刷新回调函数
+		 *date：20170308
+		 */
+		function initData(currentPage) {
+			getDepData(2, currentPage, true, judgeMonth, timeParam);
+		}
+
+		/*
+		 *author:ws
+		 *function:事件返回window页
+		 *date：20170318
+		 */
+		function getLogData(type, time, year) {
+			timeParam = time;
+			judgeMonth = type;
+			yearDay = year;
+			commonExecScript('rizhi_index_window','', 'requreDateTime("' + judgeMonth + '","' + time + '");',0);
+			dayNum = currentMonthDayNum(judgeMonth, yearDay, timeParam);
+			getDepData(1, currentPage, true, judgeMonth, timeParam);
+		}
+
+		/*
+		 *author:ws
+		 *function:获取部门数据
+		 *date：20170305
+		 */
+		function getDepData(flag, currentPage, isReload, judgeMonth, timeParam) {
+			if (flag == 1) {
+				showSelfProgress('加载中...');
+			}
+			judgeMonth = judgeMonth;
+			var time='';
+			judgeMonth == 1?time=timeParam:time=$api.getStorage("rizhi_month_time");
+			api.ajax({
+				url : BASE_URL_ACTION + '/dsjxt/rizhi/LogGetDepInfo',
+				method : 'post',
+				dataType : 'json',
+				timeout : 30,
+				data : {
+					values : {
+						"person_id" : $api.getStorage("person_id"),
+						"judgeMonth" : judgeMonth, //1按照日查询2按照月查询
+						"timeParam" : time, //日报日期
+						"checkLeader" : checkLeader//区分是否是领导1领导2普通员工
+					}
+				}
+			}, function(ret, err) {
+				if (ret) {
+					if (ret.success) {
+						commonControlRefresh();
+						api.hideProgress();
+						var zy_data = {
+							"list" : []
+						};
+						var sumOnTime = 0;
+						var sumDelayTime = 0;
+						var sumNoSubmit = 0;
+						totalPages = ret.log_list.length;
+						if (isReload) {
+							// 重新设置为1
+							currentPage = 1;
+						}
+						for (var i = 0; i < ret.log_list.length; i++) {
+							var param = new Object();
+							param.judgeMonth = judgeMonth;
+							param.org_name = ret.log_list[i].org_name;
+							param.onTime = ret.log_list[i].onTime;
+							param.delayTime = ret.log_list[i].delayTime;
+							param.manage_org_id = ret.log_list[i].manage_org_id;
+							param.checkLeader = checkLeader;
+							if (judgeMonth == 1) {
+								sumNoSubmit = sumNoSubmit + ret.log_list[i].countNumPerson - ret.log_list[i].onTime - ret.log_list[i].delayTime;
+								param.noSubmit = ret.log_list[i].countNumPerson - ret.log_list[i].onTime - ret.log_list[i].delayTime;
+								$api.text($api.byId("noSubmitNum"), "人");
+								$api.text($api.byId("sumOnTimeNum"), "人");
+								$api.text($api.byId("sumDelayTimeNum"), "人");
+							} else if (judgeMonth == 2) {
+								sumNoSubmit = sumNoSubmit + ret.log_list[i].countNumPerson * dayNum - ret.log_list[i].onTime - ret.log_list[i].delayTime;
+								param.noSubmit = ret.log_list[i].countNumPerson * dayNum - ret.log_list[i].onTime - ret.log_list[i].delayTime;
+								$api.text($api.byId("noSubmitNum"), "次");
+								$api.text($api.byId("sumOnTimeNum"), "次");
+								$api.text($api.byId("sumDelayTimeNum"), "次");
+							}
+							sumOnTime = sumOnTime + ret.log_list[i].onTime;
+							sumDelayTime = sumDelayTime + ret.log_list[i].delayTime;
+							$api.text($api.byId("noSubmitId"), sumNoSubmit);
+							$api.text($api.byId("sumOnTimeId"), sumOnTime);
+							$api.text($api.byId("sumDelayTimeId"), sumDelayTime);
+							zy_data.list.push(param);
+						}
+						commonAddOnceHtml('log_dep_body', 'log_dep_script', zy_data);
+					} else {
+						popBottomToast("网络繁忙，请稍候重试");
+					}
+				} else {
+					popBottomToast("网络繁忙，请稍候重试");
+				}
+			});
+		}
+
+		/*
+		 *author:ws
+		 *function:打开部门详细信息
+		 *date：20170221
+		 */
+		function openDepDetailWin(org_id, noSubmit, onTime, delay, num, judgeMonthNum) {
+			var title_num = "log_name_hid_" + num;
+			titleName = Base64.encode($api.val($api.byId(title_num)));
+			var pageParamJson = {
+				"header_h" : header_h,
+				"org_id" : org_id,
+				"noSubmit" : noSubmit,
+				"onTime" : onTime,
+				"delay" : delay,
+				"judgeMonth" : judgeMonthNum,
+				"timeParam" : timeParam,
+				"year" : yearDay,
+				"titleName" : titleName,
+				"checkLeader" : checkLeader
+			};
+			commonOpenWin('rizhi_dep_detail_window', 'rizhi_dep_detail_window.html', false, false, pageParamJson);
+		}
+
+		/*
+		 *author:ws
+		 *function:打开日期选项
+		 *date：20170222
+		 */
+		function chooseData() {
+			api.actionSheet({
+				cancelTitle : '取消',
+				buttons : ['按月查询', '按日查询'],
+				style : {
+					titleFontColor : '#ff0000'
+				}
+			}, function(ret, err) {
+				if (ret) {
+					if (ret.buttonIndex == 1) {
+						//按照月查询
+						selectMonth();
+					} else if (ret.buttonIndex == 2) {
+						//按照日查询
+						pickerDateOpen();
+					}
+				} else {
+					popBottomToast('网络繁忙，请稍候重试');
+				}
+			});
+		}
+
+		/*
+		 *author:ws
+		 *function:选择月份
+		 *date：20170222
+		 */
+		function selectMonth() {
+			var pageParamJson = {
+				"header_h" : header_h,
+				"year" : yearValue,
+				"month" : monthValue,
+				"nameWin" : api.winName,
+				"nameFrame" : api.frameName,
+				"type" : 2
+			};
+			commonOpenFrame('rizhi_select_month_frame', 'rizhi_select_month_frame.html', header_h, false, false, "rgba(0,0,0,0)", pageParamJson);
+		}
+
+		/*
+		 *author:ws
+		 *function:刷新数据，重新设置时间
+		 *date：20170315
+		 */
+		function depdetailBack(time, year, month, judgeMonth) {
+			judgeMonth = judgeMonth;
+			timeParam = time;
+			if (judgeMonth == 1) {
+				timeParam = time;
+				commonExecScript('rizhi_index_window','', 'setTime("' + time + '");',0);
+			} else if (judgeMonth == 2) {
+				timeParam = month;
+				commonExecScript('rizhi_index_window','', 'setTimeValue("' + year + '","' + month + '");',0);
+			}
+			dayNum = currentMonthDayNum(judgeMonth, year, timeParam);
+			//刷新数据
+			getDepData(1, currentPage, true, judgeMonth, timeParam);
+		}
+	</script>
+</html>

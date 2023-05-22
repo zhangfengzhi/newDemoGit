@@ -1,0 +1,393 @@
+/*
+@Filename: jszy_new_common.css
+@Description: 新版教师检测，学生分组样式
+@Version: 2016-12-05
+@author: zhaoj
+*/
+/**
+* 功能：分组管理页面的样式
+* 日期：2016-12-05
+* 作者：zhaoj
+* *****************************************************
+*/
+.history-date {
+	font-size: 12px;
+}
+#message-content {
+	display: none;
+	overflow-y: auto;
+}
+.content{
+	padding:9px 15px 15px 25px;
+	color:#333;
+}
+.parent li{
+	list-style:none;
+	position:relative;
+	float:left;
+	width:100%;
+	margin:9px 0;
+}
+.zhan-kai,.shou-qi,.jiedian{
+	display:inline-block;
+	float:left;
+	width:20px;
+	height:25px;
+	padding-right:28px;
+}
+.shou-qi{
+	background:url(../../../image/fun-module/common/zsd.png) 0 -166px no-repeat;
+	background-size:19px 186px;
+}
+.zhan-kai{
+	background:url(../../../image/fun-module/common/zsd.png) 0 -126px no-repeat;
+	background-size:19px 186px;
+}
+.jiedian{
+	background:url(../../../image/fun-module/common/zsd.png) 0 -86px no-repeat;
+	background-size:20px 196px;
+}
+.name{
+	display:inline-block;
+	float:left;
+	line-height:25px;
+}
+.children{
+	margin-left:30px;
+}
+.children li{
+	position:relative;
+	float:left;
+	width:100%;
+	margin:9px 0;
+}
+.children li:first-child{
+	margin-top:18px;
+}
+.children li:last-child{
+	margin-bottom:0px;
+}
+.num{
+	width:75px;
+}
+.num,.btn2{
+	display:inline-block;
+	position:absolute;
+	right:0;
+	top:-9px;
+	float:left;
+	height:40px;
+	line-height:25px;
+}
+.btn2 div{
+	display:inline-block;
+	width:48%;
+	min-width:36px;
+	margin:8px 0px 10px 0;
+}
+/**
+* 功能：按钮div样式设置
+* 日期：2016-12-05
+* 作者：zhaoj
+*/
+.num div,.btn2 div span{
+	display:inline-block;
+	width:100%;
+	min-width:45px;
+	height:22px;
+	line-height:23px;
+	margin-top:9px;
+	padding:0 5px;
+	border-radius:11px;
+	color:#fff;
+	font-size:12px;
+	text-align:center;
+}
+.num div .aui-icon-right{
+	font-size:12px;
+}
+.btn2 div span{
+	min-width:37px;
+	margin-top:0;
+	font-size:11px;
+}
+.btn2 div:first-child{
+	float:left;
+	margin-right:3px;
+}
+.btn2 div:last-child{
+	float:right;
+}
+.btn2 div:first-child span{
+	background:#B7B7B7;
+}
+.btn2 div:last-child span{
+	background:#e74c3c;
+}
+.display-n{
+	display:none !important;
+}
+/**
+* 功能：添加或编辑分组页面的样式
+* 日期：2016-12-05
+* 作者：zhaoj
+* *****************************************************
+*/
+body{background:transparent;}
+.shadow{
+	position:absolute;
+	left:0;
+	top:0;
+	z-index: -1;
+	width:100%;
+	height:100%;
+	background:transparent;
+}
+/**
+* 功能：整体设置分组页面的样式
+* 日期：2016-12-05
+* 作者：zhaoj
+*/
+.main{
+	position:absolute;
+	left:50%;
+	top:50%;
+	z-index:2;
+	width:86%;
+	height:234px;
+	margin-left:-43%;
+	margin-top:-117px;
+	box-shadow: 0 2px 5px 3px #666666;
+	background:#ffffff;
+}   
+.title{
+	height:63px;
+	line-height:63px;
+	padding-left:4%;
+	font-weight:bold;
+	font-size:20px;
+}	
+.button{
+	height:47px;
+	border-top:1px solid #e6e6e6;
+}
+.smt-btn,.cnl-btn{
+	float: left;
+	width:50%;
+	height:47px;
+	border:0;
+	background:#ffffff;
+}
+.smt-btn{
+	border-right:1px solid #e6e6e6 !important;
+}
+.content{
+	position:relative;
+	height:122px;
+}
+.bdr-rdu{
+	border-radius:2px;
+}
+.bdr-rdu-top{
+	border-radius:2px 2px 0 0;
+}
+.bdr-rdu-bottom{
+	border-radius:0 0 2px 2px;
+}
+.bdr-rdu-bottom-left{
+	border-radius:0 0 0 2px;
+}
+.bdr-rdu-bottom-right{
+	border-radius:0 0 2px 0;
+}
+.btn-click{
+	background : #50b350;
+}
+.group-name{
+	float:left;
+	width:30%;
+	min-width:80px;
+	padding-left:5%;
+	padding-top:10px;
+}
+.input-div{
+	display:inline-block;
+	position:relative;
+	float:right;
+	width:90%;
+	margin-right:5%;
+	padding-top:12px;
+}
+.input-div input{
+	width:100%;
+	line-height:16px;
+	padding:9px 5px;
+	border:1px solid #cccccc;
+	border-radius:3px;
+}
+.tip{
+	position:absolute;
+	right:0;
+	bottom:-12px;
+	height:20px;
+	line-height:20px;
+	color:#ff0000;
+	font-size:12px;
+}
+/**
+* 功能：班级或分组学生列表页面
+* 日期：2016-12-05
+* 作者：zhaoj
+* *****************************************************
+*/
+.class-student li,.group-student li{
+	list-style:none;
+	line-height:48px;
+	color:#000;
+}
+.class-student li .all-select{
+	display: inline-block;
+	padding-left:15px;
+}
+.class-student li div{
+	height:31px;
+	line-height:32px;
+	padding-left:15px;
+	border-top:1px solid #c8c7cc;
+	border-bottom:1px solid #c8c7cc;
+	background:#F4F4F4;
+	color:#999;
+	font-size:14px;
+	font-weight:400;
+}
+.class-student li div.no-bdr-top{
+	border-top:none;
+}
+.class-student li input,.group-student li input{
+	margin:11px 15px;
+	line-height:23px;
+}
+.class-student li .child-student li {
+	border-bottom:1px solid #c8c7cc;
+}
+.class-student li .child-student{
+	padding-left:15px;
+}
+.class-student li .child-student li:last-child{
+	border-bottom:none;
+}
+.class-student li:last-child{
+	border-bottom:1px solid #c8c7cc;
+}
+.group-student li{
+	margin-left:15px;
+	border-bottom:1px solid #c8c7cc;
+}
+.group-student li:first-child{
+	margin-left:0;
+	padding-left:15px;
+	border-bottom:1px solid #c8c7cc;
+}
+.group-student li:last-child{
+	margin-left:0;
+	padding-left:15px;
+	border-bottom:1px solid #c8c7cc;
+}
+/**
+* 功能：组名
+* 日期：2016-12-05
+* 作者：zhaoj
+*/
+.class-student .l-group-name{
+	display:inline-block;
+	float:right;
+	min-width:68px;
+	height:23px;
+	line-height:23px;
+	margin:11px 5px 0 0;
+	padding:0 8px;
+	color:#999999;
+	text-align:right;
+}
+.footer-div{
+	display: block;
+	position:fixed;
+	bottom: 0px;
+	width:100%;
+	height:55px;
+	border-top:1px solid #E2E2E2;
+	background:#F6F6F6;
+	font-size:14px;
+}
+.footer-div .wid50{
+	width:45%;
+	line-height:36px;
+	margin-top:9px;
+	border-radius:2px;
+	color:#ffffff;
+	text-align:center;
+}
+.footer-div .left{
+	float:left;
+	margin-left:4%;
+}
+.footer-div .right{
+	float:right;
+	margin-right:4%;
+}
+.footer-div .wid{
+	width:92%;
+	line-height:36px;
+	margin-top:9px;
+	margin-left:4%;
+	border-radius:2px;
+	color:#ffffff;
+	text-align:center;
+}
+/**
+* 功能：选择分组
+* 日期：2016-12-05
+* 作者：zhaoj
+* *****************************************************
+*/
+.select-group{
+	padding-bottom:55px;
+}
+.select-group li{
+	list-style:none;
+	height:45px;
+	line-height:45px;
+	padding-left:15px;
+	border-bottom:1px solid #E2E6E8;
+}
+.select-group li.first{
+	line-height:57px;
+	background:#EFEFEF;
+	color:#9E9E9E;
+	font-size:13px;
+}
+.select-group li .select-group-name{
+	float:left; 
+	max-width:90%;
+	padding-left:25px;
+	background:url(../../../image/fun-module/common/tag.png) left center no-repeat;
+	background-size: 19px 19px;
+	color:#566973;
+	font-size:14px;
+}
+.select-group li.active{
+	background:url(../../../image/fun-module/common/duihao.png) 98% center no-repeat;
+	background-size: 19px 16px;
+}
+.select-group li .caozuo{
+	float: left;
+	max-width:10%;
+}
+.select-group li .caozuo img{
+	display:inline-block;
+	width:22px;
+	height:15px;
+	margin-top:15px;
+	padding-left:7px;
+}
+

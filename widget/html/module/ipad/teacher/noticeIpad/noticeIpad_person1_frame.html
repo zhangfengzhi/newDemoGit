@@ -1,0 +1,1230 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<title>选择接收人</title>
+		<link rel="stylesheet" type="text/css" href="../../../../../css/aui/aui.css" />
+		<link rel="stylesheet" type="text/css" href="../../../../../css/module/ipad/popup-body.css"/>
+		<link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+	</head>
+	<style>
+		.ellipsis{white-space: nowrap;overflow: hidden;text-overflow: ellipsis;}
+		.left-content{width:33%;float: left;height:75%;border-right: 1px solid #E6E8E9;padding:0 15px;}
+		.middle-content{width:33%;float:left;height:75%;padding:0 15px;border-right: 1px solid #E6E8E9;}
+		.right-content{width:33%;float:right;height:75%;padding:0 15px;}
+		.all_select{float:inherit !important; margin-left:0 !important;}
+		.no-data{text-align:center;color:#666666;padding-top:15px;}
+		
+    	.content-name{height:60px;}
+    	input[type='text'],textarea{border:none;margin-bottom:0;}
+    	input[type='text']{height:59px;border-bottom:1px dashed #aaaaaa;padding:10px 0;}
+    	textarea{height:130px;padding:20px;max-height:130px;overflow-y: auto;}
+    	.popup-body-new .commont-content{width: 1000px;height: 600px;margin-left: -500px;margin-top: -300px;}
+    	.no-data{text-align:center;color:#666666;padding-top:15px;}
+        .manage {display: inline-block;float: right;color:#efefef !important;font-size: 14px;line-height: 45px;padding-left:3px;}
+        .manage a{margin-right:-5px;}
+        .plrtb {padding: 15px;}
+        .plr15 {padding: 0 15px;}
+        .plt15 {padding-bottom:15px}
+        .orgzn-org{width:100%;height:75%;border:1px solid red}
+        .person-ul{width:100%;height:75%;border:1px solid red}
+        .select-ul{width:100%;height:75%;border:1px solid red}
+        .orgzn-org .name,.group-ul .name,.person-ul .name{width:70%;max-width:70%;float:left;height:45px;line-height: 45px;font-size: 16px;color:#141414;background:#fff;padding-left:10px;}
+        .orgzn-org .name font ,.group-ul .name font,.person-ul .name font{font-size: 13px;color: #ABABAB;}
+        .orgzn-org li,.group-ul li,.person-ul li{height:51px;line-height:51px;border-bottom:1px solid #efefef;width:100%;}
+        .select-input-div{float:left;padding-top:10px;padding-right:10px;}
+        .orgzn-title-div{background:#efefef}
+        .first-word{
+            float:left;
+            width:40px;
+            height:40px;
+            border-radius:40px;
+            background:#34a8f6;
+            color:#fff;
+            line-height:40px;
+            text-align:center;
+            font-size:18px;
+        }
+        .person-ul .first-word{
+            background:#1bbc9b;
+        }
+        .now-orgzn{color:#34a8f6}
+        .now-orgzn span{color:#000}
+        .check-role{
+            width:20px;
+            height:20px;
+            border-radius:20px;
+            border:1px solid #3d3c3c;
+            text-align: center;
+            padding-top:5px;
+            padding-left:5px;
+        }
+        .checked div{
+            width:8px;
+            height:8px;
+            border-radius:8px;
+            background:#34a8f6
+        }
+        .type-div{background:#efefef;padding:15px;}
+        ul{height:45px;padding:5px;width:80%;float:left;}
+        .selected-li{height:40px;line-height:40px;width:40px;border-radius:40px;background:#34a8f6;float:left;margin-left:10px;text-align:center;margin-bottom:5px;color:#fff}
+        .person_li{background:#1bbc9b}
+        .sure-button{float:right;width:20%;height:45px;line-height:45px;padding-top:5px;}
+        .top-title{width:100%;text-align:center;height:45px;line-height:30px;border-bottom:1px solid #E6E8E9}
+        .plt-top{padding-top:3px;}
+	</style>
+	<body id="body" class="popup-body-new common-ipad-noticeIpad-tea">
+		<div class="commont-content">
+			<div class="top fl">
+			    <div id="back" class="back" onclick="backToLastOrg();" tapmode="">
+                    <i class="aui-iconfont aui-icon-left"></i>返回
+                </div>
+				<div class="name">选择接收人</div>
+				<div class="close fr" onclick="closeFrame();"></div>
+			</div>
+			<div class="content rela">
+					<div id="bm_body" class="left-content">
+					   <div class="top-title"><span id="org_type_name">机构，部门及群组</span></div>
+					   
+    				</div>
+					<div class="middle-content">
+					  <div class="top-title"><span>人员</span></div>
+                      <!-- 人员 -->
+                      <div id="data_person">
+                          <div class="orgzn-org" id="person_ul"></div>
+                          <script type="text/html" id="person_script">
+                          <div>
+                              <ul class="person-ul">
+                                  <%if(list.length == 0){%>
+                                    <div class="no-data">暂无人员</div>
+                                  <%}else{%>
+                                    <%for(var i=0;i<list.length;i++){%>
+                                          <li class="plr15 plt-top">
+                                              <div class="select-input-div">
+                                                  <%if(list[i].selected){%>
+                                                     <div class="check-role checked" onclick="selectPersonYuan(this,'<%=list[i].person_id%>','<%=list[i].person_name%>','<%=list[i].org_code%>');">
+                                                  <%}else{%>
+                                                     <div class="check-role" onclick="selectPersonYuan(this,'<%=list[i].person_id%>','<%=list[i].person_name%>','<%=list[i].org_code%>');">
+                                                  <%}%>
+                                                       <div></div>
+                                                  </div>
+                                              </div>
+                                              <div class="first-word"><%=list[i].person_name.substring(0,1)%></div>
+                                              <div class="aui-iconfont name ellipsis"><%=list[i].person_name%></div> 
+                                          </li>
+                                      <%}%>
+                                  <%}%>
+                              </ul>
+                          </div>
+                          </script>
+                      </div>                       
+                    </div>
+					<div class="right-content">
+					    <div class="top-title"><span>已选</span></div>
+						<ul id="select_ul" class="select-ul"></ul>
+                        <script type="text/html" id="select_script">
+                            <%for(var i=0;i<list.length;i++){%>
+                                <%if(list[i].type == -3){%>
+                                    <li class="selected-li person_li"><%=list[i].name.substring(0,1)%></li>
+                                <%}else{%>
+                                    <li class="selected-li"><%=list[i].name.substring(0,1)%></li>
+                                <%}%>
+                            <%}%>
+                        </script>
+					</div>
+			</div>
+			<div class="btn" onclick="finish();">保存</div>
+		</div>
+		
+		<script type="text/javascript" src="../../../../../script/api.js" ></script>
+		<script type="text/javascript" src="../../../../../script/base_config.js" ></script>
+		<script type="text/javascript" src="../../../../../script/plug-in/template.js" ></script>
+		<script type="text/javascript" src="../../../../../script/common/common.js" ></script>
+	</body>
+	<script type="text/javascript">
+		var totalData;//处理之后的整体数据
+        var personArray=[];
+        var nameArray=[];
+        //登录名数组，用于发送系统消息提醒
+        var loginNameArray=[];
+        var bmArray=[];
+        var prev_type = 0;
+        var count = 0;
+        var now_orgzn_str = '';//头部显示内容，已选的机构信息
+        var now_orgzn_list = [];//记录所有已选的组织
+        var currentPage = 1;//第几页
+        var totalPage = 1;//总页数
+        var now_orgzn_department = {};//当前选择的部门列表
+        var now_bureau_id = 0;
+        var now_all_selected = [];//已选中的所有数据
+        var flag_open_selected_frame = false;
+        var now_select_all = [];//记录当前已选中的数据，用于回显,1:教育局，2：学校，3:部门，7：教辅单位，-2：群组，-3人员，-4：下属教育局，-5：下属教辅单位；-6：下属学校，0：内部科室（根节点）,-7：内部科室（子节点）
+        var is_jf = false;
+		apiready = function() {
+			commonSetTheme({"level":5,"type":0});
+			if($api.getStorage('now_select_all') && JSON.stringify($api.getStorage('now_select_all')) != '{}' && typeof(JSON.stringify($api.getStorage('now_select_all')) != undefined && JSON.stringify($api.getStorage('now_select_all')) != '[]' && JSON.stringify($api.getStorage('now_select_all')) != [])){
+             now_select_all = $api.getStorage('now_select_all');
+             now_all_selected = $api.getStorage('now_all_selected');
+             dealWithDownSelectedData();
+            }
+			initPersonOrg();
+			
+		}
+		
+		/*
+         * 功能：初始化人员所在机构
+         * 作者：张自强
+         * 时间：20180724
+         * 接口：冯丽杰
+         */
+        function initPersonOrg(){
+           var owner_orgzn = $api.getStorage('bureau_id');
+           getLevelOfJf(owner_orgzn,function(flag,data){
+               if(flag){
+                   var ret = {
+                        "list": [{
+                            "org_type_name": "",
+                            "org_name": $api.getStorage('bureau_name'),
+                            "org_type": data,
+                            "org_id": owner_orgzn,
+                            "checked":true,
+                        }],
+                        "now_orgzn_ishow":false
+                    };
+                    if(data*1 == 7){
+                        is_jf = true;
+                    }
+                    now_bureau_id = owner_orgzn;
+                    commonAddOrRemoveHideCss('data_type',0);
+                    commonAddOrRemoveHideCss('data_person',0);
+                    commonAddOrRemoveHideCss('data_orgn',1);
+                    commonAddOnceHtml('orgzn_ul', 'orgzn_script', ret);
+//                  now_select_all = $api.getStorage('now_select_all');
+                    kjGetGroupList(owner_orgzn);
+               }
+           });
+        }
+        
+        /*
+         * 功能：获取当前机构信息
+         * 作者：张自强
+         * 时间：20180725
+         * 接口：冯丽杰
+         */
+        function getLevelOfJf(orgId,callback){
+           api.ajax({
+               url:BASE_URL_ACTION+'/ypt/sys/org/getEduUnitByOrgId?random_num='+creatRandomNum()+'&org_id='+orgId,
+               method:'get',
+               dataType:'json',
+               timeout:30,
+               headers : {
+            'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';' 
+                }
+           },function(ret,err){
+                if(err){
+                    popToast('获取个人机构信息失败');
+                    callback(false,'');
+                }else{
+                    if(ret.success){
+                        callback(true,ret.ORG_TYPE);
+                    }else{
+                        popToast('获取个人机构信息失败');
+                        callback(false,'');
+                    }
+                }
+           });
+        }
+        
+        /*
+         * 功能：获取群组
+         * 作者：张自强
+         * 时间：20180725
+         * 接口：吴缤
+         */
+        function kjGetGroupList(orgId){
+          api.ajax({
+              url:BASE_URL_ACTION+'/new_notice/kjGetGroupList?person_id='+$api.getStorage('person_id')+'&bureau_id='+orgId+'&pageNumber=1&pageSize=10000000000',
+               method:'get',
+               dataType:'json',
+               timeout:30,
+               headers : {
+            'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';' 
+                }
+          },function(ret,err){
+             if(err){
+                 popToast('获取群组信息失败');
+             }else{
+                 if(ret.success){
+                     if(ret.list.length > 0){
+                         commonAddOrRemoveHideCss('group_div',1);
+                         var selected_list = ret.list;
+                         for(var j=0;j<selected_list.length;j++){
+                            //1:教育局，2：学校，7：教辅单位，-2：群组，-3人员，-4：下属教育局，-5：下属教辅单位；-6：下属学校，0：内部科室（根节点）,-7：内部科室（子节点      
+                            checkShowSelected(-2,selected_list[j].group_id,function(flag){
+                                ret.list[j].selected = flag;
+                            });
+                         }
+                         commonAddOnceHtml('group_ul', 'group_script', ret);
+                     }
+                 }else{
+                     popToast('获取群组信息失败');
+                 }
+             }
+          });
+        }
+        
+        
+            /*
+         * 功能：获取群组下人员信息
+         * 作者：张自强
+         * 时间：20180725
+         * 接口：吴缤
+         */
+        function getGroupPersonList(groupId,name,addType){
+           commonExecScript(api.winName,'','reBackType("personXq")',0);
+           if(!addType){
+               now_orgzn_str += (name + '<span>></span>');
+               $api.html($api.byId('owner_orgzn'), now_orgzn_str);
+               var param = new Object();
+               param.name = name;
+               param.id = groupId;
+               param.type = -2;
+               param.classType = 0; 
+               param.listName = '';
+               now_orgzn_list.push(param);  
+           }
+           api.ajax({
+               url:BASE_URL_ACTION+'/new_notice/kjGetGroupPersonList?random_num='+creatRandomNum()+'&group_id='+groupId+'&pageNumber=1&pageSize=10000000',
+               method:'get',
+               dataType:'json',
+               timeout:30,
+               headers : {
+            'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';' 
+                }
+           },function(ret,err){
+                if(err){
+                    popToast('获取群组信息失败');
+                }else{
+                    if(ret.success){
+                        var selected_list = ret.list;
+                        if(addType){
+                            var list = $api.getStorage('group_person_list');
+                            if(!list){
+                                list = [];
+                            }
+                            for(var i=0;i<selected_list.length;i++){
+                                var param = new Object();
+                                param.name = selected_list[i].person_name;
+                                param.id = selected_list[i].person_id;
+                                param.type = -3;
+                                param.rode = selected_list[i].org_code;
+                                list.push(param);
+                            }
+                            $api.setStorage('group_person_list',list);
+                        }else{
+                            commonAddOrRemoveHideCss('data_type',0);
+                            commonAddOrRemoveHideCss('data_person',1);
+                            commonAddOrRemoveHideCss('data_orgn',0);
+                            commonAddOrRemoveHideCss('group_div',0);
+                            for(var j=0;j<selected_list.length;j++){
+                                //1:教育局，2：学校，7：教辅单位，-2：群组，-3人员，-4：下属教育局，-5：下属教辅单位；-6：下属学校，0：内部科室（根节点）,-7：内部科室（子节点      
+                                checkStatesShow(addType,-2,selected_list[j].person_id,selected_list[j].person_name,'');
+                                checkShowSelected(-3,selected_list[j].person_id,function(flag){
+                                    ret.list[j].selected = flag;
+                                });
+                            }
+                            commonAddOnceHtml('person_ul', 'person_script', ret);
+                        }
+                    }else{
+                        popToast('获取群组信息失败');
+                    }
+                }
+           });
+        }
+        
+        /*
+         * 功能：选中组织
+         * 作者：张自强
+         * 时间：20180717
+         */
+        function selectOrgn(self,type,id,name,rode){
+            var add_type = 1;//加
+            if($api.hasCls(self,'checked')){
+                add_type = 2;//减
+                $api.removeCls(self,'checked');
+            }else{
+                $api.addCls(self,'checked');
+            }
+            checkStatesShow(add_type,type,id,name,rode);
+            checkAddOrLess(add_type,id,name,type,rode);
+            dealWithDownSelectedData();
+//          switch(type*1){
+//              case 1://教育局   
+//                  var flag = true;
+//                  for(var i=0;i<now_all_selected.length;i++){
+//                      if(now_all_selected[i].id == id){
+//                          flag = false;
+//                          if(add_type == 2){
+//                              now_all_selected.splice(i,1);
+//                          }
+//                      }
+//                  }
+//                  if(flag && add_type == 1){
+//                      now_all_selected.push({'name':name,'id':id,'type':type});
+//                  }
+//                  break;
+//              case 2://学校
+//                  if($api.getStorage('bureau_id') == orgId){
+//                      getMainBranchSchool(id,name,add_type);
+//                  }else{
+//                      checkAddOrLess(add_type,id,name,type);
+//                  }
+//                  checkAddOrLess(add_type,id,name,type);
+//                  break;
+//              case 7://教辅单位
+//                  var jf_flag = true;
+//                  for(var i=0;i<now_all_selected.length;i++){
+//                      if(now_all_selected[i].id == id){
+//                          jf_flag = false;
+//                          if(add_type == 2){
+//                              now_all_selected.splice(i,1);
+//                          }
+//                      }
+//                  }
+//                  if(jf_flag && add_type == 1){
+//                      now_all_selected.push({'name':name,'id':id,'type':type});
+//                  }
+//                  break;
+//              case 0://本机构内部科室
+//                  checkAddOrLess(1,id,name,type);
+//                  break;
+//              case 3://部门
+//                  getChildDepartment(type,id,name,add_type);
+//                  break;
+//          }
+        }
+        
+        /*
+         * 功能：修改回显是否选中状态
+         * 时间：20180726
+         * 作者：张自强
+         */
+        function checkStatesShow(add_type,type,id,name,rode){
+            switch(add_type){
+                case 1://加
+                    now_select_all.push({'type':type,'id':id,'name':name,'rode':rode});
+                    break;
+                case 2://减
+                    for(var i=0;i<now_select_all.length;i++){
+                        if(now_select_all[i].type == type && now_select_all[i].id == id){
+                            now_select_all.splice(i,1);
+                        }
+                    }
+                    break;
+            }
+        }
+        
+        /*
+         * 功能：选中组织
+         * 作者：张自强
+         * 时间：20180717
+         */
+        function selectOrgnAndChild(self,type,id,name,listName){
+            var add_type = 1;//加
+            if($api.hasCls(self,'checked')){
+                add_type = 2;//减
+                $api.removeCls(self,'checked');
+            }else{
+                $api.addCls(self,'checked');
+            }
+            switch(type*1){
+                case 1://教育局   
+                    checkStatesShow(add_type,-4,id,name,'');
+                    getEduSchTeachAidByOrgId(type,id,'','',add_type,0);
+                    break;
+                case 2://学校
+                    checkStatesShow(add_type,-6,id+''+listName,name,'');
+                    getEduSchTeachAidByOrgId(type,id,'',listName,add_type,0);
+                    break;
+                case 7://教辅单位
+                    checkStatesShow(add_type,-5,id,name,'');
+                    getEduSchTeachAidByOrgId(type,id,'','',add_type,0);
+                    break;
+                case 0://本机构内部科室
+                    checkStatesShow(add_type,0,id,name,'');
+                    if(add_type == 2){//减
+                        checkAddOrLess(2,id,'',0,id);
+                    }else{//加
+                        checkAddOrLess(1,id,name,type,id);
+                    }
+                    break;
+            }
+            dealWithDownSelectedData();
+        }
+        
+        /*
+         * 功能：选中群组
+         * 作者：张自强
+         * 时间：20180717
+         */
+        function selectGroup(self,id,name){
+            var add_type = 0;
+            if($api.hasCls(self,'checked')){
+                add_type = 2;
+                $api.removeCls(self,'checked')
+            }else{
+                add_type = 1;
+                $api.addCls(self,'checked');
+            }
+            checkStatesShow(add_type,-2,id,name,'');
+            checkAddOrLess(add_type,id,name,-2,'');
+            getGroupPersonList(id,name,add_type);
+            dealWithDownSelectedData();
+        }
+        
+        /*
+         * 功能：处理下方选中栏
+         * 作者：张自强
+         * 时间：20180724
+         */
+        function dealWithDownSelectedData(){
+            $api.setStorage('now_select_all',now_select_all);
+            commonAddOnceHtml('select_ul', 'select_script', {'list':now_select_all});
+        }
+        
+        /*
+         * 功能：选中人员
+         * 作者：张自强
+         * 时间：20180717
+         */
+        function selectPersonYuan(self,id,name,rode){
+            if($api.hasCls(self,'checked')){
+                checkAddOrLess(2,id,'',0,rode);
+                checkStatesShow(2,-3,id,name,rode);
+                $api.removeCls(self,'checked')
+            }else{
+                checkAddOrLess(1,id,name,-3,rode);
+                checkStatesShow(1,-3,id,name,rode);
+                $api.addCls(self,'checked');
+            }
+            dealWithDownSelectedData();
+        }
+        
+        /*
+         * 功能；获取当前机构的直属机构
+         * 作者：张自强
+         * 时间：20180718
+         */
+        function changeToNextDom(orgType,orgId,name,rode){
+            commonExecScript(api.winName,'','reBackType("personXq")',0);
+            now_orgzn_str += (name + '<span>></span>');
+            $api.html($api.byId('owner_orgzn'), now_orgzn_str);
+            var param = new Object();
+            param.name = name;
+            param.id = orgId;
+            param.type = orgType;
+            if((orgType == 1 || orgType == 7) && $api.getStorage('bureau_id') == orgId){
+                param.classType = 0;
+            }else{
+                param.classType = 2;
+            }
+            param.listName = '';
+            now_orgzn_list.push(param);
+            commonAddOrRemoveHideCss('group_div',0);
+            switch(orgType*1){  
+                case 1://教育局   
+                    now_bureau_id = orgId;
+                    if($api.getStorage('bureau_id') == orgId){
+                        getNowOrgznList(orgType,orgId);
+                    }else{
+                        getThisOwnerOrg(orgId,orgType);
+                    }
+                    break;
+                case 2://学校
+                    now_bureau_id = orgId;
+                    if($api.getStorage('bureau_id') == orgId){
+                        getMainBranchSchool(orgId,name,0);
+                    }else{
+                        getThisOwnerOrg(orgId,orgType);
+                    }
+                    break;
+                case 7://教辅单位
+                    now_bureau_id = orgId;
+                    if($api.getStorage('bureau_id') == orgId){
+                        getNowOrgznList(7,orgId);
+                    }else{
+                        getThisOwnerOrg(orgId,7);
+                    }
+                    break;
+                case 3://部门
+//                  now_bureau_id = orgId;
+                    getChildDepartment(orgType,orgId,name,0,rode);
+                    break;
+                
+            }
+        }
+       
+        
+        /*
+         * 功能：查看当前部门下的子节点（部门）
+         * 作者：张自强
+         * 时间：20180720
+         */
+        function getChildDepartment(orgType,orgId,name,addType,rode){
+            showSelfProgress('加载中...');
+            var list = [];
+            var flag = false;
+            if(now_orgzn_department.list && now_orgzn_department.list.length>0){
+                var org_code = '';
+                for(var k=0;k<now_orgzn_department.list.length;k++){
+                    if(now_orgzn_department.list[k].org_id == orgId){
+                        org_code = now_orgzn_department.list[k].org_code
+                    }
+                }
+                for(var i=0;i<now_orgzn_department.list.length;i++){
+                    if(now_orgzn_department.list[i].org_code.indexOf(''+org_code) != -1){
+                        var department_code = now_orgzn_department.list[i].org_code;
+                        department_code = department_code.substring((''+org_code).length);
+                        if(department_code != '' && department_code != null){
+                            flag = true;
+                            list.push(now_orgzn_department.list[i]);
+                            switch(addType){
+                                case 1://加
+checkAddOrLess(1,now_orgzn_department.list[i].org_id,now_orgzn_department.list[i].org_name,now_orgzn_department.list[i].org_type,now_orgzn_department.list[i].org_code);
+                                    break;
+                                case 2://减
+                                    checkAddOrLess(2,now_orgzn_department.list[i].org_id,'',0,now_orgzn_department.list[i].org_code);
+                                    break;
+                            }
+                        }
+                    }
+                }
+                if(flag && addType == 0){
+                    commonAddOrRemoveHideCss('data_orgn',1);
+                    commonAddOrRemoveHideCss('data_type',0);
+                    commonAddOrRemoveHideCss('data_person',0);
+                    var selected_list = list;
+                    for(var h=0;h<selected_list.length;h++){
+                        //1:教育局，2：学校，7：教辅单位，-2：群组，-3人员，-4：下属教育局，-5：下属教辅单位；-6：下属学校，0：内部科室（根节点）,-7：内部科室（子节点      
+                        checkShowSelected(selected_list[h].org_type,selected_list[h].org_id,function(flag){
+                            list[h].selected = flag;
+                        });
+                     }
+                    commonAddOnceHtml('orgzn_ul', 'orgzn_script', {'list':list});
+                    getMyWorkspace(orgId,rode,1);
+                }else{
+                    switch(addType){
+                        case 1://加
+                            checkAddOrLess(1,orgId,name,orgType,rode);
+                            break;
+                        case 2://减
+                            checkAddOrLess(2,orgId,'',0,rode);
+                            break;
+                        case 0:
+                            getMyWorkspace(orgId,rode,0);
+                            break;
+                    }
+                }
+            }else{
+                switch(addType){
+                    case 1://加
+                        checkAddOrLess(1,orgId,name,orgType,rode);
+                        break;
+                    case 2://减
+                        checkAddOrLess(2,orgId,'',0,rode);
+                        break;
+                    case 0:
+                        getMyWorkspace(orgId,rode,0);
+                        break;
+                }
+            }
+            api.hideProgress();
+        }
+        
+        /*
+         * 功能：获取部门下人人员
+         * 作者：张自强
+         * 时间：20180720
+         * 接口：冯丽杰
+         */
+        function getMyWorkspace(orgId,fatherId,showType){
+            var query_child = true;
+            if(showType){
+                query_child = false;
+            }
+            api.ajax({
+                url:BASE_URL_ACTION + '/admin/new_base/personInfo_GetPersonInfoList?random_num='+creatRandomNum()+'&b_use=1&bureau_id='+now_bureau_id+'&org_id='+orgId+'&pageNumber=1&pageSize=10000000000&person_name=&query_child='+query_child,
+                method:'get',
+                dataType:'json',
+                timeout:30,
+                headers : {
+            'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';' 
+                }
+            },function(ret,err){
+                if(err){
+                   popToast('获取人员列表失败');
+                }else{
+                   if(ret.success){
+                        if(!showType){
+                           commonAddOrRemoveHideCss('data_orgn',0);
+                           commonAddOrRemoveHideCss('data_type',0);
+                        }
+                        if(ret.list.length == 0 && !query_child){
+                           commonAddOrRemoveHideCss('data_person',0);
+                        }else{
+                           commonAddOrRemoveHideCss('data_person',1);
+                           var selected_list = ret.list;
+                           for(var j=0;j<selected_list.length;j++){
+                                //1:教育局，2：学校，7：教辅单位，-2：群组，-3人员，-4：下属教育局，-5：下属教辅单位；-6：下属学校，0：内部科室（根节点）,-7：内部科室（子节点      
+                                ret.list[j].org_code = fatherId;
+                                checkShowSelected(-3,selected_list[j].person_id,function(flag){
+                                    ret.list[j].selected = flag;
+                                });
+                            }
+                           commonAddOnceHtml('person_ul', 'person_script', {'list':ret.list});
+                        }
+                   }else{
+                       popToast('获取人员列表失败');
+                   }
+                }
+            });
+            api.hideProgress();
+        }
+        
+        
+        /*
+         * 功能；获取当前教育局下组织列表
+         * 作者：张自强
+         * 时间：20180718
+         * 接口：姜宗霖
+         */
+        function getNowOrgznList(orgType,orgId){
+              showSelfProgress('加载中...');
+              var url_str = ''
+              switch(orgType){
+                case 1:
+                    url_str = BASE_URL_ACTION+'/admin/new_base/getEduSchTeachAidByOrgId?org_id='+orgId+'&page_number=1&page_size=1000000';
+                    break;
+                case 7:
+                    url_str = BASE_URL_ACTION+'/admin/new_base/getSameLevSchTeaAidByTeaAid?org_id='+orgId;
+                    break;
+              }
+              api.ajax({
+                url:url_str,
+                method : 'get',
+                dataType : 'json',
+                timeout: 30,
+                headers : {
+            'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';' 
+                }
+            },function(ret,err){
+                var render_final_html = [{'name':'本机构内部科室','type':0,'orgId':orgId,'classType':1}];
+                if(err){
+                    popToast('获取机构列表失败');
+                }else{
+                    if(ret.success){
+                        var rett = ret;
+                        if(rett.org_list_edu && rett.org_list_edu.length != 0){                       
+                            var param  = new Object();
+                            param.name = '下属教育局';
+                            param.type = 1;
+                            param.orgType = orgType;
+                            param.orgId = orgId;
+                            param.listName = '';
+                            param.classType = 1;
+                            render_final_html.push(param);
+                        }
+                        if(rett.org_list_teach && rett.org_list_teach.length != 0){
+                            var param  = new Object();
+                            param.name = '教辅单位';
+                            param.type = 7;
+                            param.orgType = orgType;
+                            param.orgId = orgId;
+                            param.listName = '';
+                            param.classType = 1;
+                            render_final_html.push(param);
+                        }
+                        if(rett.cz_list && rett.cz_list.length != 0){
+                            var param  = new Object();
+                            param.name = '初中';
+                            param.type = 2;
+                            param.orgType = orgType;
+                            param.orgId = orgId;
+                            param.listName = 'cz_list';
+                            param.classType = 1;
+                            render_final_html.push(param);
+                        }
+                        if(rett.gz_list && rett.gz_list.length != 0){
+                            var param  = new Object();
+                            param.name = '高中';
+                            param.type = 2;
+                            param.orgType = orgType;
+                            param.orgId = orgId;
+                            param.listName = 'gz_list';
+                            param.classType = 1;
+                            render_final_html.push(param);
+                        }
+                        if(rett.jnygz_list && rett.jnygz_list.length != 0){
+                            var param  = new Object();
+                            param.name = '九年一贯制';
+                            param.type = 2;
+                            param.orgType = orgType;
+                            param.orgId = orgId;
+                            param.listName = 'jnygz_list';
+                            param.classType = 1;
+                            render_final_html.push(param);
+                        }
+                        if(rett.senygz_list && rett.senygz_list.length != 0){
+                            var param  = new Object();
+                            param.name = '十二年一贯制';
+                            param.type = 2;
+                            param.orgType = orgType;
+                            param.orgId = orgId;
+                            param.listName = 'senygz_list';
+                            param.classType = 1;
+                            render_final_html.push(param);
+                        }
+                        if(rett.wqgz_list && rett.wqgz_list.length != 0){
+                            var param  = new Object();
+                            param.name = '完全中学';
+                            param.type = 2;
+                            param.orgType = orgType;
+                            param.orgId = orgId;
+                            param.listName = 'wqgz_list';
+                            param.classType = 1;
+                            render_final_html.push(param);
+                        }
+                        if(rett.xx_list && rett.xx_list.length != 0){
+                            var param  = new Object();
+                            param.name = '小学';
+                            param.type = 2;
+                            param.orgType = orgType;
+                            param.orgId = orgId;
+                            param.listName = 'xx_list';
+                            param.classType = 1;
+                            render_final_html.push(param);
+                        }
+                        if(rett.dx_list && rett.dx_list.length != 0){
+                            var param  = new Object();
+                            param.name = '大学';
+                            param.type = 2;
+                            param.orgType = orgType;
+                            param.orgId = orgId;
+                            param.listName = 'dx_list';
+                            param.classType = 1;
+                            render_final_html.push(param);
+                        }
+                        if(rett.xycyt_list && rett.xycyt_list.length != 0){
+                            var param  = new Object();
+                            param.name = '小幼初一体';
+                            param.type = 2;
+                            param.orgType = orgType;
+                            param.orgId = orgId;
+                            param.listName = 'xycyt_list';
+                            param.classType = 1;
+                            render_final_html.push(param);
+                        }
+                        if(rett.xyyt_list && rett.xyyt_list.length != 0){
+                            var param  = new Object();
+                            param.name = '小幼一体';
+                            param.type = 2;
+                            param.orgType = orgType;
+                            param.orgId = orgId;
+                            param.listName = 'xyyt_list';
+                            param.classType = 1;
+                            render_final_html.push(param);
+                        }
+                        if(rett.ye_list && rett.ye_list.length != 0){
+                            var param  = new Object();
+                            param.name = '幼儿';
+                            param.type = 2;
+                            param.orgType = orgType;
+                            param.orgId = orgId;
+                            param.listName = 'ye_list';
+                            param.classType = 1;
+                            render_final_html.push(param);
+                        }
+                        if(rett.zy_list && rett.zy_list.length != 0){
+                            var param  = new Object();
+                            param.name = '职业';
+                            param.type = 2;
+                            param.orgType = orgType;
+                            param.orgId = orgId;
+                            param.listName = 'zy_list';
+                            param.classType = 1;
+                            render_final_html.push(param);
+                        }
+                    }else{
+                        popToast('获取机构列表失败');
+                    }
+                }
+                for(var j=0;j<render_final_html.length;j++){
+                    //1:教育局，2：学校，7：教辅单位，-2：群组，-3人员，-4：下属教育局，-5：下属教辅单位；-6：下属学校，0：内部科室（根节点）,-7：内部科室（子节点      
+                    switch(render_final_html[j].type){
+                        case 0://本机构内部科室
+                            checkShowSelected(0,render_final_html[j].orgId,function(flag){
+                                render_final_html[j].selected = flag;
+                            });
+                            break;
+                        case 1://教育局
+                            checkShowSelected(-4,render_final_html[j].orgId,function(flag){
+                                render_final_html[j].selected = flag;
+                            });
+                            break;
+                        case 2://学校
+                            checkShowSelected(-6,render_final_html[j].orgId+''+render_final_html[j].listName,function(flag){
+                                render_final_html[j].selected = flag;
+                            });
+                            break;
+                        case 7://教辅单位
+                            checkShowSelected(-5,render_final_html[j].orgId,function(flag){
+                                render_final_html[j].selected = flag;
+                            });
+                            break;
+                    }
+                }
+                commonAddOrRemoveHideCss('data_orgn',0);
+                commonAddOrRemoveHideCss('data_type',1);
+                commonAddOrRemoveHideCss('data_person',0);
+                commonAddOnceHtml('orgzn_type_ul','orgzn_type_script',{'list':render_final_html});
+                api.hideProgress();
+            });   
+      }
+      
+      /*
+       * 功能：回显是否选中
+       * 作者：张自强
+       * 时间：20180726
+       */
+      function checkShowSelected(type,id,callback){
+            var flag = false;
+            for(var i=0;i<now_select_all.length;i++){
+                if(type == now_select_all[i].type && id == now_select_all[i].id){
+                    flag = true;
+                }
+            }
+            callback(flag);
+      }
+    
+        /*
+         * 功能：获取教育局下直属机构
+         * 作者：张自强
+         * 时间：20180718
+         * 接口：姜宗霖
+         */
+        function getEduSchTeachAidByOrgId(type,orgId,name,listName,addOrLessType,classType){
+              commonExecScript(api.winName,'','reBackType("personXq")',0);
+              if(addOrLessType == 0){
+                  now_orgzn_str += (name + '<span>></span>');
+                  $api.html($api.byId('owner_orgzn'), now_orgzn_str);
+                  var param = new Object();
+                  param.name = name;
+                  param.id = orgId;
+                  param.type = type;
+                  param.classType = classType;
+                  param.listName = listName;
+                  now_orgzn_list.push(param);
+              }
+              if(type == 0){
+                  getThisOwnerOrg(orgId,0);
+              }else{
+                  showSelfProgress('加载中...');
+                  var url_str = '';
+                  if(is_jf && $api.getStorage('bureau_id') == orgId){
+                    url_str = BASE_URL_ACTION+'/admin/new_base/getSameLevSchTeaAidByTeaAid?org_id='+orgId;
+                  }else{
+                    url_str = BASE_URL_ACTION+'/admin/new_base/getEduSchTeachAidByOrgId?org_id='+orgId+'&page_number=1&page_size=1000000';
+                  }
+                  api.ajax({
+                    url:url_str,
+                    method : 'get',
+                    dataType : 'json',
+                    timeout: 30,
+                    headers : {
+                'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';' 
+                    }
+                },function(ret,err){
+                    var render_final_html = [{'org_id':orgId,'name':'本机构内部科室','type':0,'classType':1}];
+                    if(err){
+                        checkAddOrLess(addOrLessType,orgId,name,type,orgId);
+                        popToast('获取机构列表失败');
+                    }else{
+                        if(ret.success){   
+                            var rett = ret;
+                            var final_render_html = {};
+                            switch(type*1){
+                                case 1://教育局
+                                    final_render_html = rett.org_list_edu;
+                                    break;
+                                case 2://学校
+                                    final_render_html = rett[listName];
+                                    break;
+                                case 7://教辅单位
+                                    final_render_html = rett.org_list_teach;
+                                    break;
+                            }
+                            if(addOrLessType == 1 || addOrLessType == 2){
+                                for(var i=0;i<final_render_html.length;i++){
+                                    checkAddOrLess(addOrLessType,final_render_html[i].org_id,final_render_html[i].org_name,type,orgId);
+                                }
+                                dealWithDownSelectedData();
+                            }else{
+                                commonAddOrRemoveHideCss('data_orgn',1);
+                                commonAddOrRemoveHideCss('data_type',0);
+                                commonAddOrRemoveHideCss('data_person',0);
+                                if(final_render_html.info){
+                                    popAlert(final_render_html.info);
+                                }else{
+                                    var selected_list = final_render_html;
+                                    for(var i=0;i<selected_list.length;i++){
+                                        if(is_jf && selected_list[i].org_id == $api.getStorage('bureau_id')){
+                                            final_render_html.splice(i,1);
+                                        }else{
+                                                checkShowSelected(selected_list[i].org_type,selected_list[i].org_id,function(flag){
+                                                final_render_html[i].selected = flag;
+                                            });
+                                        }
+                                    }
+                                    commonAddOnceHtml('orgzn_ul', 'orgzn_script', {'list':final_render_html});   
+                                }
+                            }
+                        }else{
+                            checkAddOrLess(addOrLessType,orgId,name,type,orgId);
+                            popToast('获取机构列表失败');
+                        }
+                    }
+                    api.hideProgress();
+                    });
+              }
+        }
+    
+        /*
+         * 功能：获取主校分校列表
+         * 作者：张自强
+         * 时间：20180718
+         * 接口：吴缤
+         */
+        function getMainBranchSchool(bureauId,name){
+            showSelfProgress('加载中...');
+            api.ajax({
+                url : BASE_URL_ACTION+'/admin/new_base/getMainBranchSchool?random_num='+creatRandomNum()+'&bureau_id='+bureauId,
+                method : 'get',
+                dataType : 'json',
+                timeout: 30,
+                headers : {
+            'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+            }
+            },function(ret,err){
+                if(err){
+                   popToast('获取学校列表失败');
+                   getThisOwnerOrg(bureauId,2);
+                }else{
+                   if(ret.success){
+                       var list = ret.list;
+                       if(list.length > 1){
+                           for(var i=0;i<list.length;i++){
+                               list[i].org_type = 2;
+                           }
+                           if(addOrLessType == 0){
+                               commonAddOrRemoveHideCss('data_orgn',1);
+                               commonAddOrRemoveHideCss('data_type',0);
+                               commonAddOrRemoveHideCss('data_person',0);
+                               list.splice(0,1);
+                               var selected_list = list;
+                               for(var j=0;j<selected_list.length;j++){
+                                   //1:教育局，2：学校，7：教辅单位，-2：群组，-3人员，-4：下属教育局，-5：下属教辅单位；-6：下属学校，0：内部科室（根节点）,-7：内部科室（子节点      
+                                   checkShowSelected(2,selected_list[j].org_id,function(flag){
+                                       list[j].selected = flag;
+                                   });
+                               }
+                               commonAddOnceHtml('orgzn_ul', 'orgzn_script', {'list':list});
+                           }
+                       }else{
+                           getThisOwnerOrg(bureauId,2);
+                       }
+                   }else{
+                       popToast('获取学校列表失败');
+                       getThisOwnerOrg(bureauId,2);
+                   }
+                }
+                api.hideProgress();
+            });
+        }
+        
+        /*
+         * 功能：加或减当前已选的列表
+         * 作者：张自强
+         * 时间：20180725
+         */
+        function checkAddOrLess(addType,bureauId,name,type,rode){
+            console.log(1);
+            switch(addType){
+                case 1://加
+                    var flag_addorless = true;
+                    for(var k=0;k<now_all_selected.length;k++){
+                       if(now_all_selected[k].id == bureauId){
+                            flag_addorless = false;
+                       }
+                    }
+                    if(flag_addorless){
+                       now_all_selected.push({'name':name,'id':bureauId,'type':type,'rode':rode});
+                    }
+                    break;
+                case 2://减
+                    for(var j=0;j<now_all_selected.length;j++){
+                       if(now_all_selected[j].id == bureauId){
+                           now_all_selected.splice(j,1);
+                       }
+                    }
+                    break;
+            }
+            $api.setStorage('now_all_selected',now_all_selected);
+        }
+        
+        /*
+         * 功能：获取当前机构内部部门
+         * 作者：张自强
+         * 时间：20180718
+         * 接口：冯丽杰
+         */
+        function getThisOwnerOrg(orgId,type){
+            showSelfProgress('加载中...');
+            now_orgzn_department = {};
+            api.ajax({
+                url:BASE_URL_ACTION + '/admin/new_base/depinfo_getOrgTree?org_id='+orgId,
+                methot : 'get',
+                dataType : 'json',
+                timeout : 30,
+                headers : {
+            'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+            }
+            },function(ret,err){
+                if(err){
+                   popToast('获取部门列表失败');
+                }else{
+                   if(ret.success){
+                       var rett = ret;
+                       if(rett.list.length > 0){
+                           var list = rett.list;
+                           var dep_list = [];
+                           for(var k=0;k<list.length;k++){
+                               var param = new Object();
+                               param.pId = list[k].pId;
+                               param.org_code = list[k].org_code;
+                               param.org_type = list[k].org_type;
+                               param.org_id = list[k].id;
+                               param.org_name = list[k].name;
+                               dep_list.push(param);
+                           }
+                           now_orgzn_department = {'list':dep_list};
+                           for(var j=0;j<list.length;j++){
+                               if(list[j].pId == 0 || list[j].pId == 1 || list[j].pId == -1 || list[j].id == orgId){
+                                   list.splice(j,1);
+                               }
+                           }
+                           for(var i=0;i<list.length;i++){
+                               var now_code = list[i].org_code;
+                               var departmentArry = now_code.split('_');
+                               if(departmentArry.length > 4 || list[i].pId == 0 || list[i].pId == 1){
+                                   list.splice(i,1);
+                               }
+                               list[i].org_id = list[i].id;
+                               list[i].org_name = list[i].name;
+                           }
+                           if(list.length > 0){
+                               commonAddOrRemoveHideCss('data_type',0);
+                               commonAddOrRemoveHideCss('data_person',0);
+                               commonAddOrRemoveHideCss('data_orgn',1);
+                               var selected_list = list;
+                               for(var h=0;h<selected_list.length;h++){
+                                    checkShowSelected(selected_list[h].org_type,selected_list[h].org_id,function(flag){
+                                       list[h].selected = flag;
+                                   });
+                               }
+                               commonAddOnceHtml('orgzn_ul', 'orgzn_script', {'list':list});
+                               getMyWorkspace(orgId,orgId,1);
+                           }else{
+                               getMyWorkspace(orgId,orgId,0);
+                           }
+                           
+                       }else{
+                           getMyWorkspace(orgId,orgId,0);
+                       }
+                   }else{
+                       popToast('获取部门列表失败');
+                   }
+                }
+                api.hideProgress();
+            });
+        }
+        
+        
+        /*
+         * 功能：回退当前选择
+         * 作者：张自强
+         * 时间：20180724
+         */
+        function backToLastOrg(){
+            if(now_orgzn_list.length > 0){
+                now_orgzn_list.splice(now_orgzn_list.length-1,1);
+                now_orgzn_str = '';
+                for(var i=0;i<now_orgzn_list.length;i++){
+                    now_orgzn_str += (now_orgzn_list[i].name + '<span>></span>');
+                }
+                $api.html($api.byId('owner_orgzn'), now_orgzn_str);
+                if(now_orgzn_list.length > 0){
+                    switch(now_orgzn_list[now_orgzn_list.length-1].type){
+                        case 0://本机构内部科室
+                            getThisOwnerOrg(now_orgzn_list[now_orgzn_list.length-1].id,0);
+                            break;
+                        case 1://教育局
+                            if(now_orgzn_list[now_orgzn_list.length-1].classType == 1){
+                                getEduSchTeachAidByOrgId(1,now_orgzn_list[now_orgzn_list.length-1].id,'','',4,1);
+                            }else if(now_orgzn_list[now_orgzn_list.length-1].classType == 2){
+                                getThisOwnerOrg(now_orgzn_list[now_orgzn_list.length-1].id,1);
+                            }else{
+                                getNowOrgznList(1,now_orgzn_list[now_orgzn_list.length-1].id);
+                            }
+                            break;
+                        case 2://学校
+                            if(now_orgzn_list[now_orgzn_list.length-1].classType == 1){
+                                getEduSchTeachAidByOrgId(2,now_orgzn_list[now_orgzn_list.length-1].id,now_orgzn_list[now_orgzn_list.length-1].name,now_orgzn_list[now_orgzn_list.length-1].listName,4,1);
+                            }else{
+                                getMainBranchSchool(now_orgzn_list[now_orgzn_list.length-1].id,now_orgzn_list[now_orgzn_list.length-1].name,0);
+                            }
+                            break;
+                        case 3://部门
+                            getChildDepartment(now_orgzn_list[now_orgzn_list.length-1].type,now_orgzn_list[now_orgzn_list.length-1].id,now_orgzn_list[now_orgzn_list.length-1].name,0,now_orgzn_list[now_orgzn_list.length-1].rode);
+                            break;
+                        case 7://教辅单位
+                            if(now_orgzn_list[now_orgzn_list.length-1].classType == 1){
+                                getEduSchTeachAidByOrgId(7,now_orgzn_list[now_orgzn_list.length-1].id,'','',4,1);
+                            }else if(now_orgzn_list[now_orgzn_list.length-1].classType == 2){
+                                getThisOwnerOrg(now_orgzn_list[now_orgzn_list.length-1].id,7);
+                            }else{
+                                getNowOrgznList(7,now_orgzn_list[now_orgzn_list.length-1].id);
+                            }
+                            break;    
+                        case -2://群组
+                            initPersonOrg();
+                            break;                        
+                    }
+                }else{
+                    initPersonOrg();
+                }
+            }else{
+               closeFrame();
+            }
+        }
+        
+        /*
+         * 功能：关闭当前选择页
+         * 作者：张自强
+         * 时间：20180730
+         */
+        function closeFrame(){
+            commonCloseFrame('noticeIpad_person_frame');
+        }
+	</script>
+</html>

@@ -1,0 +1,4 @@
+.btn-l{border:1px dashed #ddd;border-right:none;background:url(../../../../image/theme/theme1/ipad/teacher/0.png) center center no-repeat;} 
+.btn-r{border:1px dashed #ddd;border-left:none;background:url(../../../../image/theme/theme1/ipad/teacher/1.png) center center no-repeat;} 
+.btn-l.btn-top-active{background:#ffffff url(../../../../image/theme/theme1/ipad/teacher/active0.png) center center no-repeat !important;border:1px solid #fff;}
+.btn-r.btn-top-active{background:#ffffff url(../../../../image/theme/theme1/ipad/teacher/active1.png) center center no-repeat !important;border:1px solid #fff;}

@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<!-- html5：在创建html时为了防止页面缩放等不兼容效果，要创建个viewport  -->
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<!-- 在IOS设备上，有时会将数字转为手机号，这里也要禁止下 -->
+		<meta name="format-detection" content="telephone=no"/>
+		<title>新闻资讯数据页面</title>
+		<link rel="stylesheet" type="text/css" href="../../../../../css/aui/aui.css" />
+		<!--<link rel="stylesheet" type="text/css" href="../../../../../css/list_frame.css" />-->
+		<link rel="stylesheet" type="text/css" href="../../../../../css/module/ipad/left-right-layout.css"/>
+		<link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+		<style>
+			.h1 {
+				height: 1px;
+				background: #f0f0f0;
+			}
+			.presshover {
+				background-color: #FAFAFA;
+			}
+			.span_name {
+				width: 80%;
+				/*font-size: 18px;*/
+				/*text-align: center;*/
+				display: inline-block;
+				/*word-break: keep-all;*/
+				white-space: nowrap;
+				overflow: hidden;
+				text-overflow: ellipsis;
+			}
+			.aui-content-padded{margin:0;padding:0px 0 10px 0;}
+		</style>
+	</head>
+	<body class="left-layout-body common-ipad-cpIpadstu">
+		<div id="j_box_shadow" class="box-shadow aui-hide"></div>
+		<!--<div class="h1" style="margin-top: 40px; margin-bottom: 40px;"></div>-->
+		<!--新闻资讯列表-->
+		<div class="thumb-content clearfix">
+			<ul id="cp_body"></ul>
+			<script type="text/html" id="cp_script">
+				<% if(list.length == 0){ %>
+					<div class="no-data"><span>暂无食谱</span></div>
+				<% }else{ %>
+					<%for(var i=0; i<list.length; i++) {%>
+						<li id="j_li_<%=i%>" onclick="openContentFrame('<%=list[i].transfer_data%>',<%=i%>)">
+							<img class="thumb-img" src="<%=list[i].thumb_id%>" onerror="this.src='../../../../../image/fun-module/common/xysp-bg.png'" />
+							<div class="title pr20 pt20 mt10">
+								<span class="ellipsis">
+									
+									<%=list[i].title%>
+									
+								</span>
+							</div>
+							<div class="detail-infor mt20">
+								<div class="person-name ellipsis"><%=list[i].person_name%></div>
+								<div class="time pt5"><%=list[i].create_time.substring(0,16)%></div>
+							</div>
+						</li>
+					<% } %>
+				<% } %>
+			</script> 
+		</div>
+	</body>
+	<script type="text/javascript" src="../../../../../script/api.js" ></script>
+	<script type="text/javascript" src="../../../../../script/base_config.js" ></script>
+	<script type="text/javascript" src="../../../../../script/plug-in/base64.js" ></script>
+	<script type="text/javascript" src="../../../../../script/plug-in/template.js" ></script>
+	<script type="text/javascript" src="../../../../../script/plug-in/echo.min.js"></script>
+	<script type="text/javascript" src="../../../../../script/common/common.js" ></script>
+	<script type="text/javascript" src="../../../../../script/common/six_common.js" ></script>
+	<script type="text/javascript">
+		var header_h;//定义头高度
+		var totalPages = 0;// 定义一个变量存储第一次加载返回来的总页数
+		var keyword = '';//菜单关键字
+		var currentPage;//当前页面为第一页
+		var BASE_URL_ACTION;
+		var BASE_APP_TYPE;
+		var register_id=0;//注册号
+		var school_id;//学校id
+		apiready = function() {
+			commonSetTheme({"level":5,"type":0});
+			header_h = api.pageParam.header_h;
+			school_id = api.pageParam.school_id;
+			BASE_URL_ACTION = $api.getStorage('BASE_URL_ACTION');
+			BASE_APP_TYPE = $api.getStorage('BASE_APP_TYPE');
+			currentPage = 1;
+			showSelfProgress('加载中...');
+			getNewsRegisterId('cp',104,function(flag,id){
+				if(flag){
+					register_id = id;
+					//给window页面中register_id公共变量赋值
+					api.execScript({
+						name : 'cpIpad_index_window',
+						script : 'setRegisterId('+id+');'
+					});
+					if(id != 0){
+						//获取数据
+						initData(currentPage);
+					}else{
+						//暂时没有发布相关的数据
+						api.hideProgress();
+						var data={"list":[]};
+						addTemplateHtml('cp_body', 'cp_script', data);
+					}
+				}else{
+					api.hideProgress();
+					popToast('获取食谱失败，请稍候再试！');
+				}
+			});
+			commonScrollBottomReload();
+			commonRefreshHeaderInfo();
+		};
+		/*
+		*作者:zhaoj
+		*功能:获取列表数据
+		*日期：20161008
+		*/
+		function initData(current_page){
+			currentPage = current_page;
+			//获取列表数据
+			if(register_id != 0){
+				loadData(current_page,function(flag,ret){
+					api.hideProgress();
+					if(flag){
+						totalPages = ret.total_page;
+						for(var i=0; i < ret.list.length; i++){
+							if(isEmptyString(ret.list[i].thumb_id)){
+								ret.list[i].thumb_id='../../../../../image/fun-module/common/xysp-bg.png';
+							}else{
+							    var str = commonReturnPhotoCutSize(0);
+								ret.list[i].thumb_id = commonCheckIsSpaceImg(ret.list[i].thumb_id,str);
+							}
+						}
+						addTemplateHtml('cp_body', 'cp_script', ret);
+						//延迟加载图片
+						setTimeout(function() {
+							echoInit();
+						}, 300);
+					}else{
+						popToast('获取食谱失败，请稍候再试！');
+					}
+				});
+			}else{
+				//暂时没有发布相关的数据
+				api.hideProgress();
+				var data={"list":[]};
+				addTemplateHtml('cp_body', 'cp_script', data);
+				//通知顶部下拉刷新数据加载完毕，组件会恢复到默认状态
+				commonControlRefresh();
+			}
+		}
+		
+		/*
+		*function:打开详情页面
+		*author:zfz
+		*date：20170920
+		*/
+		function openContentFrame(transfer_data,id){
+			setLiCss(id);
+			commonCloseFrame('cpIpad_content_frame');
+			api.execScript({
+				name : 'cpIpad_index_window',
+				script : 'reBackType("content")'
+			});	
+			
+			var frame_w = Math.floor(api.winWidth*0.55);
+			var frame_x = Math.floor(api.winWidth*0.45);
+			pageParamJson={"header_h":header_h,'x':frame_x,'w':frame_w,'transfer_data':transfer_data};//打开frame页面json数据
+			//打开frame页面
+			commonOpenFrame("cpIpad_content_frame","cpIpad_content_frame.html",header_h,false,false,"rgba(0,0,0,0)",pageParamJson);
+			isShowBoxShow(1);//显示虚线
+		}
+		
+		/*
+		*author:zhaoj
+		*function:是否显示虚线
+		*date：20170919
+		*/
+		function isShowBoxShow(type){
+			type ? $api.removeCls($api.byId('j_box_shadow'), 'aui-hide') : $api.addCls($api.byId('j_box_shadow'), 'aui-hide');
+		}
+		/*
+		*author:zhaoj
+		*function:设置选中样式
+		*date：20170919
+		*/
+		function setLiCss(id){
+			var li_array = $api.domAll($api.byId('cp_body'), 'li');
+			for(var i = 0; i < li_array.length; i++){
+				$api.removeCls(li_array[i], 'active');
+			}
+			$api.addCls($api.byId('j_li_'+id), 'active');
+		}
+	</script>
+</html>

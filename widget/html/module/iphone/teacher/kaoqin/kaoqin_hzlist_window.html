@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<!-- html5：在创建html时为了防止页面缩放等不兼容效果，要创建个viewport  -->
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<!-- 在IOS设备上，有时会将数字转为手机号，这里也要禁止下 -->
+		<meta name="format-detection" content="telephone=no"/>
+		<title>考勤申请</title>
+		<link rel="stylesheet" type="text/css" href="../../../../../css/aui/aui.css" />
+		<link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+		<style>
+			.history-date {
+				font-size: 12px;
+			}
+			#message-content {
+				overflow-y: auto;
+				display: none;
+			}
+			
+			
+			.t_display_n {
+				display: none;
+			}
+			.t_display_b {
+				display: block;
+			}
+			.tag-title{height:45px; line-height:43px;background:#ffffff ;border-bottom:2px solid #E6E6E6;}
+			.tag-title div{width:50%;text-align:center;color:#62656A;}
+			.fl{float:left;}
+			.fr{float:right;}
+		</style>
+	</head>
+	<body class="common-iphone-kaoqin">
+		<div id="wrap">
+			<header class="aui-bar aui-bar-nav aui-bar-primary" id="aui-header">
+				<div id="cloud" class="topbar activebar">
+					<div id="back" class="back" onclick="back();" tapmode="">
+						<i class="aui-iconfont aui-icon-left"></i>返回
+					</div>
+					<div  class="mTitle" id="mTitle">
+						考勤详情
+					</div>
+					<div class="win-menu">
+						<!--我的考勤——考勤汇总菜单-->
+						<a id='menu1' style="display: none;" class="aui-iconfont aui-icon-menu back"  onclick="openMenuFrame();"></a>
+						<a id='menu2' style="display: none;" class="aui-iconfont aui-icon-fold back"  onclick="closeMenuFrame();"></a>
+					</div>
+				</div>
+				<div class="tag-title">
+					<div id="qingjia" class="fl active" onclick="openQjFrame();">请假</div>
+					<div id="gongchu" class="fr" onclick="openGcFrame();">公出</div>
+				</div>
+			</header>
+			<div  class="aui-content aui-content-padded" id="message-content">
+				<p class="aui-text-center history-date"></p>
+			</div>
+		</div>
+	</body>
+	<script type="text/javascript" src="../../../../../script/api.js"></script>
+	<script type="text/javascript" src="../../../../../script/common/common.js"></script>
+	<script type="text/javascript">
+		//顶部header高度
+		var header_h;
+		var back_type;//返回参数
+		var back_type;//返回参数
+		apiready = function() {
+			commonSetTheme({"level":5,"type":0});
+			header_h = api.pageParam.header_h;
+			//打开我的考勤请假申请页面
+			openHzlistFrame();
+			commonBackForAndroid();//安卓关闭
+			commonIosAuiHeader();//定位header位置，留出上面电池等空隙，苹果需要
+		};
+		/*
+		*author:zhaoj
+		*function:打开我的考勤请假申请页面
+		*date：20160620
+		*/
+		function openQjFrame(){
+			reBackType('index');
+			$api.removeCls($api.byId('gongchu'),'active');
+			$api.addCls($api.byId('qingjia'),'active');
+			commonExecScript('kaoqin_hzlist_window','kaoqin_hzlist_frame','changeType(0);',1);
+		}
+		/*
+		*author:zhaoj
+		*function:打开我的考勤公出申请页面
+		*date：20160620
+		*/
+		function openGcFrame(){
+			reBackType('index');
+			$api.removeCls($api.byId('qingjia'),'active');
+			$api.addCls($api.byId('gongchu'),'active');
+			commonExecScript('kaoqin_hzlist_window','kaoqin_hzlist_frame','changeType(1);',1);
+		}
+		/*
+		*author:zhaoj
+		*function:打开考勤详情
+		*date：20160621
+		*/
+		function openHzlistFrame(){
+			reBackType('index');
+			var header_h = api.pageParam.header_h;
+			var pageParamJson={"header_h":header_h};//打开frame页面所需参数
+			commonOpenFrame('kaoqin_hzlist_frame', 'kaoqin_hzlist_frame.html',header_h+45+45, false, false,"#ffffff",pageParamJson);	//打开index页面
+		}
+		/*
+		*author:zhaoj
+		*function:打开考勤汇总彩电页面
+		*date：20160620
+		*/
+		function openMenuFrame(){
+			reBackType('menu');
+			var header_h = api.pageParam.header_h;
+			var pageParamJson={"header_h":header_h};//打开frame页面所需参数
+			commonOpenFrame('kaoqin_kqhzMenu_frame', 'kaoqin_kqhzMenu_frame.html',header_h, false, false,"#ffffff",pageParamJson);	//打开index页面
+		}
+		/*
+		*author:zhaoj
+		*function:返回页面
+		*date：20160621
+		*/
+		function resetName(name){
+			$api.text($api.byId('mTitle'), name);
+		}
+		/*
+		*author:zhaoj
+		*function:返回页面
+		*date：20160307
+		*/
+		function back() {
+			switch(back_type) {
+				case 'index':
+					api.closeWin();
+					break;
+				case 'menu':
+					api.closeFrame({
+						name : 'kaoqin_kqhzMenu_frame'
+					});
+					reBackType('index');
+					break;
+			}
+		}
+
+		/**
+		 * 安卓点击返回的时候
+		 * 周枫
+		 * 2015.10.14
+		 */
+		function backForAndroid() {
+			api.addEventListener({
+				name : "keyback"
+			}, function(ret, err) {
+				back();
+			});
+		}
+		/**
+		 * 重置从哪个页面退出
+		 * 周枫
+		 * 2015.12.17
+		 */
+		function reBackType(type) {
+			switch(type) {
+				//如果通知列表页面退出
+				case 'index':
+					resetName('考勤详情');
+					back_type = 'index';
+					break;
+				//如果微课内容页面退出
+				case 'menu':
+					resetName('考勤范围');
+					back_type = 'menu';
+					break;
+			}
+		}
+		/*
+		*author:zhaoj
+		*function:关闭菜单页面
+		*date：20160622
+		*/
+		function closeMenuFrame(){
+			alert('关闭菜单页面');
+		}
+	</script>
+</html>

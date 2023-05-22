@@ -1,0 +1,22 @@
+{
+    "app_verson": "2017.01.01",
+    "app_config": {
+    	"app_model": ""
+    },
+    "phone_login_config": {
+        "login_index": "widget://html/login/login_iphone_window.html",
+        "login_district": "东北师大理想软件股份有限公司",
+        "teacher_index": "widget://html/index/iphone/index.html",
+        "student_index": "widget://html/index/iphone/index.html",
+        "parent_index": "widget://html/index/iphone/index.html",
+        "work_index": "widget://html/index/iphone/index.html"
+    },
+    "pad_login_config": {
+        "login_index": "widget://html/login/login_ipad_window.html",
+        "login_district": "东北师大理想软件股份有限公司",
+        "teacher_index": "widget://html/index/ipad/index.html",
+        "student_index": "widget://html/index/ipad/index.html",
+        "parent_index": "widget://html/index/iphone/index.html",
+        "work_index": "widget://html/index/iphone/index.html"
+    }
+}

@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<!-- html5：在创建html时为了防止页面缩放等不兼容效果，要创建个viewport  -->
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<!-- 在IOS设备上，有时会将数字转为手机号，这里也要禁止下 -->
+		<meta name="format-detection" content="telephone=no"/>
+		<title>学生考勤</title>
+		<link rel="stylesheet" type="text/css" href="../../../../../css/aui/aui.css" />
+		<link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+		<style> 
+    	body{
+    		
+    	}
+    </style>
+</head>
+<body>
+	<div id="wrap">
+		<header class="aui-bar aui-bar-nav aui-bar-primary" id="aui-header">
+			<div id="cloud" class="topbar activebar">
+				<div id="back" class="back" onclick="back();" tapmode="">
+					<i class="aui-iconfont aui-icon-left"></i>返回
+				</div>
+				<div  class="mTitle" id="mTitle">
+					设置请假
+				</div>				
+			</div>
+		</header>
+</body>
+<script type="text/javascript" src="../../../../../script/api.js"></script>
+<script type="text/javascript" src="../../../../../script/plug-in/base64.js" ></script>
+<script type="text/javascript" src="../../../../../script/base_config.js" ></script>
+<script type="text/javascript" src="../../../../../script/common/common.js"></script>
+<script type="text/javascript" src="../../../../../script/assembly/tongjiData.js"></script>
+<script type="text/javascript">
+	apiready = function(){
+		commonSetTheme({"level":5,"type":0});
+		commonBackForAndroid();//安卓关闭
+		commonIosAuiHeader();//定位header位置，留出上面电池等空隙，苹果需要
+		opendetailFrame();
+	};
+	/*
+    *打开统计frame
+    * cui
+    * 2017.12.18
+    */
+	function opendetailFrame(){
+	  	var header_h = api.pageParam.header_h;
+	  	var pageParamJson = {
+	  		'header_h':header_h,
+	  		'person_list' : api.pageParam.person_list,
+	  		'class_id' : api.pageParam.class_id,
+	  		'daily_time':api.pageParam.daily_time,
+	  		'header_pic':api.pageParam.header_pic,
+	  		'stu_name' : api.pageParam.stu_name,
+	  		"d_person_id":api.pageParam.d_person_id,
+	  		"class_type" : api.pageParam.class_type,
+	  		"entrance_year" : api.pageParam.entrance_year,
+	  		"stage_id" : api.pageParam.stage_id,
+	  	};
+		commonOpenFrame('xskq_detail_frame', 'xskq_detail_frame.html',header_h, false, false,"#ffffff",pageParamJson);	
+	}
+	/*
+     *返回
+     * cui
+     * 2018.03.15
+     */
+	function back() {
+		api.closeWin();
+    }	
+</script>
+</html>

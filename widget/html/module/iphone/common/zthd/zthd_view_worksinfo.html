@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>主题活动</title>
+    <link rel="stylesheet" type="text/css" href="../../../../../css/aui/aui.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../../../css/module/common/table-body.css"/>
+    <link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+    <style>
+    	body{color:#595757;padding:10px 0;font-size:14px;}
+    	.content{position:relative;padding:10px 10px;width: 100%;}
+    	.table-body th, .table-body td{font-size:14px;line-height:45px;}
+    	.table-body td{padding:0;}
+    	.no-data{padding-top:0;}
+    	.name_p{width:100px;font-size:14px;line-height:45px;color: #000000;text-align:center;text-overflow: ellipsis;white-space: nowrap;overflow: hidden;}
+    </style>
+</head>
+<body class="common-iphone-zthd-tea">
+	<div class="content">
+		<table  class="table-body">
+			<tr>
+               <th>作品名称</th>
+               <th>上传时间</th>
+               <th>浏览量</th>
+               <th>点赞量</th>
+               <th>评论量</th>
+            </tr>
+            <tbody id="list_body"></tbody>
+            <script type="text/html" id="list_script">
+            <%if(list.length == 0){%>
+            <tr><td colspan="5"><div class="no-data">暂无信息</div></td></tr>
+            <%}else{%>
+            <%for(var i = 0; i < list.length; i++){%>
+            <tr>
+               <td class="name_p"><div class="name_p"><% if (list[i].is_boutique == 1){%><span style="color: #ff931f">[精]</span><%}%><%=list[i].name%></div></td>
+               <td><%=list[i].create_time.substring(0,10)%></td>
+               <td><%=list[i].view_num%></td>
+               <td><%=list[i].praise_num%></td>
+               <td><%=list[i].comment_num%></td>
+            </tr>
+            <%}%>
+            <%}%>
+            </script>
+		</table >
+	</div>
+</body>
+<script type="text/javascript" src="../../../../../script/api.js"></script>
+<script type="text/javascript" src="../../../../../script/base_config.js" ></script>
+<script type="text/javascript" src="../../../../../script/common/common.js" ></script>
+<script type="text/javascript" src="../../../../../script/assembly/UIAlbumBrowser.js"></script>
+<script type="text/javascript" src="../../../../../script/assembly/getPicture.js"></script>
+<script type="text/javascript" src="../../../../../script/assembly/photoBrowser.js"></script>
+<script type="text/javascript" src="../../../../../script/plug-in/template.js" ></script>
+<script type="text/javascript">
+	var oparam;
+	var currentPage = 1;//当前分页数
+	var totalPages = 0;//总页数
+	apiready = function() {
+		oparam = api.pageParam;
+		commonSetTheme({"level":5,"type":0});
+//		get_activity_info();
+		initData(1);
+		commonScrollBottomReload();
+		commonRefreshHeaderInfo(); 
+	};
+	function initData(current_page){
+		currentPage = current_page;
+		get_activity_info();
+	}
+	/*
+    *author:zhaoj
+    *function:通过主题id获取此主题下的作品列表
+    *interface:张海
+    *date：20171023
+    */
+	function get_activity_info(){
+		api.ajax({
+			url : BASE_URL_ACTION + '/ypt/space/topic/get_my_works_by_topicid?random_num='+creatRandomNum()+'&topic_id='+oparam.topic_id+'&identity_id='+oparam.identity_id+'&page_num='+currentPage+'&page_size='+20+'&person_id='+oparam.person_id+'&name='+"",
+			method : 'get',
+			timeout : 0,
+			dataType : 'json',
+			headers : {
+	'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+	}
+			}, function(ret, err) {
+				if(err){
+					popToast('获取人员信息失败，请稍候重试');
+				}else{
+					if(ret.success){
+						totalPages = ret.total_page;
+						commonAddManyHtml('list_body','list_script',ret);
+					}else{
+						popToast('获取人员信息失败，请稍候重试');
+					}
+				}
+			api.hideProgress();
+			//通知顶部下拉刷新数据加载完毕，组件会恢复到默认状态
+			commonControlRefresh();
+		});
+	}
+	/*
+	*author:wangdongy
+	*function:关闭页面
+	*date：2017.5.15
+	*/
+	function closeFrame(){
+		commonExecScript('zthd_hd_window','','back();',3);
+	}
+</script>
+</html>

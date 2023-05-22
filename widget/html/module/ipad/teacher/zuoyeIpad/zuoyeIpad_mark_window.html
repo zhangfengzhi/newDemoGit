@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>检测批阅</title>
+    <link rel="stylesheet" type="text/css" href="../../../../../css/aui/aui.css"/>
+    <link id="j_theme_base" rel="stylesheet" type="text/css" href="" /><style>
+    	body{
+    		
+    	}
+    </style>
+</head>
+<body class="common-ipad-zuoyeIpad-tea">
+	<div id="wrap">
+			<header class="aui-bar aui-bar-nav aui-bar-primary" id="aui-header">
+				<div id="cloud" class="topbar activebar">
+					<div id="back" class="back" onclick="back();" tapmode="">
+						<i class="aui-iconfont aui-icon-left"></i>返回
+					</div>
+					<div  class="mTitle" id="mTitle">
+						检测批阅
+					</div>
+					<div class="win-menu">
+					</div>
+				</div>
+			</header>
+			<div  class="aui-content aui-content-padded" id="message-content">
+				<p class="aui-text-center history-date"></p>
+			</div>
+		</div>
+</body>
+<script type="text/javascript" src="../../../../../script/api.js"></script>
+<script type="text/javascript" src="../../../../../script/common/common.js"></script>
+<script type="text/javascript">
+	apiready = function(){
+		commonSetTheme({"level":5,"type":0});
+		var header_h = api.pageParam.header_h;//顶部高度
+		pageParamJson={"header_h":header_h};//打开frame页面json数据
+		//打开分组管理的frame页面
+		commonOpenFrame("zuoyeIpad_mark_frame","zuoyeIpad_mark_frame.html",header_h,false,false,"rgba(0,0,0,0)",pageParamJson);
+		commonBackForAndroid();//安卓关闭
+		commonIosAuiHeader();//定位header位置，留出上面电池等空隙，苹果需要
+	};
+</script>
+</html>

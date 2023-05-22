@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>试题统计</title>
+    <link rel="stylesheet" type="text/css" href="../../../css/aui/aui.css"/>
+    <link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+    <style>
+    	body{background:#f6f6f6;color:#333;}
+    	.content li{list-style:none;border-bottom:1px solid #efefef;padding:10px 2px;background:#ffffff;}
+    	.left-name{width:40%;position:relative;max-width:40%;overflow:hidden;text-overflow:ellipsis;display:inline-block;}
+    	.right-sex{position: absolute;left:60%;}
+    	.float-div{overflow:auto;margin-top:5px;}
+    	.left-zhanghao{padding-left:40px}
+    	.selected{background-color:#15B5e9;}
+    	.no-selected{background-color:#ffffff}
+    	.font-css{font-size:14px;color:#696969}
+    	.zhanghao{font-size:14px;color:#696969;float:left;}
+    	.num{float:left;display:inline-block;width:40px;text-align: center;}
+    	.person-name{max-width:60%;}
+    	.person-name1{float:left;max-width:70%;overflow:hidden;text-overflow:ellipsis;}
+    </style>
+</head>
+<body class="w-ipad-common">
+	<ul id="div_body_stu" class="content"></ul>
+	<script type="text/html" id="div_script">
+		<%if(list.length == 0){%>
+			<div class="no-data"><span>暂无学生</span></div>
+		<%}else{%>
+			<%for(var i=0;i<list.length;i++){%>
+				<li onclick="selectStu(this,1,<%=list[i].student_id%>);">
+					<div class="float-div">
+						<div class="left-name person-name clearfix">
+							<div class="num"><%=i+1+(pageNumber-1)*15%>.</div >
+							<div class="person-name1"><%=list[i].student_name%></div>
+						</div>
+						<span class="right-sex font-css">性别：<%=list[i].xb_name%></span>
+					</div>
+					<div class="float-div left-zhanghao">
+						<span class="zhanghao">账号：</span>
+						<div class="left-name font-css"><%=list[i].login_name%></div>
+						<span class="right-sex font-css">密码：<%=list[i].login_password%></span>
+					</div>
+				</li>
+			<%}%>
+		<%}%>
+	</script>
+	<ul id="div_body_par" class="content"></ul>
+	<script type="text/html" id="div_script_par">
+		<%if(table_List.length == 0){%>
+			<div class="no-data"><span>暂无家长</span></div>
+		<%}else{%>
+			<%for(var i=0; i< table_List.length;i++){%>
+				<li onclick="selectStu(this,1,<%=table_List[i].PARENT_ID%>);">
+					<div class="float-div">
+						<div class="left-name person-name">
+							<div class="num"><%=i+1+(pageNumber-1)*15%>.</div>
+							<div class="person-name1"><%=table_List[i].PARENT_NAME%></div>
+						</div>
+						<span class="right-sex font-css">学生姓名：<%=table_List[i].STUDENT_NAME%></span>
+					</div>
+					<div class="float-div left-zhanghao">
+						<span class="zhanghao">账号：</span>
+						<div class="left-name font-css"><%=table_List[i].PARENT_LOGIN_NAME%></div>
+						<span class="right-sex font-css">密码：<%=table_List[i].LOGIN_PASSWORD%></span>
+					</div>
+				</li>
+			<%}%>
+		<%}%>
+	</script>
+</body>
+<script type="text/javascript" src="../../../script/api.js"></script>
+<script type="text/javascript" src="../../../script/base_config.js" ></script>
+<script type="text/javascript" src="../../../script/plug-in/template.js" ></script>
+<script type="text/javascript" src="../../../script/common/common.js" ></script>
+<script type="text/javascript" src="../../../script/plug-in/base64.js" ></script>
+<script type="text/javascript">
+	var type = 1;//获取的是学生列表还是家长的；1学生，2家长
+	var currentPage = 1;//当前分页数
+	var totalPages = 0;//总页数
+	var totalData = 0;//定义一个变量存储第一次加载返回来的总记录数
+	var person_ids = '';
+	var all_person_ids = '';
+	apiready = function (){
+		commonSetTheme({"level":3,"type":0});
+		type = api.pageParam.type;
+		commonRefreshHeaderInfo();
+		commonScrollBottomReload();
+		initData(1);
+	};
+	
+	/*
+	 * 功能：选中学生
+	 * 作者：张自强
+	 * 时间：20171011
+	 */
+	function selectStu(e,num,id){
+		if(num == 1){
+			$api.css(e,'background-color:#15B5e9');
+			$api.attr(e, 'onclick', 'selectStu(this,2,'+id+');');
+			person_ids = person_ids + id + ',';
+		}else{
+			$api.css(e,'background-color:#ffffff');
+			$api.attr(e, 'onclick', 'selectStu(this,1,'+id+');');
+			person_ids = person_ids.replace(id+",","");
+		}
+	}
+	
+	/*
+	 * 功能：点击全选
+	 * 作者：张自强
+	 * 时间：20171011
+	 */
+	function selectAll(num){
+		var ids = all_person_ids;
+		var ids_arry = [];
+		var liArray = [];
+		ids = ids.substring(0,all_person_ids.length-1);
+		ids_arry = ids.split(',');
+		if(type == 1){//学生全选
+			liArray = $api.domAll($api.byId('div_body_stu'), 'li');
+		}else{//家长全选
+			liArray = $api.domAll($api.byId('div_body_par'), 'li');
+		}
+		var css = '';
+		if(num == 1){//点击了全选
+			css = 'background-color:#15B5e9';
+			person_ids = all_person_ids;
+			for(var i=0;i<liArray.length;i++){
+				$api.css(liArray[i],css);
+				$api.attr(liArray[i], 'onclick', 'selectStu(this,2,'+ids_arry[i]+');');
+			}
+		}else{//点击了取消全选
+			css = 'background-color:#ffffff';
+			person_ids = '';
+			for(var i=0;i<liArray.length;i++){
+				$api.css(liArray[i],css);
+				$api.attr(liArray[i], 'onclick', 'selectStu(this,1,'+ids_arry[i]+');');
+			}
+		}
+	}
+	
+	/*
+	 * 功能：获取家长或学生数据
+	 * 作者：张自强
+	 * 时间：20171011
+	 */
+	function initData(current_page){
+		currentPage = current_page;
+		showSelfProgress('加载中...');
+		if(type == 1){//学生列表
+			$api.css($api.byId('div_body_par'),'display:none');
+			$api.css($api.byId('div_body_stu'),'display:block');
+			api.ajax({
+	            url:BASE_URL_ACTION + '/admin/new_base/personInfo_GetStudentInfoList?random_num=' + creatRandomNum(),
+	            method : 'post',
+	            dataType : 'json',
+	            cache : false,
+	            timeout : 30,
+	            data : {
+	            	values : {
+	            		'b_use' : 1,
+	            		'bureau_id' : $api.getStorage('bureau_id'),
+	            		'class_id' : api.pageParam.id,
+	            		'pageNumber' : currentPage,
+	            		'pageSize' : BASE_PAGE_SIZE,
+	            		'person_name' : ''
+	            	}
+	            },
+	           headers : {
+				'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+			}
+            },function(ret,err){
+            	totalData = ret.totalRow;
+				totalPages = ret.totalPage;
+            	if(err){
+            		popToast('获取学生信息失败，请稍候重试');
+            	}else{
+            		if(ret.success){
+            			var rett = ret;
+            			for(var i=0;i<rett.list.length;i++){
+            				all_person_ids = all_person_ids + rett.list[i].student_id+',';	
+            			}
+            			commonAddManyHtml('div_body_stu','div_script',ret);
+            		}else{
+            			popToast('获取学生信息失败，请稍候重试');
+            		}
+            	}
+            	api.hideProgress();
+            	commonControlRefresh();
+            });
+		}else{//家长列表
+			$api.css($api.byId('div_body_stu'),'display:none');
+			$api.css($api.byId('div_body_par'),'display:block');
+			api.ajax({
+	            url:BASE_URL_ACTION + '/parent/getParentList?random_num=' + creatRandomNum(),
+	            method : 'post',
+	            dataType : 'json',
+	            cache : false,
+	            timeout : 30,
+	            data : {
+	            	values : {
+	            		'class_id' : api.pageParam.id,
+	            		'lass_id' : api.pageParam.id,
+	            		'pageNumber' : currentPage,
+	            		'pageSize' : BASE_PAGE_SIZE,
+	            		'parent_name' : ''
+	            	}
+	            },
+	           headers : {
+				'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+			}
+            },function(ret,err){
+            	totalData = ret.totalRow;
+				totalPages = ret.totalPage;
+            	if(err){
+            		popToast('获取学生信息失败，请稍候重试');
+            	}else{
+            		if(ret.success){
+            			var rett = ret;
+            			for(var i=0;i<rett.table_List.length;i++){
+            				all_person_ids = all_person_ids + rett.table_List[i].PARENT_ID+',';	
+            			}
+            			commonAddManyHtml('div_body_par','div_script_par',ret);
+            		}else{
+            			popToast('获取学生信息失败，请稍候重试');
+            		}
+            	}
+            	api.hideProgress();
+            	commonControlRefresh();
+            });
+		}
+	}
+	
+	
+		/*
+		 * 功能：切换家长和学生列表
+		 * 作者：张自强
+		 * 时间：20171011
+		 */
+		function changeSandP(type_flag){
+			type = type_flag;//1学生，2家长
+			totalData = 0;
+			totalPages = 0;
+			person_ids = '';
+			all_person_ids = '';
+			initData(1);
+		}
+		
+		function reset(){
+			popTwoBtnConfirm('提示','是否重置密码','changePassWord();');
+		}
+		
+		/*
+		 * 功能：重置密码
+		 * 作者：张自强
+		 * 时间：20171011
+		 */
+		function changePassWord(){
+			var i_id = 0;//身份id，学生6，家长7
+			if(person_ids == ''){
+				if(type == 1){
+					popAlert('请选择学生');
+				}else{
+					popAlert('请选择家长');	
+				}
+			}else{
+				person_ids = person_ids.substring(0,person_ids.length-1);
+				if(type == 1){
+					i_id = 6;
+				}else{
+					i_id = 7;
+				}
+				showSelfProgress('加载中...');
+				api.ajax({
+		            url:BASE_URL_ACTION + '/admin/new_base/personInfo_resetPassword?random_num='+creatRandomNum()+'&person_ids='+person_ids+'&identity_id=' + i_id,
+		            method : 'get',
+		            dataType : 'json',
+		            cache : false,
+		            timeout : 30,
+		           	headers : {
+					'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+				}
+	            },function(ret,err){
+	            	if(err){
+	            		popToast('重置失败，请稍候重试');
+	            		api.hideProgress();
+	            	}else{
+	            		if(ret.success){
+	            			person_ids = '';
+	            			all_person_ids = '';
+	            			popAlert('密码重置成功！'+commonRemoveHTMLTag(ret.newPwd.replaceAll('&nbsp;',' ')));
+	            			initData(currentPage);
+	            			setTimeout(function(){
+	            				api.hideProgress();
+	            				popToast('密码重置成功');
+	            			},1000);
+	            		}else{
+	            			popToast('重置失败，请稍候重试');
+	            			api.hideProgress();
+	            		}
+	            	}
+	            });
+			}
+		}
+		
+		
+</script>
+</html>

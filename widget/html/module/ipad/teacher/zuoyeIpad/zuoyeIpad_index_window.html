@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<!-- html5：在创建html时为了防止页面缩放等不兼容效果，要创建个viewport  -->
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<!-- 在IOS设备上，有时会将数字转为手机号，这里也要禁止下 -->
+		<meta name="format-detection" content="telephone=no"/>
+		<title>检测</title>
+		<link rel="stylesheet" type="text/css" href="../../../../../css/aui/aui.css" />
+		<link id="j_theme_base" rel="stylesheet" type="text/css" href="" /><style>
+			.history-date {
+				font-size: 12px;
+			}
+			#message-content {
+				overflow-y: auto;
+				display: none;
+			}
+			
+			
+			.t_display_n {
+				display: none;
+			}
+			.t_display_b {
+				display: block;
+			}
+			.footer-div{position:fixed;height:55px;background:#FFFFFF;display: block;left:0;bottom: 0px;width:100%;border-top:1px solid #E2E2E2;font-size:14px;}
+			.footer-div .wid{width:92%;line-height:36px;text-align:center;color:#ffffff;margin-top:9px;border-radius:2px;margin-left:4%;}
+			.p-none{display:none;}
+		</style>
+	</head>
+	<body class="common-ipad-zuoyeIpad-tea">
+		<div id="wrap">
+			<header class="aui-bar aui-bar-nav aui-bar-primary" id="aui-header">
+				<div id="cloud" class="topbar activebar">
+					<div id="back" class="back" onclick="back();" tapmode="">
+						<i class="aui-iconfont aui-icon-left"></i>返回
+					</div>
+					<div  class="mTitle" id="mTitle">
+						检测
+						<!--<div id="btn_title" class="btn-title">
+							<div class="btn-l btn-top-active btn-top" onclick="changeBtnTitle(this,1);">我的检测</div>
+							<div class="btn-r btn-top" onclick="changeBtnTitle(this,2);">云检测</div>
+						</div>-->
+					</div>
+					<div class="win-menu">
+						<!--学期的选择-->
+						<!--<a id='menu' class="aui-iconfont aui-icon-menu back" onclick="openMenuFrame()"></a>-->
+					</div>
+				</div>
+			</header>
+			<div  class="aui-content aui-content-padded" id="message-content">
+				<p class="aui-text-center history-date"></p>
+			</div>
+		</div>
+<!--		<div id="j_footer" class="footer-div" class="p-none">
+			<div class="wid" onclick="openStuGroupWin();">学生分组</div>
+		</div>-->
+	</body>
+	<script type="text/javascript" src="../../../../../script/api.js"></script>
+	<script type="text/javascript" src="../../../../../script/common/common.js"></script>
+	<script type="text/javascript" src="../../../../../script/assembly/tongjiData.js"></script>
+	<script type="text/javascript" src="../../../../../script/common/jszy_jy_common.js"></script>
+	<script type="text/javascript">
+		var header_h;//定位header位置，留出上面电池等空隙，苹果需要
+		var type = 1;//默认1是我的检测
+		var back_type = 'index';//返回参数
+		apiready = function() {
+			commonSetTheme({"level":5,"type":0});
+			header_h = api.pageParam.header_h;
+			openZuoyeListFrame();
+			commonBackForAndroid();//安卓关闭
+			commonIosAuiHeader();//定位header位置，留出上面电池等空隙，苹果需要
+			commonOpenTjData($api.getStorage("identity")+'_'+api.winName);//统计信息
+		};
+		/*
+		*author:zhaoj
+		*function:打开检测列表的frame
+		*date：20160307
+		*/
+		function openZuoyeListFrame() {
+			pageParamJson={"header_h":header_h};//打开frame页面json数据
+			commonOpenFrame("zuoyeIpad_index_frame","zuoyeIpad_index_frame.html",header_h,false,false,"#ffffff",pageParamJson);//打开分组管理的frame页面
+		}
+		/*
+		*作者:zhaoj
+		*功能:打开学期切换页面
+		*日期：20160912
+		*/
+		function openMenuFrame(){
+			reBackType('menu');
+			api.openFrame({
+				name : 'zuoyeIpad_menu_frame',
+				scrollToTop : true,
+				allowEdit : false,
+				url : 'zuoyeIpad_menu_frame.html',
+				rect : {
+					x : 0,
+					y : 0,
+					w : 'auto',
+					h : api.winHeight,
+				},
+				pageParam : {
+					header_h : header_h
+				},
+				bgColor:'rgba(0,0,0,0)',
+				vScrollBarEnabled : true,
+				hScrollBarEnabled : true,
+				//页面是否弹动 为了下拉刷新使用
+				bounces : false
+			});
+		}
+		/*
+		*作者:zhaoj
+		*功能:切换我的检测和云检测
+		*日期：20160912
+		*/
+		function changeBtnTitle(btn_obj, btn_type) {
+			//如果当前资源，不需要更新
+			if (type != btn_type) {
+				type = btn_type;
+				var $btn_title = $api.byId('btn_title');
+				var $btn_title_all = $api.domAll($btn_title, 'div');
+				for (var j = 0; j < $btn_title_all.length; j++) {
+					$api.removeCls($btn_title_all[j], 'btn-top-active');
+				}
+				if (btn_type == 1) {
+					$api.addCls(btn_obj, 'btn-top-active');
+					$api.addCls($api.byId('btn_title'), 't_display_b');
+					$api.removeCls($api.byId('back'), 't_display_n');
+                    api.execScript({
+                    	name:'zuoyeIpad_index_window',
+						frameName : 'zuoyeIpad_index_frame',
+	                    script: 'changeType(1);'
+                    });
+				} else {
+					$api.addCls(btn_obj, 'btn-top-active');
+					$api.removeCls($api.byId('btn_title'), 't_display_b');
+					$api.removeCls($api.byId('back'), 't_display_n');
+	                api.execScript({
+                    	name:'zuoyeIpad_index_window',
+						frameName : 'zuoyeIpad_index_frame',
+	                    script: 'changeType(2);'
+                    });
+				}
+			}
+		}
+		/*
+		*author:zhaoj
+		*function:打开学生分组window页面
+		*date：20161205
+		*/
+		function openStuGroupWin(){
+			var pageParamJson={"header_h":header_h};
+			commonOpenWin('stuGroup_index_window', 'widget://html/common/stuGroup/stuGroup_index_window.html', false, false, pageParamJson);
+		}
+		/*
+		*author:zhaoj
+		*function:返回页面
+		*date：20160307
+		*/
+		function back() {
+			switch(back_type) {
+				case 'index':
+					commonCloseTjData($api.getStorage("identity")+'_'+api.winName);
+					api.closeWin();
+					break;
+				case 'menu':
+					api.closeFrame({
+						name : 'zuoyeIpad_menu_frame'
+					});
+					reBackType('index');
+					break;
+				case 'save':
+					api.closeFrame({
+						name : 'zy_save_frame'
+					});
+					reBackType('index');
+					break;
+				case 'change':
+					commonCloseFrame("common_change_frame");
+					reBackType('index');
+					break
+				case 'apply':
+					commonCloseFrame("zuoyeIpad_apply_frame");
+					reBackType('index');
+					break;;
+				
+			}
+		}
+		/**
+		 * 重置从哪个页面退出
+		 * 周枫
+		 * 2015.12.17
+		 */
+		function reBackType(type) {
+			switch(type) {
+				//如果通知列表页面退出
+				case 'index':
+					back_type = 'index';
+					break;
+				//如果微课内容页面退出
+				case 'menu':
+					back_type = 'menu';
+					break;
+				case 'save':
+					back_type = 'save';
+					break;
+				case 'change':
+					back_type = 'change';
+					break;
+				case 'apply':
+					back_type = 'apply';
+					break;
+			}
+		}
+	</script>
+</html>

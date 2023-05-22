@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<!-- html5：在创建html时为了防止页面缩放等不兼容效果，要创建个viewport  -->
+	<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+	<!-- 在IOS设备上，有时会将数字转为手机号，这里也要禁止下 -->
+	<meta name="format-detection" content="telephone=no"/>
+    <title>菁优导学</title>
+    <link rel="stylesheet" type="text/css" href="../../../../../css/aui/aui.css" />
+    <link rel="stylesheet" type="text/css" href="../../../../../css/module/common/daoxueJyJs.css" />
+    <link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+    <style>
+		body{background:#f6f6f6;}
+    	body .clearfix{padding:0 15px;}
+		.month{width:100%;height:40px;}
+		.month .bg{display:inline-block;height:65px;line-height:30px;background:#f6f6f6;max-width:100%;}
+		.month .bg div{display:inline-block;height:45px;line-height:45px;border-radius:1px;}
+		.zuoye-content{margin-left:0;padding-top:10px;}
+    	.zuoye-content li{display:block; width :100%; padding:15px 0px 10px 10px; border-radius:1px;margin-bottom:5px;display:inline-block;margin-left:3px;}
+    	.zuoye-content li .name{position:relative;color:#000000;line-height:30px;display:inline-block;left:65px;width:70%;}
+    	.zuoye-content li .name_fb{width:40%;}
+    	.zuoye-content li .yuqi{position:absolute;right:0;top:0;width:28px;height:46px;background:url(../../../../../image/yingyong/zuoye/yuqi.png) top no-repeat;background-size: 28px 28px;}
+    	.wid100{width:100%;}
+    	.wid98{max-width:70%;}
+    	.wid60{width:60%;}
+    	.wid40{width:40%;}
+    	.wid2{width:2%;}
+    	.ellipsis{word-break:break-all;white-space:nowrap;overflow: hidden;text-overflow: ellipsis;}
+    	
+    	.stop-day{color:#FFD34F;}
+    	.mgr5{margin-right:5%;}
+   		.no-daoxue{text-align:center;color:#666;margin-top:15px;}
+   		.write-btn{width:62px;border:1px solid #dcdcdc;font-size:14px;color:#686868;text-align: center;height: 32px;line-height: 32px;border-radius: 1px;}
+   		button{padding:0;background:#f9f9f9;}
+   		button.no-click{color:#bbbbbb;}
+   		.now-year{margin-bottom:-10px;padding-top:10px;}
+   		.no-master{
+			line-height:35px;
+			padding-left:15px;
+			color:#333;
+			font-size:15px;
+			font-weight:400;
+			width:100%;
+		}
+		.aui-checkbox{
+			width: 22px;
+			height: 22px;
+			margin-top:5px;
+			margin-right:10px;
+			border-radius: 5px;
+		}
+		.change_jc_xd{
+			position:relative;
+			float: right;
+			margin-right: 10px;
+		}
+		.jc_xd_tubiao{
+			margin-top:10px;
+			background: url(../../../../../image/fun-module/ipad/daoxue/bbqh.png) no-repeat 15px center;
+			background-size:20px auto;
+			padding-left:42px;
+			margin-bottom:5px;
+		}
+		.read{
+			position:absolute;
+			top:11px;
+			right:0px;
+			width:5px;
+			height:5px;
+			border-radius:3px;
+			background:#ff0000;
+			display:inline-block;
+		}
+		.tea_fabu{
+			background:url(../../../../../image/fun-module/ipad/daoxue/ptdx.png) no-repeat 0 center;
+			background-size:85px auto;
+			background-color : #ffffff;
+			position:relative;
+		}
+		.no_tea_fabu{
+			background:url(../../../../../image/fun-module/ipad/daoxue/jsdx.png) no-repeat 0 center;
+			background-size:85px auto;
+			background-color : #ffffff;
+		}
+		.daoxue_section{
+			background:url(../../../../../image/fun-module/ipad/daoxue/timg1111.png) no-repeat 5px center;
+			background-size:16px auto;
+			background-color : #f6f6f6;
+			color:#000000;
+		}
+		.time{font-size:12px;color:#9F9F9F;position:relative;display:inline-block;left:37%;top:-12px;}
+		.jydx{
+			background:url(../../../../../image/fun-module/iphone/daoxueJy/jp-king.png) no-repeat 0 0;
+			background-size:38px 38px;
+			width:38px;
+			height:38px;
+			position:absolute;
+			right:0;
+			top:0;
+		}
+		.time_no_fabu{font-size:12px;color:#9F9F9F;position:relative;left:65px;display:inline-block;}
+		.jsfb{
+            background:url(../../../../../image/fun-module/iphone/kejian/no-xiafa.png) 0 0 no-repeat;
+            background-size:35px 35px;
+            width:38px;
+            height:38px;
+            position:absolute;
+            right:0;
+            top:0;
+        }
+	</style>
+</head>
+<body class="index-body common-iphone-daojueJyJs">
+	<div id="j_zsd" class="index-zsd"></div>
+	<div id="j_wdja" class="clearfix"></div>
+	<script type="text/html" id="wdja_script">
+		<% if(list.length == 0){ %>
+			<div class="no-daoxue"><span>暂无导学</span></div>
+		<% }else{ %>
+			<ul class="zuoye-content">
+				<%for(var i = 0; i < list.length; i++) {%>
+					<%if(list[i].is_publish==1){%>
+						<li  class="tea_fabu" onclick="publicOpt(<%=list[i].res_id%>,<%=list[i].id%>,'<%=list[i].name_base64%>',<%=list[i].p_id%>,<%=list[i].lead_id%>);">
+							<div class="name wid98 ellipsis">
+								<%=list[i].name%>&nbsp;&nbsp;
+							</div></br>
+							<%if(list[i].publish_obj_name != "无" && list[i].publish_obj_name){%>
+								<div class="clearfix">
+    								<div class="name name_fb ellipsis" style="left:49px;font-size:12px;color:#686868;display: block;float:left;">
+                                        发布范围：<%=list[i].publish_obj_name%>
+                                    </div>
+                                    <div class="time" style="top:4px"><%=list[i].slot_time%></div>
+								</div>
+								
+							<%}else{%>
+								<div class="time_no_fabu"><%=list[i].slot_time%></div>
+							<%}%>		
+						</li>
+					<%}else{%>
+						<li  class="tea_fabu" onclick="noPublicOpt(<%=list[i].res_id%>,<%=list[i].id%>,'<%=list[i].name_base64%>','<%=list[i].p_id%>',<%=list[i].lead_id%>);">
+						    <div class="jsfb"></div>
+							<div class="name wid98 ellipsis">
+								<%=list[i].name%>&nbsp;&nbsp;
+							</div></br>						
+							<%if(list[i].publish_obj_name != "无" && list[i].publish_obj_name){%>
+								<div class="clearfix">
+								    <div  class="name name_fb ellipsis" style="left:49px;font-size:12px;color:#686868;display: block;float:left;">
+                                    发布范围：<%=list[i].publish_obj_name%>
+                                    </div>
+                                    <div class="time" style="top:4px"><%=list[i].slot_time%></div>
+                                    </div>
+                                </div>
+								
+							<%}else{%>
+								<div class="time_no_fabu"><%=list[i].slot_time%></div>
+							<%}%>			
+						</li>
+					<%}%>
+				<%}%>
+			</ul>
+		<% } %>
+	</script>
+	<div id="j_jpja" class="clearfix"></div>
+	<script type="text/html" id="jpja_script">
+		<%if(list.length == 0){%>
+			<div class="no-daoxue">暂无精品导学</div>
+		<%}else{%>
+			<ul class="zuoye-content">
+			<%for(var i = 0; i < list.length; i++) {%>
+				<li class="tea_fabu"  style="overflow:auto;position: relative"  onclick="boutiqueOpt(<%=list[i].id%>,'<%=list[i].name_base64%>',<%=list[i].issue_id%>);">
+					<div class="jydx"></div>
+					<div class="name wid98 ellipsis">
+						<%=list[i].name%>&nbsp;&nbsp;
+					</div></br>	
+					<div class="name name_fb ellipsis" style="font-size:12px;color:#686868;">
+						<%=list[i].person_name%>&nbsp;/&nbsp;<%=list[i].org_name%>
+					</div>				
+					<div class="time"><%=list[i].slot_time%></div>
+				</li>
+			<% } %>
+			</ul>
+		<% } %>
+	</script>
+</body>
+<script type="text/javascript" src="../../../../../script/api.js"></script>
+<script type="text/javascript" src="../../../../../script/base_config.js" ></script>
+<script type="text/javascript" src="../../../../../script/plug-in/template.js" ></script>
+<script type="text/javascript" src="../../../../../script/plug-in/moment.min.js" ></script>
+<script type="text/javascript" src="../../../../../script/plug-in/zh-cn.js" ></script>
+<script type="text/javascript" src="../../../../../script/plug-in/base64.js" ></script>
+<script type="text/javascript" src="../../../../../script/common/common.js" ></script>
+<script type="text/javascript" src="../../../../../script/module/common/daoxueJyJs.js" ></script>
+<script type="text/javascript">
+	var BASE_URL_ACTION;
+	var mode_type = 0;//0代表我的导学案,1代表精品导学案
+	var lobal_variable={};//全局变量json
+	var zsd_json_data;//知识点json数据
+	var currentPage = 1;
+	apiready = function(){commonSetTheme({"level":5,"type":0});
+		BASE_URL_ACTION = $api.getStorage('BASE_URL_ACTION');
+		lobal_variable.stage_id=0;//学段id
+		lobal_variable.subject_id=0;//学科id
+		lobal_variable.scheme_id=0;//版本id
+		lobal_variable.volume_id=0;//教材id
+		lobal_variable.structure_id=0;//知识点id
+		initData(0);
+		commonRefreshHeaderInfo();//下拉刷新
+	};
+	/*
+	*author:zhaoj
+	*function:初始化数据
+	*date：20170401
+	*/
+	function initData(current_page){
+		showSelfProgress('加载中...');
+		if(current_page){
+			updataList();
+		}else{
+			commonGetCurrentDate(function(nowTime, nowMillisecond){
+				lobal_variable.nowTime=nowTime;//知识点id
+				getSchemeProgress(function(book_flag,book_data){
+					if(book_flag){
+						lobal_variable.stage_id = book_data.stage_id;//学段id
+						lobal_variable.subject_id = book_data.subject_id;//学科id
+						lobal_variable.scheme_id = book_data.scheme_id;//版本id
+						lobal_variable.volume_id = book_data.volume_id;//教材id
+						lobal_variable.stage_name = book_data.stage_name;//学段名称
+						lobal_variable.subject_name = book_data.subject_name;//学科名称
+						lobal_variable.scheme_name = book_data.scheme_name;//版本名称
+						lobal_variable.volume_name = book_data.volume_name;//教材名称
+						setTextbook('',0);//显示设置教材
+						getSectionAndStruc(function(zsd_flag,zsd_data){
+							api.hideProgress();
+							zsd_json_data = zsd_data;
+							if(zsd_flag){
+								if(zsd_data.section_list.length > 0){
+									getTeachingProgress(function(prog_flag,prog_data){
+										if(prog_flag){
+											setStructure(prog_data.structure_id,prog_data.structure_name,0);
+										}else{
+											setStructure(zsd_data.section_list[0].structure_id,zsd_data.section_list[0].structure_name,0);
+										}
+									});
+								}else{
+									api.hideProgress();
+									$api.html($api.byId('j_wdja'),'<div style="background:rgba(0,0,0,0);" class="no-data">暂无知识点</div>');
+								}
+							}else{
+								api.hideProgress();
+								popToast(zsd_data);
+							}
+						});
+					}else{
+						api.hideProgress();
+						popToast(book_data);
+					}
+				});
+			});
+		}
+	}
+	/*
+	*author:zhaoj
+	*function:设置知识点id和name
+	*date：20170401
+	*/
+	function setStructure(id,name){
+		showSelfProgress('加载中...');
+		lobal_variable.structure_id = id;
+		lobal_variable.structure_name = name;
+		$api.html($api.byId('j_zsd'), '章节位置：'+name + '<span class="change_jc_xd" onclick="openZsdFrame()">切换<span>');
+		changePackageId();
+	}
+	/*
+	*author:zhaoj
+	*function:更新列表
+	*date：20170401
+	*/
+	function updataList(){
+		mode_type?getBoutiqueLeadList():getResList();
+	}
+	
+   /*
+	*author:zhaoj
+	*function:打开知识点页面
+	*date：20170329
+	*/
+	function openSzJcFrame(type){
+		if(type == 1){
+			lobal_variable.stage_id = -1;//学段id
+			lobal_variable.subject_id = -1;//学科id
+			lobal_variable.scheme_id = -1;//版本id
+			lobal_variable.volume_id = -1;//教材id
+			lobal_variable.stage_name = '';//学段名称
+			lobal_variable.subject_name = '';//学科名称
+			lobal_variable.scheme_name = '';//版本名称
+			lobal_variable.volume_name = '';//教材名称
+		}
+		var pageParamJson={
+			"header_h":api.pageParam.header_h,
+			"funName" : 'initData(0);',
+			"lobal_variable":JSON.stringify(lobal_variable),
+			"winName":api.winName,
+			"frameName":'daoxueJyJs_index_frame'
+			};//打开frame页面所需参数
+		commonOpenWin('common_szjc_window', 'widget://html/common/iphone/common_szjc_window.html', false, false, pageParamJson);
+	}
+	
+	/*
+	*author:zhaoj
+	*function:更换课程表id
+	*date：20170329
+	*/
+	function changePackageId(){
+		getCoursepackageBySchemeidOrStructureid(function(package_flag,package_data){
+			if(package_flag){
+				if(package_data.list.length > 0){
+					lobal_variable.package_id = package_data.list[0].id;
+					getResType();
+					save_teaching_progress(lobal_variable.structure_id,lobal_variable.package_id);
+				}else{
+					saveCoursePackage(function(cour_flag,cour_data){
+						if(cour_flag){
+							lobal_variable.package_id = cour_data.id;
+							getResType();
+							save_teaching_progress(lobal_variable.structure_id,lobal_variable.package_id);
+						}else{
+							popToast(cour_data);
+						}
+					});
+				}
+			}else{
+				popToast(package_data);
+			}
+		});
+	}
+	
+	/*
+	*author:zhaoj
+	*function:设置章节为进度
+	*date：20171013
+	*/
+	function save_teaching_progress(structure_id,package_id){
+		api.ajax({
+			url : BASE_URL_ACTION + '/ypt/space/course_package/save_teaching_progress',
+			method : 'post',
+			timeout : 0,
+			dataType : 'json',
+			data : {
+				values : {
+					"random_num" : creatRandomNum(),
+					"package_id" : package_id,
+					"person_id" : $api.getStorage("person_id"),
+					"scheme_id" : lobal_variable.scheme_id,
+					"stage_id" : lobal_variable.stage_id,
+					"structure_id" : structure_id,
+					"subject_id" : lobal_variable.subject_id,
+					"volume_id" : lobal_variable.volume_id
+				}
+			},
+			headers : {
+	'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+}
+		}, function(ret, err) {
+			if (err) {
+				popToast('设置失败');
+			} else {
+				if(ret.success){
+				}else{
+					popToast('设置失败');
+				}
+			}
+		});
+	}
+	
+	/*
+	*author:zhaoj
+	*function:获取资源类型关系id
+	*date：20170329
+	*/
+	function getResType(){
+		getRestypeList(function(res_flag,res_data){
+			if(res_flag){
+				for(var i =0; i < res_data.list.length; i++){
+					if(res_data.list[i].res_type == 12){
+						lobal_variable.res_type_id = res_data.list[i].id;
+					}
+				}
+				updataList();
+			}else{
+				popToast(res_data);
+			}
+		});
+	}
+	/*
+	*author:zhaoj
+	*function:切换列表数据显示
+	*date：20170329
+	*/
+	function changeModeType(type){
+		showSelfProgress('加载中...');
+		mode_type = type;
+		if(type){
+			//精品教案
+			$api.addCls($api.byId('j_wdja'), 'display-none');
+			$api.removeCls($api.byId('j_jpja'), 'display-none');
+		}else{
+			//我的教案
+			$api.addCls($api.byId('j_jpja'), 'display-none');
+			$api.removeCls($api.byId('j_wdja'), 'display-none');
+		}
+		mode_type?getBoutiqueLeadList():getResList();
+	}
+	/*
+	*author:zhaoj
+	*function:未发布导学操作
+	*date：20170329
+	*/
+	function noPublicOpt(res_id,id,name_base64,p_id,lead_id){
+		 isShowFooterBtn(0);
+		api.actionSheet({
+		    cancelTitle: '取消',
+		    buttons: ['查看内容','发布','共享','删除'],
+		    style:{
+		    	titleFontColor:'#ff0000'
+		    }
+		},function( ret, err ){
+		    if( ret ){
+		         if(ret.buttonIndex == 1){
+		         	//查看内容
+		         	openContentWin(lead_id);
+		         }else if(ret.buttonIndex == 2){
+		         	//发布
+		         	openPublicWin(lead_id,name_base64);
+		         }else if(ret.buttonIndex == 3){
+		         	//共享
+		         	openShareWin(lead_id);
+		         }else if(ret.buttonIndex == 4){
+		         	//删除
+		         	var name = Base64.decode(name_base64);
+//		         	if(name.length>5){
+//		         		name = '“'+name.substring(0,5)+'...”';
+//		         	}else{
+		         		name = '“'+name+'”';
+//		         	}
+		         	popConfirm(res_id,id,p_id,lead_id,1,"确定删除"+name+"导学吗？");
+		         }
+		          isShowFooterBtn(1);
+		    }else{
+				popToast('网络繁忙，请稍候重试');
+		    }
+		});
+	}
+	/*
+	*author:zhaoj
+	*function:已发布导学操作
+	*date：20170329
+	*/
+	function publicOpt(res_id,id,name_base64,p_id,lead_id){
+		isShowFooterBtn(0);
+		api.actionSheet({
+		    cancelTitle: '取消',
+		    buttons: ['查看内容','导学统计','取消发布','共享','删除'],
+		    style:{
+		    	titleFontColor:'#ff0000'
+		    }
+		},function( ret, err ){
+		    if( ret ){
+		    	//删除
+	         	var name = Base64.decode(name_base64);
+//	         	if(name.length>5){
+//	         		name = '“'+name.substring(0,5)+'...”';
+//	         	}else{
+	         		name = '“'+name+'”';
+//	         	}
+		         if(ret.buttonIndex == 1){
+		         	//查看内容
+		         	openContentWin(lead_id);
+		         }else if(ret.buttonIndex == 2){
+		         	//导学统计
+		         	openTjWin(lead_id);
+		         }else if(ret.buttonIndex == 3){
+		         	//取消发布
+		        	popConfirm(res_id,id,p_id,lead_id,0,"确定取消导学"+name+"的发布吗？")
+		         }else if(ret.buttonIndex == 4){
+		         	//共享
+		         	openShareWin(lead_id);
+		         }else if(ret.buttonIndex == 5){
+		         	//删除
+		         	popConfirm(res_id,id,p_id,lead_id,1,"确定删除"+name+"导学吗？");
+		         }
+		         isShowFooterBtn(1);
+		    }else{
+				popToast('网络繁忙，请稍候重试');
+		    }
+		});
+	}
+	/*
+	*author:zhaoj
+	*function:显示隐藏学生分组按钮
+	*date：20161203
+	*/
+	function isShowFooterBtn(type){
+		api.execScript({
+			name : 'daoxueJyJs_index_window',
+			script : 'isShowFooterBtn('+type+');'
+		});
+	}
+	/*
+	*author:zhaoj
+	*function:精品导学操作
+	*date：20170329
+	*/
+	function boutiqueOpt(id,name_base64,issue_id){
+		 isShowFooterBtn(0);
+		api.actionSheet({
+		    cancelTitle: '取消',
+		    buttons: ['查看内容','选用'],
+		    style:{
+		    	titleFontColor:'#ff0000'
+		    }
+		},function( ret, err ){
+		    if( ret ){
+		         if(ret.buttonIndex == 1){
+		         	//查看内容
+		         	openContentWin(id);
+		         }else if(ret.buttonIndex == 2){
+		         	//选用
+		         	openApplyFrame(id,name_base64,issue_id);
+		         }
+		         isShowFooterBtn(1);
+		    }else{
+				popToast('网络繁忙，请稍候重试');
+		    }
+		});
+	}
+	/*
+	*author:zhaoj
+	*function:查看导学内容详情页面
+	*date：20170329
+	*/
+	function openContentWin(lead_id){
+		commonOpenWin('daoxueJyJs_content_window', 'daoxueJyJs_content_window.html', false, false, {'header_h':api.pageParam.header_h,"id":lead_id});
+	}
+	/*
+	*author:zhaoj
+	*function:发布导学页面
+	*date：20170329
+	*/
+	function openPublicWin(id,name_base64){
+		commonOpenWin('daoxueJyJs_public_window', 'daoxueJyJs_public_window.html', false, false, {'header_h':api.pageParam.header_h,"type":0,"name_base64":name_base64,"id":id,"lobal_variable":JSON.stringify(lobal_variable)});
+	}
+	/*
+	*author:zhaoj
+	*function:导学统计页面
+	*date：20170329
+	*/
+	function openTjWin(lead_id){
+		commonOpenWin('daoxueJyJs_tj_window', 'daoxueJyJs_tj_window.html', false, false, {'header_h':api.pageParam.header_h,"lead_id":lead_id});
+	}
+	/*
+	*author:zhaoj
+	*function:导学共享页面
+	*date：20170329
+	*/
+	function openShareWin(lead_id){
+		commonOpenWin('daoxueJyJs_share_window', 'daoxueJyJs_share_window.html', false, false, {'header_h':api.pageParam.header_h,"id":lead_id});
+	}
+	/*
+	*author:zhaoj
+	*function:打开选用页面
+	*date：20170330
+	*/
+	function openApplyFrame(id,name_base64,issue_id){
+		api.execScript({
+			name : 'daoxueJyJs_index_window',
+			script : 'reBackType("apply");'
+		});
+		var header_h = api.pageParam.header_h;
+		var pageParamJson={"header_h":header_h,"name":name_base64,"id":id,"issue_id":issue_id,"lobal_variable":JSON.stringify(lobal_variable)};//打开frame页面所需参数
+		commonOpenFrame('daoxueJyJs_apply_frame', 'daoxueJyJs_apply_frame.html',0, false, false,"rgba(0,0,0,0.5);",pageParamJson);//打开index页面
+	}
+	/*
+	*author:zhaoj
+	*function:打开添加导学页面
+	*date：20170329
+	*/
+	function openAddWin(){
+		commonOpenWin('daoxueJyJs_add_window', 'daoxueJyJs_add_window.html', false, false, {'header_h':api.pageParam.header_h,"lobal_variable":JSON.stringify(lobal_variable)});
+	}
+	/*
+	*author:zhaoj
+	*function:打开知识点页面
+	*date：20170329
+	*/
+	function openZsdFrame(){
+		api.execScript({
+			name : 'daoxueJyJs_index_window',
+			script : 'reBackType("zsd");'
+		});
+		var header_h = api.pageParam.header_h;
+		var pageParamJson={"header_h":header_h,"lobal_variable":JSON.stringify(lobal_variable)};//打开frame页面所需参数
+		commonOpenFrame('daoxueJyJs_zsd_frame', 'daoxueJyJs_zsd_frame.html',header_h, false, false,"#ffffff",pageParamJson);//打开index页面
+	}
+	
+	 /*
+	*author:zhaoj
+	*function:显示设置教材
+	*date：20170918
+	*/
+    function setTextbook(Param,type){
+    	if(type==1){
+	    	var param = JSON.parse(Base64.decode(Param));
+	    	lobal_variable.stage_id = param.stage_id;
+	    	lobal_variable.subject_id = param.subject_id;
+	    	lobal_variable.scheme_id = param.scheme_id;
+	    	lobal_variable.volume_id = param.volume_id;
+	    	lobal_variable.stage_name = param.stage_name;
+	    	lobal_variable.subject_name = param.subject_name;
+	    	lobal_variable.scheme_name = param.scheme_name;
+	    	lobal_variable.volume_name = param.volume_name;
+	    }
+		$api.html($api.byId('j_version_textbook'),lobal_variable.stage_name+'&nbsp;->&nbsp;'+lobal_variable.subject_name+'&nbsp;->&nbsp;'+lobal_variable.scheme_name+'&nbsp;->&nbsp;'+lobal_variable.volume_name+'<font class="plr5" onclick="openChangeFrame();">（点击可切换）</font>');
+    	if(type==1){
+    		//commonExecScript('daoxueJyJs_index_window','','back();',0);
+    		initData(0);
+    	}
+    }
+</script>
+</html>

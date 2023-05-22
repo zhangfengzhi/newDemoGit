@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<meta name="format-detection" content="telephone=no"/>
+		<title>课程云管理</title>
+		<link rel="stylesheet" type="text/css" href="../../../../../css/aui/aui.css" />
+		<link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+		<style>
+		</style>
+	</head>
+	<body>
+		<div id="wrap">
+			<header class="aui-bar aui-bar-nav aui-bar-primary" id="aui-header">
+				<div id="cloud" class="topbar activebar">
+					<!--<div class="win-menu">
+					<a id='menu' class="aui-iconfont aui-icon-add" ></a>
+					</div>-->
+				</div>
+			</header>
+		</div>
+	</body>
+	<script type="text/javascript" src="../../../../../script/api.js"></script>
+	<script type="text/javascript" src="../../../../../script/base_config.js"></script>
+	<script type="text/javascript" src="../../../../../script/common/common.js"></script>
+	<script type="text/javascript" src="../../../../../script/plug-in/base64.js" ></script>
+	
+	<script type="text/javascript" src="../../../../../script/assembly/UIAlbumBrowser2.js"></script>
+	<script type="text/javascript" src="../../../../../script/assembly/getPicture.js"></script>
+	<script type="text/javascript" src="../../../../../script/assembly/openResource.js" ></script>
+	<script type="text/javascript" src="../../../../../script/module/common/fileUpload.js" ></script>
+	<script type="text/javascript" src="../../../../../script/plug-in/base64.js" ></script>
+	<script type="text/javascript">
+        //顶部header高度
+        var header_h;
+        var header;
+        var w_h;
+        apiready = function() {
+            //定位header位置，留出上面电池等空隙，苹果需要
+            commonSetTheme({"level":5,"type":0});
+            header = $api.byId('aui-header');
+            $api.fixStatusBar(header);
+            header_h = 0;
+            backForAndroid();
+            openBgFrame(api.pageParam);
+        };
+        
+		function openBgFrame() {
+			var org_type = 100;
+			var bureau_id = $api.getStorage('bureau_id');
+			var role_type = 0;
+			var identity_id = $api.getStorage('identity');
+			commonJudgeRoles(function(type){
+				if (type == 5){
+					role_type = 1;
+				}else if(identity_id * 1 == 5){
+					role_type = 2;
+				}else if(identity_id * 1 == 6){
+					role_type = 3;
+				}
+			});
+			var paddingTop = parseInt($api.cssVal(header,"padding-top"));
+			var url = $api.getStorage('BASE_URL_ACTION') + "/pro_integration/reactProject/courseManagementSystem/index.html?role_type=" + role_type + "&person_id=" 
+			+ $api.getStorage('person_id') +  '&identity_id=' + $api.getStorage('identity') + "&bureau_id=" + bureau_id +
+			"&person_name=" + $api.getStorage("person_name") + "&token=" + $api.getStorage("token_ypt")
+			+"&useBaseInterface=0&pageHeight="+paddingTop+"&class_id="+$api.getStorage('class_id') 
+			+ "&systemType=" + api.systemType;
+		     console.log(url)
+		    commonOpenFrame('ycsxApp_frame',url,header_h,false,false,"rgba(0,0,0,0)",{header_h: header_h});
+		    showSelfProgress();
+		}
+
+
+		function back() {
+			console.log(backType)
+			switch (backType){
+				case "win":
+					api.execScript({
+		            	name:api.winName,
+						frameName:"ycsxApp_frame",
+		                script: 'onReturnBack()'
+		            });
+				break;
+				case "voice":
+					commonCloseFrame('common_playaudio_frame');
+			  		reBackType('win');
+			  	case "txt":
+			  		common_openDocument.closeTxt();
+			  		reBackType('win');
+				break;
+			}
+		}
+
+        /**
+         * 安卓点击返回的时候
+         * 周枫
+         * 2015.10.14
+         */
+        function backForAndroid() {
+            api.addEventListener({
+                name : "keyback"
+            }, function(ret, err) {
+                back();
+            });
+        }
+        
+        /*
+		*author:zhaoj
+		*function:打开拍照
+		*date：20170914
+		*/
+		function showPicture(param_json){
+			var data = JSON.stringify(param_json);
+		    api.execScript({
+		        name : api.winName,
+		        frameName:'ycsxApp_frame',
+		        script: "receiveFieldInfo('"+data+"');"
+		    });
+		}
+    </script>
+</html>

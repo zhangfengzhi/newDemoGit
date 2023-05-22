@@ -1,0 +1,65 @@
+<!DOCTYPE html>	
+<html>	
+<head>	
+	<meta charset="utf-8">	
+	<title>frame</title>	
+	<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>	
+	<link rel="stylesheet" type="text/css" href="../../../css/training/jsyx/api.css" />	
+    <link rel="stylesheet" type="text/css" href="../../../css/training/jsyx/common.css" />	
+	<link rel="stylesheet" type="text/css" href="../../../css/training/jsyx/homework.css" />	
+	
+</head>	
+<body>
+    <div class="all-content">
+        <div class="content-width">
+            <!-- 名称 -->
+            <div class="headers flexRow">
+                <p>检测名称:</p>
+                <span id="hw_name">女巫的椅子之读书有感</span>
+            </div>
+
+            <div class="requirement">
+                <p>检测要求：</p>
+                <span id="hw_nr">
+                    独立完成500字文章，要求行楷字体，16号字，实际情况出发，勿浮夸。
+                </span>
+            </div>
+            <div class="resources flexRow">
+                <p>检测资源：</p>
+                <span id="hw_resource">暂无资源</span>
+            </div>
+            
+            <div id="resource_div" class="enclosure flexRow"> 
+            	<input type="hidden" value="0" id="resource_id" />
+            	<input type="hidden" value="" id="my_file_name" />
+            	<input type="hidden" value="" id="temp" />
+                <p>附件：</p>
+                <button id="insert_file" onclick="uploadFile()">上传附件</button>
+                <span id="insert_info">附件格式doc、docx、ppt、pptx</span>
+                <span id="my_file" style="display: none;"></span>
+                <button id="del_file" onclick="delFile();" style="display: none;">删除</button>
+            </div>
+            <div class="content-text">
+                <p>检测内容：</p>
+            </div>
+            <div class="text-form">
+                <form action="#">
+                        <textarea id="zy_content"></textarea>
+                        <input class="submission" onclick="fillResource(1)" type="button" value="提交检测">
+                        <input class="preservation" onclick="fillResource(0)" type="button" value="保存草稿">
+                </form>
+            </div>
+        </div>
+    </div>
+
+</body>
+
+<script type="text/javascript" src="../../../script/api.js"></script>	
+<script type="text/javascript" src="../../../script/base_config.js"></script>
+<script type="text/javascript" src="../../../script/plug-in/base64.js" ></script>
+<script type="text/javascript" src="../../../script/common/common.js"></script>
+<script type="text/javascript" src="../../../script/training/jsyx/constant.js"></script>
+<script type="text/javascript" src="../../../script/assembly/openResource.js" ></script>
+<script type="text/javascript" src="../../../script/training/jsyx/dohomework_frame1.js"></script>
+		
+</html>	

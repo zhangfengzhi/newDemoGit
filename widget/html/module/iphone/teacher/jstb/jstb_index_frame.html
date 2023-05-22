@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<title>错题本</title>
+		<link rel="stylesheet" type="text/css" href="../../../../../css/aui/aui.css" />
+		<link rel="stylesheet" type="text/css" href="../../../../../css/module/common/testQuestionShow.css" />
+		<link rel="stylesheet" type="text/css" href="../../../../../css/module/common/jyeoo/ques_data.css" />
+		<link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+		<style>
+			body {
+				background: #f6f6f6;
+				color:#98979D;
+				font-size: 14px;
+			}
+			.zy-div {
+				padding: 10px 15px 0 15px;
+			}
+			.zuoye-content li {
+				position: relative;
+				display: block;
+				width: 100%;
+				padding: 10px 10px 7px 10px;
+				background: #ffffff;
+				border-radius: 1px;
+				margin-bottom: 10px;
+			}
+			.zuoye-content li .time {
+				height: 20px;
+				font-size: 14px;
+				color: #000;
+			}
+			.zuoye-content li .time font {
+				font-size: 12px;
+				margin-right: 5px;
+			}
+			.zuoye-content li .name {
+				line-height: 40px;
+				display: inline-block;
+				padding-top: 10px;
+				color:#98979D;
+				font-size: 14px;
+			}
+			.zuoye-content li .name img {
+				max-width: 100%;
+			}
+			.zuoye-content li .yuqi {
+				position: absolute;
+				right: 0;
+				top: 0;
+				width: 28px;
+				height: 46px;
+				background: url(../../../../../image/yingyong/zuoye/yuqi.png) top no-repeat;
+				background-size: 28px 28px;
+			}
+			.wid100 {
+				width: 100%;
+			}
+			.fl {
+				float: left;
+			}
+			.fr {
+				float: right;
+			}
+			.ellipsis {
+				color: #000;
+				font-size: 16px;
+				line-height: 18px;
+				word-break: break-all;
+				white-space: nowrap;
+				overflow: hidden;
+				text-overflow: ellipsis;
+	
+	/*			white-space: nowrap;
+				overflow: hidden;
+				text-overflow: ellipsis;*/
+			}
+			.tijiao, .tip, .more {
+				display: inline-block;
+				font-size: 12px;
+				color: #9F9F9F;
+			}
+			.mgr5 {
+				margin-right: 5%;
+			}
+			.fr {
+				float: right;
+			}
+			.more {
+				background: url(../../../../../image/yingyong/more.png) left center no-repeat;
+				background-size: 23px 5px;
+				width: 25px;
+				height: 23px;
+			}
+			.no-data {
+				text-align: center;
+				color: #666;
+				margin-top: 15px;
+			}
+			.clearfix:after {
+				content: ' ';
+				display: block;
+				clear: both;
+				visibility: hidden;
+				line-height: 0;
+				height: 0;
+			}
+			.master{
+				display:inline-block;
+				float:left;
+				line-height:20px;
+				margin-right:9px;
+				padding:0 6px;
+				border-radius:12px;
+				color:#FFFFFF;
+				font-size:12px;
+			}
+			.no-master{
+				line-height:46px;
+				padding-left:15px;
+				border-bottom:1px solid #efefef;
+				background:#ffffff;
+				color:#333;
+				font-size:15px;
+				font-weight:400;
+			}
+			.no-master .aui-checkbox{
+				line-height:13px;
+				margin:12px 15px;
+			}
+		</style>
+	</head>
+	<body class="common-iphone-jstb">
+		<!--试题列表-->
+			<div id="tblist_div"></div>
+			<div id="zy_div" class="zy-div clearfix default-testQuestionShow">
+			</div>
+			<script type="text/html" id="tblist_script">
+				<% if(que_list.length == 0){ %>
+					<div class="no-data"><span>暂无试题</span></div>
+				<% }else{ %>
+					<%for(var i=0; i<que_list.length; i++) {%>
+						<%if(que_list[i].que_source == 1) {%>
+							<%if(que_list[i].html_json) {%>
+								<div id="zy_div" class="zy-div clearfix">
+									<ul class="zuoye-content">
+										<li onclick="openJxframe('<%=que_list[i].zy_id %>','<%=que_list[i].question_id %>','<%=que_list[i].question_id_char %>','<%=que_list[i].is_have_wk %>','<%=que_list[i].que_source %>','<%=que_list[i].jy_subject_en_name %>','<%=que_list[i].qt_name %>');">
+											<div class="time wid100">
+												<%=que_list[i].create_time%>
+											</div>
+											<div class="name wid100 ellipsis">
+												<%=#commonRemoveQuestionEdit(que_list[i].html_json.question_title)%>
+											</div>
+										</li>
+									</ul>
+								</div>
+							<%}%>
+						<%}else{%>
+							<div id="zy_div" class="zy-div clearfix">
+								<ul class="zuoye-content">
+									<li onclick="openJxframe('<%=que_list[i].zy_id %>','<%=que_list[i].question_id %>','<%=que_list[i].question_id_char %>','<%=que_list[i].is_have_wk %>','<%=que_list[i].que_source %>','<%=que_list[i].jy_subject_en_name %>','<%=que_list[i].qt_name %>');">
+										<div class="time wid100">
+											<%=que_list[i].create_time%>
+										</div>
+										<div class="name wid100 ellipsis">
+											<%=#commonRemoveQuestionEdit(que_list[i].html_json.Content)%>
+										</div>
+									</li>
+								</ul>
+							</div>
+						<%}%>
+					<% } %>
+				<% } %>
+			</script>
+	</body>
+	<script type="text/javascript" src="../../../../../script/api.js"></script>
+	<script type="text/javascript" src="../../../../../script/base_config.js" ></script>
+	<script type="text/javascript" src="../../../../../script/plug-in/base64.js" ></script>
+	<script type="text/javascript" src="../../../../../script/plug-in/template.js" ></script>
+	<script type="text/javascript" src="../../../../../script/common/common.js"></script>
+	<script type="text/javascript">
+		var header_h;
+		//当前页面为第一页
+		var currentPage=1;
+		//总记录数
+		var totalCount = 0;
+		//总页数
+		var totalPages = 0;
+		//定义一个变量存储第一次加载返回来的总记录数
+		var totalData = 0;
+		var class_name = '';//当前班级的名字
+		var total_json = {};//全局参数
+		apiready = function() {
+			commonSetTheme({"level":5,"type":0});
+			header_h = api.pageParam.header_h;
+			commonRefreshHeaderInfo();
+			commonScrollBottomReload();
+			commonGetListSemester(function(flag,ret){
+			if(flag){
+				for(var i = 0; i < ret.xqlist.length; i++){
+					if(ret.xqlist[i].SFDQXQ == 1){
+						total_json.xq_id = ret.xqlist[i].XQ_ID;
+						getTeachPlanByTeacherId();
+					}
+				}
+			}else{
+				api.hideProgress();
+				popToast(ret);
+			}
+		});
+		};
+		
+		/*
+		* author:zhaoj
+		* function:获取任教班级以及任教学科
+		* interface：基础数据（具体是谁不知道，目前有基础数据组负责）
+		* data:20171012
+		*/
+		function getTeachPlanByTeacherId(){
+			api.ajax({
+				url : BASE_URL_ACTION + '/person/getTeachPlanByTeacherId',
+				method : 'post',
+				timeout : 30,
+				dataType : 'json',
+				cache : false,
+				data : {
+					values : {
+						"random_num":creatRandomNum(),
+			            "teacher_id": $api.getStorage("person_id"),
+			            "xq_id": total_json.xq_id,
+			            "pageNumber": 1,
+			            "pageSize": 9999
+					}
+				},
+				headers : {
+					'Cookie' : 'person_id='+$api.getStorage("person_id")+';identity_id='+$api.getStorage("identity")+'; token='+$api.getStorage("token_ypt")+';'
+				}
+			}, function(ret, err) {
+				if (err) {
+					api.hideProgress();
+					popToast('获取班级信息失败，请稍候重试');
+				} else {
+					if(ret){
+					    if(ret.table_List && ret.table_List.length > 0){
+					        total_json.class_all_data = ret.table_List;//获取任课计划
+                            total_json.stage_subject = [];//去掉重复的学段学科
+                            for(var i = 0; i < ret.table_List.length; i++){
+                                var count = 0;
+                                for(j = 0;j < total_json.stage_subject.length;j++){
+                                    if(ret.table_List[i].STAGE_ID == total_json.stage_subject[j].stage_id && ret.table_List[i].SUBJECT_ID == total_json.stage_subject[j].subject_id){
+                                        count++;
+                                    }
+                                }
+                                if(count == 0){
+                                    var oparam = new Object();
+                                    oparam.stage_id = ret.table_List[i].STAGE_ID;
+                                    oparam.stage_name = ret.table_List[i].STAGE_NAME;
+                                    oparam.subject_id = ret.table_List[i].SUBJECT_ID;
+                                    oparam.subject_name = ret.table_List[i].SUBJECT_NAME;
+                                    total_json.stage_subject.push(oparam);
+                                }
+                            }
+                            if(total_json.stage_subject.length > 0 ){
+                                commonExecScript('jstb_index_window','','setStageSubject("'+total_json.stage_subject[0].stage_name+'","'+total_json.stage_subject[0].subject_name+'",0);',0);//显示学段学科
+                            }else{
+                                api.hideProgress();
+                            }
+					    }else{
+					       popAlertAndShowTitle('提示', Base64.encode('当前还没有任课班级，请先设置任课计划！'), 'commonExecScript("'+api.winName+'","","back();",0);');
+					    }
+					}else{
+						api.hideProgress();
+						popToast('获取班级信息失败，请稍候重试');
+					}
+				}
+			});
+		}
+		
+		
+		/*
+		* author:zhaoj
+		* function:获取当前学段和学科下的任教班级
+		* data:20171012
+		*/
+		function getClass(index){
+			var list = total_json.class_all_data;
+			total_json.subject_id = total_json.stage_subject[index].subject_id;
+			total_json.class_data = [{"title":"全部","id":-1}];//当前学段学科下的班级
+			for(var i = 0; i < list.length; i++){
+				if(list[i].STAGE_ID == total_json.stage_subject[index].stage_id && list[i].SUBJECT_ID == total_json.stage_subject[index].subject_id){
+					var oparam = new Object();
+						oparam.title = list[i].CLASS_NAME;
+						oparam.id = list[i].CLASS_ID;
+					total_json.class_data.push(oparam);
+				}
+			}
+			openNavigationBar();
+		}
+		
+	
+		/*
+		*author:zhaoj
+		*function:学科导航显示
+		*date：20171012
+		*/
+		function openNavigationBar() {
+			//关闭滑动条
+			commonCloseNavigationBar();
+			var header_h = api.pageParam.header_h;
+			var params = {
+				y : header_h,
+				w : api.winWidth,
+				h:45,
+				items : total_json.class_data,
+				winName:'jstb_index_window',
+				frameName:'jstb_index_frame',
+				file_level:2
+			};
+			commonMyNavigationBar(params);
+		}
+		/*
+		 * 功能：滑动条回调函数
+		 * 作者：张自强
+		 * 时间：20171012
+		 */
+		function callBackNew(id,index) {
+			currentPage = 1;
+			total_json.class_id = id;
+			initData(1);
+		}
+			
+		
+		/*
+		 * 功能：打开试题解析页面
+		 * 作者：张自强
+		 * 时间：20171012
+		 */
+		function openJxframe(zy_id,que_id,question_id_char,is_have_wk,que_source,jy_subject_en_name,qt_name){
+			api.execScript({
+	            name : 'jstb_index_window',
+	            script: 'hideMenu();'
+            });
+			var pageParamJson={
+				"header_h":api.pageParam.header_h,
+				'zy_id': zy_id,
+				'que_id' : que_id,
+				'que_id_char' : question_id_char,
+				'is_have_wk' : is_have_wk,
+				'que_source':que_source,
+				'jy_subject_en_name':jy_subject_en_name,
+				'qt_name' : qt_name
+				};//打开frame页面所需参数
+			commonOpenWin('jstb_detail_window', 'jstb_detail_window.html', false, false, pageParamJson);
+		}
+		
+		/*
+		 * 功能：获取当前学段学科以及班级下的错题列表
+		 * 作者：张自强
+		 * 时间：20171013
+		 * 接口提供人：陈旭刚
+		 */
+		function initData(current_page){	
+			showSelfProgress('加载中...');
+			currentPage = current_page;
+			api.ajax({
+					url : BASE_URL_ACTION + '/xx/getTeacherQuestions?teacher_id='+$api.getStorage('person_id')+'&wq_type=1&pageSize='+BASE_PAGE_SIZE+'&pageNumber='+currentPage+'&subject_id='+total_json.subject_id+'&class_id='+total_json.class_id+'&qt_id=-1&random_num='+creatRandomNum(),
+					method : 'get',
+					dataType : 'json',
+					timeout:30,
+					 headers : {
+			'Cookie' : 'person_id=' + $api.getStorage("person_id") + '; identity_id=' + $api.getStorage("identity") + '; token=' + $api.getStorage("token_ypt") + ';'
+		}
+				}, function(ret, err) {
+					totalData = ret.totalRow;
+					totalPages = ret.totalPage;
+					if(err){
+						popToast('获取试题信息失败，请稍候重试');
+					}else{
+						if(ret.success){
+							ret.commonRemoveQuestionEdit=commonRemoveQuestionEdit;
+							var que_list = ret.que_list;
+							if(que_list.length > 0){
+								for(var i=0;i<que_list.length;i++){
+									if(que_list[i].que_source == 1){
+										if(que_list[i].html_json == false){
+											que_list[i].html_json={"question_title": "该题信息获取失败"};
+										}else{
+											que_list[i].html_json.question_title = Base64.decode(que_list[i].html_json.question_title);
+											var key = '/dsideal_yy';
+											var key_re = BASE_URL_ACTION;
+											que_list[i].html_json.question_title = que_list[i].html_json.question_title.replaceAll(key, key_re);	
+											que_list[i].html_json.question_title = que_list[i].html_json.question_title.replaceAll('<input', '<input disabled="disabled"');
+										}
+									}else{
+										if (que_list[i].html_json == false){
+											que_list[i].html_json={"Content": "该题信息获取失败"};
+										}
+									}
+									if(i == que_list.length-1){
+										commonAddManyHtml('tblist_div', 'tblist_script', ret);		
+									}
+								}	
+							}else{
+								commonAddManyHtml('tblist_div', 'tblist_script', ret);		
+							}
+							
+						}else{
+							popToast('获取试题信息失败，请稍候重试');
+						}
+					}
+					api.hideProgress();
+            		commonControlRefresh();
+				});
+		}
+		
+	   /*
+		*author:zhaoj
+		*function:打开下拉菜单页面
+		*date：20171011
+		*/
+		function openMenuFrame(index_menu){
+			var header_h = api.pageParam.header_h;//顶部高度
+			pageParamJson={"header_h":header_h,"index_menu":index_menu,"stage_subject":Base64.encode(JSON.stringify(total_json.stage_subject))};//打开frame页面json数据
+			//打开frame页面
+			commonOpenFrame("jstb_menu_frame","jstb_menu_frame.html",0,false,false,"rgba(0,0,0,0)",pageParamJson);
+		}
+	</script>
+</html>

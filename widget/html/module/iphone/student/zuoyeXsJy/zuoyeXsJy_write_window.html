@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<!-- html5：在创建html时为了防止页面缩放等不兼容效果，要创建个viewport  -->
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<!-- 在IOS设备上，有时会将数字转为手机号，这里也要禁止下 -->
+		<meta name="format-detection" content="telephone=no"/>
+		<title>写检测</title>
+		<link rel="stylesheet" type="text/css" href="../../../../../css/aui/aui.css" />
+		<link id="j_theme_base" rel="stylesheet" type="text/css" href="" />
+		<style>
+			.history-date {
+				font-size: 12px;
+			}
+			#message-content {
+				overflow-y: auto;
+				display: none;
+			}
+			
+			.win-menu{font-size:15px;line-height:48px;height:100%;}
+			.menu{display:inline-block;width:24px;height:100%;background: url(../../../../../image/fun-module/iphone/page_menu_icon.png) center center no-repeat;background-size: 24px 24px;}
+			.detail{display:inline-block;width:24px;height:100%;background: url(../../../../../image/fun-module/iphone/zuoye/shuoming2.png) center center no-repeat;background-size: 24px 24px;}
+			.submit{display:inline-block;width:24px;height:100%;background: url(../../../../../image/fun-module/iphone/zuoye/tijiao2.png) center center no-repeat;background-size: 24px 24px;}
+			.t_display_n {
+				display: none;
+			}
+			.t_display_b {
+				display: block;
+			}
+			.ellipsis{white-space: nowrap;overflow: hidden;text-overflow: ellipsis;}
+		</style>
+	</head>
+	<body class="common-iphone-zuoyeXsJy">
+		<div id="wrap">
+			<header class="aui-bar aui-bar-nav aui-bar-primary" id="aui-header">
+				<div id="cloud" class="topbar activebar">
+					<div id="back" class="back" onclick="back();" tapmode="">
+						<i class="aui-iconfont aui-icon-left"></i>返回
+					</div>
+					<div  class="mTitle ellipsis" id="mTitle">
+					</div>
+					<div id="win-menu" class="win-menu">
+						<a id='detail' class="detail" tapmode="tap-active"  style="display:none;" onclick="openDetailsFrame()"></a>
+						<a id='submit' class="submit" tapmode="tap-active"  style="display:none;" onclick="menuSubmit();" ></a>
+						<a id='menu' class="menu" tapmode="tap-active"  style="display:none;" onclick="openMenu();"></a>
+					</div>
+				</div>
+			</header>
+			<div  class="aui-content aui-content-padded" id="message-content">
+				<p class="aui-text-center history-date"></p>
+			</div>
+		</div>
+	</body>
+	<script type="text/javascript" src="../../../../../script/api.js"></script>
+	<script type="text/javascript" src="../../../../../script/base_config.js" ></script>
+	<script type="text/javascript" src="../../../../../script/plug-in/base64.js" ></script>
+	<script type="text/javascript" src="../../../../../script/common/common.js" ></script>
+	<script type="text/javascript">
+		var header_h;//定位header位置，留出上面电池等空隙，苹果需要
+		var back_type;//返回参数
+		var zuoye_title;//检测的标题
+		var BASE_URL_ACTION;
+		var BASE_APP_TYPE;
+		var no_answer_sort=0;//没有作答的最小的sort
+		var answered_count=0;
+		var list_length;
+		apiready = function(){
+		    commonSetTheme({"level":5,"type":0});
+			BASE_APP_TYPE = $api.getStorage('BASE_APP_TYPE');
+			header_h = api.pageParam.header_h;
+			openWriteFrame();
+			reBackType('index');
+			reSetName(api.pageParam.zy_name,1);
+			//安卓关闭
+			commonBackForAndroid();
+			//定位header位置，留出上面电池等空隙，苹果需要
+			commonIosAuiHeader();
+		};
+		/*
+		*author:zhaoj
+		*function:打开添加检测列表的frame
+		*date：20160307
+		*/
+		function openWriteFrame() {
+			api.openFrame({
+				name : 'zuoyeXsJy_write_frame',
+				scrollToTop : true,
+				allowEdit : false,
+				url : 'zuoyeXsJy_write_frame.html',
+				rect : {
+					x : 0,
+					y : header_h,
+					w : 'auto',
+					h : api.winHeight-header_h,
+				},
+				bgColor:'rgba(0,0,0,0)',
+				pageParam : {
+					header_h : header_h,
+					cross_w : 'auto',
+					zy_id : api.pageParam.zy_id,
+					subject_id : api.pageParam.subject_id,
+					zy_statu : api.pageParam.zy_statu,
+					is_stop : api.pageParam.is_stop
+				},
+				vScrollBarEnabled : true,
+				hScrollBarEnabled : true,
+				//页面是否弹动 为了下拉刷新使用
+				bounces : false
+			});
+		}
+		/*
+		*author:zhaoj
+		*function:打开检测详情页面
+		*date：20160324
+		*/
+		function openDetailsFrame(){
+			reBackType('detail');
+			var pageParamJson = {
+			    'header_h' : header_h,
+                'zy_desc' : api.pageParam.zy_desc,
+                'zy_name' : api.pageParam.zy_name
+			};
+			commonOpenFrame('zuoyeXsJy_details_frame', 'zuoyeXsJy_details_frame.html', header_h, false, false, '#fff', pageParamJson);
+		}
+		/*
+		*author:zhaoj
+		*function:详情图标是否显示
+		*date：20160329
+		*/
+		function isDetailDisplay(flag){
+			if(flag){
+				$api.css($api.byId('win-menu'),'display:inline-block;');
+				if(!api.pageParam.is_stop && $api.getStorage('identity') != 7){
+					$api.css($api.byId('submit'),'display:inline-block');
+				}
+			}else{
+				$api.css($api.byId('win-menu'),'display:none');
+			}
+		}
+		/*
+		*author:zhaoj
+		*function:返回页面
+		*date：20160307
+		*/
+		function back(){
+			switch(back_type) {
+				case 'index':
+					api.closeWin();
+					break;	
+				case 'detail':
+					commonCloseFrame('zuoyeXsJy_details_frame');
+					reBackType('index');
+					break;
+				case 'voice':
+					commonCloseFrame('common_playaudio_frame');
+					reBackType('index');
+					break;
+				case 'content':
+					commonCloseFrame('weike_content_frame');
+					reBackType('index');
+					break;
+				case 'picture':
+					reBackType('index');
+					
+					break;	
+			}
+		}
+		/*
+		*author:zhaoj
+		*function:重置window名称
+		*date：20160420
+		*/
+		function reSetName(name,type){
+			if(type == 1){
+				name = Base64.decode(name);
+			}
+			$api.html($api.byId('mTitle'),name);
+		}
+		/*
+		*author:zhaoj
+		*function:重置从哪个页面返回
+		*date：20160307
+		*/
+		function reBackType(type) {
+			switch(type) {
+				//如果列表页面退出
+				case 'index':
+					reSetName(api.pageParam.zy_name,1);
+					isDetailDisplay(true);
+					back_type = 'index';
+					break;
+				//如果添加内容页面退出
+				case 'detail':
+					reSetName('检测说明',0);
+					isDetailDisplay(false);
+					back_type = 'detail';
+					break;
+				//如果添加内容页面退出
+				case 'voice':
+					reSetName(api.pageParam.zy_name,1);
+					isDetailDisplay(false);
+					back_type = 'voice';
+					break;
+				//如果微课内容页面退出
+				case 'content':
+					reSetName('微课',0);
+					isDetailDisplay(false);
+					back_type = 'content';
+					break;
+				//打开照片
+				case 'picture':
+					back_type = 'picture';
+					break;
+			}
+		}
+		/*
+		*author:zhaoj
+		*function:打开下拉菜单
+		*date：20160419
+		*/
+		function openMenu(){
+			api.openFrame({
+	            name: 'zuoyeXsJy_write_menu_frame',
+	            url: 'zuoyeXsJy_write_menu_frame.html',
+	            bounces: false,
+	            rect: {
+	                x: 0,
+	                y: 0,
+	                w: 'auto',
+	                h: 'auto'
+	            },
+	            bgColor : 'rgba(0,0,0,0)',
+	            pageParam : {
+					header_h : header_h,
+					zy_id : api.pageParam.zy_id,
+				},
+	            reload: true
+	        });
+		}
+		/*
+		*author:zhaoj
+		*function:提交答案
+		*date：20160405
+		*/
+		function submitZy(){
+			answeredCount = list_length-answered_count;
+			var tipMsg;
+			if(answeredCount == 0){
+				tipMsg = '确定要提交检测？';
+			}else{
+				tipMsg = '您还有'+answeredCount+'道题没做，确定要提交检测？';
+			}
+			api.confirm({
+			    title: '提示',
+			    msg: tipMsg,
+			    buttons: ['确定','取消']
+			},function( ret, err ){
+			    if(ret.buttonIndex == 1 ){
+					showSelfProgress('提交中...');
+					api.ajax({
+						url : BASE_URL_ACTION + '/xx/submitZy',
+						method : 'post',
+						timeout : 30,
+						dataType : 'json',
+						returnAll : false,
+						data : {
+							values : {
+								"random_num" : creatRandomNum(),
+								"student_id" : $api.getStorage("person_id"),
+								"zy_id" : api.pageParam.zy_id,
+								"identity_id":$api.getStorage("identity")
+							}
+						}
+					}, function(ret, err) {
+						if (err) {
+							api.hideProgress();
+							popToast('提交检测失败，请重新提交。');
+						} else {
+							if(ret.success){
+								setTimeout(function(){
+									var name ='getStudentZylist('+api.pageParam.subject_id+','+api.pageParam.zy_statu+',1,2)';
+									commonExecScript('zuoyeXsJy_index_window','zuoyeXsJy_index_frame',name,1);
+								},1000);
+								commonExecScript('zuoyeXsJy_details_window','','back();',0);
+								setTimeout(function(){
+									api.hideProgress();
+									commonExecScript('zuoyeXsJy_write_window','','back();',0);
+								},3000);
+							}else{
+								api.hideProgress();
+								popToast('提交检测失败，请重新提交。');
+							}
+						}
+					});
+			    }
+			});
+		}
+		/*
+		*author:zhaoj
+		*function:获取学生检测作答进度
+		*date：20160405
+		*/
+		function getStudentZyProgress(){
+			answered_count=0;
+			api.ajax({
+				url : BASE_URL_ACTION + '/xx/getStudentZyProgress',
+				method : 'post',
+				timeout : 30,
+				dataType : 'json',
+				returnAll : false,
+				data : {
+					values : {
+						"random_num" : creatRandomNum(),
+						"student_id" : $api.getStorage("person_id"),
+						"zy_id" : api.pageParam.zy_id
+					}
+				}
+			}, function(ret, err) {
+			    api.hideProgress();
+				if (err) {
+				} else {
+					if(ret.success){
+						list_length = ret.kg_que_list.length+ret.zg_que_list.length;
+						var kg_list = ret.kg_que_list;
+						var zg_list = ret.zg_que_list;
+						if(ret.kg_que_list.length > 0){
+							for(var i = 0; i < kg_list.length ;i++){
+								objective(kg_list[i].sort,kg_list[i].is_answered,kg_list[i].question_id_char)
+							}
+						}
+						if(ret.zg_que_list.length > 0){
+							for(var i = 0; i < zg_list.length;i++){
+								subjective(zg_list[i].sort,zg_list[i].is_answered,zg_list[i].question_id_char)
+							}
+						}
+						submitZy();
+					}
+				}
+			});
+		}
+		/*
+		*author:zhaoj
+		*function:打开写检测页面提交选择题和多选题答案
+		*date：20160420
+		*/
+		function menuSubmit(){
+			commonExecScript('zuoyeXsJy_write_window','zuoyeXsJy_write_frame','menuSubmit();',1);
+		}
+		/*
+	*author:zhaoj
+	*function:客观题选项
+	*date：20160329
+	*/
+	function objective(sort,is_answered,question_id_char){
+		if(is_answered){
+			answered_count++;
+		}
+	}
+	/*
+	*author:zhaoj
+	*function:主观题选项
+	*date：20160329
+	*/
+	function subjective(sort,is_answered,question_id_char){
+		if(is_answered){
+			answered_count++;
+		}
+	}
+	</script>
+</html>
